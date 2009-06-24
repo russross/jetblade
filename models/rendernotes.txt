@@ -1,0 +1,2 @@
+For the hang animation, use a 150x170 view and the stretchverticalcam (zoom set
+to 8.40 instead of normal 7.6.

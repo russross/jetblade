@@ -1,0 +1,2 @@
+1. Unpack archive into temporary directory.
+2. Copy gen3.py and gt directory into your Blender scripts location.

@@ -1,0 +1,102 @@
+GEN3 = 0.5
+Shape = 7
+BaseSize = 0.0000
+Scale = 13.0000
+ScaleV = 3.0000
+ZScale = 1.0000
+ZScaleV = 0.0000
+Levels = 3
+Ratio = 0.0150
+RatioPower = 1.1000
+Lobes = 1
+LobeDepth = 0.1000
+Flare = 1.0000
+Leaves = 10
+LeafShape = 0
+LeafScale = 0.5000
+LeafScaleX = 1.0000
+LeafQuality = 1.0000
+
+# Branch level 0
+
+0Scale = 1.5000
+0ScaleV = 0.0000
+0Length = 1.0000
+0LengthV = 0.0000
+0Taper = 1.0000
+0BaseSplits = 0
+0SegSplits = 0.0000
+0SplitAngle = 0.0000
+0SplitAngleV = 0.0000
+0CurveRes = 18
+0Curve = 0.0000
+0CurveBack = 0.0000
+0CurveV = 20.0000
+0DownAngle = 0.0000
+0DownAngleV = 0.0000
+0Rotate = 0.0000
+0RotateV = 0.0000
+0Branches = 0
+
+# Branch level 1
+
+1Scale = 1.0000
+1ScaleV = 0.0000
+1Length = 0.3000
+1LengthV = 0.0000
+1Taper = 1.0000
+1BaseSplits = 0
+1SegSplits = 0.0000
+1SplitAngle = 0.0000
+1SplitAngleV = 0.0000
+1CurveRes = 7
+1Curve = -40.0000
+1CurveBack = 0.0000
+1CurveV = 50.0000
+1DownAngle = 60.0000
+1DownAngleV = -50.0000
+1Rotate = 140.0000
+1RotateV = 0.0000
+1Branches = 20
+
+# Branch level 2
+
+2Scale = 1.0000
+2ScaleV = 0.0000
+2Length = 0.6000
+2LengthV = 0.0000
+2Taper = 1.0000
+2BaseSplits = 0
+2SegSplits = 0.0000
+2SplitAngle = 0.0000
+2SplitAngleV = 0.0000
+2CurveRes = 4
+2Curve = -40.0000
+2CurveBack = 0.0000
+2CurveV = 75.0000
+2DownAngle = 45.0000
+2DownAngleV = 10.0000
+2Rotate = 140.0000
+2RotateV = 0.0000
+2Branches = 10
+
+# Branch level 3
+
+3Scale = 1.0000
+3ScaleV = 0.0000
+3Length = 0.0000
+3LengthV = 0.0000
+3Taper = 1.0000
+3BaseSplits = 0
+3SegSplits = 0.0000
+3SplitAngle = 0.0000
+3SplitAngleV = 0.0000
+3CurveRes = 1
+3Curve = 0.0000
+3CurveBack = 0.0000
+3CurveV = 0.0000
+3DownAngle = 45.0000
+3DownAngleV = 10.0000
+3Rotate = 77.0000
+3RotateV = 0.0000
+3Branches = 2

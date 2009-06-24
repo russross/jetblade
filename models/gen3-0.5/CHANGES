@@ -1,0 +1,29 @@
+Version 0.5
+- Branch and leaf count calculation fixed. If you have parameter sets saved
+  with v0.4, you may need to load them and tweak 'Branches' and 'Leaves'
+  parameters to make v0.5 generate trees which are similar to v0.4
+  generated ones.
+
+Version 0.4
+- Ability to save/load parameters to/from external files have been implemented
+- Tree generation time reduced (Quaken Aspen generation takes about 32s in
+  v0.3, in v0.4 it takes around 15s on AMD Athlon 64 2800+).
+- Small bugfixes
+
+Version 0.3
+- Leaves generation implemented
+- Tree parameters import from "Arbaro" xml files added
+- Branch count calculation have been modified for trunk branches
+- Workaround for bug which cause random module importing to fail
+  implemented
+- support for negative values of 'nRotate' parameter implemented
+
+Version 0.2
+- Tree generation time reduced (sometimes up to ~1.5 times)
+- Bug which leads to 'index out of range' error while using 'Levels == 4'
+  have been fixed
+- TAB-ordering in GUI corrected
+
+Version 0.1
+- Initial release
+

@@ -1,0 +1,6 @@
+Gen3 is parameter-driven tree model generator for Blender.
+
+Generation algorithm is based on model described in:
+ Jason Weber and Joseph Penn, "Creation and Rendering of Realistic Trees",
+ Proceedings of ACM SIGGRAPH 1995: pp. 119-128.
+
