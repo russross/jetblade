@@ -1,3 +1,4 @@
+import sys
 
 ## This class handles loading and caching information on enviromental effects.
 class EnvEffectManager:

@@ -144,7 +144,7 @@ def loadAnimations(name):
 
     path = moduleName
     path = path.replace('/', '.')
-    path += '.sprite'
+    path += '.spriteConfig'
     util.debug("Loading animations for",name,"with path",path)
     spriteModule = __import__(path, globals(), locals(), ['sprites'])
 
