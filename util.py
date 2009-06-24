@@ -15,26 +15,34 @@ import random
 
 globalId = 0
 
-## Simple logger function. 
-def debug(*entries):
-    if jetblade.logLevel >= constants.LOG_DEBUG:
+## Log the provided text at the given log level
+def log(level, *entries):
+    if jetblade.logLevel >= level:
         string = ''
         for entry in entries:
             string += str(entry) + ' '
-        print string
+        print constants.logStrings[level] + ':',string
 
 
-## Retrieves the location of the user's home directory, depending on OS.
-def getHomePath():
-    if sys.platform in ['win32', 'cygwin']:
-        return os.environ.get('APPDATA')
-    else: # Assume OSX/Linux; both should work
-        return os.environ.get('HOME')
+def debug(*entries):
+    log(constants.LOG_DEBUG, *entries)
 
+
+def inform(*entries):
+    log(constants.LOG_INFORM, *entries)
+
+
+def warn(*entries):
+    log(constants.LOG_WARN, *entries)
+
+
+def error(*entries):
+    log(constants.LOG_ERROR, *entries)
 
 ## Print an error to the screen, wait a bit, then exit the program. Call this
 # function when unrecoverable errors have occurred. 
-def error(message):
+def fatal(message):
+    log(constants.LOG_FATAL, message)
     errorString = "Sorry, an error occurred: " + message
     errorString2 = "The program will now shut down."
     debug(errorString)
@@ -54,6 +62,14 @@ def error(message):
     pygame.display.update()
     pygame.time.delay(constants.errorMessageDelayTime)
     sys.exit()
+
+
+## Retrieves the location of the user's home directory, depending on OS.
+def getHomePath():
+    if sys.platform in ['win32', 'cygwin']:
+        return os.environ.get('APPDATA')
+    else: # Assume OSX/Linux; both should work
+        return os.environ.get('HOME')
 
 
 ## Retrieve the text from the clipboard, using different methods depending on

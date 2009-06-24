@@ -90,13 +90,13 @@ def init():
     while index < len(args):
         if args[index] == '-seed':
             if index + 1 > len(args):
-                print "Missing required seed value"
+                util.error("Missing required seed value")
             else:
                 index += 1
                 jetblade.seed = args[index]
         elif args[index] == '-mapfile':
             if index + 1 > len(args):
-                print "Missing required map filename"
+                util.error("Missing required map filename")
             else:
                 index += 1
                 jetblade.mapname = args[index]
@@ -104,7 +104,7 @@ def init():
             jetblade.saveimage = 1
         elif args[index] == '-num':
             if index + 1 > len(args):
-                print "Missing required number of maps to make"
+                util.error("Missing required number of maps to make")
             else:
                 index += 1
                 jetblade.numMaps = int(args[index])
@@ -115,10 +115,10 @@ def init():
         index += 1
 
     if jetblade.numMaps > 1 and jetblade.mapname is not None:
-        print "Cannot use multiple-map generation with a sourced map file."
+        util.error("Cannot use multiple-map generation with a sourced map file.")
         sys.exit()
     elif jetblade.numMaps > 1 and jetblade.seed is not None:
-        print "Cannot use multiple-map generation with a fixed random seed."
+        util.error("Cannot use multiple-map generation with a fixed random seed.")
         sys.exit()
     elif jetblade.seed is None:
         jetblade.seed = int(time.time())
@@ -150,13 +150,13 @@ def startGame():
         for i in range(0, jetblade.numMaps):
             jetblade.envEffectManager.reset()
             jetblade.propManager.reset()
-            print "Making map %d of %d" % (i + 1, jetblade.numMaps)
+            util.inform("Making map %d of %d" % (i + 1, jetblade.numMaps))
             if jetblade.numMaps == 1:
-                print "Using seed",jetblade.seed
+                util.inform("Using seed",jetblade.seed)
                 random.seed(str(jetblade.seed))
             else:
                 jetblade.seed = int(time.time())
-                print "Using seed",jetblade.seed
+                util.inform("Using seed",jetblade.seed)
                 random.seed(str(jetblade.seed))
             jetblade.map = map.Map()
             jetblade.map.init()
@@ -187,7 +187,7 @@ def gameLoop():
     zoomLevel = 1
 
     while 1:
-        print "Frame %d Physics %d" % (jetblade.frameNum, physicsNum)
+        util.debug("Frame %d Physics %d" % (jetblade.frameNum, physicsNum))
         events = jetblade.eventManager.processEvents([], constants.CONTEXT_GAME)
         # Check for a couple of events.
         for event in events:
@@ -213,7 +213,7 @@ def gameLoop():
             cam.update()
             timeAccum -= physicsUpdateRate
 
-        print "Did",count,"physics updates, have",timeAccum,"in the accumulator towards next physics update (step",physicsUpdateRate,")"
+        util.debug("Did",count,"physics updates, have",timeAccum,"in the accumulator towards next physics update (step",physicsUpdateRate,")")
 
         jetblade.draw(zoomLevel, cam, timeAccum / physicsUpdateRate)
  

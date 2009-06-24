@@ -30,13 +30,13 @@ class Player(terrestrialobject.TerrestrialObject):
                 shouldCrawl = True
 
         if shouldCrawl and self.isGrounded:
-            print "Input: crawling"
+            util.debug("Input: crawling")
             self.shouldCrawl = True
         elif not shouldCrawl:
             self.shouldCrawl = False
         # Pressed down while hanging, so let go
         if shouldCrawl and self.isHanging:
-            print "Input: Releasing hang"
+            util.debug("Input: Releasing hang")
             self.justStoppedHanging = True
 
         if isClimbing and self.isHanging:
@@ -44,11 +44,11 @@ class Player(terrestrialobject.TerrestrialObject):
 
         if isJumping:
             # Start a jump
-            print "Input: Jumping"
+            util.debug("Input: Jumping")
             self.justJumped = True
 
         if isClimbing and self.isHanging:
-            print "Input: Climbing"
+            util.debug("Input: Climbing")
             self.isClimbing = True
 
         self.runDirection = runDirection

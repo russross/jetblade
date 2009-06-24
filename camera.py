@@ -32,7 +32,6 @@ class Camera:
     def getDrawLoc(self, progress):
         # Round the vector off to prevent jitter.
         result = util.roundVector(util.interpolatePoints(self.prevLoc, self.curLoc, progress))
-        print "Current camera drawloc is",result,"from",self.prevLoc,self.curLoc,progress
         return result
 
 

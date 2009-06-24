@@ -100,10 +100,10 @@ class ImageManager:
         drawColor = (color[0], color[1], color[2])
         alpha = color[3]
         if fontNameNum < 0 or fontNameNum > len(constants.fontNames):
-            util.error("Invalid font selection: " + str(fontNameNum))
+            util.fatal("Invalid font selection: " + str(fontNameNum))
         fontName = constants.fontNames[fontNameNum]
         if fontSize not in self.fonts[fontName]:
-            util.error("Invalid font size for font " + fontName + ": " + str(fontSize))
+            util.fatal("Invalid font size for font " + fontName + ": " + str(fontSize))
         yOffset = 0
         for text in texts:
             textSurface = self.fonts[fontName][fontSize].render(text, True, drawColor)

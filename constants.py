@@ -96,6 +96,15 @@ LOG_WARN = 3
 LOG_ERROR = 2
 ## Log level for fatal output
 LOG_FATAL = 1
+## Descriptor strings for the log levels
+logStrings = {
+    LOG_DEBUG : 'DEBUG',
+    LOG_INFORM : 'INFO',
+    LOG_WARN : 'WARNING',
+    LOG_ERROR : 'ERROR',
+    LOG_FATAL : 'FATAL',
+}
+
 ## Number of physics updates to try to make each second. Tweaking this directly
 # determines the speed of gameplay, to the limits of the computer's hardware.
 physicsUpdatesPerSecond = 60

@@ -38,7 +38,7 @@ class ConfigManager:
 
             for action, key in constants.defaultPlayerKeys.items():
                 if not action in self.controls:
-                    util.error('Controls do not have an entry for action [' + action + ']')
+                    util.fatal('Controls do not have an entry for action [' + action + ']')
         util.debug("Controls are",str(self.controls))
             
     def writeConfig(self):
@@ -58,7 +58,7 @@ class ConfigManager:
     def getConfigValue(self, key):
         if key in self.config:
             return self.config[key]
-        print "Don't have a config entry for " + key
+        util.warn("Don't have a config entry for " + key)
         return None
 
     def toggleConfigValue(self, key):

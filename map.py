@@ -508,7 +508,7 @@ class Map:
                         self.blocks[i][j] = 0
 #                        self.markLoc = (i, j)
 #                        self.drawStatus()
-#                        util.error("Unable to find terrain information for block at " + str((i,j)))
+#                        util.fatal("Unable to find terrain information for block at " + str((i,j)))
 
 
     ## Plant a seed for hollowing out part of the map at the desired
