@@ -21,8 +21,10 @@ defaultJumpSpeed = -20
 defaultMaxJumpRiseFrames = 10
 ## Default value for whether the creature can hang from ledges.
 defaultCanHang = False
+
 ## Distance to check for blocks beneath us when we run out of ground.
 groundHugCheckDistance = constants.blockSize / 2.0
+
 
 ## Terrestrial objects are ones that walk around on the ground and can jump.
 # \todo The logic dealing with crawling (and, in particular, forcing crawls
@@ -78,6 +80,11 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         ## Direction creature is trying to move in. Set this to -1 to move
         # left, 0 to not move, or 1 to move right.
         self.runDirection = -1
+        ## Indicates that we've already tried changing the player's current
+        # action this frame. This is used when "trying out" different actions
+        # to see if there's room e.g. to stand up from a crawl. 
+        # \todo Seems like there should be a better way to handle this.
+        self.haveChangedAction = False
 
 
     ## Apply acceleration if the creature is moving; start jumps and negate 
@@ -167,6 +174,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         self.justJumped = False
         self.justStartedClimbing = False
         self.justStoppedHanging = False
+        self.haveChangedAction = False
         
         # By unsetting self.isGrounded right before the update, we'll know if
         # we're still on the ground after the end (because hitFloor sets
@@ -236,21 +244,34 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         # Fix the "toe-stubbing" problem (of running horizontally 
         # into a block at foot level) by reversing gravity.
         # Recognize this situation because we're on the ground, getting
-        # ejected straight horizontally by a block at foot level by an amount
-        # equal to our horizontal velocity.
+        # ejected straight horizontally by a block at foot level that has no
+        # block above it.
         util.debug("Adjusting collision data",(distance, vector, block.gridLoc))
-        if (distance - abs(self.vel[0]) < constants.EPSILON and 
+        if (not jetblade.map.getBlockAtGridLoc(util.addVectors(block.gridLoc, (0, -1))) and 
                 self.wasGrounded and abs(vector[1]) < constants.EPSILON and
                 self.blockIsAtFootLevel(block)):
             util.debug("Converting sloped block collision")
             distance = self.gravity[1]
             vector = (0, -1)
+
         # Convert sideways displacement into vertical displacement if there
         # is any vertical component, to prevent sliding down slopes.
         # Also lets us slide along ceilings at full speed when jumping.
         if self.wasGrounded and vector[1] < -constants.EPSILON:
             util.debug("Converting partially-horizontal vector to vertical vector")
             vector = (0, vector[1] + abs(vector[0]) * cmp(vector[1], 0))
+
+        # If we just tried to stand up, force all vertical ejection directions
+        # from blocks above our feet to be downwards. 
+        # We do this because the act of standing can badly 
+        # embed us into a block, causing it to be confused about which direction
+        # we should be ejected in. Without this, we can get ejected upwards
+        # through a block that, last frame, we were crawling beneath.
+        if (self.wasCrawling and not self.shouldCrawl and vector[1] < 0 and 
+                self.getFootLoc()[1] > block.getBlockBottom(self.facing)[1]):
+            util.debug("Flipping vertical component of vector to push us down after standing")
+            vector = (vector[0], -1 * vector[1])
+
         return (vector, distance)
 
 
@@ -276,7 +297,8 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                 self.isCrawling = True
                 self.wasCrawling = True
                 shouldChangeAction = True
-            if shouldChangeAction:
+            if shouldChangeAction and not self.haveChangedAction:
+                self.haveChangedAction = True
                 if self.shouldCrawl ^ self.isCrawling:
                     # Tried to crawl, but couldn't because of terrain. Or, 
                     # tried to stand, but couldn't. Revert to our previous 
@@ -373,13 +395,11 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         
 
     ## Return true if the given block is near our foot level.
-    # We have two spaces we need to check.
     def blockIsAtFootLevel(self, block):
-        footGridLoc = util.realspaceToGridspace(self.getFootLoc())
-        footGridLoc[0] += cmp(self.vel[0], 0)
-        return (footGridLoc[0] == block.gridLoc[0] and 
-                    (footGridLoc[1] == block.gridLoc[1] or
-                     footGridLoc[1] - 1 == block.gridLoc[1]))
+        footLoc = self.getFootLoc()
+        blockTop = block.getBlockTop(-1 * cmp(self.vel[0], 0))
+        util.debug("Foot is at",footLoc,"compare block at",blockTop,"velocity is",self.vel,"distance",util.pointPointDistance(footLoc, blockTop),"magnitude",util.vectorMagnitude(self.vel))
+        return util.pointPointDistance(footLoc, blockTop) < util.vectorMagnitude(self.vel) + constants.EPSILON
 
 
     ## Wrap up after finishing a climb.
