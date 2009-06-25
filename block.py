@@ -25,7 +25,7 @@ class Block:
         # neighboring spaces are occupied by blocks. 
         self.adjacencySignature = adjacencySignature
 
-        ## Which large-scale grouping this block falls into, e.g. "jungle" or
+        ## Which large-scale grouping this block falls into, e.g. "jungle " or
         # "hotzone".
         self.terrain = terrain
 
@@ -43,9 +43,19 @@ class Block:
     def getBlockTop(self, direction):
         poly = self.sprite.getPolygon()
         targetX = poly.lowerRight[0]
-        if direction == -1:
+        if direction < 0:
             targetX = poly.upperLeft[0]
         return util.addVectors(self.loc, poly.getPointAtX(targetX, -1))
+
+
+    ## As getBlockTop, but for the bottom of the block
+    def getBlockBottom(self, direction):
+        poly = self.sprite.getPolygon()
+        targetX = poly.lowerRight[0]
+        if direction < 0:
+            targetX = poly.upperLeft[0]
+        return util.addVectors(self.loc, poly.getPointAtX(targetX, 1))
+        
 
     ## Draw the block.
     def draw(self, screen, camera, progress, scale = 1):
@@ -61,4 +71,9 @@ class Block:
     # occupied.
     def getAdjacencySignature(self):
         return self.adjacencySignature
+
+
+    ## Convert to string for output
+    def __str__(self):
+        return "Block at " + str(self.gridLoc) + " realspace " + str(self.loc) + " orientation " + str(self.orientation) + " type " + str(self.terrain) + " " + str(self.flavor)
 
