@@ -341,7 +341,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         if self.canHang and self.canGrabLedge():
             # Lock location to the top of the ledge
             # \todo Incorporate some kind of offset here?
-            self.loc[1] = int(self.loc[1] / constants.blockSize + .5) * constants.blockSize
+            self.loc[1] = int((self.loc[1] - self.vel[1]) / constants.blockSize + .5) * constants.blockSize
             self.vel[1] = 0
             self.isHanging = True
             self.jumpFrames = 0
@@ -363,10 +363,12 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         locs = [[headGridLoc[0], headGridLoc[1] - i] for i in [0, 1, 2]]
         blocks = [jetblade.map.getBlockAtGridLoc(loc) for loc in locs]
         headRange = range.Range(headLoc[1] - self.vel[1], headLoc[1])
+        util.debug("Head is at",headLoc,"grid",headGridLoc,"range",headRange,"and blocks are",blocks)
         for i in [0, 1]:
             if blocks[i] and not blocks[i+1]:
                 top = blocks[i].getBlockTop(-self.facing)
                 if headRange.contains(top[1]):
+                    util.debug("Can grab block",blocks[i],"with top at",top)
                     return True
         return False
 
