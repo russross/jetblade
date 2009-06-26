@@ -1,4 +1,5 @@
 import sys
+import util
 
 ## This class handles loading and caching information on enviromental effects.
 class EnvEffectManager:
@@ -13,7 +14,7 @@ class EnvEffectManager:
             return self.envMap[name]
         modulePath = 'environments.' + name
         try:
-            print "Loading environment effect",name
+            util.debug("Loading environment effect",name)
             # In order to allow arbitrary naming of these classes, we first 
             # import a function that tells us the name of the class, then we 
             # import the class itself.
@@ -27,8 +28,7 @@ class EnvEffectManager:
             return classInstance
 
         except Exception, e:
-            print "Failed to load module",modulePath,":",e
-            sys.exit()
+            util.fatal("Failed to load module",modulePath,":",e)
 
     ## Clear our cache
     def reset(self):
