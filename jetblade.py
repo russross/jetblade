@@ -65,6 +65,8 @@ from pygame.locals import *
 # - -record: record every rendered frame to disk. Note: this can be toggled
 #    during gameplay as well.
 
+## Target milliseconds per frame
+desiredMillisecondsPerFrame = 10
 
 ## Wrapper around the introductory logic; this is where we set our cProfile 
 # hooks.
@@ -194,6 +196,13 @@ def gameLoop():
             if event.type in (KEYDOWN, KEYUP):
                 if event.action == 'startRecording' and event.type == KEYUP:
                     jetblade.isRecording = not jetblade.isRecording
+                    if jetblade.isRecording:
+                        # Recording images to disk takes so long that it 
+                        # causes massive frameskip; tweak the target 
+                        # physics update rate to compensate.
+                        physicsUpdateRate = 1000.0 / constants.slowPhysicsUpdatesPerSecond
+                    else:
+                        physicsUpdateRate = 1000.0 / constants.physicsUpdatesPerSecond
                 elif event.action == 'toggleDebug' and event.type == KEYUP:
                     if jetblade.logLevel == constants.LOG_ERROR:
                         jetblade.logLevel = constants.LOG_DEBUG
@@ -219,17 +228,12 @@ def gameLoop():
  
         jetblade.frameNum += 1
         framesSincePrevSec += 1
-        curTs = pygame.time.get_ticks()
         
         if int(curTs / 1000) != curSec:
             jetblade.curFPS = framesSincePrevSec
             util.debug("FPS: ",framesSincePrevSec)
             curSec = int(curTs / 1000)
             framesSincePrevSec = 0
-
-        ## \todo Variable delay depending on how much time has passed since 
-        # the last frame.
-        pygame.time.delay(10)
 
 
 ## Draw the game. 
