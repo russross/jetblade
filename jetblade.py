@@ -85,7 +85,7 @@ def init():
     jetblade.saveimage = 0
     jetblade.numMaps = 1
     jetblade.isRecording = False
-    jetblade.logLevel = constants.LOG_ERROR
+    jetblade.logLevel = constants.LOG_INFORM
     index = 0
     while index < len(args):
         if args[index] == '-seed':
@@ -202,10 +202,10 @@ def gameLoop():
                     else:
                         physicsUpdateRate = 1000.0 / constants.physicsUpdatesPerSecond
                 elif event.action == 'toggleDebug' and event.type == KEYUP:
-                    if jetblade.logLevel == constants.LOG_ERROR:
+                    if jetblade.logLevel == constants.LOG_INFORM:
                         jetblade.logLevel = constants.LOG_DEBUG
                     else:
-                        jetblade.logLevel = constants.LOG_ERROR
+                        jetblade.logLevel = constants.LOG_INFORM
 
         newTs = pygame.time.get_ticks()
         dt = newTs - curTs
