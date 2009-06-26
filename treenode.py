@@ -669,22 +669,45 @@ class TreeNode:
         if loc in self.spaces:
             del self.spaces[loc]
 
+
+    ## Return true if the passed-in location is one of the open spaces owned
+    # by this node.
     def getIsOurSpace(self, loc):
         return (int(loc[0]), int(loc[1])) in self.spaces
 
+
+    ## Return true if this node is one of the "blank" leaf nodes placed at 
+    # a junction of normal nodes.
     def getIsJunctionNode(self):
         return self.isJunctionNode
 
+
+    ## Return a tuple of terrain information.
     def getTerrainInfo(self):
         return (self.zoneType, self.regionType)
 
-    def getLocOnGrid(self):
-        return [int(self.loc[0] / constants.blockSize), 
-                int(self.loc[1] / constants.blockSize)]
 
+    ## Map our location to the map grid.
+    def getLocOnGrid(self):
+        return util.realspaceToGridspace(self.loc)
+
+
+    ## Get the angle from our parent to ourselves, in radians.
     def getAngle(self):
         if self.parent is not None:
             return util.clampDirection(math.atan2(self.loc[1] - self.parent.loc[1], self.loc[0] - self.parent.loc[0]))
+        return 0
+
+
+    ## Get the slope from our parent to ourselves.
+    def getSlope(self):
+        if self.parent is not None:
+            dy = self.loc[1] - self.parent.loc[1]
+            dx = self.loc[0] - self.parent.loc[0]
+            if abs(dx) < constants.EPSILON:
+                # Vertical.
+                return constants.BIGNUM * cmp(dy, 0)
+            return dy / dx
         return 0
 
     def getRegionTransitionDistance(self):
