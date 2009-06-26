@@ -34,5 +34,5 @@ def createFeature(map, sector):
     pass
 
 def shouldCheckAccessibility(sector):
-    return 1
+    return straight.shouldCheckAccessibility(sector)
 

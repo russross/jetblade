@@ -40,5 +40,5 @@ def createFeature(map, sector):
                         map.blocks[x][curY] = 2
 
 def shouldCheckAccessibility(sector):
-    return 1
+    return straight.shouldCheckAccessibility(sector)
 

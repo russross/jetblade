@@ -1,3 +1,4 @@
+import straight
 import constants
 import util
 import math
@@ -37,5 +38,5 @@ def createFeature(map, sector):
     pass
 
 def shouldCheckAccessibility(sector):
-    return 1
+    return straight.shouldCheckAccessibility(sector)
 

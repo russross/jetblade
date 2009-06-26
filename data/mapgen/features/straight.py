@@ -50,5 +50,5 @@ def createFeature(map, sector):
     pass
 
 def shouldCheckAccessibility(sector):
-    return 1
+    return abs(sector.getSlope()) > 2
 

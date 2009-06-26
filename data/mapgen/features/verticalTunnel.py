@@ -22,5 +22,5 @@ def createFeature(map, sector):
     pass
 
 def shouldCheckAccessibility(sector):
-    return 1
+    return True
 
