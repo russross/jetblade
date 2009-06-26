@@ -39,6 +39,7 @@ def warn(*entries):
 def error(*entries):
     log(constants.LOG_ERROR, *entries)
 
+
 ## Print an error to the screen, wait a bit, then exit the program. Call this
 # function when unrecoverable errors have occurred. 
 def fatal(message):
@@ -149,6 +150,14 @@ def clampVector(vector, clamps):
     for index in range(0, len(vector)):
         result.append(clampValue(vector[index], clamps[index]))
     return result
+
+
+## Determine if vector is close to any of the vectors in vectorList
+def fuzzyVectorMatch(vector, vectorList):
+    for alt in vectorList:
+        if pointPointDistance(vector, alt) < constants.DELTA:
+            return True
+    return False
 
 ## Return true if the point is somewhat close to the line, based on a 
 # bounding box check.

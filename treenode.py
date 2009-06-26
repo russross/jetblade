@@ -37,9 +37,9 @@ maxWallwalkerSteps = 500
 minRegionTransitionDistance = 3
 
 ## Children under this depth are not allowed to create loops.
-minDepthForLoops = 0
+minDepthForLoops = 3
 ## How far apart two nodes must be to make a loop
-minTreeDistanceForLoops = 2
+minTreeDistanceForLoops = 4
 ## How far apart two loops can be
 minTreeDistanceToLoops = 0
 ## Minimum distance between two nodes for a loop to be allowed.
@@ -86,7 +86,7 @@ wallAngles = [(-math.pi/2.0 -slopePlatformRequirement,
 class TreeNode:
     ## Create a new TreeNode instance. Determine the local zone and region
     # information, pick a tunnel feature type, and determine our tunnel width.
-    def __init__(self, loc, parent, recurseDepth, loopNode = None, isJunctionNode = 0):
+    def __init__(self, loc, parent, recurseDepth, loopNode = None, isJunctionNode = False):
         self.id = constants.globalId
         constants.globalId += 1
 
@@ -212,7 +212,7 @@ class TreeNode:
                     childLine = line.Line(self.loc, childLoc)
                     if (childX > 0 and childX < jetblade.map.width and
                         childY > 0 and childY < jetblade.map.height and
-                        jetblade.map.getIsValidLine(childLine)):
+                        jetblade.map.getIsValidLine(childLine, [self.loc])):
                         self.children.append(TreeNode(childLoc, self, self.depth + 1))
                         didCreateOrRecurse = 1
                         
@@ -258,7 +258,7 @@ class TreeNode:
                     
                 dist = util.pointPointDistance(self.loc, node.loc)
                 nodeLine = line.Line(self.loc, node.loc)
-                if (jetblade.map.getIsValidLine(nodeLine) and 
+                if (jetblade.map.getIsValidLine(nodeLine, [self.loc, node.loc]) and 
                         not node.getConnections()):
 
                     self.children.append(TreeNode(node.loc, self, self.depth + 1, node))
@@ -511,6 +511,7 @@ class TreeNode:
     def fixAccessibility(self):
         if (self.parent is not None and 
                 (self.isJunctionNode or self.featureModule.shouldCheckAccessibility(self))):
+            util.debug("Checking accessibility for node",self.id)
             # Determine which accessibility-fixing algorithm to use.
             if util.pointPointDistance(self.loc, self.parent.loc) > minVerticalTunnelLength:
                 angle = self.getAngle()
@@ -729,19 +730,26 @@ class TreeNode:
             p2 = [self.parent.loc[0] * scale, self.parent.loc[1] * scale]
             pygame.draw.line(screen, self.color, p1, p2, 4)
         for child in self.children:
+            # Note this does not include junction nodes
             child.draw(screen, scale)
 
         parentId = -1
         if self.parent is not None:
             parentId = self.parent.id
+        drawLoc = p1
+        if self.loopNode is not None:
+            drawLoc = util.addVectors(p1, (0, 40))
         jetblade.imageManager.drawText(screen, 
                 ['%d %d' % (self.loc[0], self.loc[1]),
                  '%d %d' % (self.id, parentId), 
                  '%s' % self.tunnelType],
-                p1, 0, constants.tinyFontSize, 
+                drawLoc, 0, constants.tinyFontSize, 
                 constants.TEXT_ALIGN_CENTER, (255, 0, 0, 255))
 
 
     ## Generate a textual representation
     def __str__(self):
-        return "TreeNode " + str(self.id) + " from " + str(self.parent.loc) + " to " + str(self.loc) + " of type " + str(self.tunnelType)
+        locationStr = " at " + str(self.loc)
+        if self.parent is not None:
+            locationStr = " from " + str(self.parent.loc) + " to " + str(self.loc)
+        return "TreeNode " + str(self.id) + locationStr + " of type " + str(self.tunnelType)

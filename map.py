@@ -276,8 +276,7 @@ class Map:
         self.instantiateBlocks()
         util.debug("Done instantiating blocks at",pygame.time.get_ticks())
 
-        # There should be a platform at the center of the map. Start the
-        # player there.
+        # \todo Pick a better starting point for the player.
         self.startLoc = [int(self.numCols / 2), int(self.numRows / 2)]
         while self.blocks[self.startLoc[0]][self.startLoc[1]] != 0:
             self.startLoc[1] -= 1
@@ -861,7 +860,7 @@ class Map:
         if self.markLoc is None and self.tree is not None:
             self.tree.draw(screen, scale)
 
-        pygame.image.save(screen, 'foo-%03d' % self.statusIter + '.png')
+        pygame.image.save(screen, 'premap-%03d' % self.statusIter + '.png')
         jetblade.screen.fill((0, 0, 0))
         if self.markLoc is None:
             # Non-zoomed view, so scale it so it all fits.
@@ -947,7 +946,10 @@ class Map:
     ## Determine if the given line is allowed to be added to our set. Invalid
     # lines come too close to other lines. This code ensures that we don't have
     # accidental crossings in the map.
-    def getIsValidLine(self, newLine):
+    # \param safePoints List of points that are already known to connect to 
+    # other lines in the tree. newLine is allowed to touch points in safePoints,
+    # but otherwise is not allowed to come close to other lines.
+    def getIsValidLine(self, newLine, safePoints):
         rect = newLine.getBounds()
         center = copy.deepcopy(rect.center)
         rect.width += 2 * constants.treePruneDistance
@@ -961,22 +963,28 @@ class Map:
             # the point that isn't shared is far from the other line
             # (because this means the new line is a continuation of the old 
             # one)
-            unsharedPoints = newLine.getUnsharedPoints(altLine)
-            if len(unsharedPoints) == 1:
-                if (collisionResult != line.LINE_COINCIDENT or 
-                        util.pointLineDistance(unsharedPoints[0], altLine) > constants.DELTA):
-                    continue
-                return False
+            for p1 in [altLine.start, altLine.end]:
+                for p2 in [newLine.start, newLine.end]:
+                    if util.pointPointDistance(p1, p2) < constants.DELTA:
+                        # altLine and newLine share a point. Check if it's
+                        # a safe one.
+                        isSafePoint = False
+                        for p3 in safePoints:
+                            if p1 == p3 or p2 == p3:
+                                isSafePoint = True
+                                break
+                        if not isSafePoint:
+                            return False
             if collisionResult in [line.LINE_INTERSECT, line.LINE_COINCIDENT]:
                 # No crossing lines
                 return False
-            if util.pointLineDistance(newLine.end, altLine) < constants.treePruneDistance:
+            if (not util.fuzzyVectorMatch(newLine.end, safePoints) and 
+                    util.pointLineDistance(newLine.end, altLine) < constants.treePruneDistance):
                 # Endpoint of new line can't be too close to other lines
                 return False
-            if (util.pointPointDistance(altLine.end, newLine.start) > constants.EPSILON and
+            if (not util.fuzzyVectorMatch(altLine.end, safePoints) and 
                     util.pointLineDistance(altLine.end, newLine) < constants.treePruneDistance): 
-                # Endpoints of existing lines can't be too close to new line, 
-                # assuming they don't share a vertex
+                # Endpoints of existing lines can't be too close to new line
                 return False
         return True
 
@@ -1021,6 +1029,7 @@ class Map:
     # now.
     def addPlatform(self, loc, size):
         loc = [int(loc[0]), int(loc[1])]
+        util.debug("Adding a platform at",loc,"with size",size)
         if self.getIsInBounds(loc):
             self.platforms.append((loc, size))
 
