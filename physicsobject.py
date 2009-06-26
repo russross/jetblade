@@ -44,7 +44,8 @@ class PhysicsObject:
         self.AIUpdate()
         self.preCollisionUpdate()
         if self.isGravityOn:
-            self.vel = util.clampVector(util.addVectors(self.vel, self.gravity), self.maxVel)
+            self.vel = util.addVectors(self.vel, self.gravity)
+        self.vel = util.clampVector(self.vel, self.maxVel)
         self.loc = util.addVectors(self.loc, self.vel)
         self.handleCollisions()
         self.postCollisionUpdate()
