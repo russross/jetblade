@@ -65,8 +65,6 @@ from pygame.locals import *
 # - -record: record every rendered frame to disk. Note: this can be toggled
 #    during gameplay as well.
 
-## Target milliseconds per frame
-desiredMillisecondsPerFrame = 10
 
 ## Wrapper around the introductory logic; this is where we set our cProfile 
 # hooks.

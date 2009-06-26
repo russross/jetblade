@@ -107,7 +107,11 @@ logStrings = {
 
 ## Number of physics updates to try to make each second. Tweaking this directly
 # determines the speed of gameplay, to the limits of the computer's hardware.
-physicsUpdatesPerSecond = 60
+physicsUpdatesPerSecond = 30
+## Number of physics updates to try to make each second when we're recording
+# images of the game to file.
+slowPhysicsUpdatesPerSecond = 4
+
 
 ## "Small number" used largely for checking equality of floating point numbers.
 EPSILON = .0001
