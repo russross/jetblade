@@ -22,9 +22,6 @@ defaultMaxJumpRiseFrames = 10
 ## Default value for whether the creature can hang from ledges.
 defaultCanHang = False
 
-## Distance to check for blocks beneath us when we run out of ground.
-groundHugCheckDistance = constants.blockSize / 2.0
-
 
 ## Terrestrial objects are ones that walk around on the ground and can jump.
 # \todo The logic dealing with crawling (and, in particular, forcing crawls
@@ -191,11 +188,11 @@ class TerrestrialObject(physicsobject.PhysicsObject):
             # block below us and try to hug it. 
             footLoc = self.getFootLoc(True) # Get rear foot location
             if (jetblade.map.getBlockAtGridLoc(util.realspaceToGridspace(footLoc)) or
-                jetblade.map.getBlockAtGridLoc(util.realspaceToGridspace(util.addVectors(footLoc, (0, groundHugCheckDistance))))):
+                jetblade.map.getBlockAtGridLoc(util.realspaceToGridspace(util.addVectors(footLoc, (0, abs(self.vel[0]) + 1))))):
                 # Either rear foot is already in the same space as a block, 
                 # or there's a block there if we move down a bit.
                 util.debug("Pushing self down to hug the ground")
-                self.loc[1] += groundHugCheckDistance
+                self.loc[1] += abs(self.vel[0]) + 1
                 self.isGrounded = True
                 # Re-run collision detection so we're put back at the surface.
                 self.handleCollisions()
