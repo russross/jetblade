@@ -13,7 +13,7 @@ def runUpdateFunc(obj):
 
 def crawlUpdateFunc(obj):
     if obj.runDirection:
-        return .75
+        return .5
     return 0
 
 def crawlTurnUpdateFunc(obj):
