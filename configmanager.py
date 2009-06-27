@@ -5,6 +5,20 @@ import os
 import pygame
 
 
+## Default player controls if no configuration file is found.
+defaultPlayerKeys = {
+    'left': K_LEFT,
+    'right': K_RIGHT,
+    'climb': K_UP,
+    'jump': K_SPACE,
+    'crouch': K_DOWN,
+    'zoomin': K_PERIOD,
+    'zoomout': K_COMMA,
+    'startRecording': K_a,
+    'toggleDebug': K_o,
+    'quit': K_ESCAPE,
+}
+
 ## This class loads general game configuration information (e.g. controls, 
 # display resolution, fullscreen modee, etc.). 
 class ConfigManager:
@@ -18,7 +32,7 @@ class ConfigManager:
             'fullscreen': 0,
         }
         ## Maps action names (e.g. 'jump', 'left') to PyGame key identifiers.
-        self.controls = constants.defaultPlayerKeys
+        self.controls = defaultPlayerKeys
         filename = self.getConfigPath()
         self.isFirstTimePlaying = False
         if not os.path.exists(filename):
@@ -30,13 +44,13 @@ class ConfigManager:
             for line in fh:
                 (action, key) = line.split(':', 1)
                 key = key.rstrip()
-                if action in constants.defaultPlayerKeys:
+                if action in defaultPlayerKeys:
                     self.controls[action] = int(key)
                 else:
                     self.config[action] = int(key)
             fh.close()
 
-            for action, key in constants.defaultPlayerKeys.items():
+            for action, key in defaultPlayerKeys.items():
                 if not action in self.controls:
                     util.fatal('Controls do not have an entry for action [' + action + ']')
         util.debug("Controls are",str(self.controls))

@@ -23,6 +23,13 @@ numRetriesNearRoot = 50
 ## Number of retry attempts for leaf nodes at depth greater than mustRetryDepth.
 numRetriesFarFromRoot = 5
 
+## Used by the 'room' tunnel type; minimum size of a room in blocks.
+# This is the attempted size, not necessarily the actually achieved size. 
+minRoomSize = constants.blockSize * 20
+## Degree to which the attempted size may vary 
+# (between [minRoomSize, minRoomSize + roomSizeVariance])
+roomSizeVariance = constants.blockSize * 20
+
 # Wallwalker parameters
 ## How many steps in the wallwalker algorithm to aggregate to determine the 
 # local slope of the tunnel wall.
@@ -36,6 +43,8 @@ maxWallwalkerSteps = 500
 # frequent region switches.
 minRegionTransitionDistance = 3
 
+## Maximum distance from the root of the tree to a leaf node.
+maxTreeDepth = 50
 ## Children under this depth are not allowed to create loops.
 minDepthForLoops = 3
 ## How far apart two nodes must be to make a loop
@@ -372,7 +381,7 @@ class TreeNode:
 
 
     def getRoomSize(self):
-        return random.uniform(constants.minRoomSize, constants.minRoomSize + constants.roomSizeVariance)
+        return random.uniform(minRoomSize, minRoomSize + roomSizeVariance)
 
 
     ## Carve a junction out of the map grid at our endpoint, if we have 

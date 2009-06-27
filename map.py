@@ -16,6 +16,53 @@ import copy
 import random
 import pygame
 
+## Minimum width of the game world
+minUniverseWidth = constants.sw * 24
+## Minimum height of the game world
+minUniverseHeight = constants.sh * 24
+## Degree to which the game world dimensions are allowed to vary. The range thus
+# defined is e.g. 
+# [minUniverseWidth, minUniverseWidth + universeDimensionVariance] for width.
+universeDimensionVariance = 0
+
+## Amount to thicken walls by in Map.expandWalls
+wallThickness = 2
+
+## Minimum size of a tree sector. Sectors smaller than this are absorbed into
+# neighboring sectors.
+minimumSectorSize = 10
+## Minimum size of a section of connected walls. smaller islands are 
+# converted to open space.
+minimumIslandSize = 20
+
+## How finely-grained the region grid is (lower numbers mean lower resolution
+# and thus faster map generation).
+regionOverlayResolutionMultiplier = .1
+
+## Amount to scale the map by when calling Map.drawStatus()
+drawStatusScaleFactor = .2
+## Amount to scale the map by when calling Map.DrawAll()
+# Note that PyGame can't create surfaces bigger than about 16k pixels to a side
+drawAllScaleFactor = .2
+
+## Minimum physical distance between branches of the tree that describes the 
+# general shape of the map.
+treePruneDistance = 15 * blockSize
+
+# Platform placement parameters
+## Distance from the wall/ceiling to build platforms.
+minDistForPlatform = 4
+## As minDistForPlatform, but only when building from a floor.
+minDistForFloorPlatform = 4
+## Minimum horizontal distance between platforms.
+minHorizDistToOtherPlatforms = 6
+## Minimum vertical distance between platforms.
+minVertDistToOtherPlatforms = 4
+## Platforms have widths randomly selected from this list.
+platformWidths = [1, 2, 2, 3]
+## Platforms are randomly pushed to the left/right by choosing from this list.
+platformHorizontalOffsets = [-1, 0, 1]
+
 ## This maps different block configurations to block types, for setting terrain
 # in getBlockType(). We'll convert each array into a set of scalar signatures
 # using util.adjacencyArrayToSignature().
@@ -81,11 +128,6 @@ adjacencyKernelToBlockTypeMap = {
      (0, 1, 0),
      (0, 0, 0)) : 'allway'
 }
-
-## How finely-grained the region grid is (lower numbers mean lower resolution
-# and thus faster map generation).
-regionOverlayResolutionMultiplier = .1
-
 
 ## The Map class handles creating, updating, and displaying the game map. This
 # includes the following structures:
@@ -181,8 +223,8 @@ class Map:
     #   objects.
     # - Find the starting point for the player.
     def createMap(self):
-        self.width = int(constants.minUniverseWidth + random.uniform(0, constants.universeDimensionVariance))
-        self.height = int(constants.minUniverseHeight + random.uniform(0, constants.universeDimensionVariance))
+        self.width = int(minUniverseWidth + random.uniform(0, universeDimensionVariance))
+        self.height = int(minUniverseHeight + random.uniform(0, universeDimensionVariance))
         self.backgroundQuadTree = quadtree.QuadTree(pygame.rect.Rect((0, 0), (self.width, self.height)))
 
         ## This quadtree holds lines; we use it to make certain that limbs of
@@ -392,7 +434,7 @@ class Map:
         # If we only go in one direction, we get walls from one sector
         # adjacent to open spaces owned by a different sector, which creates
         # terrain mismatches.
-        amount = constants.wallThickness / 2
+        amount = wallThickness / 2
         newBlocks = copy.deepcopy(self.blocks)
         for i in range(amount, self.numCols - amount):
             for j in range(amount, self.numRows - amount):
@@ -445,7 +487,7 @@ class Map:
 
 
     ## Do a connectivity check on the map. Remove all areas whose size is 
-    # less than constants.minimumIslandSize. This is very similar to the 
+    # less than minimumIslandSize. This is very similar to the 
     # logic in fixSeedOwnership(), but operates on walls instead of seeds and 
     # removes islands intirely instead of merging them with neighbors.
     def removeIslands(self):
@@ -474,7 +516,7 @@ class Map:
                     chunks.append(newChunk)
 
         for chunk in chunks:
-            if len(chunk) < constants.minimumIslandSize:
+            if len(chunk) < minimumIslandSize:
                 for loc in chunk:
                     self.blocks[loc[0]][loc[1]] = 0
 
@@ -691,7 +733,7 @@ class Map:
         chunkStack.extend(chunks)
         while chunkStack:
             chunk = chunkStack.pop(0)
-            if len(chunk) < constants.minimumSectorSize:
+            if len(chunk) < minimumSectorSize:
                 altChunk = None
                 for loc in chunk:
                     if altChunk is not None:
@@ -750,19 +792,19 @@ class Map:
     def markPlatform(self, start, dx, dy, distance):
         totalDistance = 0
         while totalDistance < distance:
-            buildDistance = constants.minDistForPlatform + totalDistance
-            buildX = int(start[0] + dx * buildDistance) + random.choice(constants.platformHorizontalOffsets)
+            buildDistance = minDistForPlatform + totalDistance
+            buildX = int(start[0] + dx * buildDistance) + random.choice(platformHorizontalOffsets)
             buildY = int(start[1] + dy * buildDistance)
             buildLoc = [buildX, buildY]
             shouldBuild = 1
             for (loc, count) in self.platforms:
                 # Check for platforms too close by.
-                if (abs(loc[0] - buildLoc[0]) < constants.minHorizDistToOtherPlatforms and 
-                        abs(loc[1] - buildLoc[1]) < constants.minVertDistToOtherPlatforms):
+                if (abs(loc[0] - buildLoc[0]) < minHorizDistToOtherPlatforms and 
+                        abs(loc[1] - buildLoc[1]) < minVertDistToOtherPlatforms):
                     shouldBuild = 0
                     break
             if shouldBuild:
-                self.addPlatform(buildLoc, random.choice(constants.platformWidths))
+                self.addPlatform(buildLoc, random.choice(platformWidths))
             totalDistance += buildDistance
 
 
@@ -798,7 +840,7 @@ class Map:
 #        if self.statusIter < 25:
 #            return
         # Draw things a bit smaller...
-        scale = constants.drawStatusScaleFactor
+        scale = drawStatusScaleFactor
         screen = pygame.Surface((self.width * scale, self.height * scale))
         size = constants.blockSize * scale
 
@@ -873,7 +915,7 @@ class Map:
     ## Draw a complete view of the map for purposes of looking pretty. Saves 
     # the result to disk under the provided filename.
     def drawAll(self, filename):
-        scale = constants.drawAllScaleFactor
+        scale = drawAllScaleFactor
         center = (self.width / 2.0 * scale, self.height / 2.0 * scale)
         size = constants.blockSize * scale
         
@@ -952,8 +994,8 @@ class Map:
     def getIsValidLine(self, newLine, safePoints):
         rect = newLine.getBounds()
         center = copy.deepcopy(rect.center)
-        rect.width += 2 * constants.treePruneDistance
-        rect.height += 2 * constants.treePruneDistance
+        rect.width += 2 * treePruneDistance
+        rect.height += 2 * treePruneDistance
         rect.center = center
         for altLine in self.treeLines.getObjectsIntersectingRect(rect):
             collisionResult = altLine.lineLineIntersect(newLine)
@@ -979,11 +1021,11 @@ class Map:
                 # No crossing lines
                 return False
             if (not util.fuzzyVectorMatch(newLine.end, safePoints) and 
-                    util.pointLineDistance(newLine.end, altLine) < constants.treePruneDistance):
+                    util.pointLineDistance(newLine.end, altLine) < treePruneDistance):
                 # Endpoint of new line can't be too close to other lines
                 return False
             if (not util.fuzzyVectorMatch(altLine.end, safePoints) and 
-                    util.pointLineDistance(altLine.end, newLine) < constants.treePruneDistance): 
+                    util.pointLineDistance(altLine.end, newLine) < treePruneDistance): 
                 # Endpoints of existing lines can't be too close to new line
                 return False
         return True

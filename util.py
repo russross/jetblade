@@ -13,7 +13,9 @@ import random
 # The functions in util are general utility functions that are not tied to any
 # specific class.
 
-globalId = 0
+## Time in milliseconds to wait after displaying a fatal error, 
+# before exiting the program.
+errorMessageDelayTime = 10000
 
 ## Log the provided text at the given log level
 def log(level, *entries):

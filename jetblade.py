@@ -65,6 +65,12 @@ from pygame.locals import *
 # - -record: record every rendered frame to disk. Note: this can be toggled
 #    during gameplay as well.
 
+## Number of physics updates to try to make each second. Tweaking this directly
+# determines the speed of gameplay, to the limits of the computer's hardware.
+physicsUpdatesPerSecond = 30
+## Number of physics updates to try to make each second when we're recording
+# images of the game to file.
+slowPhysicsUpdatesPerSecond = 4
 
 ## Wrapper around the introductory logic; this is where we set our cProfile 
 # hooks.
@@ -167,7 +173,7 @@ def startGame():
     jetblade.player = player.Player()
 
 
-## The main game loop. Performs a target of constants.physicsUpdatesPerSecond
+## The main game loop. Performs a target of physicsUpdatesPerSecond
 # updates to the physics/game logic per second, and otherwise draws as many
 # frames as possible between update cycles.
 # For debugging purposes, you can turn on and off debugging output, and save
@@ -176,7 +182,7 @@ def gameLoop():
 
     curTs = pygame.time.get_ticks()
     timeAccum = 0
-    physicsUpdateRate = 1000.0 / constants.physicsUpdatesPerSecond
+    physicsUpdateRate = 1000.0 / physicsUpdatesPerSecond
     curSec = int(curTs / 1000)
     jetblade.frameNum = 0
     physicsNum = 0
@@ -198,9 +204,9 @@ def gameLoop():
                         # Recording images to disk takes so long that it 
                         # causes massive frameskip; tweak the target 
                         # physics update rate to compensate.
-                        physicsUpdateRate = 1000.0 / constants.slowPhysicsUpdatesPerSecond
+                        physicsUpdateRate = 1000.0 / slowPhysicsUpdatesPerSecond
                     else:
-                        physicsUpdateRate = 1000.0 / constants.physicsUpdatesPerSecond
+                        physicsUpdateRate = 1000.0 / physicsUpdatesPerSecond
                 elif event.action == 'toggleDebug' and event.type == KEYUP:
                     if jetblade.logLevel == constants.LOG_INFORM:
                         jetblade.logLevel = constants.LOG_DEBUG
