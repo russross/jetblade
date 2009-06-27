@@ -183,6 +183,9 @@ class TreeNode:
                           direction + math.pi / 2.0, 
                           direction + math.pi,
                           direction + 3 * math.pi / 2.0)
+            if jetblade.map.getRegionInfo(self.zoneType, self.regionType, 'aligned'):
+                # Must align to the grid.
+                directions = (0, math.pi / 2.0, math.pi, 3 * math.pi / 2.0)
 
             numAttempts = 0
             isFirst = 1
