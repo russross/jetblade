@@ -47,7 +47,7 @@ drawAllScaleFactor = .2
 
 ## Minimum physical distance between branches of the tree that describes the 
 # general shape of the map.
-treePruneDistance = 15 * blockSize
+treePruneDistance = 15 * constants.blockSize
 
 # Platform placement parameters
 ## Distance from the wall/ceiling to build platforms.

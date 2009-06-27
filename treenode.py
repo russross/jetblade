@@ -550,12 +550,11 @@ class TreeNode:
         bottomLoc = (bottomLoc[0], bottomLoc[1] - self.getJunctionRadius() / 2.0)
         bottomLoc = util.realspaceToGridspace(bottomLoc)
         topLoc = util.realspaceToGridspace(topLoc)
-        jetblade.map.addPlatform(bottomLoc,
-                             random.choice(constants.platformWidths))
+        platformWidth = random.choice(map.platformWidths)
+        jetblade.map.addPlatform(bottomLoc, platformWidth)
 
         # Now place platforms along the tunnel on alternating sides.
         platformPattern = random.choice(verticalTunnelPlatformPatterns)
-        platformWidth = random.choice(constants.platformWidths)
         index = random.randint(0, len(platformPattern)-1)
 
         curLoc = [bottomLoc[0], bottomLoc[1] - verticalTunnelPlatformGap]
@@ -631,7 +630,7 @@ class TreeNode:
                     # Default to checking for platforms above the floor
                     lineDx = 0
                     lineDy = -1
-                    buildDistance = constants.minDistForFloorPlatform
+                    buildDistance = map.minDistForFloorPlatform
                     if isWallOrCeiling:
                         # Draw the line perpendicular to the local surface instead.
                         lineDx = -dy
@@ -639,7 +638,7 @@ class TreeNode:
                         magnitude = math.sqrt(lineDx**2+lineDy**2)
                         lineDx /= magnitude
                         lineDy /= magnitude
-                        buildDistance = constants.minDistForPlatform
+                        buildDistance = map.minDistForPlatform
                     distance = jetblade.map.getDistanceToWall(currentSpace, lineDx, lineDy)
                     if distance > buildDistance:
                         jetblade.map.markPlatform(currentSpace, lineDx, lineDy, distance)

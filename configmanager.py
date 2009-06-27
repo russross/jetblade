@@ -7,16 +7,16 @@ import pygame
 
 ## Default player controls if no configuration file is found.
 defaultPlayerKeys = {
-    'left': K_LEFT,
-    'right': K_RIGHT,
-    'climb': K_UP,
-    'jump': K_SPACE,
-    'crouch': K_DOWN,
-    'zoomin': K_PERIOD,
-    'zoomout': K_COMMA,
-    'startRecording': K_a,
-    'toggleDebug': K_o,
-    'quit': K_ESCAPE,
+    'left': pygame.K_LEFT,
+    'right': pygame.K_RIGHT,
+    'climb': pygame.K_UP,
+    'jump': pygame.K_SPACE,
+    'crouch': pygame.K_DOWN,
+    'zoomin': pygame.K_PERIOD,
+    'zoomout': pygame.K_COMMA,
+    'startRecording': pygame.K_a,
+    'toggleDebug': pygame.K_o,
+    'quit': pygame.K_ESCAPE,
 }
 
 ## This class loads general game configuration information (e.g. controls, 
