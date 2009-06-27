@@ -49,6 +49,6 @@ def carveTunnel(map, sector):
 def createFeature(map, sector):
     pass
 
-def shouldCheckAccessibility(sector):
-    return abs(sector.getSlope()) > 2
+def shouldCheckAccessibility(sector, minSlope = 2):
+    return abs(sector.getSlope()) > minSlope
 
