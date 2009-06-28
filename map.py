@@ -17,9 +17,9 @@ import random
 import pygame
 
 ## Minimum width of the game world
-minUniverseWidth = constants.sw * 24
+minUniverseWidth = constants.sw * 16
 ## Minimum height of the game world
-minUniverseHeight = constants.sh * 24
+minUniverseHeight = constants.sh * 16
 ## Degree to which the game world dimensions are allowed to vary. The range thus
 # defined is e.g. 
 # [minUniverseWidth, minUniverseWidth + universeDimensionVariance] for width.
