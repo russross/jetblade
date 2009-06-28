@@ -24,28 +24,30 @@ def log(level, *entries):
         for entry in entries:
             string += str(entry) + ' '
         print constants.logStrings[level] + ':',string
+        return string
+    return None
 
 
 def debug(*entries):
-    log(constants.LOG_DEBUG, *entries)
+    return log(constants.LOG_DEBUG, *entries)
 
 
 def inform(*entries):
-    log(constants.LOG_INFORM, *entries)
+    return log(constants.LOG_INFORM, *entries)
 
 
 def warn(*entries):
-    log(constants.LOG_WARN, *entries)
+    return log(constants.LOG_WARN, *entries)
 
 
 def error(*entries):
-    log(constants.LOG_ERROR, *entries)
+    return log(constants.LOG_ERROR, *entries)
 
 
 ## Print an error to the screen, wait a bit, then exit the program. Call this
 # function when unrecoverable errors have occurred. 
-def fatal(message):
-    log(constants.LOG_FATAL, message)
+def fatal(*entries):
+    message = log(constants.LOG_FATAL, *entries)
     errorString = "Sorry, an error occurred: " + message
     errorString2 = "The program will now shut down."
     debug(errorString)
@@ -63,7 +65,7 @@ def fatal(message):
     jetblade.screen.blit(textSurface, rect)
     jetblade.screen.blit(textSurface2, rect2)
     pygame.display.update()
-    pygame.time.delay(constants.errorMessageDelayTime)
+    pygame.time.delay(errorMessageDelayTime)
     sys.exit()
 
 
@@ -290,6 +292,7 @@ def adjacencyArrayToSignatures(kernel):
     return dict().fromkeys(result).keys()
 
 
+## Normalize a vector so its magnitude is 1.
 def getNormalizedVector(start, end):
     dx = end[0] - start[0]
     dy = end[1] - start[1]
@@ -300,6 +303,8 @@ def getNormalizedVector(start, end):
     return (dx, dy)
 
 
+## Drop a perpendicular from the point onto the vector and find the
+# intersection point.
 def projectPointOntoVector(point, vector):
     if abs(vector[0]) < constants.EPSILON:
         # Vertical line
@@ -308,4 +313,22 @@ def projectPointOntoVector(point, vector):
     x = (m * point[1] + point[0]) / (m**2 + 1)
     y = (m**2 * point[1] + m * point[0]) / (m**2 + 1)
     return (x, y)
+
+
+## Load a class from the named module. Assumes that the module includes a
+# function getClassName() that indicates the name of the class to load.
+def loadDynamicClass(path):
+    try:
+        debug("Loading environment effect",path)
+        # In order to allow arbitrary naming of these classes, we first 
+        # import a function that tells us the name of the class, then we 
+        # import the class itself.
+        # \todo: seems like this could be done better somehow.
+        nameFuncModule = __import__(path, globals(), locals(), ['getClassName'])
+        className = nameFuncModule.getClassName()
+        classModule = __import__(path, globals(), locals(), [className])
+        initFunc = getattr(classModule, className)
+        return initFunc
+    except Exception, e:
+        fatal("Failed to load module",path,":",e)
 

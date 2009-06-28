@@ -14,15 +14,7 @@ class EnvEffectManager:
             return self.envMap[name]
         modulePath = 'environments.' + name
         try:
-            util.debug("Loading environment effect",name)
-            # In order to allow arbitrary naming of these classes, we first 
-            # import a function that tells us the name of the class, then we 
-            # import the class itself.
-            # \todo: seems like this could be done better somehow.
-            nameFuncModule = __import__(modulePath, globals(), locals(), ['getClassName'])
-            className = nameFuncModule.getClassName()
-            envModule = __import__(modulePath, globals(), locals(), [className])
-            initFunc = getattr(envModule, className)
+            initFunc = util.loadDynamicClass(modulePath)
             classInstance = initFunc(name)
             self.envMap[name] = classInstance
             return classInstance
