@@ -28,15 +28,28 @@
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#09803e217cb66c3c4d9f2d181d16076d">debug</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="7f8f8d64ce72feb0676374e6d8d9e163"></a><!-- doxytag: member="util::log" ref="7f8f8d64ce72feb0676374e6d8d9e163" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#7f8f8d64ce72feb0676374e6d8d9e163">log</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Simple logger function.  <a href="#09803e217cb66c3c4d9f2d181d16076d"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Log the provided text at the given log level. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="09803e217cb66c3c4d9f2d181d16076d"></a><!-- doxytag: member="util::debug" ref="09803e217cb66c3c4d9f2d181d16076d" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><b>debug</b></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8728957ca5a88b5cbe1045d9446df29c"></a><!-- doxytag: member="util::inform" ref="8728957ca5a88b5cbe1045d9446df29c" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><b>inform</b></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="ff065cd90758ab42987793d7b9fb75b4"></a><!-- doxytag: member="util::warn" ref="ff065cd90758ab42987793d7b9fb75b4" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><b>warn</b></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="06943c6087fb261249fd7eb484f39944"></a><!-- doxytag: member="util::error" ref="06943c6087fb261249fd7eb484f39944" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><b>error</b></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#b1604e1f1dc71bfc6fe49364c08e9182">fatal</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Print an error to the screen, wait a bit, then exit the program.  <a href="#b1604e1f1dc71bfc6fe49364c08e9182"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#68cb033f588517c4dc37098a0ad80418">getHomePath</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Retrieves the location of the user's home directory, depending on OS.  <a href="#68cb033f588517c4dc37098a0ad80418"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#06943c6087fb261249fd7eb484f39944">error</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Print an error to the screen, wait a bit, then exit the program.  <a href="#06943c6087fb261249fd7eb484f39944"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#e4359328d5e776c64dd610c5667e4b21">getClipboardText</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Retrieve the text from the clipboard, using different methods depending on OS.  <a href="#e4359328d5e776c64dd610c5667e4b21"></a><br></td></tr>
@@ -69,6 +82,10 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="names
 def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#3df8f8190f4adc1a4330eed505f706d4">clampVector</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Like clampValue, but with a list of values and a list of clamps. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="4d756aa41f89c45eebc5fb93cfb44b4d"></a><!-- doxytag: member="util::fuzzyVectorMatch" ref="4d756aa41f89c45eebc5fb93cfb44b4d" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#4d756aa41f89c45eebc5fb93cfb44b4d">fuzzyVectorMatch</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Determine if vector is close to any of the vectors in vectorList. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#b2d78399a07ad94cb0c5f15cce8f3766">pointCloseToLine</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return true if the point is somewhat close to the line, based on a bounding box check.  <a href="#b2d78399a07ad94cb0c5f15cce8f3766"></a><br></td></tr>
@@ -104,16 +121,19 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>roundVector</b></td></
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Convert a 3x3 array of 0s, 1s, and 2s into a list of scalar values:<ul>
 <li>0: add zero to result</li><li>1: add 2^index to result</li><li>2: represents "either 0 or 1", so duplicate the results and add 2^index to half the elements. </li></ul>
  <a href="#5c4fd01e11580aa87dcec6799981ee23"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="79aab3e4fd6edfeeebaeaac0fc17908f"></a><!-- doxytag: member="util::getNormalizedVector" ref="79aab3e4fd6edfeeebaeaac0fc17908f" args="" -->
-def&nbsp;</td><td class="memItemRight" valign="bottom"><b>getNormalizedVector</b></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#79aab3e4fd6edfeeebaeaac0fc17908f">getNormalizedVector</a></td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="979b7d1ccd11a4350ac430f2b6352bf7"></a><!-- doxytag: member="util::projectPointOntoVector" ref="979b7d1ccd11a4350ac430f2b6352bf7" args="" -->
-def&nbsp;</td><td class="memItemRight" valign="bottom"><b>projectPointOntoVector</b></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Normalize a vector so its magnitude is 1.  <a href="#79aab3e4fd6edfeeebaeaac0fc17908f"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#979b7d1ccd11a4350ac430f2b6352bf7">projectPointOntoVector</a></td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Drop a perpendicular from the point onto the vector and find the intersection point.  <a href="#979b7d1ccd11a4350ac430f2b6352bf7"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#f5f91bfc466cefbaaedbe5381b62c77b">loadDynamicClass</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Load a class from the named module.  <a href="#f5f91bfc466cefbaaedbe5381b62c77b"></a><br></td></tr>
 <tr><td colspan="2"><br><h2>Variables</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="2d7d39403415604cad11b588c67f3e7d"></a><!-- doxytag: member="util::globalId" ref="2d7d39403415604cad11b588c67f3e7d" args="" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><b>globalId</b> = 0</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#6d69cdd6c9dae1bee9cd50d7a2ba994c">errorMessageDelayTime</a> = 10000</td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Time in milliseconds to wait after displaying a fatal error, before exiting the program.  <a href="#6d69cdd6c9dae1bee9cd50d7a2ba994c"></a><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 The functions in <a class="el" href="namespaceutil.html" title="The functions in util are general utility functions that are not tied to any specific...">util</a> are general utility functions that are not tied to any specific class. 
@@ -235,37 +255,15 @@ Limit angles to the range [0, 2pi].
 
 </div>
 </div><p>
-<a class="anchor" name="09803e217cb66c3c4d9f2d181d16076d"></a><!-- doxytag: member="util::debug" ref="09803e217cb66c3c4d9f2d181d16076d" args="" -->
+<a class="anchor" name="b1604e1f1dc71bfc6fe49364c08e9182"></a><!-- doxytag: member="util::fatal" ref="b1604e1f1dc71bfc6fe49364c08e9182" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">def util.debug           </td>
+          <td class="memname">def util.fatal           </td>
           <td>(</td>
           <td class="paramtype">&nbsp;</td>
           <td class="paramname"> <em>entries</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Simple logger function. 
-<p>
-
-</div>
-</div><p>
-<a class="anchor" name="06943c6087fb261249fd7eb484f39944"></a><!-- doxytag: member="util::error" ref="06943c6087fb261249fd7eb484f39944" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def util.error           </td>
-          <td>(</td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>message</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
         </tr>
@@ -352,6 +350,37 @@ Retrieves the location of the user's home directory, depending on OS.
 
 </div>
 </div><p>
+<a class="anchor" name="79aab3e4fd6edfeeebaeaac0fc17908f"></a><!-- doxytag: member="util::getNormalizedVector" ref="79aab3e4fd6edfeeebaeaac0fc17908f" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def util.getNormalizedVector           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>end</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Normalize a vector so its magnitude is 1. 
+<p>
+
+</div>
+</div><p>
 <a class="anchor" name="9f6bd1d3a583f068e4513f1986e9e1df"></a><!-- doxytag: member="util::interpolatePoints" ref="9f6bd1d3a583f068e4513f1986e9e1df" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -387,6 +416,28 @@ Retrieves the location of the user's home directory, depending on OS.
 This is frequently used for drawing objects between physics updates. 
 <p>
 
+</div>
+</div><p>
+<a class="anchor" name="f5f91bfc466cefbaaedbe5381b62c77b"></a><!-- doxytag: member="util::loadDynamicClass" ref="f5f91bfc466cefbaaedbe5381b62c77b" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def util.loadDynamicClass           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>path</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Load a class from the named module. 
+<p>
+Assumes that the module includes a function getClassName() that indicates the name of the class to load. 
 </div>
 </div><p>
 <a class="anchor" name="2ca90d23fe50a8caf271a3a62c20f74f"></a><!-- doxytag: member="util::pickWeightedOption" ref="2ca90d23fe50a8caf271a3a62c20f74f" args="" -->
@@ -479,6 +530,37 @@ Return the distance from the point to the line.
 Logic taken from <a href="http://www.codeguru.com/forum/printthread.php?t=194400">http://www.codeguru.com/forum/printthread.php?t=194400</a> 
 </div>
 </div><p>
+<a class="anchor" name="979b7d1ccd11a4350ac430f2b6352bf7"></a><!-- doxytag: member="util::projectPointOntoVector" ref="979b7d1ccd11a4350ac430f2b6352bf7" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def util.projectPointOntoVector           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>point</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>vector</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Drop a perpendicular from the point onto the vector and find the intersection point. 
+<p>
+
+</div>
+</div><p>
 <a class="anchor" name="61032bb5ad2ad9715a422ebab51968b0"></a><!-- doxytag: member="util::setupScreen" ref="61032bb5ad2ad9715a422ebab51968b0" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -500,8 +582,26 @@ Create the display surface.
 
 </div>
 </div><p>
+<hr><h2>Variable Documentation</h2>
+<a class="anchor" name="6d69cdd6c9dae1bee9cd50d7a2ba994c"></a><!-- doxytag: member="util::errorMessageDelayTime" ref="6d69cdd6c9dae1bee9cd50d7a2ba994c" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="namespaceutil.html#6d69cdd6c9dae1bee9cd50d7a2ba994c">util.errorMessageDelayTime</a> = 10000          </td>
+        </tr>
+      </table>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Tue Jun 23 21:02:16 2009 for JBRL by&nbsp;
+<div class="memdoc">
+
+<p>
+Time in milliseconds to wait after displaying a fatal error, before exiting the program. 
+<p>
+
+</div>
+</div><p>
+</div>
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jun 27 17:41:21 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

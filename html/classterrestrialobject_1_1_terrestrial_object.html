@@ -148,6 +148,9 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#5bf94a9cde232fed8ec99a9d5ded6825">runDirection</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Direction creature is trying to move in.  <a href="#5bf94a9cde232fed8ec99a9d5ded6825"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#2a406225cbdf00802aacecf46baa022d">haveChangedAction</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Indicates that we've already tried changing the player's current action this frame.  <a href="#2a406225cbdf00802aacecf46baa022d"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8b4dc3021809b63fe321f3a8d6b95343"></a><!-- doxytag: member="terrestrialobject::TerrestrialObject::facing" ref="8b4dc3021809b63fe321f3a8d6b95343" args="" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>facing</b></td></tr>
 
@@ -158,7 +161,7 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Terrestrial objects are ones that walk around on the ground and can jump. 
 <p>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000016">Todo:</a></b></dt><dd>The logic dealing with crawling (and, in particular, forcing crawls when there's no headroom) is rather convoluted and should be improved. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000015">Todo:</a></b></dt><dd>The logic dealing with crawling (and, in particular, forcing crawls when there's no headroom) is rather convoluted and should be improved. </dd></dl>
 <hr><h2>Member Function Documentation</h2>
 <a class="anchor" name="3df5bc89bcad1bfafb218d3aa0cbf6f5"></a><!-- doxytag: member="terrestrialobject::TerrestrialObject::adjustCollision" ref="3df5bc89bcad1bfafb218d3aa0cbf6f5" args="" -->
 <div class="memitem">
@@ -233,7 +236,7 @@ Note: we use self.wasGrounded instead of self.isGrounded here because self.isGro
 <p>
 Return true if the given block is near our foot level. 
 <p>
-We have two spaces we need to check. 
+
 </div>
 </div><p>
 <a class="anchor" name="371d01dc00db43c19ded0fc8c223a3c2"></a><!-- doxytag: member="terrestrialobject::TerrestrialObject::canGrabLedge" ref="371d01dc00db43c19ded0fc8c223a3c2" args="" -->
@@ -692,6 +695,24 @@ Signals if the creature has the ability to hang from ledges.
 
 </div>
 </div><p>
+<a class="anchor" name="2a406225cbdf00802aacecf46baa022d"></a><!-- doxytag: member="terrestrialobject::TerrestrialObject::haveChangedAction" ref="2a406225cbdf00802aacecf46baa022d" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#2a406225cbdf00802aacecf46baa022d">terrestrialobject.TerrestrialObject.haveChangedAction</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Indicates that we've already tried changing the player's current action this frame. 
+<p>
+This is used when "trying out" different actions to see if there's room e.g. to stand up from a crawl. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000016">Todo:</a></b></dt><dd>Seems like there should be a better way to handle this. </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="2678ca6a7b66cb3364f181b2d095ff2f"></a><!-- doxytag: member="terrestrialobject::TerrestrialObject::isCrawling" ref="2678ca6a7b66cb3364f181b2d095ff2f" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -938,7 +959,7 @@ Used to signal that the creature should try to crawl.
 <p>
 Indicates if the creature was crawling on the previous frame. 
 <p>
-Used to detect when there's no <a class="el" href="namespaceroom.html" title="Just like carving a straight tunnel, except we create a big open space in the middle...">room</a> to crawl (or no <a class="el" href="namespaceroom.html" title="Just like carving a straight tunnel, except we create a big open space in the middle...">room</a> to stand). 
+Used to detect when there's no room to crawl (or no room to stand). 
 </div>
 </div><p>
 <a class="anchor" name="9be2c4ab20fbdd89fe273822e11e2a6f"></a><!-- doxytag: member="terrestrialobject::TerrestrialObject::wasGrounded" ref="9be2c4ab20fbdd89fe273822e11e2a6f" args="" -->
@@ -961,7 +982,7 @@ True if, before collision detection, the creature was grounded.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>terrestrialobject.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Tue Jun 23 21:02:16 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jun 27 17:41:20 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

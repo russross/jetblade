@@ -1030,7 +1030,13 @@ Simple boundary check for the blocks grid.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>newLine</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>newLine</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>safePoints</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -1044,7 +1050,12 @@ Simple boundary check for the blocks grid.
 <p>
 Determine if the given line is allowed to be added to our set. 
 <p>
-Invalid lines come too close to other lines. This code ensures that we don't have accidental crossings in the map. 
+Invalid lines come too close to other lines. This code ensures that we don't have accidental crossings in the map. <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>safePoints</em>&nbsp;</td><td>List of points that are already known to connect to other lines in the tree. newLine is allowed to touch points in safePoints, but otherwise is not allowed to come close to other lines. </td></tr>
+  </table>
+</dl>
+
 </div>
 </div><p>
 <a class="anchor" name="dde526880b436f039cb2a7929d934570"></a><!-- doxytag: member="map::Map::getTerrainInfoAtGridLoc" ref="dde526880b436f039cb2a7929d934570" args="" -->
@@ -1141,7 +1152,7 @@ At this time, also instantiate any props that are attached to the blocks.
 <p>
 Load map information from disk. 
 <p>
-The filename is equal to the name of the map. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>This parser is very brittle, and while the map file format is not meant to be directly user-editable, there's no reason we couldn't be more flexible here. </dd></dl>
+The filename is equal to the name of the map. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>This parser is very brittle, and while the map file format is not meant to be directly user-editable, there's no reason we couldn't be more flexible here. </dd></dl>
 
 </div>
 </div><p>
@@ -1278,7 +1289,7 @@ Plant a seed for hollowing out part of the map at the desired location.
 <p>
 Do a connectivity check on the map. 
 <p>
-Remove all areas whose size is less than <a class="el" href="namespaceconstants.html#fc83622da03f7136be48cb7220644d3b" title="Minimum size of a section of connected walls.">constants.minimumIslandSize</a>. This is very similar to the logic in <a class="el" href="classmap_1_1_map.html#80f0fe75b8a76faccb4be5c690dc5cf5" title="Finds islands of dead seeds and reassigns their ownership.">fixSeedOwnership()</a>, but operates on walls instead of seeds and removes islands intirely instead of merging them with neighbors. 
+Remove all areas whose size is less than minimumIslandSize. This is very similar to the logic in <a class="el" href="classmap_1_1_map.html#80f0fe75b8a76faccb4be5c690dc5cf5" title="Finds islands of dead seeds and reassigns their ownership.">fixSeedOwnership()</a>, but operates on walls instead of seeds and removes islands intirely instead of merging them with neighbors. 
 </div>
 </div><p>
 <a class="anchor" name="f2bab2ed39f7d23db66ec2d589a0d0e5"></a><!-- doxytag: member="map::Map::setBlocks" ref="f2bab2ed39f7d23db66ec2d589a0d0e5" args="" -->
@@ -1400,7 +1411,7 @@ We can merge if they have the same source on the tree, and there are no seeds ad
 <p>
 Write our map to disk so it can be read by <a class="el" href="classmap_1_1_map.html#263a7fedc82cdafa1807be418be319f9" title="Load map information from disk.">loadMap()</a>. 
 <p>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd>: Add support for enviroments to the map file. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>: Add support for enviroments to the map file. </dd></dl>
 
 </div>
 </div><p>
@@ -1457,7 +1468,7 @@ Holds background props.
 <li>Block: standard filled space</li><li>None: Nominally solid space but not drawn</li><li>0 Empty space</li></ul>
 <p>
 During construction, the values are different:<ul>
-<li>0: Empty space</li><li>1: Uninitialized space</li><li>2: Wall <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000007">Todo:</a></b></dt><dd>These should be enumerated somewhere and the enums used instead of bare integers. </dd></dl>
+<li>0: Empty space</li><li>1: Uninitialized space</li><li>2: Wall <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd>These should be enumerated somewhere and the enums used instead of bare integers. </dd></dl>
 </li></ul>
 
 </div>
@@ -1584,7 +1595,7 @@ This quadtree holds lines; we use it to make certain that limbs of the tree do n
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>map.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Tue Jun 23 21:02:15 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jun 27 17:41:20 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

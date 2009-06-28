@@ -22,7 +22,7 @@
   </div>
 </div>
 <div class="contents">
-<h1>Package constants</h1>This package contains a bunch of "constants" (read: global variables) that are used to configure the program in various ways.  
+<h1>Package constants</h1>This package contains a bunch of "constants" (read: global variables that shouldn't be modified during execution) that are used to configure the program in various ways.  
 <a href="#_details">More...</a>
 <p>
 <table border="0" cellpadding="0" cellspacing="0">
@@ -33,7 +33,7 @@
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Name of the game, displayed as the title of the game window.  <a href="#8326c5259ee1b78f76159d7a990738ea"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#9cab39eab96e70e745dc88f9d57e5822">globalId</a> = 0</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">For debugging purposes, any class that needs to have a unique ID should use this object.  <a href="#9cab39eab96e70e745dc88f9d57e5822"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">For debugging purposes, any class that needs to have a unique ID should use this object and increment it when they're done.  <a href="#9cab39eab96e70e745dc88f9d57e5822"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="6f2fadc5d198b77168f356e34e6bd024"></a><!-- doxytag: member="constants::sw" ref="6f2fadc5d198b77168f356e34e6bd024" args="" -->
 int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#6f2fadc5d198b77168f356e34e6bd024">sw</a> = 900</td></tr>
 
@@ -46,77 +46,6 @@ int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="names
 int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#6cda9ab2710c95252d03a2645455ab24">blockSize</a> = 50</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The size of a single block of terrain in the map. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="45aef2a571d01c76776d4a4eaeed8acb"></a><!-- doxytag: member="constants::minUniverseWidth" ref="45aef2a571d01c76776d4a4eaeed8acb" args="" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#45aef2a571d01c76776d4a4eaeed8acb">minUniverseWidth</a> = 16</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Minimum width of the game world. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="e585c59fee7f588cd6734fadf6623fd8"></a><!-- doxytag: member="constants::minUniverseHeight" ref="e585c59fee7f588cd6734fadf6623fd8" args="" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#e585c59fee7f588cd6734fadf6623fd8">minUniverseHeight</a> = 16</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Minimum height of the game world. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#709476bd44b913c3a306eab80c77c504">universeDimensionVariance</a> = 0</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Degree to which the game world dimensions are allowed to vary.  <a href="#709476bd44b913c3a306eab80c77c504"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8cb2aa5da954545fb1da1e2502e9cd1e"></a><!-- doxytag: member="constants::drawStatusScaleFactor" ref="8cb2aa5da954545fb1da1e2502e9cd1e" args="" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#8cb2aa5da954545fb1da1e2502e9cd1e">drawStatusScaleFactor</a> = 2</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Amount to scale the map by when calling Map.drawStatus(). <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="2b485537cc094615f5d2e6733d934fd2"></a><!-- doxytag: member="constants::drawAllScaleFactor" ref="2b485537cc094615f5d2e6733d934fd2" args="" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#2b485537cc094615f5d2e6733d934fd2">drawAllScaleFactor</a> = 2</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Amount to scale the map by when calling Map.DrawAll() Note that PyGame can't create surfaces bigger than about 16k pixels to a side. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#28065efce020ef6d072e0d995364845d">minRoomSize</a> = 20</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Used by the 'room' tunnel type; minimum size of a <a class="el" href="namespaceroom.html" title="Just like carving a straight tunnel, except we create a big open space in the middle...">room</a> in blocks.  <a href="#28065efce020ef6d072e0d995364845d"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="6831b9b9c8cad64cda621b6f85411da0"></a><!-- doxytag: member="constants::roomSizeVariance" ref="6831b9b9c8cad64cda621b6f85411da0" args="" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#6831b9b9c8cad64cda621b6f85411da0">roomSizeVariance</a> = 20</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Degree to which the attempted size may vary (between [minRoomSize, minRoomSize + roomSizeVariance]). <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="b24b122a6c5291fdab9df1d5c1c7e178"></a><!-- doxytag: member="constants::wallThickness" ref="b24b122a6c5291fdab9df1d5c1c7e178" args="" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#b24b122a6c5291fdab9df1d5c1c7e178">wallThickness</a> = 2</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Amount to thicken walls by in Map.expandWalls. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#42a392b48a20011fbecd2c8c66c3a357">treePruneDistance</a> = 15</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Minimum physical distance between branches of the tree that describes the general shape of the map.  <a href="#42a392b48a20011fbecd2c8c66c3a357"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#bef8c33c893d4e4b0716c12d1133acee">maxTreeDepth</a> = 50</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Maximum distance from the root of the tree to a leaf node.  <a href="#bef8c33c893d4e4b0716c12d1133acee"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#d5e278db75ca0dcea1bc0243ce944f67">mustRetryDepth</a> = 3</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Above this depth in the tree, we try harder to make as many children as possible.  <a href="#d5e278db75ca0dcea1bc0243ce944f67"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="dea41f0974a7fd6649ffe8395c281d4d"></a><!-- doxytag: member="constants::numRetriesNearRoot" ref="dea41f0974a7fd6649ffe8395c281d4d" args="" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#dea41f0974a7fd6649ffe8395c281d4d">numRetriesNearRoot</a> = 50</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Number of times to retry making children above mustRetryDepth. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="3541fb040ed794f55810d2181e6858eb"></a><!-- doxytag: member="constants::numRetriesFarFromRoot" ref="3541fb040ed794f55810d2181e6858eb" args="" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#3541fb040ed794f55810d2181e6858eb">numRetriesFarFromRoot</a> = 5</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Number of times to retry making children below mustRetryDepth. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#6bcfdee945fd99d2bd11f183e6acff33">minimumSectorSize</a> = 10</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Minimum size of a tree sector.  <a href="#6bcfdee945fd99d2bd11f183e6acff33"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#fc83622da03f7136be48cb7220644d3b">minimumIslandSize</a> = 20</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Minimum size of a section of connected walls.  <a href="#fc83622da03f7136be48cb7220644d3b"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#ab94acd0d7008bc1e5377265f2b50ba2">minDistForPlatform</a> = 4</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Distance from the wall/ceiling to build platforms.  <a href="#ab94acd0d7008bc1e5377265f2b50ba2"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#bad611e564fd070e9161c11694d939ba">minDistForFloorPlatform</a> = 4</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">As minDistForPlatform, but only when building from a floor.  <a href="#bad611e564fd070e9161c11694d939ba"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#64277e783de865ba3083117328085463">minHorizDistToOtherPlatforms</a> = 6</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Minimum horizontal distance between platforms.  <a href="#64277e783de865ba3083117328085463"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#8462d7d0efed10ba9e3f9000a0176316">minVertDistToOtherPlatforms</a> = 4</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Minimum vertical distance between platforms.  <a href="#8462d7d0efed10ba9e3f9000a0176316"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">list&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#9b4c0e3a474c4510ff2b2b46b51f6dbf">platformWidths</a> = [1, 2, 2, 3]</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Platforms have widths randomly selected from this list.  <a href="#9b4c0e3a474c4510ff2b2b46b51f6dbf"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">list&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#cf17898c9265a55b0662d4518859cdec">platformHorizontalOffsets</a> = [-1, 0, 1]</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Platforms are randomly pushed to the left/right by choosing from this list.  <a href="#cf17898c9265a55b0662d4518859cdec"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">list&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#28e3cc1e2450485281a096f558fc1186">NEWSPerimeterOrder</a> = [(0, -1), (1, 0), (-1, 0), (0, 1)]</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">List of offsets in North, East, West, South directions.  <a href="#28e3cc1e2450485281a096f558fc1186"></a><br></td></tr>
@@ -143,9 +72,9 @@ int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="names
 int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#ef11d498c5b6254eebbc6fb6b28e1831">LOG_FATAL</a> = 1</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Log level for fatal output. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#fd29364a3c1fa0fc5459b3f8428f2ebf">physicsUpdatesPerSecond</a> = 60</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">dictionary&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#ac2a814be1c497d9931eed86219817e4">logStrings</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Number of physics updates to try to make each second.  <a href="#fd29364a3c1fa0fc5459b3f8428f2ebf"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Descriptor strings for the log levels.  <a href="#ac2a814be1c497d9931eed86219817e4"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#6a7aae5bf5bcb1d6c8705707c55b18e8">EPSILON</a> = 0001</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">"Small number" used largely for checking equality of floating point numbers.  <a href="#6a7aae5bf5bcb1d6c8705707c55b18e8"></a><br></td></tr>
@@ -155,12 +84,6 @@ int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="names
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#1e24add83b27fb387ac328f56734dc76">BIGNUM</a> = 999988887777666655554444333322221111</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Large number to initialize minimum values to.  <a href="#1e24add83b27fb387ac328f56734dc76"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#67bf432d026cba10b20d338a9b202303">errorMessageDelayTime</a> = 10000</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Time in milliseconds to wait after displaying a fatal error, before exiting the program.  <a href="#67bf432d026cba10b20d338a9b202303"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">dictionary&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#b7daa889c8a028f29b0a77f832964462">defaultPlayerKeys</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Default player controls if no configuration file is found.  <a href="#b7daa889c8a028f29b0a77f832964462"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="f1148764a809fc36be8f4a7e54b0f1ff"></a><!-- doxytag: member="constants::mapPath" ref="f1148764a809fc36be8f4a7e54b0f1ff" args="" -->
 string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#f1148764a809fc36be8f4a7e54b0f1ff">mapPath</a> = 'data/mapgen'</td></tr>
 
@@ -234,7 +157,7 @@ string&nbsp;</td><td class="memItemRight" valign="bottom"><b>ACTION_QUIT</b> = '
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Main menu UI context, for UI elements and event handling.  <a href="#9220628ae773f9c189f3961053224cbf"></a><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-This package contains a bunch of "constants" (read: global variables) that are used to configure the program in various ways. 
+This package contains a bunch of "constants" (read: global variables that shouldn't be modified during execution) that are used to configure the program in various ways. 
 <p>
 
 <p>
@@ -290,35 +213,6 @@ Main menu UI context, for UI elements and event handling.
 
 </div>
 </div><p>
-<a class="anchor" name="b7daa889c8a028f29b0a77f832964462"></a><!-- doxytag: member="constants::defaultPlayerKeys" ref="b7daa889c8a028f29b0a77f832964462" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">dictionary <a class="el" href="namespaceconstants.html#b7daa889c8a028f29b0a77f832964462">constants.defaultPlayerKeys</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-<b>Initial value:</b><div class="fragment"><pre class="fragment">{
-    <span class="stringliteral">'left'</span>: K_LEFT,
-    <span class="stringliteral">'right'</span>: K_RIGHT,
-    <span class="stringliteral">'climb'</span>: K_UP,
-    <span class="stringliteral">'jump'</span>: K_SPACE,
-    <span class="stringliteral">'crouch'</span>: K_DOWN,
-    <span class="stringliteral">'zoomin'</span>: K_PERIOD,
-    <span class="stringliteral">'zoomout'</span>: K_COMMA,
-    <span class="stringliteral">'startRecording'</span>: K_a,
-    <span class="stringliteral">'toggleDebug'</span>: K_o,
-    <span class="stringliteral">'quit'</span>: K_ESCAPE,
-}
-</pre></div>Default player controls if no configuration file is found. 
-<p>
-
-</div>
-</div><p>
 <a class="anchor" name="e7190e360ba52e0a3eab81e412df1f44"></a><!-- doxytag: member="constants::DELTA" ref="e7190e360ba52e0a3eab81e412df1f44" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -349,23 +243,6 @@ Slightly less-small number than EPSILON, used for checking Line coincidence in M
 
 <p>
 "Small number" used largely for checking equality of floating point numbers. 
-<p>
-
-</div>
-</div><p>
-<a class="anchor" name="67bf432d026cba10b20d338a9b202303"></a><!-- doxytag: member="constants::errorMessageDelayTime" ref="67bf432d026cba10b20d338a9b202303" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="namespaceconstants.html#67bf432d026cba10b20d338a9b202303">constants.errorMessageDelayTime</a> = 10000          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Time in milliseconds to wait after displaying a fatal error, before exiting the program. 
 <p>
 
 </div>
@@ -451,160 +328,31 @@ Name of the game, displayed as the title of the game window.
 <div class="memdoc">
 
 <p>
-For debugging purposes, any class that needs to have a unique ID should use this object. 
+For debugging purposes, any class that needs to have a unique ID should use this object and increment it when they're done. 
 <p>
-
+So this is one that actually *isn't* constant. 
 </div>
 </div><p>
-<a class="anchor" name="bef8c33c893d4e4b0716c12d1133acee"></a><!-- doxytag: member="constants::maxTreeDepth" ref="bef8c33c893d4e4b0716c12d1133acee" args="" -->
+<a class="anchor" name="ac2a814be1c497d9931eed86219817e4"></a><!-- doxytag: member="constants::logStrings" ref="ac2a814be1c497d9931eed86219817e4" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int <a class="el" href="namespaceconstants.html#bef8c33c893d4e4b0716c12d1133acee">constants.maxTreeDepth</a> = 50          </td>
+          <td class="memname">dictionary <a class="el" href="namespaceconstants.html#ac2a814be1c497d9931eed86219817e4">constants.logStrings</a>          </td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>
-Maximum distance from the root of the tree to a leaf node. 
-<p>
-
-</div>
-</div><p>
-<a class="anchor" name="bad611e564fd070e9161c11694d939ba"></a><!-- doxytag: member="constants::minDistForFloorPlatform" ref="bad611e564fd070e9161c11694d939ba" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="namespaceconstants.html#bad611e564fd070e9161c11694d939ba">constants.minDistForFloorPlatform</a> = 4          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-As minDistForPlatform, but only when building from a floor. 
-<p>
-
-</div>
-</div><p>
-<a class="anchor" name="ab94acd0d7008bc1e5377265f2b50ba2"></a><!-- doxytag: member="constants::minDistForPlatform" ref="ab94acd0d7008bc1e5377265f2b50ba2" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="namespaceconstants.html#ab94acd0d7008bc1e5377265f2b50ba2">constants.minDistForPlatform</a> = 4          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Distance from the wall/ceiling to build platforms. 
-<p>
-
-</div>
-</div><p>
-<a class="anchor" name="64277e783de865ba3083117328085463"></a><!-- doxytag: member="constants::minHorizDistToOtherPlatforms" ref="64277e783de865ba3083117328085463" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="namespaceconstants.html#64277e783de865ba3083117328085463">constants.minHorizDistToOtherPlatforms</a> = 6          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Minimum horizontal distance between platforms. 
-<p>
-
-</div>
-</div><p>
-<a class="anchor" name="fc83622da03f7136be48cb7220644d3b"></a><!-- doxytag: member="constants::minimumIslandSize" ref="fc83622da03f7136be48cb7220644d3b" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="namespaceconstants.html#fc83622da03f7136be48cb7220644d3b">constants.minimumIslandSize</a> = 20          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Minimum size of a section of connected walls. 
-<p>
-smaller islands are converted to open space. 
-</div>
-</div><p>
-<a class="anchor" name="6bcfdee945fd99d2bd11f183e6acff33"></a><!-- doxytag: member="constants::minimumSectorSize" ref="6bcfdee945fd99d2bd11f183e6acff33" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="namespaceconstants.html#6bcfdee945fd99d2bd11f183e6acff33">constants.minimumSectorSize</a> = 10          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Minimum size of a tree sector. 
-<p>
-Sectors smaller than this are absorbed into neighboring sectors. 
-</div>
-</div><p>
-<a class="anchor" name="28065efce020ef6d072e0d995364845d"></a><!-- doxytag: member="constants::minRoomSize" ref="28065efce020ef6d072e0d995364845d" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="namespaceconstants.html#28065efce020ef6d072e0d995364845d">constants.minRoomSize</a> = 20          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Used by the 'room' tunnel type; minimum size of a <a class="el" href="namespaceroom.html" title="Just like carving a straight tunnel, except we create a big open space in the middle...">room</a> in blocks. 
-<p>
-This is the attempted size, not necessarily the actually achieved size. 
-</div>
-</div><p>
-<a class="anchor" name="8462d7d0efed10ba9e3f9000a0176316"></a><!-- doxytag: member="constants::minVertDistToOtherPlatforms" ref="8462d7d0efed10ba9e3f9000a0176316" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="namespaceconstants.html#8462d7d0efed10ba9e3f9000a0176316">constants.minVertDistToOtherPlatforms</a> = 4          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Minimum vertical distance between platforms. 
-<p>
-
-</div>
-</div><p>
-<a class="anchor" name="d5e278db75ca0dcea1bc0243ce944f67"></a><!-- doxytag: member="constants::mustRetryDepth" ref="d5e278db75ca0dcea1bc0243ce944f67" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="namespaceconstants.html#d5e278db75ca0dcea1bc0243ce944f67">constants.mustRetryDepth</a> = 3          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Above this depth in the tree, we try harder to make as many children as possible. 
+<b>Initial value:</b><div class="fragment"><pre class="fragment">{
+    LOG_DEBUG : <span class="stringliteral">'DEBUG'</span>,
+    LOG_INFORM : <span class="stringliteral">'INFO'</span>,
+    LOG_WARN : <span class="stringliteral">'WARNING'</span>,
+    LOG_ERROR : <span class="stringliteral">'ERROR'</span>,
+    LOG_FATAL : <span class="stringliteral">'FATAL'</span>,
+}
+</pre></div>Descriptor strings for the log levels. 
 <p>
 
 </div>
@@ -643,57 +391,6 @@ List of offsets in all 8 directions.
 Used for iterating over spaces adjacent to a given space in the map. 
 </div>
 </div><p>
-<a class="anchor" name="fd29364a3c1fa0fc5459b3f8428f2ebf"></a><!-- doxytag: member="constants::physicsUpdatesPerSecond" ref="fd29364a3c1fa0fc5459b3f8428f2ebf" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="namespaceconstants.html#fd29364a3c1fa0fc5459b3f8428f2ebf">constants.physicsUpdatesPerSecond</a> = 60          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Number of physics updates to try to make each second. 
-<p>
-Tweaking this directly determines the speed of gameplay, to the limits of the computer's hardware. 
-</div>
-</div><p>
-<a class="anchor" name="cf17898c9265a55b0662d4518859cdec"></a><!-- doxytag: member="constants::platformHorizontalOffsets" ref="cf17898c9265a55b0662d4518859cdec" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">list <a class="el" href="namespaceconstants.html#cf17898c9265a55b0662d4518859cdec">constants.platformHorizontalOffsets</a> = [-1, 0, 1]          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Platforms are randomly pushed to the left/right by choosing from this list. 
-<p>
-
-</div>
-</div><p>
-<a class="anchor" name="9b4c0e3a474c4510ff2b2b46b51f6dbf"></a><!-- doxytag: member="constants::platformWidths" ref="9b4c0e3a474c4510ff2b2b46b51f6dbf" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">list <a class="el" href="namespaceconstants.html#9b4c0e3a474c4510ff2b2b46b51f6dbf">constants.platformWidths</a> = [1, 2, 2, 3]          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Platforms have widths randomly selected from this list. 
-<p>
-
-</div>
-</div><p>
 <a class="anchor" name="5acf0963f01d16ca78bfd81b420898ca"></a><!-- doxytag: member="constants::textLineVerticalOffsetMultiplier" ref="5acf0963f01d16ca78bfd81b420898ca" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -711,42 +408,8 @@ Distance between lines, as a multiplier on the size of the font.
 
 </div>
 </div><p>
-<a class="anchor" name="42a392b48a20011fbecd2c8c66c3a357"></a><!-- doxytag: member="constants::treePruneDistance" ref="42a392b48a20011fbecd2c8c66c3a357" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="namespaceconstants.html#42a392b48a20011fbecd2c8c66c3a357">constants.treePruneDistance</a> = 15          </td>
-        </tr>
-      </table>
 </div>
-<div class="memdoc">
-
-<p>
-Minimum physical distance between branches of the tree that describes the general shape of the map. 
-<p>
-
-</div>
-</div><p>
-<a class="anchor" name="709476bd44b913c3a306eab80c77c504"></a><!-- doxytag: member="constants::universeDimensionVariance" ref="709476bd44b913c3a306eab80c77c504" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="namespaceconstants.html#709476bd44b913c3a306eab80c77c504">constants.universeDimensionVariance</a> = 0          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Degree to which the game world dimensions are allowed to vary. 
-<p>
-The range thus defined is e.g. [minUniverseWidth, minUniverseWidth + universeDimensionVariance] for width. 
-</div>
-</div><p>
-</div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Tue Jun 23 21:02:15 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jun 27 17:41:20 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
