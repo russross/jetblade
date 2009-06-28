@@ -777,21 +777,29 @@ class Map:
 
 
     ## Find the nearest wall to the given starting block along the 
-    # normalized vector <dx, dy>.
-    def getDistanceToWall(self, start, dx, dy):
+    # normalized vector <dx, dy>. Return the realspace distance to that wall.
+    # \param node Node in the tree that we are to contain our search to. If 
+    # None, then do not constrain the search. Otherwise, treat regions outside
+    # that node's area as walls.
+    def getDistanceToWall(self, start, dx, dy, node = None):
         currentSpace = copy.deepcopy(start)
         distance = 0
         while (self.getIsInBounds(currentSpace) and
                 (self.blocks[int(currentSpace[0])][int(currentSpace[1])] == 0 or
-                 distance < 2)):
+                 distance < 2) and
+                (node is None or (tuple(currentSpace) in self.deadSeeds and self.deadSeeds[tuple(currentSpace)].node == node))):
             currentSpace[0] += dx
             currentSpace[1] += dy
             distance = util.pointPointDistance(start, currentSpace)
-        return util.pointPointDistance(start, currentSpace) * constants.blockSize
+        distance = util.pointPointDistance(start, currentSpace)
+        return distance
 
 
     ## Build platforms out from start along <dx, dy> until we get distance
     # away from start.
+    # \todo This does a linear search throughout self.platforms for platforms
+    # that might be too close. Replace this with a quadtree or something for
+    # a better runtime.
     def markPlatform(self, start, dx, dy, distance):
         totalDistance = 0
         while totalDistance < distance:
@@ -1074,8 +1082,8 @@ class Map:
     # now.
     def addPlatform(self, loc, size):
         loc = [int(loc[0]), int(loc[1])]
-        util.debug("Adding a platform at",loc,"with size",size)
         if self.getIsInBounds(loc):
+            util.debug("Adding a platform at",loc,"with size",size)
             self.platforms.append((loc, size))
 
 
