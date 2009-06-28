@@ -9,6 +9,7 @@ import time
 import jetblade
 import imagemanager
 import configmanager
+import featuremanager
 import enveffectmanager
 import propmanager
 import eventmanager
@@ -131,6 +132,7 @@ def init():
     
     jetblade.shouldDisplayFPS = 1
     jetblade.configManager = configmanager.ConfigManager()
+    jetblade.featureManager = featuremanager.FeatureManager()
     jetblade.envEffectManager = enveffectmanager.EnvEffectManager()
     jetblade.propManager = propmanager.PropManager()
     jetblade.imageManager = imagemanager.ImageManager()

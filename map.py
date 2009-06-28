@@ -318,6 +318,9 @@ class Map:
         self.instantiateBlocks()
         util.debug("Done instantiating blocks at",pygame.time.get_ticks())
 
+        self.markLoc = None
+        self.drawStatus(self.blocks, None, self.deadSeeds)
+
         # \todo Pick a better starting point for the player.
         self.startLoc = [int(self.numCols / 2), int(self.numRows / 2)]
         while self.blocks[self.startLoc[0]][self.startLoc[1]] != 0:

@@ -5,40 +5,36 @@ import constants
 stairsMinimumClearance = 6
 ## Height of each step of the staircase
 stairsHeight = 4
-## Allowed slopes for stairs to be made (beyond this, we just make a straight
-# tunnel).
-stairsSlopeRange = [-2, 2]
+## Maximum slope for stairs to be made (otherwise make a straight tunnel)
+maxSlope = 2
 
-def carveTunnel(map, sector):
-    straight.carveTunnel(map, sector)
+def getClassName():
+    return 'StairsTunnel'
 
-## @package stairs Augment the floor of the tunnel with extra blocks to 
+## Augment the floor of the tunnel with extra blocks to 
 # create a staircase.
-def createFeature(map, sector):
-    # Only if the angle from us to our parent is shallow enough
-    if abs(sector.loc[0] - sector.parent.loc[0]) < constants.EPSILON:
-        return
-    slope = (sector.loc[1] - sector.parent.loc[1]) / (sector.loc[0] - sector.parent.loc[0])
-    intercept = (sector.loc[1] - sector.loc[0] * slope) / constants.blockSize
-    if slope < stairsSlopeRange[0] or slope > stairsSlopeRange[1]:
-        return 
-    
-    for x in range(0, map.numCols):
-        for y in range(1, map.numRows):
-            if (map.blocks[x][y] == 2 and map.blocks[x][y-1] == 0 and
-                    y > x * slope + intercept and (x, y-1) in map.deadSeeds and
-                    map.deadSeeds[(x, y-1)].node == sector):
-                distToCeiling = sector.getDistToCeiling((x, y))
-                if distToCeiling < stairsMinimumClearance:
-                    continue
-                targetY = (int(y / stairsHeight)) * stairsHeight
-                if targetY > y:
-                    targetY -= stairsHeight
+class StairsTunnel(straight.StraightTunnel):
+    def createFeature(self):
+        # Only if the angle from us to our parent is shallow enough
+        slope = self.sector.getSlope()
+        if abs(slope) > maxSlope
+            return
+        intercept = (self.sector.loc[1] - self.sector.loc[0] * slope) / constants.blockSize
+        
+        for x in range(0, self.map.numCols):
+            for y in range(1, self.map.numRows):
+                if (self.map.blocks[x][y] == 2 and self.map.blocks[x][y-1] == 0 and
+                        y > x * slope + intercept and (x, y-1) in self.map.deadSeeds and
+                        self.map.deadSeeds[(x, y-1)].node == self.sector):
+                    distToCeiling = self.sector.getDistToCeiling((x, y))
+                    if distToCeiling < stairsMinimumClearance:
+                        continue
+                    targetY = (int(y / stairsHeight)) * stairsHeight
+                    if targetY > y:
+                        targetY -= stairsHeight
 
-                for curY in range(targetY, y):
-                    if sector.getIsOurSpace((x, curY)):
-                        map.blocks[x][curY] = 2
+                    for curY in range(targetY, y):
+                        if self.sector.getIsOurSpace((x, curY)):
+                            self.map.blocks[x][curY] = 2
 
-def shouldCheckAccessibility(sector):
-    return straight.shouldCheckAccessibility(sector)
 

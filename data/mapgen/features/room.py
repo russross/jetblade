@@ -2,26 +2,28 @@ import straight
 import util
 import random
 
-## @package room Just like carving a straight tunnel, except we create a big 
-# open space in the middle of the tunnel.
-def carveTunnel(map, sector):
-    straight.carveTunnel(map, sector)
+def getClassName():
+    return 'Room'
 
-    start = sector.parent.loc
-    end = sector.loc
-    
-    center = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]
-    (dx, dy) = util.getNormalizedVector(start, end)
-    distance = util.pointPointDistance(start, end)
+class Room(straight.StraightTunnel):
+    ## Just like carving a straight tunnel, except we create a big 
+    # open space in the middle of the tunnel.
+    def carveTunnel(self):
+        straight.StraightTunnel.carveTunnel(self)
 
-    size = sector.getRoomSize()
-    map.plantSeed(center, sector, size)
-    map.plantSeed([center[0] + dx*distance/4.0, center[1] + dy*distance/4.0], sector, size)
-    map.plantSeed([center[0] - dx*distance/4.0, center[1] - dy*distance/4.0], sector, size)
+        start = self.sector.parent.loc
+        end = self.sector.loc
+        
+        center = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]
+        (dx, dy) = util.getNormalizedVector(start, end)
+        distance = util.pointPointDistance(start, end)
 
-def createFeature(map, sector):
-    pass
+        size = self.sector.getRoomSize()
+        self.map.plantSeed(center, self.sector, size)
+        self.map.plantSeed([center[0] + dx*distance/4.0, center[1] + dy*distance/4.0], self.sector, size)
+        self.map.plantSeed([center[0] - dx*distance/4.0, center[1] - dy*distance/4.0], self.sector, size)
 
-def shouldCheckAccessibility(sector):
-    return True
+
+    def shouldCheckAccessibility(self):
+        return True
 
