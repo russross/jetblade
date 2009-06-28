@@ -18,7 +18,7 @@ class StraightTunnel:
     # In this specific case, we simply lay down a set of seeds along the line 
     # connecting the sector to its parent, with each seed having the same 
     # radius.
-    def carveTunnel(self):
+    def carveTunnel(self, width = None):
         start = self.sector.parent.loc
         end = self.sector.loc
         
@@ -32,7 +32,6 @@ class StraightTunnel:
             self.carveVerticalTunnel()
             return
 
-        width = self.sector.getTunnelWidth()
         slope = dy / float(dx)
 
         # Always want to be proceeding left-to-right along the line, so
@@ -47,6 +46,8 @@ class StraightTunnel:
         magnitude = math.sqrt(1+slope**2)
         blockDx = constants.blockSize / magnitude
         blockDy = constants.blockSize * slope / magnitude
+        if width is None:
+            width = self.sector.getTunnelWidth()
         # Iterate over a series of points blockSize apart along the line.
         while currentLoc[0] < endLoc[0]:
             self.map.plantSeed(currentLoc, self.sector, width)
