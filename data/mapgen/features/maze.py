@@ -24,7 +24,7 @@ class Maze(straight.StraightTunnel):
         # Fill our area with a maze, putting an opening at either end.
         (startLoc, endLoc) = self.sector.getStartAndEndLoc()
         if startLoc is None or endLoc is None:
-            print "Unable to make maze for",self.sector.id,"from",self.sector.loc,"to",self.sector.parent.loc
+            util.debug("Unable to make maze for",self.sector.id,"from",self.sector.loc,"to",self.sector.parent.loc)
             return
 
         (minX, minY, maxX, maxY) = self.sector.getSectorBounds()
@@ -132,5 +132,5 @@ class Maze(straight.StraightTunnel):
     ## Only if we failed to make the maze, in which case this is a standard
     # straight tunnel.
     def shouldCheckAccessibility(self):
-        return not self.madeMaze
+        return (not self.madeMaze and straight.StraightTunnel.shouldCheckAccessibility(self))
 
