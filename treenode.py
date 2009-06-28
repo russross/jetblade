@@ -350,6 +350,8 @@ class TreeNode:
             if util.pointPointDistance(startLoc, endLoc) < 1:
                 return (None, None)
 
+        startLoc = [int(x) for x in startLoc]
+        endLoc = [int(x) for x in endLoc]
         return (startLoc, endLoc)
 
 
@@ -518,16 +520,19 @@ class TreeNode:
     def fixAccessibility(self):
         if (self.parent is not None and 
                 (self.isJunctionNode or self.featureModule.shouldCheckAccessibility())):
-            util.debug("Checking accessibility for node",self.id)
+            util.debug("Checking accessibility for node",self.id,"at",self.loc)
             # Determine which accessibility-fixing algorithm to use.
             if util.pointPointDistance(self.loc, self.parent.loc) > minVerticalTunnelLength:
                 angle = self.getAngle()
                 if (abs(angle - math.pi / 2.0) < verticalTunnelAngleFuzz or
                         abs(angle - 3*math.pi / 2.0) < verticalTunnelAngleFuzz):
+                    util.debug("Node is for a vertical shaft")
                     self.fixAccessibilityVertical()
                 else:
+                    util.debug("Node needs a wallwalker")
                     self.fixAccessibilityWallwalk()
             else:
+                util.debug("Node needs a wallwalker")
                 self.fixAccessibilityWallwalk()
 
         for child in self.children:
@@ -592,7 +597,6 @@ class TreeNode:
         originalSpace[1] -= 1
         originalSpace = [int(originalSpace[0]), int(originalSpace[1])]
         if self.getIsOurSpace(originalSpace):
-#                print "Starting from",originalSpace
             # If we can't find our sector, then probably all of it
             # got absorbed by other sectors or pushed into walls, so don't 
             # do the wallwalker.
@@ -637,7 +641,7 @@ class TreeNode:
                         lineDx /= magnitude
                         lineDy /= magnitude
                         buildDistance = map.minDistForPlatform
-                    distance = jetblade.map.getDistanceToWall(currentSpace, lineDx, lineDy)
+                    distance = jetblade.map.getDistanceToWall(currentSpace, lineDx, lineDy, self)
                     if distance > buildDistance:
                         jetblade.map.markPlatform(currentSpace, lineDx, lineDy, distance)
                         spacesSinceLastPlatform = 0
