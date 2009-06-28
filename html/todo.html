@@ -21,67 +21,72 @@
 <dd>: fix this. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000006"></a> <dl>
+<a class="anchor" name="_todo000007"></a> <dl>
 <dt>Member <a class="el" href="classmap_1_1_map.html#298f280b6e951ab4e2a3cbfa89e79098">map::Map.blocks</a>  </dt>
 <dd>These should be enumerated somewhere and the enums used instead of bare integers. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000004"></a> <dl>
+<a class="anchor" name="_todo000005"></a> <dl>
 <dt>Member <a class="el" href="classmap_1_1_map.html#263a7fedc82cdafa1807be418be319f9">map::Map.loadMap</a>  </dt>
 <dd>This parser is very brittle, and while the map file format is not meant to be directly user-editable, there's no reason we couldn't be more flexible here. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000005"></a> <dl>
+<a class="anchor" name="_todo000004"></a> <dl>
+<dt>Member <a class="el" href="classmap_1_1_map.html#b1b7fcf440973204dcbb05dda3de4264">map::Map.markPlatform</a>  </dt>
+<dd>This does a linear search throughout self.platforms for platforms that might be too close. Replace this with a quadtree or something for a better runtime. </dd>
+</dl>
+<p>
+<a class="anchor" name="_todo000006"></a> <dl>
 <dt>Member <a class="el" href="classmap_1_1_map.html#e9ba25c593e57c3c97164eec5382eac9">map::Map.writeMap</a>  </dt>
 <dd>: Add support for enviroments to the map file. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000007"></a> <dl>
+<a class="anchor" name="_todo000008"></a> <dl>
 <dt>Member <a class="el" href="classphysicsobject_1_1_physics_object.html#a4aeec4650623f5861e47f01f9fb5987">physicsobject::PhysicsObject.handleCollisions</a>  </dt>
 <dd>Currently assumes all collisions are with terrain. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000008"></a> <dl>
+<a class="anchor" name="_todo000009"></a> <dl>
 <dt>Member <a class="el" href="classplayer_1_1_player.html#0d24e16944b6174affb80c7da8528c41">player::Player.__init__</a>  </dt>
 <dd>(Long-term) Add support for the female version </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000009"></a> <dl>
+<a class="anchor" name="_todo000010"></a> <dl>
 <dt>Class <a class="el" href="classpolygon_1_1_polygon.html">polygon.Polygon</a>  </dt>
 <dd>: enforce convex constraint (currently you can make concave polygons; they'll just have buggy collision detection). </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000010"></a> <dl>
+<a class="anchor" name="_todo000011"></a> <dl>
 <dt>Member <a class="el" href="classprop_1_1_prop.html#a990d1e92d689b7afc2fae5deb8d44c2">prop::Prop.surface</a>  </dt>
 <dd>: convert these to sprites so that props can be animated. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000011"></a> <dl>
+<a class="anchor" name="_todo000012"></a> <dl>
 <dt>Member <a class="el" href="classquadtree_1_1_quad_tree.html#89f2ca5450f633fc11fc82f9a30d5ac1">quadtree::QuadTree.addObject</a>  </dt>
 <dd>: calling rebalanceTree every time we add an object is needlessly inefficient. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000012"></a> <dl>
+<a class="anchor" name="_todo000013"></a> <dl>
 <dt>Member <a class="el" href="classsoundmanager_1_1_sound_manager.html#6132bb331ea3a0ad99462a55506a0bbf">soundmanager::SoundManager.__init__</a>  </dt>
 <dd>: Make this configurable. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000014"></a> <dl>
+<a class="anchor" name="_todo000015"></a> <dl>
 <dt>Member <a class="el" href="classsprite_1_1_sprite.html#f2cd9496b59a564a34f04bde16a33d40">sprite::Sprite.getCurrentAnimation</a>  </dt>
 <dd>Assumes that the facing is the last two characters of the string. Probably a better way to handle this. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000013"></a> <dl>
+<a class="anchor" name="_todo000014"></a> <dl>
 <dt>Member <a class="el" href="classsprite_1_1_sprite.html#cb352d77ede40055daf6c516bd54964b">sprite::Sprite.setAnimation</a>  </dt>
 <dd>shouldResetAnimation should be handled better. Currently we need it so we can "try out" different polygons for collision detection (c.f. TerrestrialObject crawl logic) without interfering with smooth animation. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000015"></a> <dl>
+<a class="anchor" name="_todo000016"></a> <dl>
 <dt>Class <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html">terrestrialobject.TerrestrialObject</a>  </dt>
 <dd>The logic dealing with crawling (and, in particular, forcing crawls when there's no headroom) is rather convoluted and should be improved. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000016"></a> <dl>
+<a class="anchor" name="_todo000017"></a> <dl>
 <dt>Member <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#2a406225cbdf00802aacecf46baa022d">terrestrialobject::TerrestrialObject.haveChangedAction</a>  </dt>
 <dd>Seems like there should be a better way to handle this. </dd>
 </dl>
@@ -97,7 +102,7 @@ Drawing water pools is currently prohibitively slow. Fix this. </dd>
 <dd>Make this more modular (move it out to a font config module) </dd>
 </dl>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jun 27 17:41:20 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jun 27 21:04:51 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

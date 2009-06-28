@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<title>JBRL: mapgen.features.stairs.StairsTunnel Class Reference</title>
+<title>JBRL: mapgen.features.pit.Pit Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css">
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 </head><body>
@@ -21,41 +21,44 @@
       <li><a href="functions.html"><span>Class&nbsp;Members</span></a></li>
     </ul>
   </div>
-  <div class="navpath"><b>mapgen</b>.<b>features</b>.<b>stairs</b>.<a class="el" href="classmapgen_1_1features_1_1stairs_1_1_stairs_tunnel.html">StairsTunnel</a>
+  <div class="navpath"><b>mapgen</b>.<b>features</b>.<b>pit</b>.<a class="el" href="classmapgen_1_1features_1_1pit_1_1_pit.html">Pit</a>
   </div>
 </div>
 <div class="contents">
-<h1>mapgen.features.stairs.StairsTunnel Class Reference</h1><!-- doxytag: class="mapgen::features::stairs::StairsTunnel" --><!-- doxytag: inherits="mapgen::features::straight::StraightTunnel" -->Augment the floor of the tunnel with extra blocks to create a staircase.  
+<h1>mapgen.features.pit.Pit Class Reference</h1><!-- doxytag: class="mapgen::features::pit::Pit" --><!-- doxytag: inherits="mapgen::features::straight::StraightTunnel" -->When horizontal, this tunnel type puts a pit trap at the bottom and fills it with something unpleasant.  
 <a href="#_details">More...</a>
 <p>
 <div class="dynheader">
-Inheritance diagram for mapgen.features.stairs.StairsTunnel:</div>
+Inheritance diagram for mapgen.features.pit.Pit:</div>
 <div class="dynsection">
 
-<p><center><img src="classmapgen_1_1features_1_1stairs_1_1_stairs_tunnel.png" usemap="#mapgen.features.stairs.StairsTunnel_map" border="0" alt=""></center>
-<map name="mapgen.features.stairs.StairsTunnel_map">
+<p><center><img src="classmapgen_1_1features_1_1pit_1_1_pit.png" usemap="#mapgen.features.pit.Pit_map" border="0" alt=""></center>
+<map name="mapgen.features.pit.Pit_map">
 <area href="classmapgen_1_1features_1_1straight_1_1_straight_tunnel.html" alt="mapgen.features.straight.StraightTunnel" shape="rect" coords="0,0,236,24">
 </map>
 </div>
 
 <p>
-<a href="classmapgen_1_1features_1_1stairs_1_1_stairs_tunnel-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
+<a href="classmapgen_1_1features_1_1pit_1_1_pit-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapgen_1_1features_1_1stairs_1_1_stairs_tunnel.html#a8be1e5c8a18165ea6691ae75b683aa9">createFeature</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="26fb993f073236f56a25219a330a1303"></a><!-- doxytag: member="mapgen::features::pit::Pit::carveTunnel" ref="26fb993f073236f56a25219a330a1303" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><b>carveTunnel</b></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Perform any extra actions needed to flesh out the tunnel.  <a href="#a8be1e5c8a18165ea6691ae75b683aa9"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapgen_1_1features_1_1pit_1_1_pit.html#c09f8592e73c2aa52186fbf8b57f8883">createFeature</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Perform any extra actions needed to flesh out the tunnel.  <a href="#c09f8592e73c2aa52186fbf8b57f8883"></a><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-Augment the floor of the tunnel with extra blocks to create a staircase. 
+When horizontal, this tunnel type puts a pit trap at the bottom and fills it with something unpleasant. 
 <p>
-<hr><h2>Member Function Documentation</h2>
-<a class="anchor" name="a8be1e5c8a18165ea6691ae75b683aa9"></a><!-- doxytag: member="mapgen::features::stairs::StairsTunnel::createFeature" ref="a8be1e5c8a18165ea6691ae75b683aa9" args="" -->
+Because part of the tunnel is meant to be avoided, this tunnel type is wider than normal. <hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="c09f8592e73c2aa52186fbf8b57f8883"></a><!-- doxytag: member="mapgen::features::pit::Pit::createFeature" ref="c09f8592e73c2aa52186fbf8b57f8883" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">def mapgen.features.stairs.StairsTunnel.createFeature           </td>
+          <td class="memname">def mapgen.features.pit.Pit.createFeature           </td>
           <td>(</td>
           <td class="paramtype">&nbsp;</td>
           <td class="paramname"> <em>self</em>          </td>
@@ -75,7 +78,7 @@ Perform any extra actions needed to flesh out the tunnel.
 </div>
 </div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
-<li>data/mapgen/features/stairs.py</ul>
+<li>data/mapgen/features/pit.py</ul>
 </div>
 <hr size="1"><address style="text-align: right;"><small>Generated on Sat Jun 27 21:04:51 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">

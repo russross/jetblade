@@ -956,7 +956,13 @@ Determine this by the locations of neighbors of the block -- its "adjacency sign
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>dy</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>dy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>node</em> = <code>None</code></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -970,6 +976,11 @@ Determine this by the locations of neighbors of the block -- its "adjacency sign
 <p>
 Find the nearest wall to the given starting block along the normalized vector &lt;dx, dy&gt;. 
 <p>
+Return the realspace distance to that wall. <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>node</em>&nbsp;</td><td>Node in the tree that we are to contain our search to. If None, then do not constrain the search. Otherwise, treat regions outside that node's area as walls. </td></tr>
+  </table>
+</dl>
 
 </div>
 </div><p>
@@ -1152,7 +1163,7 @@ At this time, also instantiate any props that are attached to the blocks.
 <p>
 Load map information from disk. 
 <p>
-The filename is equal to the name of the map. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>This parser is very brittle, and while the map file format is not meant to be directly user-editable, there's no reason we couldn't be more flexible here. </dd></dl>
+The filename is equal to the name of the map. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>This parser is very brittle, and while the map file format is not meant to be directly user-editable, there's no reason we couldn't be more flexible here. </dd></dl>
 
 </div>
 </div><p>
@@ -1224,6 +1235,7 @@ Each region is a subset of some overarching zone (for example, a "furnace" regio
 <p>
 Build platforms out from start along &lt;dx, dy&gt; until we get distance away from start. 
 <p>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>This does a linear search throughout self.platforms for platforms that might be too close. Replace this with a quadtree or something for a better runtime. </dd></dl>
 
 </div>
 </div><p>
@@ -1411,7 +1423,7 @@ We can merge if they have the same source on the tree, and there are no seeds ad
 <p>
 Write our map to disk so it can be read by <a class="el" href="classmap_1_1_map.html#263a7fedc82cdafa1807be418be319f9" title="Load map information from disk.">loadMap()</a>. 
 <p>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>: Add support for enviroments to the map file. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd>: Add support for enviroments to the map file. </dd></dl>
 
 </div>
 </div><p>
@@ -1468,7 +1480,7 @@ Holds background props.
 <li>Block: standard filled space</li><li>None: Nominally solid space but not drawn</li><li>0 Empty space</li></ul>
 <p>
 During construction, the values are different:<ul>
-<li>0: Empty space</li><li>1: Uninitialized space</li><li>2: Wall <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd>These should be enumerated somewhere and the enums used instead of bare integers. </dd></dl>
+<li>0: Empty space</li><li>1: Uninitialized space</li><li>2: Wall <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000007">Todo:</a></b></dt><dd>These should be enumerated somewhere and the enums used instead of bare integers. </dd></dl>
 </li></ul>
 
 </div>
@@ -1595,7 +1607,7 @@ This quadtree holds lines; we use it to make certain that limbs of the tree do n
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>map.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jun 27 17:41:20 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jun 27 21:04:51 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

@@ -34,8 +34,9 @@ Inheritance diagram for mapgen.features.straight.StraightTunnel:</div>
 
 <p><center><img src="classmapgen_1_1features_1_1straight_1_1_straight_tunnel.png" usemap="#mapgen.features.straight.StraightTunnel_map" border="0" alt=""></center>
 <map name="mapgen.features.straight.StraightTunnel_map">
-<area href="classmapgen_1_1features_1_1stairs_1_1_stairs_tunnel.html" alt="mapgen.features.stairs.StairsTunnel" shape="rect" coords="0,56,236,80">
-<area href="classmapgen_1_1features_1_1wave_1_1_wave_tunnel.html" alt="mapgen.features.wave.WaveTunnel" shape="rect" coords="246,56,482,80">
+<area href="classmapgen_1_1features_1_1pit_1_1_pit.html" alt="mapgen.features.pit.Pit" shape="rect" coords="0,56,236,80">
+<area href="classmapgen_1_1features_1_1stairs_1_1_stairs_tunnel.html" alt="mapgen.features.stairs.StairsTunnel" shape="rect" coords="246,56,482,80">
+<area href="classmapgen_1_1features_1_1wave_1_1_wave_tunnel.html" alt="mapgen.features.wave.WaveTunnel" shape="rect" coords="492,56,728,80">
 </map>
 </div>
 
@@ -78,9 +79,18 @@ The basic tunnel type -- a straight tunnel from point A to point B.
           <td class="memname">def mapgen.features.straight.StraightTunnel.carveTunnel           </td>
           <td>(</td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>self</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>width</em> = <code>None</code></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
         </tr>
       </table>
 </div>
@@ -90,8 +100,6 @@ The basic tunnel type -- a straight tunnel from point A to point B.
 Lay down seeds for Map.expandSeeds -- in other words, we mark a point on the map and say "At this point, I want the distance to the walls to be X in all directions", and the map will try to accomodate all these requests to the best of its ability. 
 <p>
 In this specific case, we simply lay down a set of seeds along the line connecting the sector to its parent, with each seed having the same radius. 
-<p>Reimplemented in <a class="el" href="classmapgen_1_1features_1_1wave_1_1_wave_tunnel.html#27d063476eb180c319b4bc31ced19f45">mapgen.features.wave.WaveTunnel</a>.</p>
-
 </div>
 </div><p>
 <a class="anchor" name="d0b73c6ed99e770ecbd9fec950854f42"></a><!-- doxytag: member="mapgen::features::straight::StraightTunnel::carveVerticalTunnel" ref="d0b73c6ed99e770ecbd9fec950854f42" args="" -->
@@ -136,7 +144,7 @@ As carveTunnel, but only for vertical situations.
 Perform any extra actions needed to flesh out the tunnel. 
 <p>
 
-<p>Reimplemented in <a class="el" href="classmapgen_1_1features_1_1stairs_1_1_stairs_tunnel.html#a8be1e5c8a18165ea6691ae75b683aa9">mapgen.features.stairs.StairsTunnel</a>.</p>
+<p>Reimplemented in <a class="el" href="classmapgen_1_1features_1_1pit_1_1_pit.html#c09f8592e73c2aa52186fbf8b57f8883">mapgen.features.pit.Pit</a>, and <a class="el" href="classmapgen_1_1features_1_1stairs_1_1_stairs_tunnel.html#a8be1e5c8a18165ea6691ae75b683aa9">mapgen.features.stairs.StairsTunnel</a>.</p>
 
 </div>
 </div><p>
@@ -174,7 +182,7 @@ Return true if it's necessary to check the tunnel for accessibility.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>data/mapgen/features/straight.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jun 27 17:41:20 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jun 27 21:04:51 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
