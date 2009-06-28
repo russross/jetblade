@@ -155,12 +155,7 @@ class TreeNode:
 
         ## The module that contains the information needed to create our tunnel
         # feature type.
-        self.featureModule = None
-        self.featureModule = __import__('features.' + self.tunnelType, 
-                                        globals(), locals(), 
-                                        ['carveTunnel', 'createFeature'])
-        ## Any data that the feature code needs to store goes here.
-        self.featureData = dict()
+        self.featureModule = jetblade.featureManager.loadFeature(self.tunnelType, self)
 
         ## This color is used for debugging output only.
         self.color = (random.randint(64,255), random.randint(64,255), random.randint(64,255))
@@ -303,7 +298,7 @@ class TreeNode:
     # our tunnel feature logic. 
     def createTunnels(self):
         if self.parent is not None:
-            self.featureModule.carveTunnel(jetblade.map, self)
+            self.featureModule.carveTunnel()
         # Recurse
         for child in self.children:
             child.createTunnels()
@@ -314,7 +309,7 @@ class TreeNode:
     # carved out.
     def createFeatures(self):
         if self.parent is not None:
-            self.featureModule.createFeature(jetblade.map, self)
+            self.featureModule.createFeature()
 
             environment = util.pickWeightedOption(jetblade.map.getRegionInfo(self.zoneType, self.regionType, 'environments'))
             if environment is not None:
@@ -522,7 +517,7 @@ class TreeNode:
     # player.
     def fixAccessibility(self):
         if (self.parent is not None and 
-                (self.isJunctionNode or self.featureModule.shouldCheckAccessibility(self))):
+                (self.isJunctionNode or self.featureModule.shouldCheckAccessibility())):
             util.debug("Checking accessibility for node",self.id)
             # Determine which accessibility-fixing algorithm to use.
             if util.pointPointDistance(self.loc, self.parent.loc) > minVerticalTunnelLength:
