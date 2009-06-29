@@ -52,8 +52,7 @@ def loadZoneData():
             zoneData['regionWeights'] = weights
         return zoneConfigData
     except Exception, e:
-        print "Failed to load zone data:",e
-        sys.exit()
+        util.fatal("Failed to load zone data:",e)
 
 
 ## Place a starting point for each zone in the area [[0, 1], [0, 1]] such

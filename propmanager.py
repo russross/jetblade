@@ -23,8 +23,7 @@ class PropManager:
             try:
                 module = __import__(filename, globals(), locals(), ['props'])
             except Exception, e:
-                print "Unable to load",filename,":",e.message
-                return None
+                util.fatal("Unable to load",filename,":",e.message)
             
             propMap = module.props        
             self.propConfigCache[terrain][flavor] = dict()
