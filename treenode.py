@@ -115,7 +115,7 @@ class TreeNode:
         # map.
         self.haveMadeChildren = False
         ## Individual spaces in the map that belong to this TreeNode
-        self.spaces = dict()
+        self.spaces = set()
         ## Child nodes
         self.children = []
         ## If this node is part of a loop, then junctionChild points to the 
@@ -325,7 +325,7 @@ class TreeNode:
         minY = constants.BIGNUM
         maxX = -constants.BIGNUM
         maxY = -constants.BIGNUM
-        for loc in self.spaces.keys():
+        for loc in self.spaces:
             minX = min(minX, loc[0])
             minY = min(minY, loc[1])
             maxX = max(maxX, loc[0])
@@ -672,13 +672,12 @@ class TreeNode:
 
     ## Mark the given gridspace location as being part of our sector.
     def assignSpace(self, loc):
-        self.spaces[loc] = 1
+        self.spaces.add(loc)
 
 
     ## Remove a space from our sector.
     def unassignSpace(self, loc):
-        if loc in self.spaces:
-            del self.spaces[loc]
+        self.spaces.discard(loc)
 
 
     ## Return true if the passed-in location is one of the open spaces owned

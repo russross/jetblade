@@ -23,8 +23,8 @@ class EnvEffect:
         self.loc = (0, 0)
         self.sprite = sprite.Sprite('effects/environments/' + name, self)
 
-        ## Dict of grid locations that have the effect.
-        self.spaces = dict()
+        ## All spaces that have the effect.
+        self.spaces = set()
         ## Name of the effect, which is the same as the module name for the 
         # effect's code (and not necessarily the same as the class in that 
         # module!). 
@@ -37,7 +37,7 @@ class EnvEffect:
 
     ## Add a single grid location to our set of spaces, and add it to the map.
     def addSpace(self, loc, map):
-        self.spaces[loc] = True
+        self.spaces.add(loc)
         map.addEnvEffect(loc, self)
 
 

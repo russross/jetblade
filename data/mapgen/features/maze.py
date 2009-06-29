@@ -41,7 +41,7 @@ class Maze(straight.StraightTunnel):
         # to make the maze. Cells where both x and y are even are open; the rest
         # are closed.
         changedBlocks = dict()
-        for (x, y) in self.sector.spaces.keys():
+        for (x, y) in self.sector.spaces:
             if x % 2 or y % 2:
                 self.map.blocks[x][y] = 2
                 changedBlocks[(x, y)] = 1
