@@ -6,6 +6,8 @@ import util
 
 import pygame
 
+## Amount to add to drawing location to prevent visual jitter
+drawRoundAmount = .000005
 
 ## Sprites are display classes for handling dynamic game objects like creatures.
 # Each sprite contains a set of Animation instances, and tracks the "parent
@@ -94,8 +96,12 @@ class Sprite:
 
     ## Interpolate between self.prevLoc and self.curLoc, using progress to 
     # weight the two locations.
+    # Round drawing locations to the nearest hundred-thousandth to prevent 
+    # visual jittering caused by very minor positional variation.
     def getDrawLoc(self, progress):
-        return util.interpolatePoints(self.prevLoc, self.curLoc, progress)
+        loc = util.interpolatePoints(self.prevLoc, self.curLoc, progress)
+        loc = [int(loc[0] + drawRoundAmount), int(loc[1] + drawRoundAmount)]
+        return loc
 
 
     ## Retrieve the current animation's polygon, or the previous animation's

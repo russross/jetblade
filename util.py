@@ -232,7 +232,7 @@ def pointPointDistanceSquare(p1, p2):
 ## This is frequently used for drawing objects between physics updates.
 def interpolatePoints(start, end, percent):
     delta = (end[0] - start[0], end[1] - start[1])
-    return (start[0] + delta[0] * percent, start[1] + delta[1] * percent)
+    return [start[0] + delta[0] * percent, start[1] + delta[1] * percent]
 
 
 def realspaceToGridspace(loc):
