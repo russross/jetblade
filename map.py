@@ -1198,7 +1198,6 @@ class Map:
 
 
     ## Write our map to disk so it can be read by loadMap().
-    # \todo: Add support for enviroments to the map file.
     def writeMap(self, name):
         fh = open(name + '.map', 'w')
         fh.write("%d,%d\n" % (self.numCols, self.numRows))

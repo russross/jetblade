@@ -13,7 +13,6 @@ def getClassName():
 # touch sectors that belong to a different region than the region they 
 # start in. 
 # \todo Make water pools affect physics.
-# \todo Drawing water pools is currently prohibitively slow. Fix this.
 class Water(enveffect.EnvEffect):
 
     ## Instantiate the Water class. There is only one instance for the entire
