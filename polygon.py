@@ -100,6 +100,15 @@ class Polygon:
         return result
 
 
+    ## Return the ejection distance of the given polygon out of ourselves along
+    # the provided vector.
+    def getEjectionDistanceAlongVector(self, vector, myLoc, alt, altLoc):
+        myProj = self.projectOntoVector(myLoc, vector)
+        altProj = alt.projectOntoVector(altLoc, vector)
+        distance = myProj.getOverlap(altProj)
+        util.debug("Overlap along",vector,"is",distance,"from ranges",myProj,altProj)
+        return distance
+
     ## Draw the polygon, for debugging purposes only. Polygons that have been
     # hit turn red for 1 frame.
     def draw(self, screen, loc, camera):
