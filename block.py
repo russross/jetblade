@@ -67,6 +67,11 @@ class Block:
         return self.sprite.collidePolygon(polygon, loc)
 
 
+    ## Return the bounding polygon
+    def getPolygon(self):
+        return self.sprite.getPolygon()
+
+
     ## Return a scalar indicating which spaces adjacent to this block are 
     # occupied.
     def getAdjacencySignature(self):
