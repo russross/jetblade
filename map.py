@@ -9,6 +9,7 @@ import jetblade
 import util
 import quadtree
 import seed
+import platform
 
 import sys
 import math
@@ -184,9 +185,6 @@ class Map:
         ## If this is not None, then drawStatus() will focus on this area.
         self.markLoc = None
 
-        ## A list of locations that we will want to add platforms to.
-        self.platforms = []
-
         ## Maps block adjacency signatures (see adjacencyKernelToBlockTypeMap)
         # to block orientations.
         self.adjacenciesMap = dict()
@@ -235,6 +233,10 @@ class Map:
                 line.Line((self.width, self.height), (0, self.height)),
                 line.Line((0, self.height), (0, 0))])
 
+        ## A quadtree of Platform instances created during fixAccessibility, 
+        # that will be converted into actual blocks near the end of mapgen.
+        self.platformsQuadTree = quadtree.QuadTree(pygame.rect.Rect((0, 0), (self.width, self.height)))
+        
         self.numCols = self.width / constants.blockSize
         self.numRows = self.height / constants.blockSize
         
@@ -795,9 +797,6 @@ class Map:
 
     ## Build platforms out from start along <dx, dy> until we get distance
     # away from start.
-    # \todo This does a linear search throughout self.platforms for platforms
-    # that might be too close. Replace this with a quadtree or something for
-    # a better runtime.
     def markPlatform(self, start, dx, dy, distance):
         totalDistance = 0
         while totalDistance < distance:
@@ -806,23 +805,26 @@ class Map:
             buildY = int(start[1] + dy * buildDistance)
             buildLoc = [buildX, buildY]
             shouldBuild = 1
-            for (loc, count) in self.platforms:
-                # Check for platforms too close by.
-                if (abs(loc[0] - buildLoc[0]) < minHorizDistToOtherPlatforms and 
-                        abs(loc[1] - buildLoc[1]) < minVertDistToOtherPlatforms):
-                    shouldBuild = 0
-                    break
-            if shouldBuild:
+            realLoc = util.gridspaceToRealspace(buildLoc)
+            width = minHorizDistToOtherPlatforms * constants.blockSize
+            height = minVertDistToOtherPlatforms * constants.blockSize
+            rect = pygame.Rect(realLoc[0] - width, 
+                               realLoc[1] - height,
+                               width * 2,
+                               height * 2)
+            if not self.platformsQuadTree.getObjectsIntersectingRect(rect):
                 self.addPlatform(buildLoc, random.choice(platformWidths))
             totalDistance += buildDistance
 
 
     ## Create a set of blocks for each location in self.platforms.
     def buildPlatforms(self):
-        for (loc, width) in self.platforms:
+        for platform in self.platformsQuadTree.getObjects():
+            loc = platform.loc
+            width = platform.width
             first = int(loc[0] - width / 2.0)
-            last = int(loc[0] + width / 2.0) - 1
-            for x in range(first, last + 1):
+            last = int(loc[0] + width / 2.0)
+            for x in range(first, last):
                 if (x < 0 or x >= self.numCols or 
                         self.blocks[x][loc[1]] == BLOCK_UNALLOCATED):
                     continue
@@ -1041,27 +1043,6 @@ class Map:
         self.treeLines.addObject(line)
 
 
-    ## See if the given circle hits any of our blocks or platforms. If it
-    # does, return the (realspace) point of collision.
-    def collideCircle(self, center, radius):
-        centerx = int(center[0] / constants.blockSize)
-        centery = int(center[1] / constants.blockSize)
-        radiusSquared = (radius/float(constants.blockSize))**2
-        for x in range(centerx - radius, centerx + radius):
-            if x < 0 or x >= self.numCols:
-                continue
-            for y in range(centery - radius, centery + radius):
-                if y < 0 or y >= self.numRows:
-                    continue
-                dist = (centerx - x)**2 + (centery - y)**2
-                if dist < radiusSquared and self.blocks[x][y]:
-                    return (x * constants.blockSize, y * constants.blockSize)
-        for (platform, count) in self.platforms:
-            if util.pointPointDistance(platform, center) < radius:
-                return (platform[0] * constants.blockSize, platform[1] * constants.blockSize)
-        return None
-
-
     ## Assign the given space to the given node, and unassign it from whoever
     # owned it before.
     def assignSpace(self, space, node):
@@ -1078,7 +1059,8 @@ class Map:
         loc = [int(loc[0]), int(loc[1])]
         if self.getIsInBounds(loc):
             util.debug("Adding a platform at",loc,"with size",size)
-            self.platforms.append((loc, size))
+            newPlatform = platform.Platform(loc, size)
+            self.platformsQuadTree.addObject(newPlatform)
 
 
     ## Add a background object (a prop) to the map.
