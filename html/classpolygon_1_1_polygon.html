@@ -45,6 +45,9 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>getProjectionVectors</
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpolygon_1_1_polygon.html#033bca7917b6e5d91e051c66c9086364">projectOntoVector</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Project the polygon onto the given vector.  <a href="#033bca7917b6e5d91e051c66c9086364"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpolygon_1_1_polygon.html#d23b9ce333b2e71ba211d076edac655c">getEjectionDistanceAlongVector</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return the ejection distance of the given polygon out of ourselves along the provided vector.  <a href="#d23b9ce333b2e71ba211d076edac655c"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpolygon_1_1_polygon.html#db62d09aa299095828cde8e6b7120910">draw</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Draw the polygon, for debugging purposes only.  <a href="#db62d09aa299095828cde8e6b7120910"></a><br></td></tr>
@@ -88,7 +91,6 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>__str__</b></td></tr>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 The <a class="el" href="classpolygon_1_1_polygon.html" title="The Polygon class represents convex bounding polygons used for collision detection...">Polygon</a> class represents convex bounding polygons used for collision detection. 
 <p>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000010">Todo:</a></b></dt><dd>: enforce convex constraint (currently you can make concave polygons; they'll just have buggy collision detection). </dd></dl>
 <hr><h2>Member Function Documentation</h2>
 <a class="anchor" name="db62d09aa299095828cde8e6b7120910"></a><!-- doxytag: member="polygon::Polygon::draw" ref="db62d09aa299095828cde8e6b7120910" args="" -->
 <div class="memitem">
@@ -151,6 +153,55 @@ Polygons that have been hit turn red for 1 frame.
 
 <p>
 Return the center, as the average of all points in the polygon. 
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="d23b9ce333b2e71ba211d076edac655c"></a><!-- doxytag: member="polygon::Polygon::getEjectionDistanceAlongVector" ref="d23b9ce333b2e71ba211d076edac655c" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def polygon.Polygon.getEjectionDistanceAlongVector           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>vector</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>myLoc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>alt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>altLoc</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Return the ejection distance of the given polygon out of ourselves along the provided vector. 
 <p>
 
 </div>
@@ -361,7 +412,7 @@ Upper-left corner of the polygon's bounding box.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>polygon.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jun 27 21:04:51 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Jul 1 13:45:47 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

@@ -63,6 +63,7 @@
 , <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#a4a0c1d66ce65c833ea3c68d7f7f977d">terrestrialobject.TerrestrialObject</a>
 , <a class="el" href="classsoundmanager_1_1_sound_manager.html#6132bb331ea3a0ad99462a55506a0bbf">soundmanager.SoundManager</a>
 , <a class="el" href="classplayer_1_1_player.html#0d24e16944b6174affb80c7da8528c41">player.Player</a>
+, <a class="el" href="classplatform_1_1_platform.html#f6cbef5ac884a7bc7e26012271295a0e">platform.Platform</a>
 , <a class="el" href="classphysicsobject_1_1_physics_object.html#098e570f59a5d31b88e7a48635e784ca">physicsobject.PhysicsObject</a>
 , <a class="el" href="classimagemanager_1_1_image_manager.html#ed05e9bf815da14eacb03b189922f84a">imagemanager.ImageManager</a>
 , <a class="el" href="classmap_1_1_map.html#c4547ef6e6d9a6b9e450694c3b7cc48e">map.Map</a>
@@ -120,18 +121,16 @@
 : <a class="el" href="classmapgen_1_1features_1_1straight_1_1_straight_tunnel.html#316468212e70ab766d8280314e29a773">mapgen.features.straight.StraightTunnel</a>
 <li>carveVerticalTunnel()
 : <a class="el" href="classmapgen_1_1features_1_1straight_1_1_straight_tunnel.html#d0b73c6ed99e770ecbd9fec950854f42">mapgen.features.straight.StraightTunnel</a>
-<li>collideCircle()
-: <a class="el" href="classmap_1_1_map.html#da402866c64c800420a1e0ac4ba57fd3">map.Map</a>
 <li>collidePolygon()
-: <a class="el" href="classmap_1_1_map.html#09568d826a804d733c1b7493600d5bad">map.Map</a>
-, <a class="el" href="classsprite_1_1_sprite.html#863400aebac80d2b4429a97ef8eb28e1">sprite.Sprite</a>
+: <a class="el" href="classsprite_1_1_sprite.html#863400aebac80d2b4429a97ef8eb28e1">sprite.Sprite</a>
 , <a class="el" href="classblock_1_1_block.html#038e834be47b4d7770ec80a1e3def236">block.Block</a>
+, <a class="el" href="classmap_1_1_map.html#09568d826a804d733c1b7493600d5bad">map.Map</a>
 <li>completeAnimation()
 : <a class="el" href="classanimation_1_1_animation.html#3a3c90c68783269b12a584a63843b98a">animation.Animation</a>
 , <a class="el" href="classphysicsobject_1_1_physics_object.html#495450bcc3b001146055886b312182ea">physicsobject.PhysicsObject</a>
 , <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#77f930d031db44bcc85a8f395151cee8">terrestrialobject.TerrestrialObject</a>
 <li>contains()
-: <a class="el" href="classrange_1_1_range.html#3bbf0276e7ffdf4f812be2cf354e6a3a">range.Range</a>
+: <a class="el" href="classrange1_d_1_1_range1_d.html#272771655285af14b21f374325ac2ebc">range1D.Range1D</a>
 <li>createConnections()
 : <a class="el" href="classtreenode_1_1_tree_node.html#b276a3e7cf7d80584301a65073a87513">treenode.TreeNode</a>
 <li>createFeature()
@@ -220,6 +219,7 @@
 : <a class="el" href="classmap_1_1_map.html#0e765c475fe1363b9ef4facf16b2f694">map.Map</a>
 <li>getBounds()
 : <a class="el" href="classprop_1_1_prop.html#3064368f891026be2f35f5ecca8e2cbf">prop.Prop</a>
+, <a class="el" href="classplatform_1_1_platform.html#f69afe9c9e4ff4d359646000b2e173bf">platform.Platform</a>
 <li>getCenter()
 : <a class="el" href="classpolygon_1_1_polygon.html#3b9e8e7c84edc73d9a3666ef6eaf38e4">polygon.Polygon</a>
 <li>getCurrentActions()
@@ -231,9 +231,11 @@
 <li>getDistToCeiling()
 : <a class="el" href="classtreenode_1_1_tree_node.html#76f86229a1372e6306b81fd6cc5f6366">treenode.TreeNode</a>
 <li>getDrawLoc()
-: <a class="el" href="classcamera_1_1_camera.html#07db9b96d73fb57bc47e82a43a689326">camera.Camera</a>
+: <a class="el" href="classsprite_1_1_sprite.html#126b81078a6e3e67d81c7aac29acb9f5">sprite.Sprite</a>
+, <a class="el" href="classcamera_1_1_camera.html#07db9b96d73fb57bc47e82a43a689326">camera.Camera</a>
 , <a class="el" href="classphysicsobject_1_1_physics_object.html#0951edcce59e754a98dc148de9bbd1c4">physicsobject.PhysicsObject</a>
-, <a class="el" href="classsprite_1_1_sprite.html#126b81078a6e3e67d81c7aac29acb9f5">sprite.Sprite</a>
+<li>getEjectionDistanceAlongVector()
+: <a class="el" href="classpolygon_1_1_polygon.html#d23b9ce333b2e71ba211d076edac655c">polygon.Polygon</a>
 <li>getExtremalPoint()
 : <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#1e30100914eee2db92853ec6b2b7b740">terrestrialobject.TerrestrialObject</a>
 <li>getFacingString()
@@ -259,7 +261,7 @@
 <li>getObjectsIntersectingRect()
 : <a class="el" href="classquadtree_1_1_quad_tree.html#b3d5a4d51138f69b67c4132a404fcac5">quadtree.QuadTree</a>
 <li>getOverlap()
-: <a class="el" href="classrange_1_1_range.html#9136c761f1c914aabc44cab78106eca4">range.Range</a>
+: <a class="el" href="classrange1_d_1_1_range1_d.html#65338d0a9293e243b115b499b6d35d70">range1D.Range1D</a>
 <li>getPointAtHeight()
 : <a class="el" href="classpolygon_1_1_polygon.html#0df63dafa6036e859df1c484db1c8817">polygon.Polygon</a>
 <li>getPointAtX()
@@ -268,6 +270,7 @@
 : <a class="el" href="classpolygon_1_1_polygon.html#d417f373a48660c83a05a771bc0c9a01">polygon.Polygon</a>
 <li>getPolygon()
 : <a class="el" href="classsprite_1_1_sprite.html#6da62ee84c4cf1fdb21b99c7378f7266">sprite.Sprite</a>
+, <a class="el" href="classblock_1_1_block.html#14a6842fb13ad4d674643896a9f31367">block.Block</a>
 <li>getRelationType()
 : <a class="el" href="classtreenode_1_1_tree_node.html#02200ca9f4b291d2b0d7d8f52d71ba1a">treenode.TreeNode</a>
 <li>getSectorBounds()
@@ -396,7 +399,7 @@
 : <a class="el" href="classmap_1_1_map.html#e9ba25c593e57c3c97164eec5382eac9">map.Map</a>
 </ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jun 27 21:04:51 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Jul 1 13:45:47 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
