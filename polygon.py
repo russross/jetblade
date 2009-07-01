@@ -1,14 +1,12 @@
 import constants
 import util
-import range
+import range1D
 
 import pygame
 import os
 
 ## The Polygon class represents convex bounding polygons used for collision 
 # detection.
-# \todo: enforce convex constraint (currently you can make concave polygons; 
-# they'll just have buggy collision detection).
 class Polygon:
     def __init__(self, points):
         self.id = constants.globalId
@@ -22,11 +20,28 @@ class Polygon:
 
         ## Lower-right corner of the polygon's bounding box.
         self.lowerRight = [-constants.BIGNUM, -constants.BIGNUM]
-        for point in points:
+        for point in self.points:
             self.upperLeft[0] = min(self.upperLeft[0], point[0])
             self.upperLeft[1] = min(self.upperLeft[1], point[1])
             self.lowerRight[0] = max(self.lowerRight[0], point[0])
             self.lowerRight[1] = max(self.lowerRight[1], point[1])
+
+        # Detect if the points we're given make a concave polygon, by looking
+        # to see if any of the interior angles go in the wrong direction.
+        polygonDirection = None
+        for i in range(0, len(self.points)):
+            p1 = self.points[(i-1) % len(self.points)]
+            p2 = self.points[i]
+            p3 = self.points[(i+1) % len(self.points)]
+            # Get the direction of the angle via cross product.
+            a = (p2[0] - p1[0], p2[1] - p1[1])
+            b = (p3[0] - p2[0], p3[1] - p2[1])
+            angleDirection = cmp(a[0] * b[1] - a[1] * b[0], 0)
+            if polygonDirection is None:
+                polygonDirection = angleDirection
+            if angleDirection != polygonDirection:
+                # This angle has the wrong sign.
+                util.fatal("Polygon",self.points,"is not convex; angle at",p2,"is invalid")
 
         ## For debugging purposes, when we collide with another polygon, we 
         # set this to True for 1 frame.
@@ -84,7 +99,7 @@ class Polygon:
     ## Project the polygon onto the given vector. Return the range (min, max)
     # along the vector formed by that projection.
     def projectOntoVector(self, loc, vector):
-        result = range.Range()
+        result = range1D.Range1D()
         for point in self.points:
             adjustedPoint = util.addVectors(point, loc)
             projectedPoint = util.projectPointOntoVector(adjustedPoint, vector)

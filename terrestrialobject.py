@@ -2,7 +2,7 @@ import physicsobject
 import util
 import constants
 import jetblade
-import range
+import range1D
 
 ## Default acceleration to use on the ground
 defaultRunAcceleration = 2
@@ -289,7 +289,6 @@ class TerrestrialObject(physicsobject.PhysicsObject):
             elif not self.shouldCrawl and self.wasCrawling and vector[1] >= 0:
                 # Hit our heads on the ceiling or a wall when we tried to 
                 # stand, so force a crouch.
-                self.isCrawling = True
                 util.debug("Forcing into a crawl")
                 self.isCrawling = True
                 self.wasCrawling = True
@@ -359,7 +358,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         headGridLoc = util.realspaceToGridspace(headLoc)
         locs = [[headGridLoc[0], headGridLoc[1] - i] for i in [0, 1, 2]]
         blocks = [jetblade.map.getBlockAtGridLoc(loc) for loc in locs]
-        headRange = range.Range(headLoc[1] - self.vel[1], headLoc[1])
+        headRange = range1D.Range1D(headLoc[1] - self.vel[1], headLoc[1])
         util.debug("Head is at",headLoc,"grid",headGridLoc,"range",headRange,"and blocks are",blocks)
         for i in [0, 1]:
             if blocks[i] and not blocks[i+1]:
