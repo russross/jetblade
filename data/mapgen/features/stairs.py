@@ -1,4 +1,5 @@
 import straight
+import map
 import constants
 
 ## Minimum distance to the ceiling for stairs to be added.
@@ -23,7 +24,8 @@ class StairsTunnel(straight.StraightTunnel):
         
         for x in range(0, self.map.numCols):
             for y in range(1, self.map.numRows):
-                if (self.map.blocks[x][y] == 2 and self.map.blocks[x][y-1] == 0 and
+                if (self.map.blocks[x][y] == map.BLOCK_WALL and 
+                        self.map.blocks[x][y-1] == map.BLOCK_EMPTY and
                         y > x * slope + intercept and (x, y-1) in self.map.deadSeeds and
                         self.map.deadSeeds[(x, y-1)].node == self.sector):
                     distToCeiling = self.sector.getDistToCeiling((x, y))
@@ -35,6 +37,6 @@ class StairsTunnel(straight.StraightTunnel):
 
                     for curY in range(targetY, y):
                         if self.sector.getIsOurSpace((x, curY)):
-                            self.map.blocks[x][curY] = 2
+                            self.map.blocks[x][curY] = map.BLOCK_WALL
 
 

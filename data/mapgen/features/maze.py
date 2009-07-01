@@ -1,6 +1,8 @@
 import straight
 import constants
 import util
+import map
+
 import random
 
 ## In mazes, vertical segments can be at most this many blocks tall.
@@ -40,11 +42,11 @@ class Maze(straight.StraightTunnel):
         # Turn our region into rooms of size 1, so we can carve walls 
         # to make the maze. Cells where both x and y are even are open; the rest
         # are closed.
-        changedBlocks = dict()
+        changedBlocks = set()
         for (x, y) in self.sector.spaces:
             if x % 2 or y % 2:
-                self.map.blocks[x][y] = 2
-                changedBlocks[(x, y)] = 1
+                self.map.blocks[x][y] = map.BLOCK_WALL
+                changedBlocks.add((x, y))
 
         # Run the growing tree algorithm
         cellStack = [firstCell]
@@ -64,14 +66,14 @@ class Maze(straight.StraightTunnel):
                 # end up with blocked-off corridors.
                 # \todo Find a better way to handle this.
                 if (offY >= self.map.numRows or 
-                        self.map.blocks[cell[0]][offY] != 0 or
+                        self.map.blocks[cell[0]][offY] != map.BLOCK_EMPTY or
                         (cell[0], offY) not in self.sector.spaces):
                     break
                 verticalClearance += 1
             for i in range(1, mazeMaximumColumnHeight):
                 offY = cell[1] - i
                 if (offY < 0 or 
-                        self.map.blocks[cell[0]][offY] != 0 or
+                        self.map.blocks[cell[0]][offY] != map.BLOCK_EMPTY or
                         (cell[0], offY) not in self.sector.spaces):
                     break
                 verticalClearance += 1
@@ -99,7 +101,7 @@ class Maze(straight.StraightTunnel):
             # Get the offset to reach the wall.
             dx = (neighbor[0] - cell[0]) / 2
             dy = (neighbor[1] - cell[1]) / 2
-            self.map.blocks[cell[0] + dx][cell[1] + dy] = 0
+            self.map.blocks[cell[0] + dx][cell[1] + dy] = map.BLOCK_EMPTY
 
         # Step five: because of our limit on vertical expansion, it's possible to 
         # get incomplete mazes. Check for blocks that aren't in seenCells that
@@ -111,7 +113,7 @@ class Maze(straight.StraightTunnel):
                 break
         if shouldRevert:
             for block in changedBlocks:
-                self.map.blocks[block[0]][block[1]] = 0
+                self.map.blocks[block[0]][block[1]] = map.BLOCK_EMPTY
 
         else:
             # Step six: clear some space at the beginning and end of the maze.
@@ -125,7 +127,7 @@ class Maze(straight.StraightTunnel):
                         if y < 0 or y >= self.map.numRows:
                             continue
                         if (x, y) in self.sector.spaces:
-                            self.map.blocks[x][y] = 0
+                            self.map.blocks[x][y] = map.BLOCK_EMPTY
                 self.map.addPlatform(loc, mazeEndpointOpenSpace)
             self.madeMaze = True
         

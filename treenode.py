@@ -411,7 +411,7 @@ class TreeNode:
                 if (dist <= radius and 
                         (x, y) in jetblade.map.deadSeeds and 
                         self.getRelationType(jetblade.map.deadSeeds[(x, y)].node) != 'none'):
-                    jetblade.map.blocks[x][y] = 0
+                    jetblade.map.blocks[x][y] = map.BLOCK_EMPTY
                     # Reassign the space to a dummy child
                     if self.junctionChild is None:
                         self.junctionChild = TreeNode(self.loc, self, constants.BIGNUM, None, 1)
@@ -431,12 +431,12 @@ class TreeNode:
                         altNode = None
                         if (ax, ay) in jetblade.map.deadSeeds:
                             altNode = jetblade.map.deadSeeds[(ax, ay)].node
-                        if (jetblade.map.blocks[ax][ay] == 1 or 
+                        if (jetblade.map.blocks[ax][ay] == map.BLOCK_UNALLOCATED or 
                                 (altNode is not None and
                                  self.getRelationType(altNode) == 'none' and
                                  not altNode.getIsJunctionNode()
                                 )):
-                            jetblade.map.blocks[ax][ay] = 2
+                            jetblade.map.blocks[ax][ay] = map.BLOCK_WALL
                             jetblade.map.deadSeeds[(ax, ay)] = seed.Seed(self.junctionChild, 0, constants.BIGNUM)
 
         for child in self.children:

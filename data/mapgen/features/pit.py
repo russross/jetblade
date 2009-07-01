@@ -41,8 +41,8 @@ class Pit(straight.StraightTunnel):
 
         # Set up walls to contain the bottom of the pit.
         for y in range(surfaceY, bottomY + 1):
-            self.map.blocks[start[0]][y] = 2
-            self.map.blocks[end[0]][y] = 2
+            self.map.blocks[start[0]][y] = map.BLOCK_WALL
+            self.map.blocks[end[0]][y] = map.BLOCK_WALL
 
 #        self.map.markLoc = ((start[0] + end[0]) / 2, surfaceY)
 #        self.map.drawStatus()
@@ -60,5 +60,5 @@ class Pit(straight.StraightTunnel):
         for x in range(start[0], end[0] + 1, map.minHorizDistToOtherPlatforms):
             top = random.choice(range(surfaceY - 2, surfaceY + 1))
             for y in range(top, bottomY):
-                self.map.blocks[x][y] = 2
+                self.map.blocks[x][y] = map.BLOCK_WALL
 
