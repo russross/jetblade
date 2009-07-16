@@ -1,5 +1,6 @@
-import jetblade
+import constants
 
+import jetblade
 import pygame
 from pygame import *
 
