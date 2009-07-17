@@ -34,12 +34,13 @@ class QuadTree:
 
 
     ## Add an object to the node. Rebalance the tree afterwards if needed.
-    # \todo: calling rebalanceTree every time we add an object is needlessly
-    # inefficient.
     def addObject(self, object):
         rect = object.getBounds()
+        for child in self.children:
+            if child.canAcceptObject(object):
+                child.addObject(object)
+                return
         self.objects.append(object)
-        self.rebalanceTree()
         if (not self.children and 
                 self.rect.width > minCellDim and
                 len(self.objects) > numObjectsToExtendTree):
