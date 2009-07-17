@@ -50,7 +50,7 @@ def setLogLevel(level):
 
 
 ## Get the current log level
-def getLogLevel(level):
+def getLogLevel():
     return logger.logLevel
 
 ## Log output at the debug level
