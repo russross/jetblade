@@ -47,9 +47,6 @@ class StraightTunnel:
         blockDelta.multiply(constants.blockSize / magnitude)
         if width is None:
             width = self.sector.getTunnelWidth()
-        if self.sector.id == 232:
-            print "Going from",currentLoc,"to",endLoc,"with delta",blockDelta
-            print "Slope is",slope,"delta",delta
         # Iterate over a series of points blockSize apart along the line.
         while currentLoc.x < endLoc.x:
             self.map.plantSeed(currentLoc, self.sector, width)

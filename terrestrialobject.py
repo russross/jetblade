@@ -122,11 +122,13 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                     accelFactor = self.airDeceleration
                 if abs(accelFactor) > abs(self.vel.x):
                     accelFactor = abs(self.vel.x)
-            self.vel.x += accelDirection * accelFactor
+            self.vel = self.vel.addX(accelDirection * accelFactor)
         elif self.wasCrawling:
-            self.vel.x = 0 # No inertia while crawling
             if self.runDirection == self.facing:
-                self.vel.x = self.crawlSpeed * self.runDirection
+                self.vel = Vector2D(self.crawlSpeed * self.runDirection, self.vel.y)
+            else:
+                # No inertia while crawling.
+                self.vel = Vector2D(0, self.vel.y)
 
         if abs(self.vel.x) > constants.EPSILON:
             # This conditional ensures that we do not reset the creature's
@@ -141,7 +143,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                 logger.debug("Commencing jump")
                 self.isGrounded = False
                 self.isHanging = False
-                self.vel.y = self.jumpSpeed
+                self.vel = Vector2D(self.vel.x, self.jumpSpeed)
                 self.jumpFrames = 0
                 self.isGravityOn = False
                 if self.isHanging or abs(self.vel.x) < constants.EPSILON:
@@ -194,7 +196,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                 # Either rear foot is already in the same space as a block, 
                 # or there's a block there if we move down a bit.
                 logger.debug("Pushing self down to hug the ground")
-                self.loc.y += abs(self.vel.x) + 1
+                self.loc = self.loc.addY(abs(self.vel.x) + 1)
                 self.isGrounded = True
                 # Re-run collision detection so we're put back at the surface.
                 self.handleCollisions()
@@ -212,7 +214,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                     # \todo This is a fairly nasty hack as it makes assumptions
                     # about the shapes of bounding polygons for various actions.
                     newTop = self.getHeadLoc()
-                    self.loc.y += oldTop.y - newTop.y
+                    self.loc = self.loc.addY(oldTop.y - newTop.y)
 
 
         if self.isGrounded:
@@ -275,7 +277,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                 collision.vector.y < 0 and 
                 self.getFootLoc().y > block.getBlockCorner(Vector2D(self.facing, 1)).y):
             logger.debug("Flipping vertical component of vector to push us down after standing")
-            collision.vector.y *= -1
+            collision.vector = Vector2D(collision.vector.x, -collision.vector.y)
 
         return collision
 
@@ -347,8 +349,9 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         if self.canHang and self.canGrabLedge():
             # Lock location to the top of the ledge
             # \todo Incorporate some kind of offset here?
-            self.loc.y = int((self.loc.y - self.vel.y) / constants.blockSize + .5) * constants.blockSize
-            self.vel.y = 0
+            self.loc = Vector2D(self.loc.x, 
+                                int((self.loc.y - self.vel.y) / constants.blockSize + .5) * constants.blockSize)
+            self.vel = Vector2D(0, 0)
             self.isHanging = True
             self.jumpFrames = 0
             self.sprite.setAnimation('hang')
@@ -364,7 +367,8 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         headLoc = self.getHeadLoc()
         # Round headLoc to the nearest column in the self.facing direction; 
         # this gets us the right column of blocks to try to grab.
-        headLoc.x = int(headLoc.x / constants.blockSize + .5 * self.facing) * constants.blockSize
+        headLoc = Vector2D(int(headLoc.x / constants.blockSize + .5 * self.facing) * constants.blockSize, 
+                           headLoc.y)
         headGridLoc = headLoc.toGridspace()
         locs = [Vector2D(headGridLoc.x, headGridLoc.y - i) for i in [0, 1, 2]]
         blocks = [jetblade.map.getBlockAtGridLoc(loc) for loc in locs]

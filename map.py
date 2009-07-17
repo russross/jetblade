@@ -65,8 +65,6 @@ minHorizDistToOtherPlatforms = 6
 minVertDistToOtherPlatforms = 4
 ## Platforms have widths randomly selected from this list.
 platformWidths = [1, 2, 2, 3]
-## Platforms are randomly pushed to the left/right by choosing from this list.
-platformHorizontalOffsets = [-1, 0, 1]
 
 ## This maps different block configurations to block types, for setting terrain
 # in getBlockType(). We'll convert each array into a set of scalar signatures
@@ -328,7 +326,7 @@ class Map:
         # \todo Pick a better starting point for the player.
         self.startLoc = Vector2D(int(self.numCols / 2), int(self.numRows / 2))
         while self.blocks[self.startLoc.x][self.startLoc.y] != BLOCK_EMPTY:
-            self.startLoc.y -= 1
+            self.startLoc = self.startLoc.addY(-1)
 
         self.writeMap(str(jetblade.seed))
 
@@ -801,7 +799,6 @@ class Map:
         while totalDistance < distance:
             buildDistance = minDistForPlatform + totalDistance
             buildLoc = start.add(direction.multiply(buildDistance)).int()
-            buildLoc.x += random.choice(platformHorizontalOffsets)
             shouldBuild = 1
             realLoc = buildLoc.toRealspace()
             width = minHorizDistToOtherPlatforms * constants.blockSize
@@ -1085,15 +1082,11 @@ class Map:
     # the largest ejection vector (as that is the tile that the polygon probably
     # hit first).
     def collidePolygon(self, poly, loc):
-        upperLeft = poly.upperLeft.add(loc).toGridspace()
-        lowerRight = poly.lowerRight.add(loc).toGridspace()
+        upperLeft = poly.upperLeft.add(loc).toGridspace().addX(-1).addY(-1)
+        lowerRight = poly.lowerRight.add(loc).toGridspace().addX(2).addY(2)
         longestOverlap = -constants.BIGNUM
         resultVector = None
         resultBlock = None
-        upperLeft.x -= 1
-        upperLeft.y -= 1
-        lowerRight.x += 2
-        lowerRight.y += 2
         for x in range(upperLeft.x, lowerRight.x):
             if x < 0 or x >= self.numCols:
                 continue
@@ -1194,7 +1187,7 @@ class Map:
                 for name in effects:
                     if name not in envEffectCache:
                         envEffectCache[name] = enveffect.EnvEffect(name)
-                    envEffectCache[name].addSpace(Vector2D(x, y))
+                    envEffectCache[name].addSpace(Vector2D(x, y), self)
 
             elif mode == 'bgprops':
                 (x, y, zone, region, group, item) = line.split(',')
@@ -1240,8 +1233,10 @@ class Map:
             numCols = self.numCols
         if numRows is None:
             numRows = self.numRows
-        return (loc.x >= 0 and loc.x < numCols and
-                loc.y >= 0 and loc.y < numRows)
+        # Avoid using the Vector2D x and y properties because they are slightly
+        # slower and this function gets called a *lot*. 
+        return (loc[0] >= 0 and loc[0] < numCols and
+                loc[1] >= 0 and loc[1] < numRows)
 
 
     ## Returns the region information at the given location. See makeRegions()

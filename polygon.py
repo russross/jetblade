@@ -17,16 +17,18 @@ class Polygon:
         ## Array of points in the polygon. 
         self.points = points
         
+        upperLeft = [constants.BIGNUM, constants.BIGNUM]
+        lowerRight = [-constants.BIGNUM, -constants.BIGNUM]
+        for point in self.points:
+            upperLeft[0] = min(upperLeft[0], point.x)
+            upperLeft[1] = min(upperLeft[1], point.y)
+            lowerRight[0] = max(lowerRight[0], point.x)
+            lowerRight[1] = max(lowerRight[1], point.y)
         ## Upper-left corner of the polygon's bounding box.
-        self.upperLeft = Vector2D(constants.BIGNUM, constants.BIGNUM)
+        self.upperLeft = Vector2D(upperLeft)
 
         ## Lower-right corner of the polygon's bounding box.
-        self.lowerRight = Vector2D(-constants.BIGNUM, -constants.BIGNUM)
-        for point in self.points:
-            self.upperLeft.x = min(self.upperLeft.x, point.x)
-            self.upperLeft.y = min(self.upperLeft.y, point.y)
-            self.lowerRight.x = max(self.lowerRight.x, point.x)
-            self.lowerRight.y = max(self.lowerRight.y, point.y)
+        self.lowerRight = Vector2D(lowerRight)
 
         # Detect if the points we're given make a concave polygon, by looking
         # to see if any of the interior angles go in the wrong direction.

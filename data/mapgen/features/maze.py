@@ -37,9 +37,9 @@ class Maze(straight.StraightTunnel):
         delta = startLoc.sub(endLoc).normalize()
         firstCell = startLoc.int()
         if firstCell.x % 2:
-            firstCell.x += cmp(delta.x, 0) or 1
+            firstCell = firstCell.addX(cmp(delta.x, 0) or 1)
         if firstCell.y % 2:
-            firstCell.y += cmp(delta.y, 0) or 1
+            firstCell = firstCell.addY(cmp(delta.y, 0) or 1)
 
         # Turn our region into rooms of size 1, so we can carve walls 
         # to make the maze. Cells where both x and y are even are open; the rest

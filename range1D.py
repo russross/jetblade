@@ -10,7 +10,13 @@ class Range1D:
 
     ## Return true if the provided scalar is in our range
     def contains(self, value):
-        return value > self.min and value < self.max
+        return value >= self.min and value <= self.max
+
+    
+    ## Clamp the given value so it is contained by us.
+    def clamp(self, value):
+        return min(self.max, max(self.min, value))
+    
 
     ## Return the amount of overlap between ourself and the given range.
     def getOverlap(self, range):

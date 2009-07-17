@@ -40,7 +40,7 @@ class Water(enveffect.EnvEffect):
         
         # Find the floor of the tunnel
         while gameMap.getBlockAtGridLoc(center) == 0:
-            center.y += 1
+            center = center.addY(1)
 
         # Try to floodfill out from this point. Give up if we run in to another
         # zone or if we're already underwater. Otherwise, raise the water level 

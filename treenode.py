@@ -8,7 +8,6 @@ import logger
 from vector2d import Vector2D
 
 import math
-import copy
 import random
 import pygame
 
@@ -366,7 +365,7 @@ class TreeNode:
         curLoc = Vector2D(loc.x, loc.y - 1)
         dist = 1
         while self.getIsOurSpace(curLoc):
-            curLoc.y -= 1
+            curLoc = curLoc.addY(-1)
             dist += 1
         return dist
 
@@ -546,7 +545,7 @@ class TreeNode:
         if self.loc.y < self.parent.loc.y:
             (bottomLoc, topLoc) = (topLoc, bottomLoc)
         # Back out of the junction a bit.
-        bottomLoc.y -= self.getJunctionRadius() / 2.0
+        bottomLoc = bottomLoc.addY(-self.getJunctionRadius() / 2.0)
         bottomLoc = bottomLoc.toGridspace()
         topLoc = topLoc.toGridspace()
         platformWidth = random.choice(map.platformWidths)
@@ -557,15 +556,14 @@ class TreeNode:
         index = random.randint(0, len(platformPattern)-1)
 
         curLoc = bottomLoc
-#        curLoc.y -= verticalTunnelPlatformGap
         while curLoc.y > topLoc.y:
-            curLoc.y -= verticalTunnelPlatformGap
+            curLoc = curLoc.addY(-verticalTunnelPlatformGap)
             direction = platformPattern[index]
-            platformLoc = copy.copy(curLoc)
+            platformLoc = curLoc.copy()
             if direction != 0:
                 while self.getIsOurSpace(platformLoc):
-                    platformLoc.x += direction
-                platformLoc.x -= direction
+                    platformLoc = platformLoc.addX(direction)
+                platformLoc = platformLoc.addX(-direction)
             if self.getIsOurSpace(platformLoc):
                 jetblade.map.addPlatform(platformLoc, platformWidth)
             index = (index + 1) % len(platformPattern)
@@ -588,9 +586,8 @@ class TreeNode:
                 originalSpace = originalSpace.add(delta)
         # Find a wall from that point
         while (self.getIsOurSpace(originalSpace)):
-            originalSpace.y += 1
-        originalSpace.y -= 1
-        originalSpace = originalSpace.int()
+            originalSpace = originalSpace.addY(1)
+        originalSpace = originalSpace.addY(-1).int()
         # If we can't find our sector, then probably all of it
         # got absorbed by other sectors or pushed into walls, so don't 
         # do the wallwalker. Otherwise, carry on.
@@ -719,7 +716,7 @@ class TreeNode:
             parentId = self.parent.id
         drawLoc = p1.copy()
         if self.loopNode is not None:
-            drawLoc.y += 40
+            drawLoc = drawLoc.addY(40)
         strings = ['%d %d' % (self.loc.x, self.loc.y),
                    '%d %d' % (self.id, parentId)]
         if self.loopNode is None:

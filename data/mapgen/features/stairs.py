@@ -42,6 +42,6 @@ class StairsTunnel(straight.StraightTunnel):
                 while currentLoc.y <= loc.y:
                     if self.sector.getIsOurSpace(currentLoc):
                         self.map.blocks[currentLoc.x][currentLoc.y] = map.BLOCK_WALL
-                    currentLoc.y += 1
+                    currentLoc = currentLoc.addY(1)
 
 

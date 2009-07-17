@@ -1,5 +1,6 @@
 import constants
 import util
+import range1D
 from vector2d import Vector2D
 
 import sys
@@ -78,11 +79,12 @@ def placeZones(zoneConfigData):
                 distance = zoneLoc.distance(altLoc)
                 direction = altLoc.sub(zoneLoc).normalize()
                 vector = vector.add(direction.multiply(zoneGravityMultiplier / distance))
+
+            xRange = range1D.Range1D(0, 1)
+            yRange = range1D.Range1D(zoneConfigData[zoneName]['elevationRange'][0],
+                    zoneConfigData[zoneName]['elevationRange'][1])
             newLoc = vector.add(zoneLoc)
-            newLoc.x = max(newLoc.x, 0)
-            newLoc.x = min(newLoc.x, 1)
-            newLoc.y = max(newLoc.y, zoneConfigData[zoneName]['elevationRange'][0])
-            newLoc.y = min(newLoc.y, zoneConfigData[zoneName]['elevationRange'][1])
+            newLoc = Vector2D(xRange.clamp(newLoc.x), yRange.clamp(newLoc.y))
             newPoints[zoneName] = newLoc
         zonePoints = newPoints
 

@@ -131,7 +131,7 @@ class PhysicsObject:
     def hitWall(self, collision):
         logger.debug("Object", self.name, "hit wall at",
                    collision.altObject.loc.toGridspace()) 
-        self.vel.x = 0
+        self.vel = Vector2D(0, self.vel.y)
         return True
 
 
@@ -139,7 +139,7 @@ class PhysicsObject:
     def hitCeiling(self, collision):
         logger.debug("Object", self.name, "hit ceiling at",
                    collision.altObject.loc.toGridspace()) 
-        self.vel.y = 0
+        self.vel = Vector2D(self.vel.x, 0)
         return True
 
 
@@ -147,7 +147,7 @@ class PhysicsObject:
     def hitFloor(self, collision):
         logger.debug("Object", self.name, "hit floor at",
                    collision.altObject.loc.toGridspace()) 
-        self.vel.y = 0
+        self.vel = Vector2D(self.vel.x, 0)
         return True
 
 
