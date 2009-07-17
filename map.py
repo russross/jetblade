@@ -581,6 +581,7 @@ class Map:
         deadSeeds = dict()
         numCols = len(blocks)
         numRows = len(blocks[0])
+        logger.debug("Expanding seeds for a",numCols,"by",numRows,"grid")
         while len(seeds):
             # Uncomment this if you want to see images be drawn at each step,
             # but don't want images for the creation of regions (before the 
@@ -592,7 +593,7 @@ class Map:
             for loc, curSeed in seeds.iteritems():
                 # If the counter expires while the seed is not in open space,
                 # replace it with a wall.
-                if (not self.getIsInBounds(loc, numRows, numCols) or 
+                if (not self.getIsInBounds(loc, numCols, numRows) or 
                         (curSeed.life <= 0 and blocks[loc.x][loc.y] != BLOCK_EMPTY)):
                     deadSeeds[loc] = curSeed
                     blocks[loc.x][loc.y] = BLOCK_WALL
