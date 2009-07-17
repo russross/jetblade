@@ -53,7 +53,7 @@ class Animation:
         self.frame = 0
         
         ## Tracks if we've reached the end of the animation.
-        self.isComplete = 0
+        self.isComplete = False
 
     ## Advance self.frames. If self.updateFunc is specified, use that;
     # otherwise, use self.updateRate. Return True if the animation is complete,
@@ -97,7 +97,7 @@ class Animation:
     def reset(self):
         logger.debug("Animation",self.name,"resetting")
         self.frame = 0
-        self.isComplete = 0
+        self.isComplete = False
     
     
     def getPolygon(self):
