@@ -1082,8 +1082,8 @@ class Map:
     # the largest ejection vector (as that is the tile that the polygon probably
     # hit first).
     def collidePolygon(self, poly, loc):
-        upperLeft = poly.upperLeft.add(loc).toGridspace().addX(-1).addY(-1)
-        lowerRight = poly.lowerRight.add(loc).toGridspace().addX(2).addY(2)
+        upperLeft = poly.upperLeft.add(loc).toGridspace().add((-1, -1))
+        lowerRight = poly.lowerRight.add(loc).toGridspace().add((2, 2))
         longestOverlap = -constants.BIGNUM
         resultVector = None
         resultBlock = None
