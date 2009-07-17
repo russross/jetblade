@@ -161,7 +161,7 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Terrestrial objects are ones that walk around on the ground and can jump. 
 <p>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000013">Todo:</a></b></dt><dd>The logic dealing with crawling (and, in particular, forcing crawls when there's no headroom) is rather convoluted and should be improved. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000016">Todo:</a></b></dt><dd>The logic dealing with crawling (and, in particular, forcing crawls when there's no headroom) is rather convoluted and should be improved. </dd></dl>
 <hr><h2>Member Function Documentation</h2>
 <a class="anchor" name="3df5bc89bcad1bfafb218d3aa0cbf6f5"></a><!-- doxytag: member="terrestrialobject::TerrestrialObject::adjustCollision" ref="3df5bc89bcad1bfafb218d3aa0cbf6f5" args="" -->
 <div class="memitem">
@@ -177,19 +177,7 @@ Terrestrial objects are ones that walk around on the ground and can jump.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>block</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>vector</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>distance</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>collision</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -427,19 +415,7 @@ As getFootLoc, but applies to the top of the object instead of the bottom.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>block</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>vector</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>distance</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>collision</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -472,19 +448,7 @@ Hitting the ceiling when jumping forces us to start freefall.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>block</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>vector</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>distance</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>collision</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -517,19 +481,7 @@ Hitting the floor makes us grounded.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>block</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>vector</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>distance</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>collision</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -562,19 +514,7 @@ The only thing we care about is that if we hit a block with a non-upwards ejecti
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>block</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>vector</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>distance</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>collision</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -709,7 +649,7 @@ Signals if the creature has the ability to hang from ledges.
 <p>
 Indicates that we've already tried changing the player's current action this frame. 
 <p>
-This is used when "trying out" different actions to see if there's room e.g. to stand up from a crawl. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000014">Todo:</a></b></dt><dd>Seems like there should be a better way to handle this. </dd></dl>
+This is used when "trying out" different actions to see if there's room e.g. to stand up from a crawl. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000017">Todo:</a></b></dt><dd>Seems like there should be a better way to handle this. </dd></dl>
 
 </div>
 </div><p>
@@ -982,7 +922,7 @@ True if, before collision detection, the creature was grounded.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>terrestrialobject.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Jul 1 13:45:47 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jul 16 17:42:35 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

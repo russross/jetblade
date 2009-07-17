@@ -55,7 +55,7 @@
 This package contains the logic for setting up and running the program. 
 <p>
 It initializes PyGame, instantiates necessary global singletons, and runs the main game loop. By default, when started, Jetblade will generate a map, save the map definition file to disk (using the map seed as the filename), and then switch to gameplay mode. Notable commandline options:<ul>
-<li>-debug: turn on debugging output (warning: verbose!)</li><li>-num X: generate X maps, and exit</li><li>-saveimage: save an image of the entire map after generating, then exit</li><li>-seed X: use X as a seed for map generation</li><li>-mapfile X: try to load X as a map definition file, and start gameplay mode</li><li>-record: record every rendered frame to disk. Note: this can be toggled during gameplay as well. </li></ul>
+<li>-debug: turn on debugging output (warning: verbose!)</li><li>-num X: generate X maps, and exit</li><li>-saveimage: save an image of the entire map after generating, then exit</li><li>-justmapgen: only generate a map; don't begin gameplay afterwards</li><li>-seed X: use X as a seed for map generation</li><li>-mapfile X: try to load X as a map definition file, and start gameplay mode</li><li>-record: record every rendered frame to disk. Note: this can be toggled during gameplay as well. </li></ul>
 
 <p>
 <hr><h2>Function Documentation</h2>
@@ -135,6 +135,7 @@ Performs a target of physicsUpdatesPerSecond updates to the physics/game logic p
 <p>
 Process commandline flags and set up singletons. 
 <p>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>Use optparse or something similar to handle arguments. </dd></dl>
 
 </div>
 </div><p>
@@ -216,7 +217,7 @@ Number of physics updates to try to make each second when we're recording images
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Jul 1 13:45:47 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jul 16 17:42:34 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

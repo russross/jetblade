@@ -21,59 +21,79 @@
 <dd>: fix this. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000004"></a> <dl>
+<a class="anchor" name="_todo000005"></a> <dl>
 <dt>Class <a class="el" href="classmap_1_1_map.html">map.Map</a>  </dt>
 <dd>Several dicts in this class don't match the style guideline. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000005"></a> <dl>
+<a class="anchor" name="_todo000006"></a> <dl>
+<dt>Member <a class="el" href="classmap_1_1_map.html#01f1f483a55da4d6b20491bb18940dfd">map::Map.instantiateBlocks</a>  </dt>
+<dd>Replace block info tuples with some container class. </dd>
+</dl>
+<p>
+<a class="anchor" name="_todo000007"></a> <dl>
 <dt>Member <a class="el" href="classmap_1_1_map.html#263a7fedc82cdafa1807be418be319f9">map::Map.loadMap</a>  </dt>
 <dd>This parser is very brittle, and while the map file format is not meant to be directly user-editable, there's no reason we couldn't be more flexible here. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000006"></a> <dl>
+<a class="anchor" name="_todo000008"></a> <dl>
 <dt>Member <a class="el" href="classphysicsobject_1_1_physics_object.html#a4aeec4650623f5861e47f01f9fb5987">physicsobject::PhysicsObject.handleCollisions</a>  </dt>
 <dd>Currently assumes all collisions are with terrain. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000007"></a> <dl>
+<a class="anchor" name="_todo000009"></a> <dl>
 <dt>Member <a class="el" href="classplayer_1_1_player.html#0d24e16944b6174affb80c7da8528c41">player::Player.__init__</a>  </dt>
 <dd>(Long-term) Add support for the female version </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000008"></a> <dl>
+<a class="anchor" name="_todo000010"></a> <dl>
 <dt>Member <a class="el" href="classprop_1_1_prop.html#a990d1e92d689b7afc2fae5deb8d44c2">prop::Prop.surface</a>  </dt>
 <dd>: convert these to sprites so that props can be animated. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000009"></a> <dl>
+<a class="anchor" name="_todo000011"></a> <dl>
+<dt>Member <a class="el" href="classpropmanager_1_1_prop_manager.html#6a1cf2c957c5f9e4ad7281b789bf837b">propmanager::PropManager.propConfigCache</a>  </dt>
+<dd>This dict is a huge mess (just check out selectProp()). </dd>
+</dl>
+<p>
+<a class="anchor" name="_todo000012"></a> <dl>
 <dt>Member <a class="el" href="classquadtree_1_1_quad_tree.html#89f2ca5450f633fc11fc82f9a30d5ac1">quadtree::QuadTree.addObject</a>  </dt>
 <dd>: calling rebalanceTree every time we add an object is needlessly inefficient. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000010"></a> <dl>
+<a class="anchor" name="_todo000013"></a> <dl>
 <dt>Member <a class="el" href="classsoundmanager_1_1_sound_manager.html#6132bb331ea3a0ad99462a55506a0bbf">soundmanager::SoundManager.__init__</a>  </dt>
 <dd>: Make this configurable. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000012"></a> <dl>
+<a class="anchor" name="_todo000015"></a> <dl>
 <dt>Member <a class="el" href="classsprite_1_1_sprite.html#f2cd9496b59a564a34f04bde16a33d40">sprite::Sprite.getCurrentAnimation</a>  </dt>
 <dd>Assumes that the facing is the last two characters of the string. Probably a better way to handle this. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000011"></a> <dl>
+<a class="anchor" name="_todo000014"></a> <dl>
 <dt>Member <a class="el" href="classsprite_1_1_sprite.html#cb352d77ede40055daf6c516bd54964b">sprite::Sprite.setAnimation</a>  </dt>
 <dd>shouldResetAnimation should be handled better. Currently we need it so we can "try out" different polygons for collision detection (c.f. TerrestrialObject crawl logic) without interfering with smooth animation. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000013"></a> <dl>
+<a class="anchor" name="_todo000016"></a> <dl>
 <dt>Class <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html">terrestrialobject.TerrestrialObject</a>  </dt>
 <dd>The logic dealing with crawling (and, in particular, forcing crawls when there's no headroom) is rather convoluted and should be improved. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000014"></a> <dl>
+<a class="anchor" name="_todo000017"></a> <dl>
 <dt>Member <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#2a406225cbdf00802aacecf46baa022d">terrestrialobject::TerrestrialObject.haveChangedAction</a>  </dt>
 <dd>Seems like there should be a better way to handle this. </dd>
+</dl>
+<p>
+<a class="anchor" name="_todo000018"></a> <dl>
+<dt>Class <a class="el" href="classvector2d_1_1_vector2_d.html">vector2d.Vector2D</a>  </dt>
+<dd>While using these instead of tuples/lists makes the code much cleaner, it's also much slower. Convert this module into a C module for more speed. </dd>
+</dl>
+<p>
+<a class="anchor" name="_todo000019"></a> <dl>
+<dt>Member <a class="el" href="classvector2d_1_1_vector2_d.html#23b4203c85c8e37269191bb52cd2d774">vector2d::Vector2D.__hash__</a>  </dt>
+<dd>Look up a good hash function to prevent collisions here. </dd>
 </dl>
 <p>
 <a class="anchor" name="_todo000002"></a> <dl>
@@ -85,8 +105,13 @@
 <dt>Member <a class="el" href="namespaceconstants.html#77ed0653d058c72ea5d38f10d50acc51">constants.fontNames</a>  </dt>
 <dd>Make this more modular (move it out to a font config module) </dd>
 </dl>
+<p>
+<a class="anchor" name="_todo000004"></a> <dl>
+<dt>Member <a class="el" href="namespacejetblade.html#64f14889c754561adeb55474db5c61bc">jetblade.init</a>  </dt>
+<dd>Use optparse or something similar to handle arguments. </dd>
+</dl>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Jul 1 13:45:46 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jul 16 17:42:34 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

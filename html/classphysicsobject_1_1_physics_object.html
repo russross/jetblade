@@ -117,8 +117,8 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="3d54a42e3879160c43bb2d58352d881a"></a><!-- doxytag: member="physicsobject::PhysicsObject::sprite" ref="3d54a42e3879160c43bb2d58352d881a" args="" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>sprite</b></td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="016e29c652943e6ece8ad6369d39ba3f"></a><!-- doxytag: member="physicsobject::PhysicsObject::collisionVectors" ref="016e29c652943e6ece8ad6369d39ba3f" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>collisionVectors</b></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="b2b2e6fd7d8384290212617dfdb679f4"></a><!-- doxytag: member="physicsobject::PhysicsObject::collisions" ref="b2b2e6fd7d8384290212617dfdb679f4" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><b>collisions</b></td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -184,19 +184,7 @@ Instantiate a new object.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>block</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>vector</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>distance</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>collision</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -280,7 +268,7 @@ Handle completion of animations.
 <p>
 React to colliding with objects by killing velocity and backing out until we are not intersecting again. 
 <p>
-Use self.adjestCollision() to modify ejection vectors and distances; use self.hit[Floor|Wall|Ceiling] to react to running into terrain of those types. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd>Currently assumes all collisions are with terrain. </dd></dl>
+Use self.adjestCollision() to modify ejection vectors and distances; use self.hit[Floor|Wall|Ceiling] to react to running into terrain of those types. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000008">Todo:</a></b></dt><dd>Currently assumes all collisions are with terrain. </dd></dl>
 
 </div>
 </div><p>
@@ -298,19 +286,7 @@ Use self.adjestCollision() to modify ejection vectors and distances; use self.hi
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>block</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>vector</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>distance</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>collision</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -343,19 +319,7 @@ React to hitting the floor.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>block</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>vector</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>distance</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>collision</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -388,19 +352,7 @@ React to hitting any terrain.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>block</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>vector</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>distance</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>collision</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -492,7 +444,7 @@ Apply gravity to velocity and velocity to location, then run collision detection
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>physicsobject.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Jul 1 13:45:47 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jul 16 17:42:34 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
