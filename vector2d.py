@@ -11,11 +11,6 @@ import math
 # expect.
 class Vector2D(tuple):
     __slots__ = []
-    ## Clean-looking way of accessing the first element. This is marginally 
-    # slower than using [0] but makes for easier-to-read code.
-    x = property(lambda self: self[0])
-    ## As x property, for second element.
-    y = property(lambda self: self[1])
 
     ## Instantiate a Vector2D. We accept either two coordinates, or a single
     # argument which is assumed to be a tuple or list with at least two 
@@ -37,6 +32,23 @@ class Vector2D(tuple):
     ## Return a tuple of our values.
     def tuple(self):
         return (self[0], self[1])
+
+
+    ## Access the first element (used by the x property)
+    def _getX_(self):
+        return self[0]
+
+
+    ## Access the second element (used by the y property)
+    def _getY_(self):
+        return self[1]
+
+
+    ## Clean-looking way of accessing the first element. This is marginally 
+    # slower than using [0] but makes for easier-to-read code.
+    x = property(_getX_)
+    ## As x property, for second element.
+    y = property(_getY_)
 
 
     ## Add alt to us. Return a copy of ourselves.
