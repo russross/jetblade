@@ -395,8 +395,6 @@ class TreeNode:
         distFunc = Vector2D.distance
         if jetblade.map.getRegionInfo(self.terrainInfo, 'aligned'):
             # Make a square junction instead of a circular one.
-            # \todo Sometimes this makes diagonal edges in the junction; 
-            # figure out why and fix it.
             distFunc = Vector2D.distanceSquare
 
         # Iterate over points in the accepted area, converting them to 
@@ -407,9 +405,10 @@ class TreeNode:
                            min(center.y + radius, jetblade.map.numRows - 1)):
                 point = Vector2D(x, y)
                 dist = distFunc(point, center)
-                if (dist <= radius and 
-                        point in jetblade.map.deadSeeds and 
-                        self.getRelationType(jetblade.map.deadSeeds[point].node) != 'none'):
+                canClaimPoint = jetblade.map.blocks[x][y] == map.BLOCK_UNALLOCATED
+                if point in jetblade.map.deadSeeds:
+                    canClaimPoint = self.getRelationType(jetblade.map.deadSeeds[point].node) != 'none'
+                if dist <= radius and canClaimPoint:
                     jetblade.map.blocks[x][y] = map.BLOCK_EMPTY
                     # Reassign the space to a dummy child
                     if self.junctionChild is None:
