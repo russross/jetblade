@@ -16,7 +16,8 @@ drawRoundAmount = .000005
 # smoothly interpolate between those points.
 class Sprite:
 
-    def __init__(self, name, owner):
+    ## Instantiate a Sprite.
+    def __init__(self, name, owner, loc = None):
         ## Name of the sprite, a.k.a. the path to the directory containing the 
         # animations in the sprite.
         self.name = name
@@ -29,12 +30,12 @@ class Sprite:
         self.prevAnimation = self.currentAnimation
         ## Object this is a sprite for. 
         self.owner = owner
-        ## Previous location of the parent object, for interpolation of drawing
-        # location.
-        self.prevLoc = owner.loc
-        ## Current location of the parent object, for interpolation of drawing
-        # location.
-        self.curLoc = owner.loc
+        ## Drawing location as of previous physics update, for location
+        # interpolation.
+        self.prevLoc = loc
+        ## Drawing location as of most recent physics update, for location
+        # interpolation
+        self.curLoc = loc
 
 
     ## Set the current animation for the sprite.
@@ -70,7 +71,10 @@ class Sprite:
 
     ## Update the displayed animation. If the animation has finished, apply
     # whatever closing logic is necessary. 
-    def update(self):
+    # \param loc The location of the sprite as of this update. This is 
+    # technically optional if you are going to specify a drawing location every
+    # time you call Sprite.draw().
+    def update(self, loc = None):
         curAnim = self.animations[self.currentAnimation]
         if curAnim.update(self.owner):
             logger.debug("Finishing animation",curAnim.name)
@@ -81,15 +85,19 @@ class Sprite:
                 logger.debug("Teleporting due to move offset",curAnim.moveOffset)
                 # Ending the animation moved the player, possibly arbitrarily,
                 # so our interpolation points are no longer valid.
-                self.prevLoc = self.owner.loc.copy()
-                self.curLoc = self.prevLoc
+                self.prevLoc = loc.copy()
+                self.curLoc = loc.copy()
         self.prevLoc = self.curLoc.copy()
-        self.curLoc = self.owner.loc.copy()
+        self.curLoc = loc.copy()
 
 
     ## Draw the current animation frame.
-    def draw(self, screen, camera, progress, scale = 1):
-        drawLoc = self.getDrawLoc(progress)
+    # \param drawLoc The location to draw the sprite. This is optional; if it
+    # is not provided, then the sprite will derive its own draw location based
+    # on its locations at the previous two physics updates.
+    def draw(self, screen, camera, progress, drawLoc = None, scale = 1):
+        if drawLoc is None:
+            drawLoc = self.getDrawLoc(progress)
         self.animations[self.currentAnimation].draw(screen, camera, drawLoc, scale)
 
 
@@ -121,11 +129,6 @@ class Sprite:
             return self.currentAnimation
         else:
             return self.currentAnimation[:-2]
-
-    ## Do collision detection against the provided polygon, which is at
-    # the provided location.
-    def collidePolygon(self, polygon, loc):
-        return self.animations[self.currentAnimation].getPolygon().runSAT(self.owner.loc, polygon, loc)
 
 
 ## A cache of animation data, to prevent redundant loading of modules.

@@ -30,7 +30,7 @@ class Block:
 
         imagePath = 'terrain/' + self.terrain.zone + '/' + self.terrain.region + '/blocks'
         ## To allow blocks to be animated, we use Sprites for drawing them.
-        self.sprite = sprite.Sprite(imagePath, self)
+        self.sprite = sprite.Sprite(imagePath, self, self.loc)
         self.sprite.setAnimation(self.orientation, False)
 
 
@@ -46,12 +46,12 @@ class Block:
 
     ## Draw the block.
     def draw(self, screen, camera, progress, scale = 1):
-        self.sprite.draw(screen, camera, progress, scale)
+        self.sprite.draw(screen, camera, progress, self.loc, scale)
 
 
     ## Perform collision detection against an incoming polygon.
     def collidePolygon(self, polygon, loc):
-        return self.sprite.collidePolygon(polygon, loc)
+        return self.sprite.getPolygon().runSAT(self.loc, polygon, loc)
 
 
     ## Return the bounding polygon

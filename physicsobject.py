@@ -35,7 +35,7 @@ class PhysicsObject:
         self.gravity = defaultGravity.copy()
         self.maxVel = defaultMaxVel.copy()
         self.facing = 1
-        self.sprite = sprite.Sprite(name, self)
+        self.sprite = sprite.Sprite(name, self, self.loc)
         self.collisions = []
 
 
@@ -50,7 +50,7 @@ class PhysicsObject:
         self.loc = self.loc.add(self.vel)
         self.handleCollisions()
         self.postCollisionUpdate()
-        self.sprite.update()
+        self.sprite.update(self.loc)
 
 
     ## Make whatever state changes the AI/player control calls for.

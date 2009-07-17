@@ -16,12 +16,6 @@ class EnvEffect:
     # make one of these, but all subclasses need to remember to call this 
     # after setting themselves up.
     def __init__(self, name):
-        ## HACK -- locations are required for Sprite instances to function.
-        # We want to use sprites because they simplify animation loading, 
-        # collision, and display. However, EnvEffects don't have any one single
-        # location.
-        # \todo: fix this.
-        self.loc = (0, 0)
         self.sprite = sprite.Sprite('effects/environments/' + name, self)
 
         ## All spaces that have the effect.
@@ -52,17 +46,13 @@ class EnvEffect:
     # just does the effect's image; if you have anything else you want to draw
     # (e.g. particle effects) you should override this function. 
     def draw(self, screen, loc, camera, progress, scale = 1):
-        # HACK -- set a "location" for something that has none, so we can use
-        # sprite-based drawing.
-        # \todo: fix this.
-        self.sprite.prevLoc = loc
-        self.sprite.curLoc = loc
-        self.sprite.draw(screen, camera, progress, scale)
+        self.sprite.draw(screen, camera, progress, loc, scale)
 
 
     ## Handle general updates. Specifically, find objects that have left our
     # region (by being in self.residentObjects but not in self.handledObjects).
     def update(self):
+        self.sprite.update()
         remainingObjects = dict().update(self.residentObjects.keys())
         for object in self.handledObjects.keys():
             del remainingObjects[object]
