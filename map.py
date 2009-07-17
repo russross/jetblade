@@ -7,9 +7,13 @@ import enveffect
 import prop
 import jetblade
 import util
+import logger
 import quadtree
 import seed
 import platform
+import terraininfo
+import collisiondata
+from vector2d import Vector2D
 
 import sys
 import math
@@ -18,13 +22,13 @@ import random
 import pygame
 
 ## Minimum width of the game world
-minUniverseWidth = constants.sw * 16
+minUniverseWidth = constants.blockSize * 200
 ## Minimum height of the game world
-minUniverseHeight = constants.sh * 16
+minUniverseHeight = constants.blockSize * 200
 ## Degree to which the game world dimensions are allowed to vary. The range thus
 # defined is e.g. 
 # [minUniverseWidth, minUniverseWidth + universeDimensionVariance] for width.
-universeDimensionVariance = 0
+universeDimensionVariance = constants.blockSize * 100
 
 ## Amount to thicken walls by in Map.expandWalls
 wallThickness = 2
@@ -228,10 +232,10 @@ class Map:
         ## This quadtree holds lines; we use it to make certain that limbs of
         # the tree do not come too close to each other (or intersect). 
         self.treeLines = quadtree.QuadTree(pygame.rect.Rect((0, 0), (self.width, self.height)))
-        self.treeLines.addObjects([line.Line((0, 0), (self.width, 0)),
-                line.Line((self.width, 0), (self.width, self.height)),
-                line.Line((self.width, self.height), (0, self.height)),
-                line.Line((0, self.height), (0, 0))])
+        self.treeLines.addObjects([line.Line(Vector2D(0, 0), Vector2D(self.width, 0)),
+                line.Line(Vector2D(self.width, 0), Vector2D(self.width, self.height)),
+                line.Line(Vector2D(self.width, self.height), Vector2D(0, self.height)),
+                line.Line(Vector2D(0, self.height), Vector2D(0, 0))])
 
         ## A quadtree of Platform instances created during fixAccessibility, 
         # that will be converted into actual blocks near the end of mapgen.
@@ -240,15 +244,16 @@ class Map:
         self.numCols = self.width / constants.blockSize
         self.numRows = self.height / constants.blockSize
         
-        util.debug("Making a",self.numCols,"x",self.numRows,"map")
-        util.debug("Started making map at",pygame.time.get_ticks())
+        logger.inform("Making a",self.numCols,"x",self.numRows,"map")
+        logger.inform("Started making map at",pygame.time.get_ticks())
 
         # First we need to figure out which parts of the map belong to which
         # regions. Make a low-rez overlay for the map that marks out regions.
+        logger.inform("Marking regions at",pygame.time.get_ticks())
         self.regions = self.makeRegions()
-        util.debug("Done marking regions at",pygame.time.get_ticks())
 
         # Create the array for the actual blocks.
+        logger.inform("Laying out grid at",pygame.time.get_ticks())
         self.blocks = []
         self.envGrid = []
         for i in range(0, self.numCols):
@@ -257,88 +262,85 @@ class Map:
             for j in range(0, self.numRows):
                 self.blocks[i].append(BLOCK_UNALLOCATED)
                 self.envGrid[i].append([])
-        util.debug("Grid laid out at",pygame.time.get_ticks())
         
         # Generate the tree that will be used to mark out tunnels.
-        self.tree = treenode.TreeNode([self.width / 2.0, self.height / 2.0], None, 0)
+        self.tree = treenode.TreeNode(Vector2D(self.width / 2.0, self.height / 2.0))
         depth = 0
         while self.tree.createTree():
             depth += 1
-            util.debug("Created tree at depth",depth,"at",pygame.time.get_ticks())
+            logger.inform("Created tree at depth",depth,"at",pygame.time.get_ticks())
 #            self.drawStatus()
-        util.debug("Done constructing tree at",pygame.time.get_ticks())
+        logger.inform("Done constructing tree at",pygame.time.get_ticks())
          
         # Lay the seeds for those tunnels.
+        logger.inform("Planting seeds at",pygame.time.get_ticks())
         self.tree.createTunnels()
-        util.debug("Seeds planted at",pygame.time.get_ticks())
-#        self.drawStatus()
 
         # Expand the seeds and carve out those tunnels. 
+        logger.inform("Expanding seeds at",pygame.time.get_ticks())
         (self.blocks, self.deadSeeds) = self.expandSeeds(self.seeds, self.blocks)
-        util.debug("Done expanding seeds at",pygame.time.get_ticks())
-#        self.drawStatus()
 
         # Clean up the points where tunnels meet.
+        logger.inform("Creating junctions at",pygame.time.get_ticks())
         self.createJunctions()
-        util.debug("Done creating junctions at",pygame.time.get_ticks())
-#        self.drawStatus()
 
         # Remove isolated chunks of land.
+        logger.inform("Removing islands at",pygame.time.get_ticks())
         self.removeIslands()
-        util.debug("Done removing islands at",pygame.time.get_ticks())
 
         # Make the walls a bit thicker.
+        logger.inform("Expanding walls at",pygame.time.get_ticks())
         self.expandWalls()
-        util.debug("Done expanding walls at",pygame.time.get_ticks())
 #        self.drawStatus()
 
         # Tell the tree nodes which spaces belong to them.
+        logger.inform("Assigning squares at",pygame.time.get_ticks())
         self.assignSquares()
-        util.debug("Done assigning squares at",pygame.time.get_ticks())
 
         # Fill in tunnels with interesting terrain.
+        logger.inform("Creating tunnel features at",pygame.time.get_ticks())
         self.tree.createFeatures()
-        util.debug("Done creating tunnel features at",pygame.time.get_ticks())
 
         # Reassign any seeds that got isolated in the last step to prevent
         # loops in the next step.
+        logger.inform("Fixing seed ownership at",pygame.time.get_ticks())
         (self.blocks, self.deadSeeds) = self.fixSeedOwnership(self.blocks, self.deadSeeds)
-        util.debug("Done fixing seed ownership at",pygame.time.get_ticks())
 
         # Walk the walls of sectors of the tree and add platforms where needed.
+        logger.inform("Fixing accessibility at",pygame.time.get_ticks())
         self.fixAccessibility()
-        util.debug("Done fixing accessibility at",pygame.time.get_ticks())
 
         # Mark those platforms on the map.
+        logger.inform("Building platforms at",pygame.time.get_ticks())
         self.buildPlatforms()
 
         # Set the block types for each cell in self.blocks.
+        logger.inform("Setting block types at",pygame.time.get_ticks())
         self.setBlocks()
-        util.debug("Done setting block types at",pygame.time.get_ticks())
 
         # Turn those block types into instances of the Block class.
+        logger.inform("Instantiating blocks at",pygame.time.get_ticks())
         self.instantiateBlocks()
-        util.debug("Done instantiating blocks at",pygame.time.get_ticks())
 
         self.markLoc = None
         self.drawStatus(self.blocks, None, self.deadSeeds)
 
         # \todo Pick a better starting point for the player.
-        self.startLoc = [int(self.numCols / 2), int(self.numRows / 2)]
-        while self.blocks[self.startLoc[0]][self.startLoc[1]] != BLOCK_EMPTY:
-            self.startLoc[1] -= 1
+        self.startLoc = Vector2D(int(self.numCols / 2), int(self.numRows / 2))
+        while self.blocks[self.startLoc.x][self.startLoc.y] != BLOCK_EMPTY:
+            self.startLoc.y -= 1
 
         self.writeMap(str(jetblade.seed))
 
-        util.debug("Done making map at",pygame.time.get_ticks())
+        logger.inform("Done making map at",pygame.time.get_ticks())
         numUsedSpaces = 0
         for x in range(0, self.numCols):
             for y in range(0, self.numRows):
-                if self.blocks[x][y] is not None:
+                if not self.blocks[x][y]:
                     numUsedSpaces += 1
         totalSpaces = self.numCols * self.numRows
         percent = numUsedSpaces / float(totalSpaces)
-        util.debug(numUsedSpaces,"of",totalSpaces,"spaces are occupied for a %.2f%% occupancy rate" % percent)
+        logger.inform(numUsedSpaces,"of",totalSpaces,"spaces are occupied for a %.2f%% occupancy rate" % percent)
 
 
     ## Create a low-rez overlay of the map that determines where different
@@ -369,24 +371,26 @@ class Map:
                 # Map (i, j) to the ranges ([0, 1], [0, 1]) and find the zone
                 # point that is closest to that location. Mark (i, j) as 
                 # belonging to that zone.
-                loc = (i / float(cols), j / float(rows))
+                loc = Vector2D(i / float(cols), j / float(rows))
                 closestZone = None
                 closestDist = constants.BIGNUM
                 for zoneName, zoneLoc in zonePoints.iteritems():
-                    dist = util.pointPointDistance(loc, zoneLoc)
+                    dist = loc.distance(zoneLoc)
                     if dist < closestDist:
                         closestZone = zoneName
                         closestDist = dist
                 
                 if closestZone not in zoneToBlocksMap:
                     zoneToBlocksMap[closestZone] = []
-                zoneToBlocksMap[closestZone].append((i, j))
-                blockToZoneMap[(i, j)] = closestZone
+                space = Vector2D(i, j)
+                zoneToBlocksMap[closestZone].append(space)
+                blockToZoneMap[space] = closestZone
 
         # Create a set of seeds for the different zones. Place them randomly
         # within each zone, and give them life proportionate to their desired
         # size.
         seeds = dict()
+        terrainInfoCache = dict()
         for zoneName, zoneInfo in self.zoneData.iteritems():
             totalWeight = 0
             zoneLocs = zoneToBlocksMap[zoneName]
@@ -394,18 +398,15 @@ class Map:
                 totalWeight += weight
             zoneSize = math.sqrt(len(zoneLocs))
             for regionName, weight in zoneInfo['regionWeights'].iteritems():
+                terrain = terraininfo.TerrainInfo(zoneName, regionName)
+                terrainInfoCache[(zoneName, regionName)] = terrain
                 loc = random.choice(zoneLocs)
                 numTries = 0
                 while loc in seeds and numTries < regionOverlayNumSeedingRetries:
                     numTries += 1
                     loc = random.choice(zoneLocs)
                 life = int(zoneSize * math.sqrt(weight / float(totalWeight)))
-                seeds[loc] = seed.Seed((zoneName, regionName), life, 0)
-
-        # Prep the overlay for the seed expansion step
-        for i in range(0, cols):
-            for j in range(0, rows):
-                blocks[i][j] = BLOCK_UNALLOCATED
+                seeds[loc] = seed.Seed(terrain, life, 0)
 
         # And expand those seeds into regions
         (blocks, seeds) = self.expandSeeds(seeds, blocks)
@@ -417,12 +418,18 @@ class Map:
         for i in range(0, cols):
             for j in range(0, rows):
                 if blocks[i][j] == BLOCK_UNALLOCATED:
-                    zoneName = blockToZoneMap[(i, j)]
-                    seeds[(i, j)] = seed.Seed((zoneName, self.zoneData[zoneName]['biggestRegion']), 0, constants.BIGNUM)
+                    space = Vector2D(i, j)
+                    zoneName = blockToZoneMap[space]
+                    regionName = self.zoneData[zoneName]['biggestRegion']
+                    if (zoneName, regionName) not in terrainInfoCache:
+                        terrainInfoCache[zoneName][regionName] = terraininfo.TerrainInfo(zoneName, regionName)
+                    seeds[space] = seed.Seed(terrainInfoCache[(zoneName, regionName)], 
+                                             0, constants.BIGNUM)
                 blocks[i][j] = BLOCK_EMPTY
 
-        
+
         (blocks, seeds) = self.fixSeedOwnership(blocks, seeds, 0)
+
         result = dict()
         for loc, resultSeed in seeds.iteritems():
             result[loc] = resultSeed.node
@@ -460,7 +467,7 @@ class Map:
         for i in range(0, self.numCols):
             for j in range(0, self.numRows):
                 if self.blocks[i][j] == BLOCK_UNALLOCATED:
-                    self.blocks[i][j] = None
+                    self.blocks[i][j] = ('center', 0)
                 elif self.blocks[i][j] == BLOCK_WALL:
                     (type, signature) = self.getBlockType(i, j)
                     self.blocks[i][j] = (type, signature)
@@ -478,7 +485,7 @@ class Map:
 
         for i in range(x-1,x+2):
             for j in range(y-1,y+2):
-                if self.getBlockAtGridLoc((i, j)) == 0:
+                if self.getBlockAtGridLoc(Vector2D(i, j)) == BLOCK_EMPTY:
                     adjacencies[j-(y-1)][i-(x-1)] = 0
                     numOpen += 1
 
@@ -493,78 +500,71 @@ class Map:
 
     ## Do a connectivity check on the map. Remove all areas whose size is 
     # less than minimumIslandSize. This is very similar to the 
-    # logic in fixSeedOwnership(), but operates on walls instead of seeds and 
-    # removes islands intirely instead of merging them with neighbors.
+    # logic in fixSeedOwnership(), but operates on walls (and unallocated
+    # space) instead of seeds and 
+    # removes islands entirely instead of merging them with neighbors.
     def removeIslands(self):
         chunks = []
-        seenSpaces = dict()
+        seenSpaces = set()
         
         for i in range(0, self.numCols):
             for j in range(0, self.numRows):
-                key = (i, j)
-                if (self.blocks[i][j] != BLOCK_EMPTY and 
-                        not seenSpaces.has_key(key)):
+                if (self.blocks[i][j] == BLOCK_WALL and 
+                        (i, j) not in seenSpaces):
+                    # Start a new chunk of contiguous land. Floodfill out from
+                    # this point, grabbing all adjacent occupied spaces and
+                    # adding them to the chunk.
                     newChunk = []
-                    fillStack = [key]
-                    seenSpaces[key] = 1
+                    fillStack = [Vector2D(i, j)]
+                    seenSpaces.add((i, j))
                     while fillStack:
                         loc = fillStack.pop(0)
                         newChunk.append(loc)
-                        for offset in constants.NEWSPerimeterOrder:
-                            x = loc[0] + offset[0]
-                            y = loc[1] + offset[1]
-                            if (self.getIsInBounds((x, y)) and 
-                                    self.blocks[x][y] != BLOCK_EMPTY and
-                                    not seenSpaces.has_key((x, y))):
-                                fillStack.append((x, y))
-                                seenSpaces[(x, y)] = type
+                        for neighbor in loc.NEWSPerimeter():
+                            neighborKey = neighbor.tuple()
+                            if (self.getIsInBounds(neighbor) and 
+                                    self.blocks[neighbor.x][neighbor.y] != BLOCK_EMPTY and
+                                    neighborKey not in seenSpaces):
+                                fillStack.append(neighbor)
+                                seenSpaces.add(neighborKey)
                     chunks.append(newChunk)
 
         for chunk in chunks:
             if len(chunk) < minimumIslandSize:
                 for loc in chunk:
-                    self.blocks[loc[0]][loc[1]] = BLOCK_EMPTY
+                    self.blocks[loc.x][loc.y] = BLOCK_EMPTY
 
 
     ## This is called right after setBlocks, which puts block terrain info
     # tuples into self.blocks. For each block in self.blocks that contains a 
     # tuple, create a Block instance.
     # At this time, also instantiate any props that are attached to the blocks.
+    # \todo Replace block info tuples with some container class.
     def instantiateBlocks(self):
         for i in range(0, self.numCols):
             for j in range(0, self.numRows):
                 if isinstance(self.blocks[i][j], tuple):
                     (type, signature) = self.blocks[i][j]
-                    terrain = None
-                    flavor = None
-                    if (i, j) in self.deadSeeds:
-                        (terrain, flavor) = self.deadSeeds[(i, j)].node.getTerrainInfo()
-                        blockLoc = (i * constants.blockSize, j * constants.blockSize)
-                        self.blocks[i][j] = block.Block(blockLoc, type, signature, terrain, flavor)
-                        # Choose a prop to attach to the block.
-                        newProp = jetblade.propManager.selectProp(terrain, flavor, signature)
-                        if newProp is not None:
-                            newProp.loc = util.addVectors(blockLoc, newProp.loc)
-                            self.addBackgroundObject(newProp)
-                    else:
-                        # This space was probably originally uninitialized, and
-                        # became a wall as part of expandWalls(). For now, just
-                        # leave it blank.
-                        # \todo: make a wall by picking up region info 
-                        # from adjacent blocks.
-                        self.blocks[i][j] = BLOCK_EMPTY
-#                        self.markLoc = (i, j)
-#                        self.drawStatus()
-#                        util.fatal("Unable to find terrain information for block at " + str((i,j)))
+                    loc = Vector2D(i, j)
+                    terrain = self.getTerrainInfoAtGridLoc(loc)
+                    sector = self.getSectorAtGridLoc(loc)
+                    if sector is not None:
+                        terrain = sector.getTerrainInfo()
+                    blockLoc = loc.toRealspace()
+                    self.blocks[i][j] = block.Block(blockLoc, type, signature, terrain)
+                    # Choose a prop to attach to the block.
+                    newProp = jetblade.propManager.selectProp(terrain, signature)
+                    if newProp is not None:
+                        newProp.loc = newProp.loc.add(blockLoc)
+                        self.addBackgroundObject(newProp)
 
 
     ## Plant a seed for hollowing out part of the map at the desired
     # location.
     def plantSeed(self, loc, node, size):
-        x = int(loc[0] / constants.blockSize)
-        y = int(loc[1] / constants.blockSize)
-        if self.getIsInBounds((x, y)):
-            self.seeds[(x, y)] = seed.Seed(node, int(size / constants.blockSize / 2.0), 0)
+        target = loc.toGridspace()
+        if self.getIsInBounds(target):
+            self.seeds[target] = seed.Seed(node, int(size / constants.blockSize / 2.0), 0)
 
 
     ## Run a spacefilling automaton to divide a grid up into different sectors.
@@ -584,22 +584,21 @@ class Map:
         while len(seeds):
             # Uncomment this if you want to see images be drawn at each step,
             # but don't want images for the creation of regions (before the 
-            # tunnel tree is made).
+            # tunnel tree is made). self.blocks is not defined until after
+            # regions are done being created.
 #            if self.blocks is not None:
 #                self.drawStatus(blocks, seeds, deadSeeds)
             newSeeds = dict()
             for loc, curSeed in seeds.iteritems():
                 # If the counter expires while the seed is not in open space,
-                # or the seed is on the border, replace
-                # it with a wall.
-                if ((loc[0] <= 0 or loc[0] >= numCols - 1 or
-                        loc[1] <= 0 or loc[1] >= numRows - 1) or
-                        (curSeed.life <= 0 and blocks[loc[0]][loc[1]] != BLOCK_EMPTY)):
+                # replace it with a wall.
+                if (not self.getIsInBounds(loc, numRows, numCols) or 
+                        (curSeed.life <= 0 and blocks[loc.x][loc.y] != BLOCK_EMPTY)):
                     deadSeeds[loc] = curSeed
-                    blocks[loc[0]][loc[1]] = BLOCK_WALL
+                    blocks[loc.x][loc.y] = BLOCK_WALL
                     continue
 
-                if (blocks[loc[0]][loc[1]] == BLOCK_WALL):
+                if (blocks[loc.x][loc.y] == BLOCK_WALL):
                     # A wall sprung up under us. Check if there's a dead
                     # seed there; if so, try to merge with it.
                     if loc in deadSeeds:
@@ -607,30 +606,28 @@ class Map:
                         if newSeed is not None:
                             newSeeds[loc] = newSeed
                             del deadSeeds[loc]
-                            blocks[loc[0]][loc[1]] = BLOCK_UNALLOCATED
+                            blocks[loc.x][loc.y] = BLOCK_UNALLOCATED
                     else:
                         # No seeds on walls.
                         continue
                     
-                if blocks[loc[0]][loc[1]] == BLOCK_EMPTY:
+                if blocks[loc.x][loc.y] == BLOCK_EMPTY:
                     # No seeds on empty space
                     deadSeeds[loc] = curSeed
                     continue
 
-                for offset in constants.perimeterOrder:
+                for adjLoc in loc.perimeter():
                     # Check adjacent blocks for seeds. If none, expand into the
                     # space. If there is a seed, make a wall, unless it's our
                     # own seed in which case we merge with it.
-                    x = loc[0] + offset[0]
-                    y = loc[1] + offset[1]
-                    if not self.getIsInBounds((x, y), numCols, numRows):
+                    if not self.getIsInBounds(adjLoc, numCols, numRows):
                         continue
-                    if (x, y) in seeds and (x, y) not in newSeeds:
+                    if adjLoc in seeds and adjLoc not in newSeeds:
                         # Two adjacent seeds; either merge or make wall.
-                        altSeed = seeds[(x, y)]
+                        altSeed = seeds[adjLoc]
                         if altSeed.node == curSeed.node:
                             # Merge the seeds
-                            newSeeds[(x, y)] = seed.Seed(curSeed.node, 
+                            newSeeds[adjLoc] = seed.Seed(curSeed.node, 
                                     max(curSeed.life, altSeed.life) - 1,
                                     max(curSeed.age, altSeed.age) + 1)
                         else:
@@ -639,24 +636,25 @@ class Map:
                             altSeed.age = constants.BIGNUM
                             curSeed.life = 0
                             curSeed.age = constants.BIGNUM
-                            blocks[x][y] = BLOCK_WALL
-                            blocks[loc[0]][loc[1]] = BLOCK_WALL
-                    elif blocks[x][y] == BLOCK_UNALLOCATED:
+                            blocks[loc.x][loc.y] = BLOCK_WALL
+                            blocks[adjLoc.x][adjLoc.y] = BLOCK_WALL
+                    elif blocks[loc.x][loc.y] == BLOCK_UNALLOCATED:
                         # No seed there; plant one.
-                        newSeeds[(x, y)] = seed.Seed(curSeed.node, curSeed.life - 1, curSeed.age + 1)
-                    elif blocks[x][y] != BLOCK_EMPTY and deadSeeds.has_key((x, y)):
+                        newSeeds[adjLoc] = seed.Seed(curSeed.node, curSeed.life - 1, curSeed.age + 1)
+                    elif (blocks[adjLoc.x][adjLoc.y] != BLOCK_EMPTY and
+                            deadSeeds.has_key(adjLoc)):
                         # Hit a wall containing a dead seed; try to merge
                         # with it.
-                        newSeed = self.tryMergeDeadSeed(curSeed, (x, y), seeds, deadSeeds, numCols, numRows)
+                        newSeed = self.tryMergeDeadSeed(curSeed, adjLoc, seeds, deadSeeds, numCols, numRows)
                         if newSeed is not None:
-                            newSeeds[(x, y)] = newSeed
-                            del deadSeeds[(x, y)]
-                            blocks[x][y] = BLOCK_UNALLOCATED
+                            newSeeds[adjLoc] = newSeed
+                            del deadSeeds[adjLoc]
+                            blocks[adjLoc.x][adjLoc.y] = BLOCK_UNALLOCATED
    
                 # Done expanding; zero our location if we didn't wall it 
                 # earlier.
-                if blocks[loc[0]][loc[1]] != BLOCK_WALL:
-                    blocks[loc[0]][loc[1]] = BLOCK_EMPTY
+                if blocks[loc.x][loc.y] != BLOCK_WALL:
+                    blocks[loc.x][loc.y] = BLOCK_EMPTY
                 deadSeeds[loc] = curSeed
             seeds = newSeeds
         return (blocks, deadSeeds)
@@ -671,14 +669,12 @@ class Map:
         altSeed = deadSeeds[loc]
         if altSeed.node != curSeed.node:
             return None
-        for offset in constants.perimeterOrder:
-            x = loc[0] + offset[0]
-            y = loc[1] + offset[1]
-            if not self.getIsInBounds((x, y), numCols, numRows):
+        for neighbor in loc.perimeter():
+            if not self.getIsInBounds(neighbor, numCols, numRows):
                 continue
-            if (x, y) in seeds and seeds[(x, y)].node != curSeed.node:
+            if neighbor in seeds and seeds[neighbor].node != curSeed.node:
                 return None
-            if (x, y) in deadSeeds and deadSeeds[(x, y)].node != curSeed.node:
+            if neighbor in deadSeeds and deadSeeds[neighbor].node != curSeed.node:
                 return None
 
         newSeed = seed.Seed(curSeed.node, curSeed.life - 1, curSeed.age + 1)
@@ -688,7 +684,7 @@ class Map:
     ## Assign all open spaces to the sectors that own them.
     def assignSquares(self):
         for loc, seed in self.deadSeeds.iteritems():
-            if self.blocks[loc[0]][loc[1]] == BLOCK_EMPTY:
+            if self.blocks[loc.x][loc.y] == BLOCK_EMPTY:
                 seed.node.assignSpace(loc)
 
 
@@ -700,36 +696,33 @@ class Map:
     # "Islands" are regions of seeds that are below a minimum cutoff size.
     def fixSeedOwnership(self, blocks, seeds, shouldReassignSpaces = 1):
         chunks = []
-        seenSpaces = dict()
+        spaceToChunkMap = dict()
 
         numCols = len(blocks)
         numRows = len(blocks[0])
         
         for i in range(0, numCols):
             for j in range(0, numRows):
-                key = (i, j)
+                key = Vector2D(i, j)
                 if (blocks[i][j] == BLOCK_EMPTY and 
-                        key not in seenSpaces and 
+                        key not in spaceToChunkMap and 
                         key in seeds):
                     type = seeds[key].node # Local sector type.
                     newChunk = []
                     fillStack = [key]
-                    seenSpaces[key] = newChunk
+                    spaceToChunkMap[key] = newChunk
                     while fillStack:
                         loc = fillStack.pop(0)
                         newChunk.append(loc)
-                        for offset in constants.NEWSPerimeterOrder:
-                            x = loc[0] + offset[0]
-                            y = loc[1] + offset[1]
-                            if (x < 0 or x >= numCols or 
-                                    y < 0 or y >= numRows or
-                                    blocks[x][y] != BLOCK_EMPTY):
+                        for neighbor in loc.NEWSPerimeter():
+                            if (not self.getIsInBounds(neighbor, numCols, numRows) or
+                                    blocks[neighbor.x][neighbor.y] != BLOCK_EMPTY):
                                 continue
-                            if ((x, y) not in seenSpaces and 
-                                    (x, y) in seeds and 
-                                    seeds[(x, y)].node == type):
-                                fillStack.append((x, y))
-                                seenSpaces[(x, y)] = newChunk
+                            if (neighbor not in spaceToChunkMap and 
+                                    neighbor in seeds and 
+                                    seeds[neighbor].node == type):
+                                fillStack.append(neighbor)
+                                spaceToChunkMap[neighbor] = newChunk
                     chunks.append(newChunk)
 
         chunkStack = []
@@ -737,35 +730,35 @@ class Map:
         while chunkStack:
             chunk = chunkStack.pop(0)
             if len(chunk) < minimumSectorSize:
+                # Find an adjacent chunk to merge with
                 altChunk = None
                 for loc in chunk:
                     if altChunk is not None:
                         break
-                    for offset in constants.NEWSPerimeterOrder:
-                        x = loc[0] + offset[0]
-                        y = loc[1] + offset[1]
-                        if not self.getIsInBounds((x, y), numCols, numRows):
+                    for neighbor in loc.NEWSPerimeter():
+                        if not self.getIsInBounds(neighbor, numCols, numRows):
                             continue
-                        if ((x, y) in seenSpaces and 
-                                seenSpaces[(x, y)] != chunk):
-                            altChunk = seenSpaces[(x, y)]
+                        if (neighbor in spaceToChunkMap and 
+                                spaceToChunkMap[neighbor] != chunk):
+                            # Found a different chunk to try merging with.
+                            altChunk = spaceToChunkMap[neighbor]
+                            break
                 if altChunk is not None:
                     newType = seeds[altChunk[0]].node
                     for loc in chunk:
-                        key = (loc[0], loc[1])
-                        seed = seeds[key]
+                        seed = seeds[loc]
                         if shouldReassignSpaces:
-                            seed.node.unassignSpace(key)
-                            newType.assignSpace(key)
-                        seeds[key].node = newType
-                        seenSpaces[key] = altChunk
+                            seed.node.unassignSpace(loc)
+                            newType.assignSpace(loc)
+                        seeds[loc].node = newType
+                        spaceToChunkMap[loc] = altChunk
                     altChunk.extend(chunk)
                     chunkStack.append(altChunk)
                 else:
                     # Couldn't find a valid neighbor for this seed; it must be
                     # isolated by walls. Turn it into one.
                     for loc in chunk:
-                        blocks[loc[0]][loc[1]] = BLOCK_WALL
+                        blocks[loc.x][loc.y] = BLOCK_WALL
                         
         return (blocks, seeds)
 
@@ -777,39 +770,43 @@ class Map:
 
 
     ## Find the nearest wall to the given starting block along the 
-    # normalized vector <dx, dy>. Return the realspace distance to that wall.
+    # normalized vector direction. Return the realspace distance to that wall.
     # \param node Node in the tree that we are to contain our search to. If 
     # None, then do not constrain the search. Otherwise, treat regions outside
     # that node's area as walls.
-    def getDistanceToWall(self, start, dx, dy, node = None):
-        currentSpace = list(start)
+    def getDistanceToWall(self, start, direction, node = None):
+        currentSpace = start.copy()
+        intCurrent = currentSpace.int()
         distance = 0
+        # While currentSpace is valid, it's empty space (or filled space close
+        # to the start), and we're in the specified sector or we don't care 
+        # about the sector, move currentSpace out along direction and
+        # recalculate distance.
         while (self.getIsInBounds(currentSpace) and
-                (self.blocks[int(currentSpace[0])][int(currentSpace[1])] == BLOCK_EMPTY or
-                 distance < 2) and
-                (node is None or (tuple(currentSpace) in self.deadSeeds and self.deadSeeds[tuple(currentSpace)].node == node))):
-            currentSpace[0] += dx
-            currentSpace[1] += dy
-            distance = util.pointPointDistance(start, currentSpace)
-        distance = util.pointPointDistance(start, currentSpace)
+                (self.blocks[intCurrent.x][intCurrent.y] == BLOCK_EMPTY or
+                     distance < 2) and
+                (node is None or intCurrent in self.deadSeeds and
+                    self.deadSeeds[intCurrent].node == node)):
+            currentSpace = currentSpace.add(direction)
+            intCurrent = currentSpace.int()
+            distance = currentSpace.distance(start)
         return distance
 
 
-    ## Build platforms out from start along <dx, dy> until we get distance
+    ## Build platforms out from start along direction until we get distance
     # away from start.
-    def markPlatform(self, start, dx, dy, distance):
+    def markPlatform(self, start, direction, distance):
         totalDistance = 0
         while totalDistance < distance:
             buildDistance = minDistForPlatform + totalDistance
-            buildX = int(start[0] + dx * buildDistance) + random.choice(platformHorizontalOffsets)
-            buildY = int(start[1] + dy * buildDistance)
-            buildLoc = [buildX, buildY]
+            buildLoc = start.add(direction.multiply(buildDistance)).int()
+            buildLoc.x += random.choice(platformHorizontalOffsets)
             shouldBuild = 1
-            realLoc = util.gridspaceToRealspace(buildLoc)
+            realLoc = buildLoc.toRealspace()
             width = minHorizDistToOtherPlatforms * constants.blockSize
             height = minVertDistToOtherPlatforms * constants.blockSize
-            rect = pygame.Rect(realLoc[0] - width, 
-                               realLoc[1] - height,
+            rect = pygame.Rect(realLoc.x - width, 
+                               realLoc.y - height,
                                width * 2,
                                height * 2)
             if not self.platformsQuadTree.getObjectsIntersectingRect(rect):
@@ -822,13 +819,13 @@ class Map:
         for platform in self.platformsQuadTree.getObjects():
             loc = platform.loc
             width = platform.width
-            first = int(loc[0] - width / 2.0)
-            last = int(loc[0] + width / 2.0)
+            first = int(loc.x - width / 2.0)
+            last = int(loc.x + width / 2.0)
             for x in range(first, last):
                 if (x < 0 or x >= self.numCols or 
-                        self.blocks[x][loc[1]] == BLOCK_UNALLOCATED):
+                        self.blocks[x][loc.y] == BLOCK_UNALLOCATED):
                     continue
-                self.blocks[x][loc[1]] = BLOCK_WALL
+                self.blocks[x][loc.y] = BLOCK_WALL
 
 
     ## Draw an intermediary status image and saves it to disk. These are often 
@@ -837,13 +834,16 @@ class Map:
     # \param seeds Active seeds used during map.expandSeeds().
     # \param deadSeeds Inactive seeds, used to mark sectors on the map.
     # \param marks List of other locations that should be specially marked.
+    # \param shouldZoom If true and self.markLoc is set, zoom in on that
+    # location.
     # In addition to the above, if map.markLoc is defined, then the map will
     # be focused on that location.
-    def drawStatus(self, blocks = None, seeds = None, deadSeeds = None, marks = None):
+    def drawStatus(self, blocks = None, seeds = None, deadSeeds = None, 
+                   marks = None, shouldZoom = True):
         if blocks is None:
             blocks = self.blocks
         self.statusIter += 1
-        util.debug("Drawing status number",self.statusIter,"with mark",self.markLoc)
+        logger.debug("Drawing status number",self.statusIter,"with mark",self.markLoc)
 #        if self.statusIter < 25:
 #            return
         # Draw things a bit smaller...
@@ -881,30 +881,31 @@ class Map:
         if (deadSeeds is not None and len(deadSeeds) and 
                 hasattr(deadSeeds[deadSeeds.keys()[0]].node, 'color')):
             for loc, seed in deadSeeds.iteritems():
-                drawLoc = (loc[0]*size + add, loc[1]*size + add)
+                drawLoc = loc.multiply(size).addScalar(add).tuple()
                 pygame.draw.circle(screen, seed.node.color, drawLoc, add)
 
         if seeds is not None:
             for loc, seed in seeds.iteritems():
-                drawLoc = (loc[0]*size + add, loc[1]*size + add)
+                drawLoc = loc.multiply(size).addScalar(add).tuple()
                 diff = 255 if seed.life <= 0 else int(255 / seed.life)
                 pygame.draw.circle(screen, (0, diff, 255-diff), drawLoc, add)
 
         if marks is not None:
             for loc in marks:
-                drawLoc = (loc[0]*size + add, loc[1]*size + add)
+                drawLoc = loc.multiply(size).addScalar(add).tuple()
                 pygame.draw.circle(screen, (255, 0, 0), drawLoc, add)
 
         if self.markLoc is not None:
-            drawLoc = (self.markLoc[0]*size + add, self.markLoc[1]*size + add)
+            drawLoc = self.markLoc.multiply(size).addScalar(add).tuple()
             pygame.draw.circle(screen, (0, 255, 255), drawLoc, add+4, 4)
 
-            subRect = pygame.Rect((self.markLoc[0] * size - 400, 
-                                   self.markLoc[1] * size - 400),
-                                   (800, 800))
-            subSurface = pygame.Surface((800, 800))
-            subSurface.blit(screen, (0, 0), subRect)
-            screen = subSurface
+            if shouldZoom:
+                subRect = pygame.Rect((self.markLoc.x * size - 400, 
+                                       self.markLoc.y * size - 400),
+                                       (800, 800))
+                subSurface = pygame.Surface((800, 800))
+                subSurface.blit(screen, (0, 0), subRect)
+                screen = subSurface
 
         if self.markLoc is None and self.tree is not None:
             self.tree.draw(screen, scale)
@@ -916,14 +917,14 @@ class Map:
             screen = pygame.transform.rotozoom(screen, 0, constants.sw / float(self.width * scale))
         jetblade.screen.blit(screen, (0, 0))
         pygame.display.update()
-        util.debug("Status drawn")
+        logger.debug("Status drawn")
 
 
     ## Draw a complete view of the map for purposes of looking pretty. Saves 
     # the result to disk under the provided filename.
     def drawAll(self, filename):
         scale = drawAllScaleFactor
-        center = (self.width / 2.0 * scale, self.height / 2.0 * scale)
+        center = Vector2D(self.width, self.height).multiply(scale / 2.0)
         size = constants.blockSize * scale
         
         screen = pygame.Surface((int(self.width * scale), int(self.height * scale)))
@@ -933,7 +934,7 @@ class Map:
         for x in range(0, self.numCols):
             for y in range(0, self.numRows):
                 for effect in self.envGrid[x][y]:
-                    effect.draw(screen, util.gridspaceToRealspace((x, y)), center, 0, scale)
+                    effect.draw(screen, Vector2D(x, y).toRealspace(), center, 0, scale)
 
         for y in range(self.numRows - 1, 0, -1):
             # Draw from bottom to top because blocks may "hang" down a bit.
@@ -942,7 +943,8 @@ class Map:
                 if block:
                     block.draw(screen, center, 0, scale)
                 elif block is None:
-                    rect = pygame.rect.Rect((x * size, y * size), (size, size))
+                    rect = pygame.rect.Rect((x * size, y * size), 
+                                            (size, size))
                     pygame.draw.rect(screen, (64, 64, 64), rect)
         
         pygame.image.save(screen, filename)
@@ -954,14 +956,14 @@ class Map:
         self.backgroundQuadTree.draw(screen, cameraLoc, progress)
         if self.envGrid is not None:
             rect = screen.get_rect()
-            rect.center = cameraLoc
+            rect.center = cameraLoc.tuple()
             width = rect.width
             height = rect.height
             # \todo Remove the duplication between this and drawMidground
-            minX = int((cameraLoc[0] - width / 2.0) / constants.blockSize) - 1
-            minY = int((cameraLoc[1] - width / 2.0) / constants.blockSize) - 1
-            maxX = int((cameraLoc[0] + height / 2.0) / constants.blockSize) + 3
-            maxY = int((cameraLoc[1] + height / 2.0) / constants.blockSize) + 3
+            minX = int((cameraLoc.x - width / 2.0) / constants.blockSize) - 1
+            minY = int((cameraLoc.y - width / 2.0) / constants.blockSize) - 1
+            maxX = int((cameraLoc.x + height / 2.0) / constants.blockSize) + 3
+            maxY = int((cameraLoc.y + height / 2.0) / constants.blockSize) + 3
             for x in range(minX, maxX):
                 if x < 0 or x > self.numCols:
                     continue
@@ -969,20 +971,20 @@ class Map:
                     if y < 0 or y > self.numRows:
                         continue
                     for effect in self.envGrid[x][y]:
-                        effect.draw(screen, util.gridspaceToRealspace((x, y)), 
+                        effect.draw(screen, Vector2D(x, y).toRealspace(), 
                                     cameraLoc, progress)
 
 
     ## Draw the terrain tiles.
     def drawMidground(self, screen, cameraLoc, progress):
         rect = screen.get_rect()
-        rect.center = cameraLoc
+        rect.center = cameraLoc.tuple()
         width = rect.width
         height = rect.height
-        minX = int((cameraLoc[0] - width / 2.0) / constants.blockSize) - 1
-        minY = int((cameraLoc[1] - width / 2.0) / constants.blockSize) - 1
-        maxX = int((cameraLoc[0] + height / 2.0) / constants.blockSize) + 3
-        maxY = int((cameraLoc[1] + height / 2.0) / constants.blockSize) + 3
+        minX = int((cameraLoc.x - width / 2.0) / constants.blockSize) - 1
+        minY = int((cameraLoc.y - width / 2.0) / constants.blockSize) - 1
+        maxX = int((cameraLoc.x + height / 2.0) / constants.blockSize) + 3
+        maxY = int((cameraLoc.y + height / 2.0) / constants.blockSize) + 3
         for x in range(minX, maxX+1):
             if x < 0 or x > self.numCols:
                 continue
@@ -1014,7 +1016,7 @@ class Map:
             # one)
             for p1 in [altLine.start, altLine.end]:
                 for p2 in [newLine.start, newLine.end]:
-                    if util.pointPointDistance(p1, p2) < constants.DELTA:
+                    if p1.distance(p2) < constants.DELTA:
                         # altLine and newLine share a point. Check if it's
                         # a safe one.
                         isSafePoint = False
@@ -1027,12 +1029,12 @@ class Map:
             if collisionResult in [line.LINE_INTERSECT, line.LINE_COINCIDENT]:
                 # No crossing lines
                 return False
-            if (not util.fuzzyVectorMatch(newLine.end, safePoints) and 
-                    util.pointLineDistance(newLine.end, altLine) < treePruneDistance):
+            if (not newLine.end.fuzzyMatchList(safePoints) and
+                    altLine.pointDistance(newLine.end) < treePruneDistance):
                 # Endpoint of new line can't be too close to other lines
                 return False
-            if (not util.fuzzyVectorMatch(altLine.end, safePoints) and 
-                    util.pointLineDistance(altLine.end, newLine) < treePruneDistance): 
+            if (not altLine.end.fuzzyMatchList(safePoints) and 
+                    newLine.pointDistance(altLine.end) < treePruneDistance): 
                 # Endpoints of existing lines can't be too close to new line
                 return False
         return True
@@ -1056,9 +1058,8 @@ class Map:
     # later, as it might interfere with TreeNode.fixAccessibility() if done
     # now.
     def addPlatform(self, loc, size):
-        loc = [int(loc[0]), int(loc[1])]
+        loc = loc.int()
         if self.getIsInBounds(loc):
-            util.debug("Adding a platform at",loc,"with size",size)
             newPlatform = platform.Platform(loc, size)
             self.platformsQuadTree.addObject(newPlatform)
 
@@ -1070,8 +1071,9 @@ class Map:
 
     ## Mark the given tile as containing the selected environmental effect.
     def addEnvEffect(self, loc, effect):
-        if loc[0] >= 0 and loc[0] < self.numCols and loc[1] >= 0 and loc[1] < self.numRows:
-            self.envGrid[loc[0]][loc[1]].append(effect)
+        loc = loc.int()
+        if self.getIsInBounds(loc):
+            self.envGrid[loc.x][loc.y].append(effect)
 
 
     def getStartLoc(self):
@@ -1082,19 +1084,19 @@ class Map:
     # the largest ejection vector (as that is the tile that the polygon probably
     # hit first).
     def collidePolygon(self, poly, loc):
-        upperLeft = util.realspaceToGridspace((poly.upperLeft[0] + loc[0], poly.upperLeft[1] + loc[1]))
-        lowerRight = util.realspaceToGridspace((poly.lowerRight[0] + loc[0], poly.lowerRight[1] + loc[1]))
+        upperLeft = poly.upperLeft.add(loc).toGridspace()
+        lowerRight = poly.lowerRight.add(loc).toGridspace()
         longestOverlap = -constants.BIGNUM
         resultVector = None
         resultBlock = None
-        upperLeft[0] -= 1
-        upperLeft[1] -= 1
-        lowerRight[0] += 2
-        lowerRight[1] += 2
-        for x in range(upperLeft[0], lowerRight[0]):
+        upperLeft.x -= 1
+        upperLeft.y -= 1
+        lowerRight.x += 2
+        lowerRight.y += 2
+        for x in range(upperLeft.x, lowerRight.x):
             if x < 0 or x >= self.numCols:
                 continue
-            for y in range(upperLeft[1], lowerRight[1]):
+            for y in range(upperLeft.y, lowerRight.y):
                 if y < 0 or y >= self.numRows:
                     continue
                 if self.blocks[x][y] not in (None, BLOCK_EMPTY):
@@ -1105,24 +1107,25 @@ class Map:
                             resultVector = vector
                             resultBlock = self.blocks[x][y]
         if resultVector is not None:
-            util.debug("Collision result is",(longestOverlap, resultVector, resultBlock.orientation),"against block at",resultBlock.gridLoc)
-            util.debug("Polygon",poly,"at",loc,"hit polygon",resultBlock.sprite.getPolygon(),"at",resultBlock.loc)
-            checkLoc = util.addVectors(resultBlock.gridLoc, resultVector)
+            logger.debug("Collision result is",(longestOverlap, resultVector, resultBlock.orientation),"against block at",resultBlock.gridLoc)
+            logger.debug("Polygon",poly,"at",loc,"hit polygon",resultBlock.sprite.getPolygon(),"at",resultBlock.loc)
+            checkLoc = resultBlock.gridLoc.add(resultVector)
             checkBlock = self.getBlockAtGridLoc(checkLoc)
             if checkBlock and checkBlock != resultBlock:
-                util.debug("Ejection vector points into another block")
+                logger.debug("Ejection vector points into another block")
                 # Objects that get sufficiently embedded in the walls can get 
                 # inaccurate ejection vectors because the shortest path for one 
-                # tile of the wall is right into another tile. Manually correct
+                # tile of the wall is into another tile. Manually correct
                 # the ejection vector if this happens.
                 # \todo It'd be nice if we didn't have to do this.
-                for offset in constants.NEWSPerimeterOrder:
-                    checkLoc = util.addVectors(resultBlock.gridLoc, offset)
+                for checkLoc in resultBlock.gridLoc.NEWSPerimeter():
                     if not self.getBlockAtGridLoc(checkLoc):
-                        util.debug("Converting ejection vector from",resultVector,"to",offset)
-                        resultVector = offset
+                        delta = checkLoc.sub(resultBlock.gridLoc)
+                        logger.debug("Converting ejection vector from",resultVector,"to",delta)
+                        resultVector = delta
                         break
-        return (longestOverlap, resultVector, resultBlock)
+        return collisiondata.CollisionData(resultVector, longestOverlap,
+                                           'terrain', resultBlock)
 
 
     ## Load map information from disk. The filename is equal to the name of the
@@ -1133,6 +1136,8 @@ class Map:
     def loadMap(self):
         fh = open(self.mapName, 'r')
         lineNum = 0
+        terrainInfoCache = dict()
+        envEffectCache = dict()
         mode = 'dimensions'
         for line in fh:
             line = line.rstrip()
@@ -1162,16 +1167,20 @@ class Map:
                     continue
                 # Read starting location
                 (x, y) = line.split(',')
-                self.startLoc = [int(x), int(y)]
+                self.startLoc = Vector2D(int(x), int(y))
             elif mode == 'blocks':
                 if line == 'enveffects:':
                     mode = 'enveffects'
                     continue
-                (x, y, orientation, terrain, flavor) = line.split(',')
+                (x, y, orientation, zone, region) = line.split(',')
                 x = int(x)
                 y = int(y)
-                flavor = flavor.rstrip()
-                self.blocks[x][y] = orientation + ':' + terrain + ':' + flavor
+                region = region.rstrip()
+                if (zone, region) not in terrainInfoCache:
+                    terrainInfoCache[(zone, region)] = terraininfo.TerrainInfo(zone, region)
+                self.blocks[x][y] = block.Block(Vector2D(x, y).toRealspace(),
+                                            orientation, None, 
+                                            terrainInfoCache[(zone, region)])
             elif mode == 'enveffects':
                 if line == 'bgprops:':
                     mode = 'bgprops'
@@ -1181,33 +1190,35 @@ class Map:
                 x = int(x)
                 y = int(y)
                 effects = effects.split(',')
-                self.envGrid[x][y].extend([enveffect.EnvEffect(name) for name in effects])
+                for name in effects:
+                    if name not in envEffectCache:
+                        envEffectCache[name] = enveffect.EnvEffect(name)
+                    envEffectCache[name].addSpace(Vector2D(x, y))
+
             elif mode == 'bgprops':
-                (x, y, terrain, flavor, group, item) = line.split(',')
+                (x, y, zone, region, group, item) = line.split(',')
                 x = int(x)
                 y = int(y)
-                self.backgroundQuadTree.addObject(prop.Prop((x, y), terrain, flavor, group, item))
-        for x in range(0, self.numCols):
-            for y in range(0, self.numRows):
-                if self.blocks[x][y]:
-                    (orientation, terrain, flavor) = self.blocks[x][y].split(':')
-                    self.blocks[x][y] = block.Block((x * constants.blockSize, 
-                                                     y * constants.blockSize),
-                                                orientation, None, 
-                                                terrain, flavor)
+                if (zone, region) not in terrainInfoCache:
+                    terrainInfoCache[(zone, region)] = terraininfo.TerrainInfo(zone, region)
+                self.backgroundQuadTree.addObject(
+                        prop.Prop(Vector2D(x, y), 
+                                  terrainInfoCache[(zone, region)], 
+                                  group, item))
 
 
     ## Write our map to disk so it can be read by loadMap().
     def writeMap(self, name):
         fh = open(name + '.map', 'w')
         fh.write("%d,%d\n" % (self.numCols, self.numRows))
-        fh.write("%d,%d\n" % (self.startLoc[0], self.startLoc[1]))
+        fh.write("%d,%d\n" % (self.startLoc.x, self.startLoc.y))
         fh.write("blocks:\n")
         for x in range(0, self.numCols):
             for y in range(0, self.numRows):
                 if self.blocks[x][y] not in (BLOCK_EMPTY, None):
                     block = self.blocks[x][y]
-                    fh.write("%d,%d,%s,%s,%s\n" % (x, y, block.orientation, block.terrain, block.flavor))
+                    fh.write("%d,%d,%s,%s,%s\n" % (x, y, block.orientation,
+                        block.terrain.zone, block.terrain.region))
         fh.write("enveffects:\n")
         for x in range(0, self.numCols):
             for y in range(0, self.numRows):
@@ -1218,41 +1229,50 @@ class Map:
         fh.write("bgprops:\n")
         for prop in self.backgroundQuadTree.getObjects():
             fh.write("%d,%d,%s,%s,%s,%s\n" % 
-                     (prop.loc[0], prop.loc[1], prop.terrain, 
-                      prop.flavor, prop.group, prop.item))
+                     (prop.loc.x, prop.loc.y, prop.terrain.zone, 
+                      prop.terrain.region, prop.group, prop.item))
 
 
     ## Simple boundary check for the blocks grid.
-    def getIsInBounds(self, loc, numCols = -1, numRows = -1):
-        if numCols == -1:
+    def getIsInBounds(self, loc, numCols = None, numRows = None):
+        if numCols is None:
             numCols = self.numCols
-        if numRows == -1:
+        if numRows is None:
             numRows = self.numRows
-        return (loc[0] >= 0 and loc[0] < numCols and
-                loc[1] >= 0 and loc[1] < numRows)
+        return (loc.x >= 0 and loc.x < numCols and
+                loc.y >= 0 and loc.y < numRows)
 
 
     ## Returns the region information at the given location. See makeRegions()
     # for more information on regions.
     def getTerrainInfoAtGridLoc(self, loc):
-        regionLoc = (int(loc[0] * regionOverlayResolutionMultiplier), 
-                     int(loc[1] * regionOverlayResolutionMultiplier))
+        regionLoc = loc.multiply(regionOverlayResolutionMultiplier).int()
         if regionLoc in self.regions:
             return self.regions[regionLoc]
-        return (None, None)
+        logger.warn("At",loc,"(adjusted to",regionLoc,") I don't have any region info")
+        logger.debug("Regions are",[(str(vec), str(self.regions[vec])) for vec in self.regions.keys()])
+        return None
 
 
     def getBlockAtGridLoc(self, loc):
         if not self.getIsInBounds(loc):
             return None
-        return self.blocks[int(loc[0])][int(loc[1])]
+        loc = loc.int()
+        return self.blocks[loc.x][loc.y]
 
 
-    # Retrieve information from self.zoneData.
-    def getRegionInfo(self, zone, region, field):
-        if (zone in self.zoneData and 
-                region in self.zoneData[zone]['regions'] and
-                field in self.zoneData[zone]['regions'][region]):
-            return self.zoneData[zone]['regions'][region][field]
+    ## Get the TreeNode that owns the given space, if any.
+    def getSectorAtGridLoc(self, loc):
+        if loc not in self.deadSeeds:
+            return None
+        return self.deadSeeds[loc].node
+
+
+    ## Return the data in the specified field for the given terrain type.
+    def getRegionInfo(self, info, field):
+        if (info.zone in self.zoneData and 
+                info.region in self.zoneData[info.zone]['regions'] and
+                field in self.zoneData[info.zone]['regions'][info.region]):
+            return self.zoneData[info.zone]['regions'][info.region][field]
         return None
 

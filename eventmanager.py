@@ -1,4 +1,5 @@
 import constants
+from vector2d import Vector2D
 
 import jetblade
 import pygame
@@ -29,7 +30,7 @@ class EventManager:
                 if action is not None:
                     actions.append(Event(action, event.type))
             elif event.type == MOUSEMOTION:
-                mouseLoc = pygame.mouse.get_pos()
+                mouseLoc = Vector2D(pygame.mouse.get_pos())
                 for element in UIElements:
                     element.mouseMove(mouseLoc)
             elif event.type == MOUSEBUTTONUP:

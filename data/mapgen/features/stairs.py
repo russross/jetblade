@@ -1,6 +1,7 @@
 import straight
 import map
 import constants
+from vector2d import Vector2D
 
 ## Minimum distance to the ceiling for stairs to be added.
 stairsMinimumClearance = 6
@@ -8,6 +9,8 @@ stairsMinimumClearance = 6
 stairsHeight = 4
 ## Maximum slope for stairs to be made (otherwise make a straight tunnel)
 maxSlope = 2
+## Minimume slope for stairs to be made (otherwise don't bother)
+minSlope = .4
 
 def getClassName():
     return 'StairsTunnel'
@@ -18,25 +21,27 @@ class StairsTunnel(straight.StraightTunnel):
     def createFeature(self):
         # Only if the angle from us to our parent is shallow enough
         slope = self.sector.getSlope()
-        if abs(slope) > maxSlope
+        if abs(slope) > maxSlope or abs(slope) < minSlope:
             return
-        intercept = (self.sector.loc[1] - self.sector.loc[0] * slope) / constants.blockSize
-        
-        for x in range(0, self.map.numCols):
-            for y in range(1, self.map.numRows):
-                if (self.map.blocks[x][y] == map.BLOCK_WALL and 
-                        self.map.blocks[x][y-1] == map.BLOCK_EMPTY and
-                        y > x * slope + intercept and (x, y-1) in self.map.deadSeeds and
-                        self.map.deadSeeds[(x, y-1)].node == self.sector):
-                    distToCeiling = self.sector.getDistToCeiling((x, y))
-                    if distToCeiling < stairsMinimumClearance:
-                        continue
-                    targetY = (int(y / stairsHeight)) * stairsHeight
-                    if targetY > y:
-                        targetY -= stairsHeight
+        intercept = (self.sector.loc.y - self.sector.loc.x * slope) / constants.blockSize
 
-                    for curY in range(targetY, y):
-                        if self.sector.getIsOurSpace((x, curY)):
-                            self.map.blocks[x][curY] = map.BLOCK_WALL
+
+        touchedColumns = set()
+        for loc in self.sector.spaces:
+            if (loc.x not in touchedColumns and 
+                    self.map.blocks[loc.x][loc.y + 1] == map.BLOCK_WALL and 
+                    loc.y > loc.x * slope + intercept):
+                touchedColumns.add(loc.x)
+                distToCeiling = self.sector.getDistToCeiling(loc)
+                if distToCeiling < stairsMinimumClearance:
+                    continue
+                # Quantize the Y location
+                targetY = (int(loc.y / stairsHeight)) * stairsHeight
+
+                currentLoc = Vector2D(loc.x, targetY)
+                while currentLoc.y <= loc.y:
+                    if self.sector.getIsOurSpace(currentLoc):
+                        self.map.blocks[currentLoc.x][currentLoc.y] = map.BLOCK_WALL
+                    currentLoc.y += 1
 
 

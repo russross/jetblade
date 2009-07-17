@@ -1,13 +1,13 @@
 import terrestrialobject
 import jetblade
-import util
+import logger
 
 ## The Player class handles the player's avatar in the game. 
 class Player(terrestrialobject.TerrestrialObject):
     ## Instantiate a Player object
     # \todo (Long-term) Add support for the female version
     def __init__(self):
-        terrestrialobject.TerrestrialObject.__init__(self, util.gridspaceToRealspace(jetblade.map.getStartLoc()), 'maleplayer')
+        terrestrialobject.TerrestrialObject.__init__(self, jetblade.map.getStartLoc().toRealspace(), 'maleplayer')
         self.canHang = True
 
 
@@ -30,13 +30,13 @@ class Player(terrestrialobject.TerrestrialObject):
                 shouldCrawl = True
 
         if shouldCrawl and self.isGrounded:
-            util.debug("Input: crawling")
+            logger.debug("Input: crawling")
             self.shouldCrawl = True
         elif not shouldCrawl:
             self.shouldCrawl = False
         # Pressed down while hanging, so let go
         if shouldCrawl and self.isHanging:
-            util.debug("Input: Releasing hang")
+            logger.debug("Input: Releasing hang")
             self.justStoppedHanging = True
 
         if isClimbing and self.isHanging:
@@ -44,11 +44,11 @@ class Player(terrestrialobject.TerrestrialObject):
 
         if isJumping:
             # Start a jump
-            util.debug("Input: Jumping")
+            logger.debug("Input: Jumping")
             self.justJumped = True
 
         if isClimbing and self.isHanging:
-            util.debug("Input: Climbing")
+            logger.debug("Input: Climbing")
             self.isClimbing = True
 
         self.runDirection = runDirection

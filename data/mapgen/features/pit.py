@@ -2,7 +2,8 @@ import straight
 import jetblade
 import map
 import constants
-import util
+import logger
+from vector2d import Vector2D
 
 import random
 
@@ -29,36 +30,33 @@ class Pit(straight.StraightTunnel):
         
         (start, end) = self.sector.getStartAndEndLoc()
         if start is None or end is None:
-            util.error("Unable to make pit for",self.sector.id,"from",self.sector.loc,"to",self.sector.parent.loc)
+            logger.error("Unable to make pit for",self.sector.id,"from",self.sector.loc,"to",self.sector.parent.loc)
             return
         
-        if start[0] > end[0]:
+        if start.x > end.x:
             (start, end) = (end, start)
         width = int(self.sector.getTunnelWidth() * tunnelWidthFactor / constants.blockSize)
         
-        surfaceY = int(start[1] + width * pitDepthFactor)
-        bottomY = int(start[1] + (width / 2) + 1)
+        surfaceY = int(start.y + width * pitDepthFactor)
+        bottomY = int(start.y + (width / 2) + 1)
 
         # Set up walls to contain the bottom of the pit.
         for y in range(surfaceY, bottomY + 1):
-            self.map.blocks[start[0]][y] = map.BLOCK_WALL
-            self.map.blocks[end[0]][y] = map.BLOCK_WALL
-
-#        self.map.markLoc = ((start[0] + end[0]) / 2, surfaceY)
-#        self.map.drawStatus()
+            self.map.blocks[start.x][y] = map.BLOCK_WALL
+            self.map.blocks[end.x][y] = map.BLOCK_WALL
 
         # Now fill the pit with stuff.
         # \todo Make this more variable. For now, just add water.
         water = jetblade.envEffectManager.loadEnvEffect('water')
-        for x in range(start[0], end[0] + 1):
+        for x in range(start.x, end.x + 1):
             for y in range(surfaceY, bottomY + 1):
-                water.addSpace((x, y), self.map)
+                water.addSpace(Vector2D(x, y), self.map)
 
         # Now add platforms across the pit.
         # \todo Add a variety of platform types. Keep in mind the ceiling may
         # be low.
-        for x in range(start[0], end[0] + 1, map.minHorizDistToOtherPlatforms):
-            top = random.choice(range(surfaceY - 2, surfaceY + 1))
+        for x in range(start.x, end.x + 1, map.minHorizDistToOtherPlatforms):
+            top = int(random.uniform(surfaceY - 2, surfaceY + 1))
             for y in range(top, bottomY):
                 self.map.blocks[x][y] = map.BLOCK_WALL
 

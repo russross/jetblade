@@ -1,4 +1,5 @@
-#!/usr/local/bin/python2.5
+from vector2d import Vector2D
+
 import math
 import pygame
 from pygame.locals import *
@@ -22,32 +23,6 @@ sh = 650
 
 ## The size of a single block of terrain in the map
 blockSize = 50
-
-## List of offsets in North, East, West, South directions. Used for iterating 
-# over spaces adjacent to a given space in the map.
-NEWSPerimeterOrder = [(0, -1), (1, 0), (-1, 0), (0, 1)]
-## List of offsets in all 8 directions. Used for iterating over spaces adjacent
-# to a given space in the map.
-perimeterOrder = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
-
-## Log level for debugging output
-LOG_DEBUG = 5
-## Log level for inform output
-LOG_INFORM = 4
-## Log level for warning output
-LOG_WARN = 3
-## Log level for error output
-LOG_ERROR = 2
-## Log level for fatal output
-LOG_FATAL = 1
-## Descriptor strings for the log levels
-logStrings = {
-    LOG_DEBUG : 'DEBUG',
-    LOG_INFORM : 'INFO',
-    LOG_WARN : 'WARNING',
-    LOG_ERROR : 'ERROR',
-    LOG_FATAL : 'FATAL',
-}
 
 
 ## "Small number" used largely for checking equality of floating point numbers.
@@ -90,7 +65,7 @@ TEXT_ALIGN_CENTER = 2
 TEXT_ALIGN_RIGHT = 3
 
 ## Location to display the FPS string onscreen.
-fpsDisplayLoc = [sw - 20, sh - 20]
+fpsDisplayLoc = Vector2D(sw - 20, sh - 20)
 
 ACTION_QUIT = 'quit'
 

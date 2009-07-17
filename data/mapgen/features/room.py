@@ -1,6 +1,11 @@
 import straight
 import util
+from vector2d import Vector2D
+
 import random
+
+## Size of rooms in comparison to width of tunnels.
+roomSizeMultiplier = 1.6
 
 def getClassName():
     return 'Room'
@@ -13,15 +18,15 @@ class Room(straight.StraightTunnel):
 
         start = self.sector.parent.loc
         end = self.sector.loc
+        distance = end.distance(start)
+        delta = end.sub(start).normalize().multiply(distance/4.0)
         
-        center = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]
-        (dx, dy) = util.getNormalizedVector(start, end)
-        distance = util.pointPointDistance(start, end)
+        center = start.average(end)
+        size = self.sector.getTunnelWidth() * roomSizeMultiplier
 
-        size = self.sector.getRoomSize()
         self.map.plantSeed(center, self.sector, size)
-        self.map.plantSeed([center[0] + dx*distance/4.0, center[1] + dy*distance/4.0], self.sector, size)
-        self.map.plantSeed([center[0] - dx*distance/4.0, center[1] - dy*distance/4.0], self.sector, size)
+        self.map.plantSeed(center.add(delta), self.sector, size)
+        self.map.plantSeed(center.sub(delta), self.sector, size)
 
 
     def shouldCheckAccessibility(self):

@@ -1,5 +1,6 @@
 import constants
 import util
+import logger
 
 import os
 import pygame
@@ -54,7 +55,7 @@ class ImageManager:
         if name in self.surfaces:
             return self.surfaces[name]
         path = constants.imagePath + '/' + name + '.png'
-        util.debug("Loading file",path)
+        logger.debug("Loading file",path)
         surface = pygame.image.load(path)
         if has_alpha:
             surface = surface.convert_alpha()
@@ -84,7 +85,7 @@ class ImageManager:
         if scale != 1:
             surface = pygame.transform.rotozoom(surface, 0, scale)
         rect = surface.get_rect()
-        rect.topleft = (loc[0], loc[1])
+        rect.topleft = (loc.x, loc.y)
         screen.blit(surface, rect)
         return rect
 
@@ -100,21 +101,21 @@ class ImageManager:
         drawColor = (color[0], color[1], color[2])
         alpha = color[3]
         if fontNameNum < 0 or fontNameNum > len(constants.fontNames):
-            util.fatal("Invalid font selection:",fontNameNum)
+            logger.fatal("Invalid font selection:",fontNameNum)
         fontName = constants.fontNames[fontNameNum]
         if fontSize not in self.fonts[fontName]:
-            util.fatal("Invalid font size for font",fontName,":",fontSize)
+            logger.fatal("Invalid font size for font",fontName,":",fontSize)
         yOffset = 0
         for text in texts:
             textSurface = self.fonts[fontName][fontSize].render(text, True, drawColor)
             textRect = textSurface.get_rect()
             if align == constants.TEXT_ALIGN_LEFT:
-                textRect.x = loc[0]
+                textRect.x = loc.x
             elif align == constants.TEXT_ALIGN_CENTER:
-                textRect.centerx = loc[0]
+                textRect.centerx = loc.x
             elif align == constants.TEXT_ALIGN_RIGHT:
-                textRect.right = loc[0]
-            textRect.centery = loc[1] + yOffset
+                textRect.right = loc.x
+            textRect.centery = loc.y + yOffset
             yOffset += constants.textLineVerticalOffsetMultiplier * fontSize
             self.fadeAlpha(textSurface, alpha)
             screen.blit(textSurface, textRect)

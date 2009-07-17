@@ -2,7 +2,8 @@ import polygon
 import sprite
 import animation
 import constants
-import util
+import logger
+from vector2d import Vector2D
 
 import pygame
 
@@ -50,7 +51,7 @@ class Sprite:
                 action += '-l'
             else:
                 action += '-r'
-        util.debug("Sprite",self.name,"setting animation",action)
+        logger.debug("Sprite",self.name,"setting animation",action)
         if action != self.currentAnimation:
             if shouldResetAnimation:
                 self.animations[self.currentAnimation].reset()
@@ -60,7 +61,7 @@ class Sprite:
 
     ## Set the current animation to what the previous one was.
     def setPreviousAnimation(self, shouldResetAnimation = True):
-        util.debug("Returning to previous animation",self.prevAnimation)
+        logger.debug("Returning to previous animation",self.prevAnimation)
         self.setAnimation(self.prevAnimation, False, shouldResetAnimation)
 
     ## Reset the currently-running animation.
@@ -72,20 +73,18 @@ class Sprite:
     def update(self):
         curAnim = self.animations[self.currentAnimation]
         if curAnim.update(self.owner):
-            util.debug("Finishing animation",curAnim.name)
+            logger.debug("Finishing animation",curAnim.name)
             # Animation finished, so wrap up.
             curAnim.completeAnimation(self.owner)
             self.owner.completeAnimation(self.getCurrentAnimation())
-            if (abs(curAnim.moveOffset[0]) > constants.EPSILON or 
-                    abs(curAnim.moveOffset[1]) > constants.EPSILON):
-                util.debug("Teleporting due to move offset",curAnim.moveOffset)
+            if curAnim.moveOffset.magnitudeSquared() > constants.EPSILON:
+                logger.debug("Teleporting due to move offset",curAnim.moveOffset)
                 # Ending the animation moved the player, possibly arbitrarily,
                 # so our interpolation points are no longer valid.
-                self.prevLoc = tuple(self.owner.loc)
+                self.prevLoc = self.owner.loc.copy()
                 self.curLoc = self.prevLoc
-        self.prevLoc = (self.curLoc[0], self.curLoc[1])
-        self.curLoc = tuple(self.owner.loc)
-        util.debug(self.prevLoc,self.curLoc)
+        self.prevLoc = self.curLoc.copy()
+        self.curLoc = self.owner.loc.copy()
 
 
     ## Draw the current animation frame.
@@ -99,8 +98,8 @@ class Sprite:
     # Round drawing locations to the nearest hundred-thousandth to prevent 
     # visual jittering caused by very minor positional variation.
     def getDrawLoc(self, progress):
-        loc = util.interpolatePoints(self.prevLoc, self.curLoc, progress)
-        loc = [int(loc[0] + drawRoundAmount), int(loc[1] + drawRoundAmount)]
+        loc = self.prevLoc.interpolate(self.curLoc, progress)
+        loc = loc.addScalar(drawRoundAmount).int()
         return loc
 
 
@@ -151,12 +150,12 @@ def loadAnimations(name):
     path = moduleName
     path = path.replace('/', '.')
     path += '.spriteConfig'
-    util.debug("Loading animations for",name,"with path",path)
+    logger.debug("Loading animations for",name,"with path",path)
     spriteModule = __import__(path, globals(), locals(), ['sprites'])
 
     animations = {}
     for animationName, data in spriteModule.sprites.iteritems():
-        animPolygon = polygon.Polygon(data['polygon'])
+        animPolygon = polygon.Polygon([Vector2D(point) for point in data['polygon']])
         shouldLoop = True
         if 'loop' in data:
             shouldLoop = data['loop']
@@ -166,12 +165,12 @@ def loadAnimations(name):
         updateFunc = None
         if 'updateFunc' in data:
             updateFunc = data['updateFunc']
-        drawOffset = (0, 0)
+        drawOffset = Vector2D(0, 0)
         if 'drawOffset' in data:
-            drawOffset = data['drawOffset']
-        moveOffset = (0, 0)
+            drawOffset = Vector2D(data['drawOffset'])
+        moveOffset = Vector2D(0, 0)
         if 'moveOffset' in data:
-            moveOffset = data['moveOffset']
+            moveOffset = Vector2D(data['moveOffset'])
         animations[animationName] = animation.Animation(name, animationName, 
                     animPolygon, shouldLoop, updateRate, updateFunc, 
                     drawOffset, moveOffset)

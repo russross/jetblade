@@ -1,6 +1,10 @@
 import constants
-import copy
+from vector2d import Vector2D
+
 import math
+
+## Magnitude of slope past which we use a vertical tunnel algorithm.
+verticalTunnelSlopeRequirement = 200
 
 def getClassName():
     return 'StraightTunnel'
@@ -18,40 +22,38 @@ class StraightTunnel:
     # In this specific case, we simply lay down a set of seeds along the line 
     # connecting the sector to its parent, with each seed having the same 
     # radius.
-    def carveTunnel(self, width = None):
-        start = self.sector.parent.loc
-        end = self.sector.loc
+    def carveTunnel(self, width = None, start = None, end = None):
+        if start is None or end is None:
+            start = self.sector.parent.loc
+            end = self.sector.loc
         
-        # Proceed along the line from start to end, clearing out 
-        # blocks that are too close to that line.
-        dy = end[1] - start[1]
-        dx = end[0] - start[0]
-        if abs(dx) < constants.EPSILON:
-            # This algorithm doesn't handle verticals well, so use a different
-            # one.
+        delta = end.sub(start)
+        slope = delta.slope()
+        if abs(slope) > verticalTunnelSlopeRequirement:
+            # This algorithm doesn't handle vertical tunnels well, so use a 
+            # different one for steeply-sloped tunnels.
             self.carveVerticalTunnel()
             return
 
-        slope = dy / float(dx)
-
         # Always want to be proceeding left-to-right along the line, so
         # adjust sign of slope and endpoints
-        currentLoc = copy.copy(start)
-        endLoc = copy.copy(end)
-        if currentLoc[0] > endLoc[0]:
-            tmp = currentLoc
-            currentLoc = endLoc
-            endLoc = tmp
+        currentLoc = start.copy()
+        endLoc = end.copy()
+        if currentLoc.x > endLoc.x:
+            (currentLoc, endLoc) = (endLoc, currentLoc)
 
         magnitude = math.sqrt(1+slope**2)
-        blockDx = constants.blockSize / magnitude
-        blockDy = constants.blockSize * slope / magnitude
+        blockDelta = Vector2D(1.0, slope)
+        blockDelta.multiply(constants.blockSize / magnitude)
         if width is None:
             width = self.sector.getTunnelWidth()
+        if self.sector.id == 232:
+            print "Going from",currentLoc,"to",endLoc,"with delta",blockDelta
+            print "Slope is",slope,"delta",delta
         # Iterate over a series of points blockSize apart along the line.
-        while currentLoc[0] < endLoc[0]:
+        while currentLoc.x < endLoc.x:
             self.map.plantSeed(currentLoc, self.sector, width)
-            currentLoc = [currentLoc[0] + blockDx, currentLoc[1] + blockDy]
+            currentLoc = currentLoc.add(blockDelta)
 
 
     ## As carveTunnel, but only for vertical situations. 
@@ -60,16 +62,15 @@ class StraightTunnel:
         end = self.sector.loc
         width = self.sector.getTunnelWidth()
 
-        currentLoc = [start[0], start[1]]
-        endLoc = [end[0], end[1]]
-        if currentLoc[1] > end[1]:
-            tmp = currentLoc
-            currentLoc = endLoc
-            endLoc = tmp
+        currentLoc = start.copy()
+        endLoc = end.copy()
+        if currentLoc.y > endLoc.y:
+            (currentLoc, endLoc) = (endLoc, currentLoc)
+        delta = endLoc.sub(currentLoc).normalize().multiply(constants.blockSize)
 
-        while currentLoc[1] < endLoc[1]:
+        while currentLoc.y < endLoc.y:
             self.map.plantSeed(currentLoc, self.sector, width)
-            currentLoc[1] += 1
+            currentLoc = currentLoc.add(delta)
 
     ## Perform any extra actions needed to flesh out the tunnel.
     def createFeature(self):

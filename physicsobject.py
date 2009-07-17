@@ -1,7 +1,8 @@
 import sprite
 import constants
 import jetblade
-import util
+import logger
+from vector2d import Vector2D
 
 ## Magnitude of the horizontal portion of a normalized vector, past which we 
 # consider the vector to be the normal of a wall.
@@ -10,12 +11,12 @@ wallHorizontalVectorComponent = .8
 # and start zipping it.
 maxCollisionRetries = 15
 ## Distance to zip if we fail to pull an object out of the terrain.
-zipAmount = constants.blockSize
+zipAmount = Vector2D(0, -constants.blockSize)
 
 ## Default acceleration due to gravity, in X and Y directions
-defaultGravity = (0, 2)
+defaultGravity = Vector2D(0, 2)
 ## Default maximum velocity, in X and Y directions
-defaultMaxVel = (20, 30)
+defaultMaxVel = Vector2D(20, 30)
 
 ## PhysicsObject is the base class for objects that need to interact with 
 # other objects, like creatures, mechanisms, etc. It handles collision 
@@ -29,13 +30,13 @@ class PhysicsObject:
     def __init__(self, loc, name):
         self.name = name
         self.loc = loc
-        self.vel = [0, 0]
+        self.vel = Vector2D(0, 0)
         self.isGravityOn = True
-        self.gravity = list(defaultGravity)
-        self.maxVel = list(defaultMaxVel)
+        self.gravity = defaultGravity.copy()
+        self.maxVel = defaultMaxVel.copy()
         self.facing = 1
         self.sprite = sprite.Sprite(name, self)
-        self.collisionVectors = []
+        self.collisions = []
 
 
     ## Apply gravity to velocity and velocity to location, then run collision
@@ -44,9 +45,9 @@ class PhysicsObject:
         self.AIUpdate()
         self.preCollisionUpdate()
         if self.isGravityOn:
-            self.vel = util.addVectors(self.vel, self.gravity)
-        self.vel = util.clampVector(self.vel, self.maxVel)
-        self.loc = util.addVectors(self.loc, self.vel)
+            self.vel = self.vel.add(self.gravity)
+        self.vel = self.vel.clamp(self.maxVel)
+        self.loc = self.loc.add(self.vel)
         self.handleCollisions()
         self.postCollisionUpdate()
         self.sprite.update()
@@ -74,82 +75,85 @@ class PhysicsObject:
     # those types.
     # \todo Currently assumes all collisions are with terrain.
     def handleCollisions(self):
-        self.collisionVectors = []
-        (distance, vector, block) = jetblade.map.collidePolygon(self.sprite.getPolygon(), self.loc)
+        self.collisions = []
+        collision = jetblade.map.collidePolygon(self.sprite.getPolygon(), self.loc)
         numTries = 0
-        while vector is not None and numTries < maxCollisionRetries:
+        while collision.vector is not None and numTries < maxCollisionRetries:
             numTries += 1
 
-            (vector, distance) = self.adjustCollision(block, vector, distance)
-            util.debug("Collision modified to",(distance, vector))
-            util.debug("Block at",block.loc,"has polygon",block.sprite.getPolygon())
-            self.collisionVectors.append(vector)
+            collision = self.adjustCollision(collision)
+            logger.debug("Collision modified to",(collision.vector, collision.distance))
+            logger.debug("Hit object",collision.altObject)
+            self.collisions.append(collision)
 
-            shouldReactToCollision = self.hitTerrain(block, vector, distance)
-            if vector[1] > constants.EPSILON:
-                if not self.hitCeiling(block, vector, distance):
+            shouldReactToCollision = self.hitTerrain(collision)
+            if collision.vector.y > constants.EPSILON:
+                if not self.hitCeiling(collision):
                     shouldReactToCollision = False
-            elif vector[1] < -constants.EPSILON:
-                if not self.hitFloor(block, vector, distance):
+            elif collision.vector.y < -constants.EPSILON:
+                if not self.hitFloor(collision):
                     shouldReactToCollision = False
 
             # Hit a wall
-            if (abs(vector[0]) > wallHorizontalVectorComponent and
-                    cmp(self.vel[0], 0) != cmp(vector[0], 0)):
-                if not self.hitWall(block, vector, distance):
+            if (abs(collision.vector.x) > wallHorizontalVectorComponent and
+                    cmp(self.vel.x, 0) != cmp(collision.vector.x, 0)):
+                if not self.hitWall(collision):
                     shouldReactToCollision = False
 
             if shouldReactToCollision:
-                util.debug("Updating location from",self.loc,)
-                self.loc[0] += vector[0] * distance
-                self.loc[1] += vector[1] * distance
-                util.debug("to",self.loc)
+                logger.debug("Updating location from",self.loc)
+                self.loc = self.loc.add(collision.vector.multiply(collision.distance))
+                logger.debug("to",self.loc)
             else:
-                util.debug("Told to ignore collision")
+                logger.debug("Told to ignore collision")
 
-            (distance, vector, block) = jetblade.map.collidePolygon(self.sprite.getPolygon(), self.loc)
-            util.debug("Retry collision data is",distance,vector,block)
+            collision = jetblade.map.collidePolygon(self.sprite.getPolygon(), self.loc)
+            logger.debug("Retry collision data is",collision)
         if numTries == maxCollisionRetries:
             # We got stuck in a loop somehow. Eject upwards.
-            util.debug("Hit a collision loop. Whoops.")
-            self.loc[1] -= zipAmount
+            logger.debug("Hit a collision loop. Whoops.")
+            self.loc = self.loc.add(zipAmount)
 
 
     ## Perform any necessary tweaks to the collision vector or distance.
-    def adjustCollision(self, block, vector, distance):
-        return (vector, distance)
+    def adjustCollision(self, collision):
+        return collision
 
 
     ## React to hitting any terrain.
-    def hitTerrain(self, block, vector, distance):
-        util.debug("Object",self.name,"hit terrain at",block.gridLoc)
+    def hitTerrain(self, collision):
+        logger.debug("Object", self.name, "hit terrain at", 
+                   collision.altObject.loc.toGridspace())
         return True
 
 
     ## React to hitting a wall.
-    def hitWall(self, block, vector, distance):
-        util.debug("Object",self.name,"hit wall at",block.gridLoc)
-        self.vel[0] = 0
+    def hitWall(self, collision):
+        logger.debug("Object", self.name, "hit wall at",
+                   collision.altObject.loc.toGridspace()) 
+        self.vel.x = 0
         return True
 
 
     ## React to hitting the ceiling
-    def hitCeiling(self, block, vector, distance):
-        util.debug("Object",self.name,"hit ceiling at",block.gridLoc)
-        self.vel[1] = 0
+    def hitCeiling(self, collision):
+        logger.debug("Object", self.name, "hit ceiling at",
+                   collision.altObject.loc.toGridspace()) 
+        self.vel.y = 0
         return True
 
 
     ## React to hitting the floor.
-    def hitFloor(self, block, vector, distance):
-        util.debug("Object",self.name,"hit floor at",block.gridLoc)
-        self.vel[1] = 0
+    def hitFloor(self, collision):
+        logger.debug("Object", self.name, "hit floor at",
+                   collision.altObject.loc.toGridspace()) 
+        self.vel.y = 0
         return True
 
 
     ## Passthrough to Sprite.draw()
     def draw(self, screen, camera, progress):
-        util.debug("Drawing",self.name,"at",self.getDrawLoc(progress),"from",self.sprite.prevLoc,"and",self.sprite.curLoc)
+        logger.debug("Drawing",self.name,"at",self.getDrawLoc(progress),"from",self.sprite.prevLoc,"and",self.sprite.curLoc)
         self.sprite.draw(screen, camera, progress)
 
 

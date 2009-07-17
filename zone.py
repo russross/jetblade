@@ -1,5 +1,7 @@
 import constants
 import util
+from vector2d import Vector2D
+
 import sys
 import random
 
@@ -63,24 +65,24 @@ def placeZones(zoneConfigData):
     zonePoints = dict()
     for zoneName, zoneData in zoneConfigData.iteritems():
         elevationRange = zoneData['elevationRange']
-        zonePoints[zoneName] = [random.random(), random.uniform(elevationRange[0], elevationRange[1])]
+        zonePoints[zoneName] = Vector2D(random.random(),
+                random.uniform(elevationRange[0], elevationRange[1]))
     
     for i in range(0, zonePlacementIterations):
         newPoints = dict()
         for zoneName, zoneLoc in zonePoints.iteritems():
-            vector = [0, 0]
+            vector = Vector2D(0, 0)
             for altName, altLoc in zonePoints.iteritems():
                 if zoneName == altName:
                     continue
-                distance = util.pointPointDistance(zoneLoc, altLoc)
-                direction = util.getNormalizedVector(zoneLoc, altLoc)
-                vector[0] += direction[0] / distance * zoneGravityMultiplier
-                vector[1] += direction[1] / distance * zoneGravityMultiplier
-            newLoc = list(util.addVectors(zoneLoc, vector))
-            newLoc[0] = max(newLoc[0], 0)
-            newLoc[0] = min(newLoc[0], 1)
-            newLoc[1] = max(newLoc[1], zoneConfigData[zoneName]['elevationRange'][0])
-            newLoc[1] = min(newLoc[1], zoneConfigData[zoneName]['elevationRange'][1])
+                distance = zoneLoc.distance(altLoc)
+                direction = altLoc.sub(zoneLoc).normalize()
+                vector = vector.add(direction.multiply(zoneGravityMultiplier / distance))
+            newLoc = vector.add(zoneLoc)
+            newLoc.x = max(newLoc.x, 0)
+            newLoc.x = min(newLoc.x, 1)
+            newLoc.y = max(newLoc.y, zoneConfigData[zoneName]['elevationRange'][0])
+            newLoc.y = min(newLoc.y, zoneConfigData[zoneName]['elevationRange'][1])
             newPoints[zoneName] = newLoc
         zonePoints = newPoints
 

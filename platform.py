@@ -17,7 +17,12 @@ class Platform:
 
     ## Return a bounding box for the platform.
     def getBounds(self):
-        loc = util.gridspaceToRealspace(self.loc)
-        rect = pygame.Rect(loc[0], loc[1], self.width * constants.blockSize, constants.blockSize)
+        loc = self.loc.toRealspace()
+        rect = pygame.Rect(loc.x, loc.y, self.width * constants.blockSize, constants.blockSize)
         return rect
+
+
+    ## Convert to string
+    def __str__(self):
+        return "[Platform at " + str(self.loc) + " with width " + str(self.width) + "]"
 

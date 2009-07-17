@@ -18,6 +18,7 @@ import player
 import camera
 import constants
 import util
+import logger
 from pygame.locals import *
 
 ## \mainpage Jetblade
@@ -61,6 +62,7 @@ from pygame.locals import *
 # - -debug: turn on debugging output (warning: verbose!)
 # - -num X: generate X maps, and exit
 # - -saveimage: save an image of the entire map after generating, then exit
+# - -justmapgen: only generate a map; don't begin gameplay afterwards
 # - -seed X: use X as a seed for map generation
 # - -mapfile X: try to load X as a map definition file, and start gameplay mode
 # - -record: record every rendered frame to disk. Note: this can be toggled
@@ -83,53 +85,60 @@ def run():
 
 
 ## Process commandline flags and set up singletons.
+# \todo Use optparse or something similar to handle arguments.
 def init():
     pygame.init()
     
     args = sys.argv
     jetblade.seed = None
-    jetblade.mapname = None
-    jetblade.saveimage = 0
+    jetblade.mapName = None
+    jetblade.shouldSaveImage = False
     jetblade.numMaps = 1
+    jetblade.shouldExitAfterMapgen = False
     jetblade.isRecording = False
-    jetblade.logLevel = constants.LOG_INFORM
     index = 0
     while index < len(args):
         if args[index] == '-seed':
             if index + 1 > len(args):
-                util.error("Missing required seed value")
+                logger.error("Missing required seed value")
             else:
                 index += 1
                 jetblade.seed = args[index]
         elif args[index] == '-mapfile':
             if index + 1 > len(args):
-                util.error("Missing required map filename")
+                logger.error("Missing required map filename")
             else:
                 index += 1
-                jetblade.mapname = args[index]
+                jetblade.mapName = args[index]
         elif args[index] == '-saveimage':
-            jetblade.saveimage = 1
+            jetblade.shouldSaveImage = True
+        elif args[index] == '-justmapgen':
+            jetblade.shouldExitAfterMapgen = True
         elif args[index] == '-num':
             if index + 1 > len(args):
-                util.error("Missing required number of maps to make")
+                logger.error("Missing required number of maps to make")
             else:
                 index += 1
                 jetblade.numMaps = int(args[index])
         elif args[index] == '-record':
             jetblade.isRecording = True
         elif args[index] == '-debug':
-            jetblade.logLevel = constants.LOG_DEBUG
+            logger.setLogLevel(logger.LOG_DEBUG)
         index += 1
 
-    if jetblade.numMaps > 1 and jetblade.mapname is not None:
-        util.error("Cannot use multiple-map generation with a sourced map file.")
+    if jetblade.numMaps > 1 and jetblade.mapName is not None:
+        logger.error("Cannot use multiple-map generation with a sourced map file.")
         sys.exit()
     elif jetblade.numMaps > 1 and jetblade.seed is not None:
-        util.error("Cannot use multiple-map generation with a fixed random seed.")
+        logger.error("Cannot use multiple-map generation with a fixed random seed.")
         sys.exit()
     elif jetblade.seed is None:
         jetblade.seed = int(time.time())
     
+    if jetblade.shouldExitAfterMapgen and jetblade.mapName is not None:
+        logger.error("-justmapgen and -mapfile are incompatible")
+        sys.exit()
+
     jetblade.shouldDisplayFPS = 1
     jetblade.configManager = configmanager.ConfigManager()
     jetblade.featureManager = featuremanager.FeatureManager()
@@ -148,29 +157,30 @@ def init():
 # or to save the map, then exit once we're done.
 def startGame():
     jetblade.map = None
-    if jetblade.mapname:
-        jetblade.map = map.Map(jetblade.mapname)
+    if jetblade.mapName:
+        jetblade.map = map.Map(jetblade.mapName)
         jetblade.map.init()
-        if jetblade.saveimage:
+        if jetblade.shouldSaveImage:
             jetblade.map.drawAll('%d.png' % jetblade.seed)
+        if jetblade.shouldExitAfterMapgen:
             sys.exit()
     else:
         for i in range(0, jetblade.numMaps):
             jetblade.envEffectManager.reset()
             jetblade.propManager.reset()
-            util.inform("Making map %d of %d" % (i + 1, jetblade.numMaps))
+            logger.inform("Making map %d of %d" % (i + 1, jetblade.numMaps))
             if jetblade.numMaps == 1:
-                util.inform("Using seed",jetblade.seed)
+                logger.inform("Using seed",jetblade.seed)
                 random.seed(str(jetblade.seed))
             else:
                 jetblade.seed = int(time.time())
-                util.inform("Using seed",jetblade.seed)
+                logger.inform("Using seed",jetblade.seed)
                 random.seed(str(jetblade.seed))
             jetblade.map = map.Map()
             jetblade.map.init()
-            if jetblade.saveimage:
+            if jetblade.shouldSaveImage:
                 jetblade.map.drawAll(str(jetblade.seed) + '.png')
-        if jetblade.saveimage or jetblade.numMaps > 1:
+        if jetblade.shouldExitAfterMapgen:
             sys.exit()
     jetblade.player = player.Player()
 
@@ -195,7 +205,7 @@ def gameLoop():
     zoomLevel = 1
 
     while 1:
-        util.debug("Frame %d Physics %d" % (jetblade.frameNum, physicsNum))
+        logger.debug("Frame %d Physics %d" % (jetblade.frameNum, physicsNum))
         events = jetblade.eventManager.processEvents([], constants.CONTEXT_GAME)
         # Check for a couple of events.
         for event in events:
@@ -210,10 +220,10 @@ def gameLoop():
                     else:
                         physicsUpdateRate = 1000.0 / physicsUpdatesPerSecond
                 elif event.action == 'toggleDebug' and event.type == KEYUP:
-                    if jetblade.logLevel == constants.LOG_INFORM:
-                        jetblade.logLevel = constants.LOG_DEBUG
+                    if logger.getLogLevel == logger.LOG_INFORM:
+                        logger.setLogLevel(logger.LOG_DEBUG)
                     else:
-                        jetblade.logLevel = constants.LOG_INFORM
+                        logger.setLogLevel(logger.LOG_INFORM)
 
         newTs = pygame.time.get_ticks()
         dt = newTs - curTs
@@ -228,7 +238,7 @@ def gameLoop():
             cam.update()
             timeAccum -= physicsUpdateRate
 
-        util.debug("Did",count,"physics updates, have",timeAccum,"in the accumulator towards next physics update (step",physicsUpdateRate,")")
+        logger.debug("Did",count,"physics updates, have",timeAccum,"in the accumulator towards next physics update (step",physicsUpdateRate,")")
 
         jetblade.draw(zoomLevel, cam, timeAccum / physicsUpdateRate)
  
@@ -237,7 +247,7 @@ def gameLoop():
         
         if int(curTs / 1000) != curSec:
             jetblade.curFPS = framesSincePrevSec
-            util.debug("FPS: ",framesSincePrevSec)
+            logger.debug("FPS: ",framesSincePrevSec)
             curSec = int(curTs / 1000)
             framesSincePrevSec = 0
 

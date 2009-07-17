@@ -13,14 +13,11 @@ class EnvEffectManager:
         if name in self.envMap:
             return self.envMap[name]
         modulePath = 'environments.' + name
-        try:
-            initFunc = util.loadDynamicClass(modulePath)
-            classInstance = initFunc(name)
-            self.envMap[name] = classInstance
-            return classInstance
+        initFunc = util.loadDynamicClass(modulePath)
+        classInstance = initFunc(name)
+        self.envMap[name] = classInstance
+        return classInstance
 
-        except Exception, e:
-            util.fatal("Failed to load module",modulePath,":",e)
 
     ## Clear our cache
     def reset(self):

@@ -18,7 +18,8 @@ class EnvEffect:
     def __init__(self, name):
         ## HACK -- locations are required for Sprite instances to function.
         # We want to use sprites because they simplify animation loading, 
-        # collision, and display.
+        # collision, and display. However, EnvEffects don't have any one single
+        # location.
         # \todo: fix this.
         self.loc = (0, 0)
         self.sprite = sprite.Sprite('effects/environments/' + name, self)

@@ -1,4 +1,4 @@
-import util
+import logger
 import sprite
 
 ## These block types do not have square polygons. HACK; ideally we wouldn't
@@ -9,13 +9,13 @@ nonSquareBlockOrientations = ['upleft', 'upright', 'downleft', 'downright']
 class Block:
 
     ## Create a new Block instance.
-    def __init__(self, loc, orientation, adjacencySignature, terrain, flavor):
+    def __init__(self, loc, orientation, adjacencySignature, terrain):
 
         ## Location in realspace
         self.loc = loc
 
         ## Location in gridspace
-        self.gridLoc = util.realspaceToGridspace(self.loc)
+        self.gridLoc = self.loc.toGridspace()
 
         ## There are currently 20 different block orientations, most of which
         # have a square collision polygon.
@@ -25,37 +25,24 @@ class Block:
         # neighboring spaces are occupied by blocks. 
         self.adjacencySignature = adjacencySignature
 
-        ## Which large-scale grouping this block falls into, e.g. "jungle " or
-        # "hotzone".
+        ## TerrainInfo instance to let the block know what it looks like.
         self.terrain = terrain
 
-        ## The specific sub-type of terrain, e.g. "grass", or "lava".
-        self.flavor = flavor
-        
-        imagePath = 'terrain/' + self.terrain + '/' + self.flavor + '/blocks'
+        imagePath = 'terrain/' + self.terrain.zone + '/' + self.terrain.region + '/blocks'
         ## To allow blocks to be animated, we use Sprites for drawing them.
         self.sprite = sprite.Sprite(imagePath, self)
         self.sprite.setAnimation(self.orientation, False)
 
 
-    ## Get the location of the top of the block on the edge in the given 
-    # direction (-1: left, 1: right)
-    def getBlockTop(self, direction):
+    ## Return the location of the vertex in the block's polygon that is 
+    # furthest in the given direction.
+    def getBlockCorner(self, direction):
         poly = self.sprite.getPolygon()
-        targetX = poly.lowerRight[0]
+        targetX = poly.lowerRight.x
         if direction < 0:
-            targetX = poly.upperLeft[0]
-        return util.addVectors(self.loc, poly.getPointAtX(targetX, -1))
+            targetX = poly.upperLeft.x
+        return self.loc.add(poly.getPointAtX(targetX, direction.y))
 
-
-    ## As getBlockTop, but for the bottom of the block
-    def getBlockBottom(self, direction):
-        poly = self.sprite.getPolygon()
-        targetX = poly.lowerRight[0]
-        if direction < 0:
-            targetX = poly.upperLeft[0]
-        return util.addVectors(self.loc, poly.getPointAtX(targetX, 1))
-        
 
     ## Draw the block.
     def draw(self, screen, camera, progress, scale = 1):
@@ -80,5 +67,5 @@ class Block:
 
     ## Convert to string for output
     def __str__(self):
-        return "Block at " + str(self.gridLoc) + " realspace " + str(self.loc) + " orientation " + str(self.orientation) + " type " + str(self.terrain) + " " + str(self.flavor)
+        return "Block at " + str(self.gridLoc) + " realspace " + str(self.loc) + " orientation " + str(self.orientation) + " type " + str(self.terrain)
 

@@ -1,4 +1,5 @@
 import util
+import logger
 import constants
 
 import os
@@ -39,7 +40,7 @@ class ConfigManager:
             self.isFirstTimePlaying = True
             self.writeConfig()
         else:
-            util.debug("Reading a file to get config")
+            logger.debug("Reading a file to get config")
             fh = open(filename, 'r')
             for line in fh:
                 (action, key) = line.split(':', 1)
@@ -52,8 +53,8 @@ class ConfigManager:
 
             for action, key in defaultPlayerKeys.items():
                 if not action in self.controls:
-                    util.fatal('Controls do not have an entry for action [' + action + ']')
-        util.debug("Controls are",str(self.controls))
+                    logger.fatal('Controls do not have an entry for action [' + action + ']')
+        logger.debug("Controls are",str(self.controls))
             
     def writeConfig(self):
         # Write default controls
@@ -72,7 +73,7 @@ class ConfigManager:
     def getConfigValue(self, key):
         if key in self.config:
             return self.config[key]
-        util.warn("Don't have a config entry for " + key)
+        logger.warn("Don't have a config entry for " + key)
         return None
 
     def toggleConfigValue(self, key):

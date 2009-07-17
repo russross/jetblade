@@ -1,4 +1,6 @@
 import constants
+import util
+
 import pygame
 
 ## Minimum cell width/height, to prevent dicing up the quadtree too far.
@@ -84,7 +86,7 @@ class QuadTree:
     # current view.
     def draw(self, screen, camera, progress, scale = 1):
         screenRect = screen.get_rect()
-        screenRect.center = camera
+        screenRect.center = camera.tuple()
         for object in self.objects:
             objectRect = object.getBounds()
             objectRect.width *= scale

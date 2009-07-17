@@ -1,6 +1,7 @@
 import util
 import constants
 import jetblade
+import logger
 
 ## Animations are sequences of images and the logic needed to know when, where, 
 # and how to display them. Every animation is tied to a single polygon for 
@@ -39,12 +40,12 @@ class Animation:
         self.updateFunc = updateFunc
 
         ## A positional offset used when drawing.
-        self.drawOffset = tuple(drawOffset)
+        self.drawOffset = drawOffset
 
         ## The amount to move the animated object after the animation completes.
         # This value is never used if the animation is set to loop, as the
         # animation never completes.
-        self.moveOffset = tuple(moveOffset)
+        self.moveOffset = moveOffset
 
         ## Individual frames of the animation.
         self.frames = jetblade.imageManager.loadAnimation(self.group + '/' + self.name)
@@ -58,7 +59,7 @@ class Animation:
     # otherwise, use self.updateRate. Return True if the animation is complete,
     # False otherwise.
     def update(self, owner):
-        util.debug("Updating animation",self.name,"from frame",self.frame,)
+        logger.debug("Updating animation",self.name,"from frame",self.frame,)
         if self.frame < len(self.frames) - 1 or self.shouldLoop:
             if self.updateFunc is not None:
                 self.frame += self.updateFunc(owner)
@@ -68,39 +69,38 @@ class Animation:
                 self.frame >= len(self.frames) - 1):
             # Animation done
             return True
-        util.debug("to frame",self.frame)
+        logger.debug("to frame",self.frame)
         return False
 
     ## Our owner calls this if the animation is complete; we update its state
     # as necessary now. Currently that just means applying self.moveOffset
     def completeAnimation(self, owner):
         if not self.isComplete:
-            owner.loc[0] += self.moveOffset[0]
-            owner.loc[1] += self.moveOffset[1]
+            owner.loc = owner.loc.add(self.moveOffset)
             self.isComplete = 1
 
     ## Draw the animation to screen, taking self.drawOffset into account.
     def draw(self, screen, camera, loc, scale = 1):
         drawLoc = loc
-        if self.drawOffset != (0, 0) or scale != 1:
-            drawLoc = util.roundVector([(loc[0] + self.drawOffset[0]) * scale, 
-                                        (loc[1] + self.drawOffset[1]) * scale])
+        if self.drawOffset.magnitudeSquared() > constants.EPSILON or scale != 1:
+            drawLoc = loc.add(self.drawOffset).multiply(scale).round()
         surface = util.getDrawFrame(self.frame, self.frames)
         jetblade.imageManager.drawGameObjectAt(screen, surface, drawLoc, camera, scale)
-        if jetblade.logLevel == constants.LOG_DEBUG:
+        if logger.getLogLevel() == logger.LOG_DEBUG:
+            # Draw the bounding polygon and location information
             self.polygon.draw(screen, loc, camera)
-            gridLoc = util.realspaceToGridspace(loc)
+            gridLoc = loc.toGridspace()
             jetblade.imageManager.drawText(screen,
-                    ['%d' % gridLoc[0],
-                     '%d' % gridLoc[1],
-                     '%d' % loc[0],
-                     '%d' % loc[1]],
-                    util.adjustLocForCenter((drawLoc[0] + 25, drawLoc[1] + 25), camera, screen.get_rect()),
+                    ['%d' % gridLoc.x,
+                     '%d' % gridLoc.y,
+                     '%d' % loc.x,
+                     '%d' % loc.y],
+                    util.adjustLocForCenter(drawLoc.addScalar(25), camera, screen.get_rect()),
                     0, constants.tinyFontSize)
 
     ## Reset internal state so the animation can be cleanly re-run.
     def reset(self):
-        util.debug("Animation",self.name,"resetting")
+        logger.debug("Animation",self.name,"resetting")
         self.frame = 0
         self.isComplete = 0
             

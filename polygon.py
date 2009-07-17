@@ -1,6 +1,8 @@
 import constants
 import util
+import logger
 import range1D
+from vector2d import Vector2D
 
 import pygame
 import os
@@ -16,15 +18,15 @@ class Polygon:
         self.points = points
         
         ## Upper-left corner of the polygon's bounding box.
-        self.upperLeft = [constants.BIGNUM, constants.BIGNUM]
+        self.upperLeft = Vector2D(constants.BIGNUM, constants.BIGNUM)
 
         ## Lower-right corner of the polygon's bounding box.
-        self.lowerRight = [-constants.BIGNUM, -constants.BIGNUM]
+        self.lowerRight = Vector2D(-constants.BIGNUM, -constants.BIGNUM)
         for point in self.points:
-            self.upperLeft[0] = min(self.upperLeft[0], point[0])
-            self.upperLeft[1] = min(self.upperLeft[1], point[1])
-            self.lowerRight[0] = max(self.lowerRight[0], point[0])
-            self.lowerRight[1] = max(self.lowerRight[1], point[1])
+            self.upperLeft.x = min(self.upperLeft.x, point.x)
+            self.upperLeft.y = min(self.upperLeft.y, point.y)
+            self.lowerRight.x = max(self.lowerRight.x, point.x)
+            self.lowerRight.y = max(self.lowerRight.y, point.y)
 
         # Detect if the points we're given make a concave polygon, by looking
         # to see if any of the interior angles go in the wrong direction.
@@ -34,14 +36,14 @@ class Polygon:
             p2 = self.points[i]
             p3 = self.points[(i+1) % len(self.points)]
             # Get the direction of the angle via cross product.
-            a = (p2[0] - p1[0], p2[1] - p1[1])
-            b = (p3[0] - p2[0], p3[1] - p2[1])
-            angleDirection = cmp(a[0] * b[1] - a[1] * b[0], 0)
+            a = p2.sub(p1)
+            b = p3.sub(p2)
+            angleDirection = cmp(a.x * b.y - a.y * b.x, 0)
             if polygonDirection is None:
                 polygonDirection = angleDirection
             if angleDirection != polygonDirection:
                 # This angle has the wrong sign.
-                util.fatal("Polygon",self.points,"is not convex; angle at",p2,"is invalid")
+                logger.fatal("Polygon",self.points,"is not convex; angle at",p2,"is invalid")
 
         ## For debugging purposes, when we collide with another polygon, we 
         # set this to True for 1 frame.
@@ -53,8 +55,7 @@ class Polygon:
         self.projectionVectors = []
         prevPoint = self.points[-1]
         for point in self.points:
-            vector = util.getNormalizedVector(prevPoint, point)
-            vector = (-vector[1], vector[0])
+            vector = prevPoint.sub(point).normalize().invert()
             self.projectionVectors.append(vector)
             prevPoint = point
 
@@ -82,12 +83,12 @@ class Polygon:
             # flip the vector if needed. Check by comparing the overlap 
             # if we move alt along overlapVector to the overlap we've already
             # obtained.
-            displacedLoc = [altLoc[0] + overlapVector[0], altLoc[1] + overlapVector[1]]
+            displacedLoc = altLoc.add(overlapVector)
             range1 = self.projectOntoVector(myLoc, overlapVector)
             range2 = alt.projectOntoVector(displacedLoc, overlapVector)
             if range1.getOverlap(range2) > smallestOverlap:
                 # overlapVector points in the wrong direction.
-                overlapVector = [-overlapVector[0], -overlapVector[1]]
+                overlapVector = overlapVector.multiply(-1)
 
         return (smallestOverlap, overlapVector)
 
@@ -101,13 +102,13 @@ class Polygon:
     def projectOntoVector(self, loc, vector):
         result = range1D.Range1D()
         for point in self.points:
-            adjustedPoint = util.addVectors(point, loc)
-            projectedPoint = util.projectPointOntoVector(adjustedPoint, vector)
+            adjustedPoint = point.add(loc)
+            projectedPoint = adjustedPoint.projectOnto(vector)
             distanceFromOrigin = None
-            if abs(vector[0]) > constants.EPSILON:
-                distanceFromOrigin = projectedPoint[0] / vector[0]
+            if abs(vector.x) > constants.EPSILON:
+                distanceFromOrigin = projectedPoint.x / vector.x
             else:
-                distanceFromOrigin = projectedPoint[1] / vector[1]
+                distanceFromOrigin = projectedPoint.y / vector.y
             if distanceFromOrigin < result.min:
                 result.min = distanceFromOrigin
             if distanceFromOrigin > result.max:
@@ -121,7 +122,7 @@ class Polygon:
         myProj = self.projectOntoVector(myLoc, vector)
         altProj = alt.projectOntoVector(altLoc, vector)
         distance = myProj.getOverlap(altProj)
-        util.debug("Overlap along",vector,"is",distance,"from ranges",myProj,altProj)
+        logger.debug("Overlap along",vector,"is",distance,"from ranges",myProj,altProj)
         return distance
 
     ## Draw the polygon, for debugging purposes only. Polygons that have been
@@ -132,19 +133,17 @@ class Polygon:
             drawColor = (255, 0, 0)
         drawPoints = []
         for point in self.points:
-            drawPoints.append(util.adjustLocForCenter(util.addVectors(point, loc), camera, screen.get_rect()))
+            drawPoints.append(util.adjustLocForCenter(point.add(loc), camera, screen.get_rect()).tuple())
         pygame.draw.lines(screen, drawColor, 1, drawPoints, 4)
         self.hit = False
 
 
     ## Return the center, as the average of all points in the polygon.
     def getCenter(self):
-        center = [0, 0]
+        center = Vector2D(0, 0)
         for point in self.points:
-            center[0] += point[0]
-            center[1] += point[1]
-        center[0] /= len(self.points)
-        center[1] /= len(self.points)
+            center = center.add(point)
+        center = center.divide(len(self.points))
         return center
 
 
@@ -153,8 +152,8 @@ class Polygon:
     def getPointAtHeight(self, targetY, direction):
         currentPoint = None
         for point in self.points:
-            if abs(point[1] - targetY) < constants.EPSILON:
-                if currentPoint is None or cmp(point[0] - currentPoint[0], 0) == direction:
+            if abs(point.y - targetY) < constants.EPSILON:
+                if currentPoint is None or cmp(point.x - currentPoint.x, 0) == direction:
                     currentPoint = point
         return currentPoint
 
@@ -165,8 +164,8 @@ class Polygon:
     def getPointAtX(self, targetX, direction):
         currentPoint = None
         for point in self.points:
-            if abs(point[0] - targetX) < constants.EPSILON:
-                if currentPoint is None or cmp(point[1] - currentPoint[1], 0) == direction:
+            if abs(point.x - targetX) < constants.EPSILON:
+                if currentPoint is None or cmp(point.y - currentPoint.y, 0) == direction:
                     currentPoint = point
         return currentPoint
 
@@ -177,18 +176,18 @@ class Polygon:
         currentPoint = None
         for point in self.points:
             if (currentPoint is None or 
-                    (targetRange.contains(point[1]) and 
-                        cmp(point[0] - currentPoint[0], 0) == direction)):
+                    (targetRange.contains(point.y) and 
+                        cmp(point.x - currentPoint.x, 0) == direction)):
                 currentPoint = point
         return currentPoint
 
 
     def __str__(self):
-        str = 'polygon ['
+        result = 'polygon ['
         for point in self.points:
-            str += '(%f, %f)' % (point[0], point[1])
-        str += ']'
-        return str
+            result += str(point) + ', '
+        result += ']'
+        return result
 
 #    def printAdjusted(self, loc):
 #        for point in self.points: # 'print' <--- to trigger my vim commands

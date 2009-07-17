@@ -1,12 +1,12 @@
 import math
 
 def runUpdateFunc(obj):
-    speed = math.sqrt(obj.vel[0]**2 + obj.vel[1]**2)
-    if speed < .25 * obj.maxVel[0]:
+    speed = obj.vel.magnitude()
+    if speed < .25 * obj.maxVel.x:
         return 2/3.0
-    elif speed < .5 * obj.maxVel[0]:
+    elif speed < .5 * obj.maxVel.x:
         return 2/2.25
-    elif speed < .75 * obj.maxVel[0]:
+    elif speed < .75 * obj.maxVel.x:
         return 2/1.5
     else:
         return 2

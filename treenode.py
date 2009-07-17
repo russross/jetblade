@@ -4,6 +4,8 @@ import map
 import seed
 import line
 import util
+import logger
+from vector2d import Vector2D
 
 import math
 import copy
@@ -23,13 +25,6 @@ numRetriesNearRoot = 50
 ## Number of retry attempts for leaf nodes at depth greater than mustRetryDepth.
 numRetriesFarFromRoot = 5
 
-## Used by the 'room' tunnel type; minimum size of a room in blocks.
-# This is the attempted size, not necessarily the actually achieved size. 
-minRoomSize = constants.blockSize * 20
-## Degree to which the attempted size may vary 
-# (between [minRoomSize, minRoomSize + roomSizeVariance])
-roomSizeVariance = constants.blockSize * 20
-
 # Wallwalker parameters
 ## How many steps in the wallwalker algorithm to aggregate to determine the 
 # local slope of the tunnel wall.
@@ -48,9 +43,9 @@ maxTreeDepth = 50
 ## Children under this depth are not allowed to create loops.
 minDepthForLoops = 3
 ## How far apart two nodes must be to make a loop
-minTreeDistanceForLoops = 4
+minTreeDistanceForLoops = 10
 ## How far apart two loops can be
-minTreeDistanceToLoops = 0
+minTreeDistanceToLoops = 5
 ## Minimum distance between two nodes for a loop to be allowed.
 minDistForLoops = 15 * constants.blockSize
 ## Maximum distance between two nodes for a loop to be allowed.
@@ -75,7 +70,12 @@ verticalTunnelPlatformGap = 4
 # Values of each subsquare (for determining index into this list) are:
 # 8 1
 # 4 2
-marchingSquares = [(1, 0), (1, 0), (0, 1), (0, 1), (-1, 0), (-1, 0), (-1, 0),                   (-1, 0), (0, -1), (1, 0), (0, -1), (0, 1), (0, -1), (1, 0),                   (0, -1), (None, None)]
+marchingSquares = [Vector2D(1, 0), Vector2D(1, 0), Vector2D(0, 1), 
+                   Vector2D(0, 1), Vector2D(-1, 0), Vector2D(-1, 0), 
+                   Vector2D(-1, 0), Vector2D(-1, 0), Vector2D(0, -1), 
+                   Vector2D(1, 0), Vector2D(0, -1), Vector2D(0, 1), 
+                   Vector2D(0, -1), Vector2D(1, 0), Vector2D(0, -1), 
+                   None]
 
 slopePlatformRequirement = math.pi / 8.0
 ## Threshholds for considering a given segment of terrain to be a wall.
@@ -95,7 +95,7 @@ wallAngles = [(-math.pi/2.0 -slopePlatformRequirement,
 class TreeNode:
     ## Create a new TreeNode instance. Determine the local zone and region
     # information, pick a tunnel feature type, and determine our tunnel width.
-    def __init__(self, loc, parent, recurseDepth, loopNode = None, isJunctionNode = False):
+    def __init__(self, loc, parent = None, recurseDepth = 0, loopNode = None, isJunctionNode = False):
         self.id = constants.globalId
         constants.globalId += 1
 
@@ -114,14 +114,15 @@ class TreeNode:
         ## Determines if we should retry making children when generating the
         # map.
         self.haveMadeChildren = False
-        ## Individual spaces in the map that belong to this TreeNode
+        ## Individual open (non-wall) spaces in the map that belong to this 
+        # TreeNode
         self.spaces = set()
         ## Child nodes
         self.children = []
-        ## If this node is part of a loop, then junctionChild points to the 
-        # other end of the loop.
+        ## Link to a dummy node that takes up space at the connections in the 
+        # tree.
         self.junctionChild = None
-        ## Whether or not this node is itself forming a loop.
+        ## Whether or not this particular node is a dummy node.
         self.isJunctionNode = isJunctionNode
         ## A list of all nodes that are connected to us that aren't our 
         # children or our parent.
@@ -134,24 +135,27 @@ class TreeNode:
             for child in loopNode.children:
                 self.connections.append(child)
 
-        ## Our zone and region, based on the region map in Map.
-        (self.zoneType, self.regionType) = (None, None)
-        # Map our location to the region map to get our zone and region.
+        ## Information about the terrain we are in.
+        self.terrainInfo = None
+        
         if self.parent is None:
-            (self.zoneType, self.regionType) = jetblade.map.getTerrainInfoAtGridLoc(util.realspaceToGridspace(self.loc))
+            # Map our location to the region map to get our terrain info.
+            self.terrainInfo = jetblade.map.getTerrainInfoAtGridLoc(self.loc.toGridspace())
         elif self.parent.getRegionTransitionDistance() < minRegionTransitionDistance:
-            (self.zoneType, self.regionType) = self.parent.getTerrainInfo()
+            # Too close to the parent to switch terrain, so use theirs.
+            self.terrainInfo = self.parent.getTerrainInfo()
             self.regionTransitionDistance = self.parent.getRegionTransitionDistance() + 1
         else:
-            (self.zoneType, self.regionType) = jetblade.map.getTerrainInfoAtGridLoc(util.realspaceToGridspace(self.parent.loc))
-            if self.zoneType != self.parent.zoneType or self.regionType != self.parent.regionType:
+            # Try to transition to a different terrain.
+            self.terrainInfo = jetblade.map.getTerrainInfoAtGridLoc(self.parent.loc.toGridspace())
+            if self.terrainInfo != self.parent.terrainInfo:
                 self.regionTransitionDistance = 0
             else:
                 self.regionTransitionDistance = self.parent.getRegionTransitionDistance() + 1
 
         # Select tunnel type and load the relevant module.
         ## The tunnel feature type, e.g. straight, bumpy, staircase.
-        self.tunnelType = util.pickWeightedOption(jetblade.map.getRegionInfo(self.zoneType, self.regionType, 'tunnelTypes'))
+        self.tunnelType = util.pickWeightedOption(jetblade.map.getRegionInfo(self.terrainInfo, 'tunnelTypes'))
 
         ## The module that contains the information needed to create our tunnel
         # feature type.
@@ -178,7 +182,7 @@ class TreeNode:
                           direction + math.pi / 2.0, 
                           direction + math.pi,
                           direction + 3 * math.pi / 2.0)
-            if jetblade.map.getRegionInfo(self.zoneType, self.regionType, 'aligned'):
+            if jetblade.map.getRegionInfo(self.terrainInfo, 'aligned'):
                 # Must align to the grid.
                 directions = (0, math.pi / 2.0, math.pi, 3 * math.pi / 2.0)
 
@@ -199,9 +203,10 @@ class TreeNode:
                     parentLoc = self.parent.loc
                     rootDirection = self.getAngle()
                     direction = rootDirection + random.uniform(-math.pi/2.0,math.pi/2.0)
-                    directions = (direction - math.pi/6.0, direction + math.pi/6.0)
+                    directions = [direction - math.pi/6.0, 
+                                  direction + math.pi/6.0]
                     # Check for alignment with the grid.
-                    if jetblade.map.getRegionInfo(self.zoneType, self.regionType, 'aligned'):
+                    if jetblade.map.getRegionInfo(self.terrainInfo, 'aligned'):
                         # Round rootDirection to a cardinal direction.
                         newBaseDirection = math.floor((rootDirection + math.pi / 4.0) / (math.pi / 2.0)) * math.pi / 2.0
                         directions = [newBaseDirection, 
@@ -213,9 +218,9 @@ class TreeNode:
                             abs(util.clampDirection(direction) - util.clampDirection(rootDirection)) < minTreeAngleDistance):
                         continue
                     length = self.getTunnelLength()
-                    childX = self.loc[0] + math.cos(direction) * length
-                    childY = self.loc[1] + math.sin(direction) * length
-                    childLoc = (childX, childY)
+                    childX = self.loc.x + math.cos(direction) * length
+                    childY = self.loc.y + math.sin(direction) * length
+                    childLoc = Vector2D(childX, childY)
                     childLine = line.Line(self.loc, childLoc)
                     if (childX > 0 and childX < jetblade.map.width and
                         childY > 0 and childY < jetblade.map.height and
@@ -263,7 +268,7 @@ class TreeNode:
                         not node.canAddConnection(self.loc)):
                     continue
                     
-                dist = util.pointPointDistance(self.loc, node.loc)
+                dist = self.loc.distance(node.loc)
                 nodeLine = line.Line(self.loc, node.loc)
                 if (jetblade.map.getIsValidLine(nodeLine, [self.loc, node.loc]) and 
                         not node.getConnections()):
@@ -281,13 +286,15 @@ class TreeNode:
     ## Return true iff the line from us to loc is not too close to any 
     # of our existing lines and doesn't form any overly-sharp angles.
     def canAddConnection(self, loc):
-        nodeAngle = util.clampDirection(math.atan2(self.loc[1] - loc[1], self.loc[0] - loc[0]))
+        delta = self.loc.sub(loc)
+        nodeAngle = util.clampDirection(math.atan2(delta.y, delta.x))
         neighbors = []
         neighbors.extend(self.children)
         if self.parent is not None:
             neighbors.append(self.parent)
         for neighbor in neighbors:
-            neighborAngle = util.clampDirection(math.atan2(self.loc[1] - neighbor.loc[1], self.loc[0] - neighbor.loc[0]))
+            neighborDelta = self.loc.sub(neighbor.loc)
+            neighborAngle = util.clampDirection(math.atan2(neighborDelta.y, neighborDelta.x))
             angleDist = abs(neighborAngle - nodeAngle)
             if angleDist < minAngleDistanceForLoops:
                 return False
@@ -311,7 +318,7 @@ class TreeNode:
         if self.parent is not None:
             self.featureModule.createFeature()
 
-            environment = util.pickWeightedOption(jetblade.map.getRegionInfo(self.zoneType, self.regionType, 'environments'))
+            environment = util.pickWeightedOption(jetblade.map.getRegionInfo(self.terrainInfo, 'environments'))
             if environment is not None:
                 effect = jetblade.envEffectManager.loadEnvEffect(environment)
                 effect.createRegion(jetblade.map, self)
@@ -326,62 +333,55 @@ class TreeNode:
         maxX = -constants.BIGNUM
         maxY = -constants.BIGNUM
         for loc in self.spaces:
-            minX = min(minX, loc[0])
-            minY = min(minY, loc[1])
-            maxX = max(maxX, loc[0])
-            maxY = max(maxY, loc[1])
+            minX = min(minX, loc.x)
+            minY = min(minY, loc.y)
+            maxX = max(maxX, loc.x)
+            maxY = max(maxY, loc.y)
         return (minX, minY, maxX, maxY)
 
 
     ## Get the points closest to our start and end that are still in our
     # sector. This is useful for some tunnel features (e.g. the maze feature).
     def getStartAndEndLoc(self):
-        startLoc = util.realspaceToGridspace([self.loc[0], self.loc[1]])
-        endLoc = util.realspaceToGridspace([self.parent.loc[0], self.parent.loc[1]])
-        (dx, dy) = util.getNormalizedVector(startLoc, endLoc)
+        startLoc = self.loc.toGridspace()
+        endLoc = self.parent.loc.toGridspace()
+        delta = endLoc.sub(startLoc).normalize()
         while not self.getIsOurSpace(startLoc):
-            startLoc[0] += dx
-            startLoc[1] += dy
-            if util.pointPointDistance(startLoc, endLoc) < 1:
+            startLoc = startLoc.add(delta)
+            if startLoc.distance(endLoc) < 1:
                 return (None, None)
         while not self.getIsOurSpace(endLoc):
-            endLoc[0] -= dx
-            endLoc[1] -= dy
-            if util.pointPointDistance(startLoc, endLoc) < 1:
+            endLoc = endLoc.sub(delta)
+            if startLoc.distance(endLoc) < 1:
                 return (None, None)
 
-        startLoc = [int(x) for x in startLoc]
-        endLoc = [int(x) for x in endLoc]
+        startLoc = startLoc.int()
+        endLoc = endLoc.int()
         return (startLoc, endLoc)
 
 
     ## Measure the distance, in gridspace, from the given loc to either a wall
     # or the end of our space.
     def getDistToCeiling(self, loc):
-        x = loc[0]
-        curY = loc[1] - 1 # Start in open space
+        curLoc = Vector2D(loc.x, loc.y - 1)
         dist = 1
-        while self.getIsOurSpace((x, curY)):
-            curY -= 1
+        while self.getIsOurSpace(curLoc):
+            curLoc.y -= 1
             dist += 1
         return dist
 
 
     def getTunnelWidth(self):
-        return random.choice(jetblade.map.getRegionInfo(self.zoneType, self.regionType, 'tunnelWidths')) * constants.blockSize
+        return random.choice(jetblade.map.getRegionInfo(self.terrainInfo, 'tunnelWidths')) * constants.blockSize
 
 
     def getTunnelLength(self):
-        return random.choice(jetblade.map.getRegionInfo(self.zoneType, self.regionType, 'tunnelLengths')) * constants.blockSize
+        return random.choice(jetblade.map.getRegionInfo(self.terrainInfo, 'tunnelLengths')) * constants.blockSize
 
 
     def getJunctionRadius(self):
-        widths = jetblade.map.getRegionInfo(self.zoneType, self.regionType, 'tunnelWidths')
+        widths = jetblade.map.getRegionInfo(self.terrainInfo, 'tunnelWidths')
         return widths[0] * constants.blockSize
-
-
-    def getRoomSize(self):
-        return random.uniform(minRoomSize, minRoomSize + roomSizeVariance)
 
 
     ## Carve a junction out of the map grid at our endpoint, if we have 
@@ -389,55 +389,53 @@ class TreeNode:
     # which may be set in the configuration for the region.
     def createJunctions(self):
         if not self.children and not self.connections:
+            # No junctions on leaf nodes
             return
-        center = util.realspaceToGridspace(self.loc)
+        center = self.loc.toGridspace()
         radius = int(self.getJunctionRadius() / constants.blockSize)
-        distFunc = util.pointPointDistance
-        if jetblade.map.getRegionInfo(self.zoneType, self.regionType, 'aligned'):
-            # Use a square junction instead of a circular one.
-            distFunc = util.pointPointDistanceSquare
+        distFunc = Vector2D.distance
+        if jetblade.map.getRegionInfo(self.terrainInfo, 'aligned'):
+            # Make a square junction instead of a circular one.
+            # \todo Sometimes this makes diagonal edges in the junction; 
+            # figure out why and fix it.
+            distFunc = Vector2D.distanceSquare
 
         # Iterate over points in the accepted area, converting them to 
         # open space surrounded by walls if they are related to us.
-        for x in range(center[0] - int(radius), 
-                       center[0] + int(radius)):
-            if x <= 0 or x >= jetblade.map.numCols - 1:
-                continue
-            for y in range(center[1] - int(radius), 
-                           center[1] + int(radius)):
-                if y <= 0 or y >= jetblade.map.numRows - 1:
-                    continue
-                dist = distFunc((x, y), center)
+        for x in range(max(center.x - radius, 1), 
+                       min(center.x + radius, jetblade.map.numCols - 1)):
+            for y in range(max(center.y - radius, 1), 
+                           min(center.y + radius, jetblade.map.numRows - 1)):
+                point = Vector2D(x, y)
+                dist = distFunc(point, center)
                 if (dist <= radius and 
-                        (x, y) in jetblade.map.deadSeeds and 
-                        self.getRelationType(jetblade.map.deadSeeds[(x, y)].node) != 'none'):
+                        point in jetblade.map.deadSeeds and 
+                        self.getRelationType(jetblade.map.deadSeeds[point].node) != 'none'):
                     jetblade.map.blocks[x][y] = map.BLOCK_EMPTY
                     # Reassign the space to a dummy child
                     if self.junctionChild is None:
                         self.junctionChild = TreeNode(self.loc, self, constants.BIGNUM, None, 1)
                         self.junctionChild.color = (0, 0, 0)
-                    jetblade.map.assignSpace((x, y), self.junctionChild)
+                    jetblade.map.assignSpace(point, self.junctionChild)
                     
                     # Patch walls around the deleted space
-                    for offset in constants.perimeterOrder:
-                        ax = x + offset[0]
-                        ay = y + offset[1]
-                        if not jetblade.map.getIsInBounds((ax, ay)):
+                    for nearPoint in point.perimeter():
+                        if not jetblade.map.getIsInBounds(nearPoint):
                             continue
                         # If we hit a space that's not a wall or open space, or
                         # if we hit a space that's owned by a non-junction node
                         # of the tree that we aren't connected to, put a wall 
                         # in.
                         altNode = None
-                        if (ax, ay) in jetblade.map.deadSeeds:
-                            altNode = jetblade.map.deadSeeds[(ax, ay)].node
-                        if (jetblade.map.blocks[ax][ay] == map.BLOCK_UNALLOCATED or 
+                        if nearPoint in jetblade.map.deadSeeds:
+                            altNode = jetblade.map.deadSeeds[nearPoint].node
+                        if (jetblade.map.blocks[nearPoint.x][nearPoint.y] == map.BLOCK_UNALLOCATED or 
                                 (altNode is not None and
                                  self.getRelationType(altNode) == 'none' and
                                  not altNode.getIsJunctionNode()
                                 )):
-                            jetblade.map.blocks[ax][ay] = map.BLOCK_WALL
-                            jetblade.map.deadSeeds[(ax, ay)] = seed.Seed(self.junctionChild, 0, constants.BIGNUM)
+                            jetblade.map.blocks[nearPoint.x][nearPoint.y] = map.BLOCK_WALL
+                            jetblade.map.deadSeeds[nearPoint] = seed.Seed(self.junctionChild, 0, constants.BIGNUM)
 
         for child in self.children:
             child.createJunctions()
@@ -479,7 +477,7 @@ class TreeNode:
         result = []
         if (treeDistance >= minTreeDistanceForLoops and 
                 self.connectionDistance >= minTreeDistanceToLoops):
-            dist = util.pointPointDistance(self.loc, loc)
+            dist = self.loc.distance(loc)
             if dist > minDistForLoops and dist < maxDistForLoops:
                 result.append(self)
 
@@ -508,31 +506,29 @@ class TreeNode:
 
     ## Break the tree concept by creating a connection to a node in a 
     # different part of the tree.
-    def addConnection(self, node, shouldRecurse = 1):
+    def addConnection(self, node, shouldRecurse = True):
         self.connections.append(node)
         if shouldRecurse:
             for child in self.children:
-                child.addConnection(node, 0)
+                child.addConnection(node, False)
 
 
     ## Place platforms in our space to help make the map accessible to the
     # player.
     def fixAccessibility(self):
-        if (self.parent is not None and 
-                (self.isJunctionNode or self.featureModule.shouldCheckAccessibility())):
-            util.debug("Checking accessibility for node",self.id,"at",self.loc)
+        if self.isJunctionNode:
+            self.fixAccessibilityWallwalk()
+        elif (self.parent is not None and 
+                self.featureModule.shouldCheckAccessibility()):
             # Determine which accessibility-fixing algorithm to use.
-            if util.pointPointDistance(self.loc, self.parent.loc) > minVerticalTunnelLength:
+            if self.loc.distance(self.parent.loc) > minVerticalTunnelLength:
                 angle = self.getAngle()
                 if (abs(angle - math.pi / 2.0) < verticalTunnelAngleFuzz or
                         abs(angle - 3*math.pi / 2.0) < verticalTunnelAngleFuzz):
-                    util.debug("Node is for a vertical shaft")
                     self.fixAccessibilityVertical()
                 else:
-                    util.debug("Node needs a wallwalker")
                     self.fixAccessibilityWallwalk()
             else:
-                util.debug("Node needs a wallwalker")
                 self.fixAccessibilityWallwalk()
 
         for child in self.children:
@@ -545,14 +541,14 @@ class TreeNode:
     # staircase" out of floating platforms.
     def fixAccessibilityVertical(self):
         # Make certain there's a platform at the bottom to get into the tunnel.
-        bottomLoc = self.loc
-        topLoc = self.parent.loc
-        if self.loc[1] < self.parent.loc[1]:
-            bottomLoc = self.parent.loc
-            topLoc = self.loc
-        bottomLoc = (bottomLoc[0], bottomLoc[1] - self.getJunctionRadius() / 2.0)
-        bottomLoc = util.realspaceToGridspace(bottomLoc)
-        topLoc = util.realspaceToGridspace(topLoc)
+        bottomLoc = self.loc.copy()
+        topLoc = self.parent.loc.copy()
+        if self.loc.y < self.parent.loc.y:
+            (bottomLoc, topLoc) = (topLoc, bottomLoc)
+        # Back out of the junction a bit.
+        bottomLoc.y -= self.getJunctionRadius() / 2.0
+        bottomLoc = bottomLoc.toGridspace()
+        topLoc = topLoc.toGridspace()
         platformWidth = random.choice(map.platformWidths)
         jetblade.map.addPlatform(bottomLoc, platformWidth)
 
@@ -560,18 +556,18 @@ class TreeNode:
         platformPattern = random.choice(verticalTunnelPlatformPatterns)
         index = random.randint(0, len(platformPattern)-1)
 
-        curLoc = [bottomLoc[0], bottomLoc[1] - verticalTunnelPlatformGap]
-        while curLoc[1] > topLoc[1]:
-            curLoc = [curLoc[0], curLoc[1] - verticalTunnelPlatformGap]
+        curLoc = bottomLoc
+#        curLoc.y -= verticalTunnelPlatformGap
+        while curLoc.y > topLoc.y:
+            curLoc.y -= verticalTunnelPlatformGap
             direction = platformPattern[index]
             platformLoc = copy.copy(curLoc)
             if direction != 0:
                 while self.getIsOurSpace(platformLoc):
-                    platformLoc[0] += direction
-                platformLoc[0] -= direction
+                    platformLoc.x += direction
+                platformLoc.x -= direction
             if self.getIsOurSpace(platformLoc):
                 jetblade.map.addPlatform(platformLoc, platformWidth)
-                jetblade.map.markLoc = platformLoc
             index = (index + 1) % len(platformPattern)
 
 
@@ -583,33 +579,32 @@ class TreeNode:
         # our line in gridspace.
         # This breaks down for the junction nodes (whose start and end
         # points are the same), but we know they own their endpoints.
-        originalSpace = self.getLocOnGrid()
+        originalSpace = self.loc.toGridspace()
         if not self.isJunctionNode:
-            parentSpace = self.parent.getLocOnGrid()
-            (dx, dy) = util.getNormalizedVector(originalSpace, parentSpace)
+            parentSpace = self.parent.loc.toGridspace()
+            delta = parentSpace.sub(originalSpace).normalize()
             while (not self.getIsOurSpace(originalSpace) and 
-                    util.pointPointDistance(originalSpace, parentSpace) > 2):
-                originalSpace[0] += dx
-                originalSpace[1] += dy
+                    originalSpace.distance(parentSpace) > 2):
+                originalSpace = originalSpace.add(delta)
         # Find a wall from that point
         while (self.getIsOurSpace(originalSpace)):
-            originalSpace[1] += 1
-        originalSpace[1] -= 1
-        originalSpace = [int(originalSpace[0]), int(originalSpace[1])]
+            originalSpace.y += 1
+        originalSpace.y -= 1
+        originalSpace = originalSpace.int()
+        # If we can't find our sector, then probably all of it
+        # got absorbed by other sectors or pushed into walls, so don't 
+        # do the wallwalker. Otherwise, carry on.
         if self.getIsOurSpace(originalSpace):
-            # If we can't find our sector, then probably all of it
-            # got absorbed by other sectors or pushed into walls, so don't 
-            # do the wallwalker.
             localSlope = 0
             first = 1
-            currentSpace = originalSpace
+            currentSpace = originalSpace.copy()
             recentSpaces = []
             spacesSinceLastPlatform = 0
             numSteps = 0
-            while first or currentSpace != originalSpace:
+            while first or currentSpace.distance(originalSpace) > constants.EPSILON:
                 numSteps += 1
                 if numSteps > maxWallwalkerSteps:
-                    util.debug("Hit maximum steps for node",self.id)
+                    logger.debug("Hit maximum steps for node",self.id)
                     break
                 first = 0
                 # Walk around the perimeter of the region, finding the average 
@@ -619,9 +614,8 @@ class TreeNode:
                 if len(recentSpaces) >= slopeAveragingBracketSize:
                     startSpace = recentSpaces.pop(0)
                 if startSpace is not None and spacesSinceLastPlatform > platformInterval:
-                    dx = currentSpace[0] - startSpace[0]
-                    dy = currentSpace[1] - startSpace[1]
-                    angle = math.atan2(dy, dx)
+                    delta = currentSpace.sub(startSpace)
+                    angle = delta.angle()
                     angleBrackets = []
                     
                     isWallOrCeiling = 0
@@ -630,20 +624,15 @@ class TreeNode:
                             isWallOrCeiling = 1
                             break
                     # Default to checking for platforms above the floor
-                    lineDx = 0
-                    lineDy = -1
+                    lineDelta = Vector2D(0, -1)
                     buildDistance = map.minDistForFloorPlatform
                     if isWallOrCeiling:
                         # Draw the line perpendicular to the local surface instead.
-                        lineDx = -dy
-                        lineDy = dx
-                        magnitude = math.sqrt(lineDx**2+lineDy**2)
-                        lineDx /= magnitude
-                        lineDy /= magnitude
+                        lineDelta = delta.copy().invert().normalize()
                         buildDistance = map.minDistForPlatform
-                    distance = jetblade.map.getDistanceToWall(currentSpace, lineDx, lineDy, self)
+                    distance = jetblade.map.getDistanceToWall(currentSpace, lineDelta, self)
                     if distance > buildDistance:
-                        jetblade.map.markPlatform(currentSpace, lineDx, lineDy, distance)
+                        jetblade.map.markPlatform(currentSpace, lineDelta, distance)
                         spacesSinceLastPlatform = 0
                 recentSpaces.append(currentSpace)
                 spacesSinceLastPlatform += 1
@@ -651,19 +640,18 @@ class TreeNode:
                 # Get the space adjacent to our own that continues the walk, 
                 # by using the Marching Squares algorithm
                 # (http://en.wikipedia.org/wiki/Marching_squares)
-                x = currentSpace[0]
-                y = currentSpace[1]
+                x = currentSpace.x
+                y = currentSpace.y
                 marchIndex = 0
-                if not self.getIsOurSpace((x, y)):
+                if not self.getIsOurSpace(Vector2D(x, y)):
                     marchIndex += 1
-                if not self.getIsOurSpace((x, y+1)):
+                if not self.getIsOurSpace(Vector2D(x, y+1)):
                     marchIndex += 2
-                if not self.getIsOurSpace((x-1, y+1)):
+                if not self.getIsOurSpace(Vector2D(x-1, y+1)):
                     marchIndex += 4
-                if not self.getIsOurSpace((x-1, y)):
+                if not self.getIsOurSpace(Vector2D(x-1, y)):
                     marchIndex += 8
-                currentSpace = [x + marchingSquares[marchIndex][0],
-                                y + marchingSquares[marchIndex][1]]
+                currentSpace = currentSpace.add(marchingSquares[marchIndex])
         else: # Couldn't find a good space to start from
             pass
 #                print "Unable to find a good starting place for",self.id
@@ -683,7 +671,7 @@ class TreeNode:
     ## Return true if the passed-in location is one of the open spaces owned
     # by this node.
     def getIsOurSpace(self, loc):
-        return (int(loc[0]), int(loc[1])) in self.spaces
+        return loc.int() in self.spaces
 
 
     ## Return true if this node is one of the "blank" leaf nodes placed at 
@@ -692,52 +680,36 @@ class TreeNode:
         return self.isJunctionNode
 
 
-    ## Return a tuple of terrain information.
+    ## Return our terrain info.
     def getTerrainInfo(self):
-        return (self.zoneType, self.regionType)
-
-
-    ## Map our location to the map grid.
-    def getLocOnGrid(self):
-        return util.realspaceToGridspace(self.loc)
+        return self.terrainInfo
 
 
     ## Get the angle from our parent to ourselves, in radians.
     def getAngle(self):
         if self.parent is not None:
-            return util.clampDirection(math.atan2(self.loc[1] - self.parent.loc[1], self.loc[0] - self.parent.loc[0]))
+            return util.clampDirection(self.loc.sub(self.parent.loc).angle())
         return 0
 
 
     ## Get the slope from our parent to ourselves.
     def getSlope(self):
         if self.parent is not None:
-            dy = self.loc[1] - self.parent.loc[1]
-            dx = self.loc[0] - self.parent.loc[0]
-            if abs(dx) < constants.EPSILON:
-                # Vertical.
-                return constants.BIGNUM * cmp(dy, 0)
-            return dy / dx
+            return self.loc.sub(self.parent.loc).slope()
         return 0
 
+
+    ## Return the distance since the last time terrain was changed.
     def getRegionTransitionDistance(self):
         return self.regionTransitionDistance
+    
 
-    def printTree(self):
-        ids = []
-        for child in self.children:
-            ids.append(child.id)
-        util.debug("Node",self.id,"has child IDs",ids)
-        for child in self.children:
-            child.printTree()
-
-
-    ## This is strictly for debugging purposes only. 
+    ## Draw the tree. This is strictly for debugging purposes.
     def draw(self, screen, scale):
-        p1 = [self.loc[0] * scale, self.loc[1] * scale]
+        p1 = self.loc.multiply(scale)
         if self.parent is not None:
-            p2 = [self.parent.loc[0] * scale, self.parent.loc[1] * scale]
-            pygame.draw.line(screen, self.color, p1, p2, 4)
+            p2 = self.parent.loc.multiply(scale)
+            pygame.draw.line(screen, self.color, p1.tuple(), p2.tuple(), 4)
         for child in self.children:
             # Note this does not include junction nodes
             child.draw(screen, scale)
@@ -745,20 +717,34 @@ class TreeNode:
         parentId = -1
         if self.parent is not None:
             parentId = self.parent.id
-        drawLoc = p1
+        drawLoc = p1.copy()
         if self.loopNode is not None:
-            drawLoc = util.addVectors(p1, (0, 40))
-        jetblade.imageManager.drawText(screen, 
-                ['%d %d' % (self.loc[0], self.loc[1]),
-                 '%d %d' % (self.id, parentId), 
-                 '%s' % self.tunnelType],
+            drawLoc.y += 40
+        strings = ['%d %d' % (self.loc.x, self.loc.y),
+                   '%d %d' % (self.id, parentId)]
+        if self.loopNode is None:
+            strings.append(self.tunnelType)
+
+        jetblade.imageManager.drawText(screen, strings,
                 drawLoc, 0, constants.tinyFontSize, 
                 constants.TEXT_ALIGN_CENTER, (255, 0, 0, 255))
 
+    
+    ## Recursively print the tree.
+    def printTree(self):
+        if self.parent is None:
+            logger.debug("----------Full tree printout----------")
+        logger.debug(self,"with children",[child.id for child in self.children])
+        for child in self.children:
+            child.printTree()
+        if self.parent is None:
+            logger.debug("----------End full tree printout----------")
 
-    ## Generate a textual representation
+    ## Convert to string (just this node, no recursion). Use printTree to get
+    # a complete printout.
     def __str__(self):
         locationStr = " at " + str(self.loc)
         if self.parent is not None:
             locationStr = " from " + str(self.parent.loc) + " to " + str(self.loc)
-        return "TreeNode " + str(self.id) + locationStr + " of type " + str(self.tunnelType)
+        return ("[TreeNode " + str(self.id) + locationStr + " of type " +
+                str(self.tunnelType) + "]")

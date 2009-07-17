@@ -12,27 +12,24 @@ class Camera:
     def __init__(self):
         ## curLoc and prevLoc are used to interpolate the camera's position for
         # smooth movement between physics updates.
-        self.curLoc = list(jetblade.player.getDrawLoc(1))
+        self.curLoc = jetblade.player.getDrawLoc(1).copy()
         self.prevLoc = self.curLoc
 
     ## Update the camera's current and previous locations. 
     def update(self):
-        self.prevLoc = (self.curLoc[0], self.curLoc[1])
+        self.prevLoc = self.curLoc.copy()
         target = jetblade.player.getDrawLoc(1)
-        delta = [target[0] - self.curLoc[0], target[1] - self.curLoc[1]]
-        magnitude = util.vectorMagnitude(delta)
+        delta = target.sub(self.curLoc)
+        magnitude = delta.magnitude()
         if magnitude > maxCameraSpeed:
-            delta[0] = delta[0] / magnitude * maxCameraSpeed
-            delta[1] = delta[1] / magnitude * maxCameraSpeed
-        self.curLoc[0] += delta[0]
-        self.curLoc[1] += delta[1]
+            delta = delta.multiply(maxCameraSpeed / magnitude)
+        self.curLoc = self.curLoc.add(delta)
 
     ## Interpolate between self.prevLoc and self.curLoc to get the current
     # draw location.
     def getDrawLoc(self, progress):
         # Round the vector off to prevent jitter.
-        result = util.roundVector(util.interpolatePoints(self.prevLoc, self.curLoc, progress))
-        return result
+        return self.prevLoc.interpolate(self.curLoc, progress)
 
 
     def __str__(self):

@@ -1,5 +1,7 @@
 import constants
+
 import pygame
+import math
 
 ## These are the possible return values of lineLineIntersect()
 LINE_NO_COLLISION = 0
@@ -14,9 +16,9 @@ class Line:
         self.start = start
         ## End point
         self.end = end
-        width = abs(start[0] - end[0])
-        height = abs(start[1] - end[1])
-        upperLeft = (min(start[0], end[0]), min(start[1], end[1]))
+        width = abs(start.x - end.x)
+        height = abs(start.y - end.y)
+        upperLeft = (min(start.x, end.x), min(start.y, end.y))
         ## Bounding box
         self.rect = pygame.rect.Rect(upperLeft, (width, height))
 
@@ -29,7 +31,7 @@ class Line:
         for point in ourPoints:
             doesMatch = 0
             for altPoint in altPoints:
-                if point[0] == altPoint[0] and point[1] == altPoint[1]:
+                if point.x == altPoint.x and point.y == altPoint.y:
                     doesMatch = 1
             if not doesMatch:
                 result.append(point)
@@ -44,9 +46,9 @@ class Line:
         p3 = alt.start
         p4 = alt.end
 
-        denominator = (p4[1] - p3[1])*(p2[0] - p1[0]) - (p4[0] - p3[0])*(p2[1] - p1[1])
-        uaNumerator = ((p4[0] - p3[0])*(p1[1] - p3[1]) - (p4[1] - p3[1])*(p1[0] - p3[0]))
-        ubNumerator = ((p2[0] - p1[0])*(p1[1] - p3[1]) - (p2[1] - p1[1])*(p1[0] - p3[0]))
+        denominator = (p4.y - p3.y)*(p2.x - p1.x) - (p4.x - p3.x)*(p2.y - p1.y)
+        uaNumerator = ((p4.x - p3.x)*(p1.y - p3.y) - (p4.y - p3.y)*(p1.x - p3.x))
+        ubNumerator = ((p2.x - p1.x)*(p1.y - p3.y) - (p2.y - p1.y)*(p1.x - p3.x))
         if abs(denominator) < constants.DELTA:
             if (abs(uaNumerator) < constants.DELTA and
                 abs(ubNumerator) < constants.DELTA):
@@ -61,7 +63,51 @@ class Line:
             return LINE_INTERSECT
         return LINE_NO_COLLISION
 
+    ## Return the distance from the point to the line. Logic taken from
+    # http://www.codeguru.com/forum/printthread.php?t=194400
+    def pointDistance(self, point):
+        cx = point.x
+        cy = point.y
+        ax = self.start.x
+        ay = self.start.y
+        bx = self.end.x
+        by = self.end.y
+        # In short: project our endpoint onto the line, then determine how
+        # far along that projection we are, then deal with endpoints.
 
+        rNumerator = (cx-ax)*(bx-ax) + (cy-ay)*(by-ay)
+        rDenominator = (bx-ax)*(bx-ax) + (by-ay)*(by-ay)
+        r = rNumerator / rDenominator
+
+        px = ax + r * (bx - ax) # Projecting onto line
+        py = ay + r * (by - ay) # Ditto
+
+        # This is the distance if the line were infinite instead of a 
+        # segment
+        s = ((ay - cy)*(bx - ax) - (ax - cx)*(by - ay)) / rDenominator
+        distance = abs(s) * math.sqrt(rDenominator)
+
+        # x, y is the point on the line closest to (cx, cy)
+        x = px
+        y = py
+        if r < 0 or r > 1:
+            # The projection is not on the line, so look at endpoint
+            # distances.
+            dist1 = (cx - ax)*(cx - ax) + (cy - ay)*(cy - ay)
+            dist2 = (cx - bx)*(cx - bx) + (cy - by)*(cy - by)
+            if dist1 < dist2:
+                x = ax
+                y = ay
+                distance = math.sqrt(dist1)
+            else:
+                x = bx
+                y = by
+                distance = math.sqrt(dist2)
+
+        return distance
+
+
+    ## Convert to string
     def __str__(self):
         return '[Line ' + str(self.start) + ', ' + str(self.end) + ']'
 
