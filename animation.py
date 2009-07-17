@@ -68,16 +68,11 @@ class Animation:
         if (not self.shouldLoop and not self.isComplete and 
                 self.frame >= len(self.frames) - 1):
             # Animation done
+            self.isComplete = True
             return True
         logger.debug("to frame",self.frame)
         return False
 
-    ## Our owner calls this if the animation is complete; we update its state
-    # as necessary now. Currently that just means applying self.moveOffset
-    def completeAnimation(self, owner):
-        if not self.isComplete:
-            owner.loc = owner.loc.add(self.moveOffset)
-            self.isComplete = 1
 
     ## Draw the animation to screen, taking self.drawOffset into account.
     def draw(self, screen, camera, loc, scale = 1):
@@ -103,6 +98,11 @@ class Animation:
         logger.debug("Animation",self.name,"resetting")
         self.frame = 0
         self.isComplete = 0
-            
+    
+    
     def getPolygon(self):
         return self.polygon
+    
+
+    def getMoveOffset(self):
+        return self.moveOffset

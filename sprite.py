@@ -79,14 +79,15 @@ class Sprite:
         if curAnim.update(self.owner):
             logger.debug("Finishing animation",curAnim.name)
             # Animation finished, so wrap up.
-            curAnim.completeAnimation(self.owner)
-            self.owner.completeAnimation(self.getCurrentAnimation())
-            if curAnim.moveOffset.magnitudeSquared() > constants.EPSILON:
-                logger.debug("Teleporting due to move offset",curAnim.moveOffset)
+            newLoc = self.owner.completeAnimation(self.animations[self.currentAnimation])
+            if newLoc != loc:
+                logger.debug("Teleporting due to move offset",
+                             curAnim.moveOffset,"from",loc,"to",newLoc)
                 # Ending the animation moved the player, possibly arbitrarily,
                 # so our interpolation points are no longer valid.
-                self.prevLoc = loc.copy()
-                self.curLoc = loc.copy()
+                self.prevLoc = newLoc.copy()
+                self.curLoc = newLoc.copy()
+            loc = newLoc
         self.prevLoc = self.curLoc.copy()
         self.curLoc = loc.copy()
 

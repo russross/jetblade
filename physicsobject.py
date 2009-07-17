@@ -169,6 +169,7 @@ class PhysicsObject:
         return 'r'
 
     ## Handle completion of animations.
-    def completeAnimation(self):
-        pass
+    def completeAnimation(self, animation):
+        self.loc = self.loc.add(animation.getMoveOffset())
+        return self.loc
 

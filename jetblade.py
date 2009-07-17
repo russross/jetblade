@@ -220,7 +220,7 @@ def gameLoop():
                     else:
                         physicsUpdateRate = 1000.0 / physicsUpdatesPerSecond
                 elif event.action == 'toggleDebug' and event.type == KEYUP:
-                    if logger.getLogLevel == logger.LOG_INFORM:
+                    if logger.getLogLevel != logger.LOG_DEBUG:
                         logger.setLogLevel(logger.LOG_DEBUG)
                     else:
                         logger.setLogLevel(logger.LOG_INFORM)

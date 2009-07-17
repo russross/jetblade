@@ -417,16 +417,18 @@ class TerrestrialObject(physicsobject.PhysicsObject):
 
     ## Wrap up after finishing a climb.
     def completeAnimation(self, animation):
-        if animation == 'climb':
+        action = animation.name[:-2]
+        if action == 'climb':
             self.isHanging = False
             self.isCrawling = True
             self.wasCrawling = True
             self.isGrounded = True
             self.isGravityOn = True
             self.sprite.setAnimation('crawl')
-        elif animation == 'crawlturn':
+        elif action == 'crawlturn':
             self.facing *= -1
             self.sprite.setAnimation('crawl')
+        return physicsobject.PhysicsObject.completeAnimation(self, animation)
 
 
     ## Determine direction of acceleration.
