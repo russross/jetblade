@@ -21,6 +21,7 @@ import os
 import pygame
 import cProfile
 import time
+import optparse
 from pygame.locals import *
 
 ## \mainpage Jetblade
@@ -87,48 +88,43 @@ def run():
 
 
 ## Process commandline flags and set up singletons.
-# \todo Use optparse or something similar to handle arguments.
 def init():
-    pygame.init()
-    
-    args = sys.argv
-    jetblade.seed = None
-    jetblade.mapName = None
-    jetblade.shouldSaveImage = False
-    jetblade.numMaps = 1
-    jetblade.shouldExitAfterMapgen = False
-    jetblade.isRecording = False
-    index = 0
-    while index < len(args):
-        if args[index] == '-seed':
-            if index + 1 > len(args):
-                logger.error("Missing required seed value")
-            else:
-                index += 1
-                jetblade.seed = args[index]
-        elif args[index] == '-mapfile':
-            if index + 1 > len(args):
-                logger.error("Missing required map filename")
-            else:
-                index += 1
-                jetblade.mapName = args[index]
-        elif args[index] == '-saveimage':
-            jetblade.shouldSaveImage = True
-        elif args[index] == '-justmapgen':
-            jetblade.shouldExitAfterMapgen = True
-        elif args[index] == '-num':
-            if index + 1 > len(args):
-                logger.error("Missing required number of maps to make")
-            else:
-                index += 1
-                jetblade.numMaps = int(args[index])
-        elif args[index] == '-record':
-            jetblade.isRecording = True
-        elif args[index] == '-debug':
-            logger.setLogLevel(logger.LOG_DEBUG)
-        index += 1
+    parser = optparse.OptionParser()
+    parser.add_option('-s', '--seed', dest = 'seed', 
+                      default = None,
+                      help = "use SEED as PRNG seed for map generation",
+                      metavar = 'SEED')
+    parser.add_option('-f', '--mapfile', dest = 'mapFilename',
+                      default = None,
+                      help = "load FILE to play in", metavar = 'FILE')
+    parser.add_option('-i', '--saveimage', action = 'store_true',
+                      default = False,
+                      dest = 'shouldSaveImage',
+                      help = "save a PNG of the map after generating")
+    parser.add_option('-j', '--justmapgen', action = 'store_true', 
+                      default = False,
+                      dest = 'shouldExitAfterMapgen',
+                      help = "exit after generating maps (do not play the game)")
+    parser.add_option('-n', '--num', default = 1, dest = 'numMaps',
+                      type = 'int',
+                      help = "Generate NUM maps", 
+                      metavar = 'NUM')
+    parser.add_option('-r', '--record', default = False, action = 'store_true',
+                      dest = 'isRecording',
+                      help = "Record every frame of gameplay to a PNG file")
+    parser.add_option('-l', '--loglevel', default = logger.LOG_INFORM,  
+                      dest = 'logLevel',
+                      help = "Set the log level to LEVEL (5: debug; 1: fatal)")
+    (options, args) = parser.parse_args(sys.argv)
+    jetblade.seed = options.seed
+    jetblade.mapFilename = options.mapFilename
+    jetblade.shouldSaveImage = options.shouldSaveImage
+    jetblade.numMaps = options.numMaps
+    jetblade.shouldExitAfterMapgen = options.shouldExitAfterMapgen
+    jetblade.isRecording = options.isRecording
+    logger.setLogLevel(options.logLevel)
 
-    if jetblade.numMaps > 1 and jetblade.mapName is not None:
+    if jetblade.numMaps > 1 and jetblade.mapFilename is not None:
         logger.error("Cannot use multiple-map generation with a sourced map file.")
         sys.exit()
     elif jetblade.numMaps > 1 and jetblade.seed is not None:
@@ -137,10 +133,12 @@ def init():
     elif jetblade.seed is None:
         jetblade.seed = int(time.time())
     
-    if jetblade.shouldExitAfterMapgen and jetblade.mapName is not None:
+    if jetblade.shouldExitAfterMapgen and jetblade.mapFilename is not None:
         logger.error("-justmapgen and -mapfile are incompatible")
         sys.exit()
 
+
+    pygame.init()
     jetblade.shouldDisplayFPS = 1
     jetblade.configManager = configmanager.ConfigManager()
     jetblade.featureManager = featuremanager.FeatureManager()
@@ -160,8 +158,8 @@ def init():
 # or to save the map, then exit once we're done.
 def startGame():
     jetblade.map = None
-    if jetblade.mapName:
-        jetblade.map = map.Map(jetblade.mapName)
+    if jetblade.mapFilename:
+        jetblade.map = map.Map(jetblade.mapFilename)
         jetblade.map.init()
         if jetblade.shouldSaveImage:
             jetblade.map.drawAll('%d.png' % jetblade.seed)
