@@ -952,41 +952,31 @@ class Map:
     # location.
     def drawBackground(self, screen, cameraLoc, progress):
         self.backgroundQuadTree.draw(screen, cameraLoc, progress)
-        if self.envGrid is not None:
-            rect = screen.get_rect()
-            rect.center = cameraLoc.tuple()
-            width = rect.width
-            height = rect.height
-            # \todo Remove the duplication between this and drawMidground
-            minX = int((cameraLoc.x - width / 2.0) / constants.blockSize) - 1
-            minY = int((cameraLoc.y - width / 2.0) / constants.blockSize) - 1
-            maxX = int((cameraLoc.x + height / 2.0) / constants.blockSize) + 3
-            maxY = int((cameraLoc.y + height / 2.0) / constants.blockSize) + 3
-            for x in range(minX, maxX):
-                if x < 0 or x > self.numCols:
+        rect = screen.get_rect()
+        rect.center = cameraLoc
+        min = Vector2D(rect.topleft).toGridspace().sub((1, 1))
+        max = Vector2D(rect.bottomright).toGridspace().add((2, 2))
+        for x in range(min.x, max.x):
+            if x < 0 or x > self.numCols:
+                continue
+            for y in range(min.y, max.y):
+                if y < 0 or y > self.numRows:
                     continue
-                for y in range(minY, maxY):
-                    if y < 0 or y > self.numRows:
-                        continue
-                    for effect in self.envGrid[x][y]:
-                        effect.draw(screen, Vector2D(x, y).toRealspace(), 
-                                    cameraLoc, progress)
+                for effect in self.envGrid[x][y]:
+                    effect.draw(screen, Vector2D(x, y).toRealspace(), 
+                                cameraLoc, progress)
 
 
     ## Draw the terrain tiles.
     def drawMidground(self, screen, cameraLoc, progress):
         rect = screen.get_rect()
-        rect.center = cameraLoc.tuple()
-        width = rect.width
-        height = rect.height
-        minX = int((cameraLoc.x - width / 2.0) / constants.blockSize) - 1
-        minY = int((cameraLoc.y - width / 2.0) / constants.blockSize) - 1
-        maxX = int((cameraLoc.x + height / 2.0) / constants.blockSize) + 3
-        maxY = int((cameraLoc.y + height / 2.0) / constants.blockSize) + 3
-        for x in range(minX, maxX+1):
+        rect.center = cameraLoc
+        min = Vector2D(rect.topleft).toGridspace().sub((1, 1))
+        max = Vector2D(rect.bottomright).toGridspace().add((2, 2))
+        for x in range(min.x, max.x):
             if x < 0 or x > self.numCols:
                 continue
-            for y in range(minY, maxY+1):
+            for y in range(min.y, max.y):
                 if y < 0 or y > self.numRows or not self.blocks[x][y]:
                     continue
                 self.blocks[x][y].draw(screen, cameraLoc, progress)
