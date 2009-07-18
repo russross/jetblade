@@ -1,7 +1,7 @@
 import constants
 import util
 import logger
-import range1D
+import range1d
 from vector2d import Vector2D
 
 import pygame
@@ -102,7 +102,7 @@ class Polygon:
     ## Project the polygon onto the given vector. Return the range (min, max)
     # along the vector formed by that projection.
     def projectOntoVector(self, loc, vector):
-        result = range1D.Range1D()
+        result = range1d.Range1D()
         for point in self.points:
             adjustedPoint = point.add(loc)
             projectedPoint = adjustedPoint.projectOnto(vector)

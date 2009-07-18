@@ -2,7 +2,7 @@ import physicsobject
 import logger
 import constants
 import jetblade
-import range1D
+import range1d
 from vector2d import Vector2D
 
 ## Default acceleration to use on the ground
@@ -372,7 +372,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         headGridLoc = headLoc.toGridspace()
         locs = [Vector2D(headGridLoc.x, headGridLoc.y - i) for i in [0, 1, 2]]
         blocks = [jetblade.map.getBlockAtGridLoc(loc) for loc in locs]
-        headRange = range1D.Range1D(headLoc.y - self.vel.y, headLoc.y)
+        headRange = range1d.Range1D(headLoc.y - self.vel.y, headLoc.y)
         logger.debug("Head is at",headLoc,"grid",headGridLoc,"range",headRange,"and blocks are",blocks)
         for i in [0, 1]:
             if blocks[i] and not blocks[i+1]:
