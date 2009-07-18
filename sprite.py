@@ -1,12 +1,5 @@
-import polygon
-import sprite
-import animation
-import constants
+import jetblade
 import logger
-from vector2d import Vector2D
-
-import pygame
-import os
 
 ## Amount to add to drawing location to prevent visual jitter
 drawRoundAmount = .000005
@@ -23,7 +16,7 @@ class Sprite:
         # animations in the sprite.
         self.name = name
         ## Mapping of animation names to Animation instances. 
-        self.animations = loadAnimations(name)
+        self.animations = jetblade.animationManager.loadAnimations(name)
         ## Current active animation. 
         self.currentAnimation = self.animations.keys()[0]
         ## Previous animation. Sometimes we need to know what we were just
@@ -132,56 +125,3 @@ class Sprite:
         else:
             return self.currentAnimation[:-2]
 
-
-## A cache of animation data, to prevent redundant loading of modules.
-animationsCache = {}
-## Load information on the named animation. 
-# \param name The path to a directory containing directories of image files
-# (individual animations) and a sprite.py file that holds information on those
-# animations.
-def loadAnimations(name):
-
-    if name in sprite.animationsCache:
-        return sprite.animationsCache[name]
-    
-    # Search for a file named 'spriteConfig.py' through the path specified in
-    # name. Use the deepest one we find. This lets us share spriteConfigs for
-    # similar sprites.
-    directories = name.split('/')
-    modulePath = ''
-    path = constants.imagePath
-    for directory in directories:
-        path += '/' + directory
-        if os.path.exists(path + '/spriteConfig.py'):
-            modulePath = path
-
-    modulePath = modulePath.replace('/', '.') + '.spriteConfig'
-    spriteModule = __import__(modulePath, globals(), locals(), ['sprites'])
-
-    animations = {}
-    for animationName, data in spriteModule.sprites.iteritems():
-        animPolygon = polygon.Polygon([Vector2D(point) for point in data['polygon']])
-        shouldLoop = True
-        if 'loop' in data:
-            shouldLoop = data['loop']
-        updateRate = 1
-        if 'updateRate' in data:
-            updateRate = data['updateRate']
-        updateFunc = None
-        if 'updateFunc' in data:
-            updateFunc = data['updateFunc']
-        drawOffset = Vector2D(0, 0)
-        if 'drawOffset' in data:
-            drawOffset = Vector2D(data['drawOffset'])
-        moveOffset = Vector2D(0, 0)
-        if 'moveOffset' in data:
-            moveOffset = Vector2D(data['moveOffset'])
-        animations[animationName] = animation.Animation(name, animationName, 
-                    animPolygon, shouldLoop, updateRate, updateFunc, 
-                    drawOffset, moveOffset)
-
-    sprite.animationsCache[name] = animations
-    return animations
-
-    
-    

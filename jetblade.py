@@ -1,10 +1,4 @@
 #!/usr/local/bin/python2.5
-import sys
-import random
-import os
-import pygame
-import cProfile
-import time
 
 import jetblade
 import imagemanager
@@ -13,12 +7,20 @@ import featuremanager
 import enveffectmanager
 import propmanager
 import eventmanager
+import animationmanager
 import map
 import player
 import camera
 import constants
 import util
 import logger
+
+import sys
+import random
+import os
+import pygame
+import cProfile
+import time
 from pygame.locals import *
 
 ## \mainpage Jetblade
@@ -146,6 +148,7 @@ def init():
     jetblade.propManager = propmanager.PropManager()
     jetblade.imageManager = imagemanager.ImageManager()
     jetblade.eventManager = eventmanager.EventManager()
+    jetblade.animationManager = animationmanager.AnimationManager()
     pygame.display.set_caption('Jetblade')
     jetblade.screen = util.setupScreen()
 
