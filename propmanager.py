@@ -20,7 +20,7 @@ class PropManager:
             self.propConfigCache[terrain.zone] = dict()
         if terrain.region not in self.propConfigCache[terrain.zone]:
             # Load the prop config into the config cache first
-            filename = 'terrain.' + terrain.zone + '.' + terrain.region + '.props.propconfig'
+            filename = 'terrain.' + terrain.zone + '.' + terrain.region + '.props.propConfig'
             module = None
             try:
                 module = __import__(filename, globals(), locals(), ['props'])
