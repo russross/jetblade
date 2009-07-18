@@ -6,6 +6,7 @@ import logger
 from vector2d import Vector2D
 
 import pygame
+import os
 
 ## Amount to add to drawing location to prevent visual jitter
 drawRoundAmount = .000005
@@ -139,23 +140,23 @@ animationsCache = {}
 # (individual animations) and a sprite.py file that holds information on those
 # animations.
 def loadAnimations(name):
-    
-    # Special case: static terrain shares one file since they're just 
-    # different skins over the same polygons.
-    # \todo This is a hack and could probably be handled better, perhaps by 
-    # having a heirarchy of sprite configuration modules.
-    moduleName = name
-    if name.find('terrain') != -1:
-        moduleName = 'terrain'
 
     if name in sprite.animationsCache:
         return sprite.animationsCache[name]
+    
+    # Search for a file named 'spriteConfig.py' through the path specified in
+    # name. Use the deepest one we find. This lets us share spriteConfigs for
+    # similar sprites.
+    directories = name.split('/')
+    modulePath = ''
+    path = constants.imagePath
+    for directory in directories:
+        path += '/' + directory
+        if os.path.exists(path + '/spriteConfig.py'):
+            modulePath = path
 
-    path = moduleName
-    path = path.replace('/', '.')
-    path += '.spriteConfig'
-    logger.debug("Loading animations for",name,"with path",path)
-    spriteModule = __import__(path, globals(), locals(), ['sprites'])
+    modulePath = modulePath.replace('/', '.') + '.spriteConfig'
+    spriteModule = __import__(modulePath, globals(), locals(), ['sprites'])
 
     animations = {}
     for animationName, data in spriteModule.sprites.iteritems():
