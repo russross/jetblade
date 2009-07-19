@@ -59,9 +59,11 @@ class Sprite:
         logger.debug("Returning to previous animation",self.prevAnimation)
         self.setAnimation(self.prevAnimation, False, shouldResetAnimation)
 
+
     ## Reset the currently-running animation.
     def resetAnimation(self):
         self.animations[self.currentAnimation].reset()
+
 
     ## Update the displayed animation. If the animation has finished, apply
     # whatever closing logic is necessary. 
@@ -70,6 +72,14 @@ class Sprite:
     # time you call Sprite.draw().
     def update(self, loc = None):
         curAnim = self.animations[self.currentAnimation]
+        animFacing = 1 if self.currentAnimation[-2:] == '-r' else -1
+        if animFacing != self.owner.facing:
+            # We're facing the wrong way. Turn around, but keep the same current
+            # frame.
+            curFrame = curAnim.frame
+            self.setAnimation(self.getCurrentAnimation(False))
+            curAnim = self.animations[self.currentAnimation]
+            curAnim.frame = curFrame
         if curAnim.update(self.owner):
             logger.debug("Finishing animation",curAnim.name)
             # Animation finished, so wrap up.
