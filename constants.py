@@ -38,7 +38,7 @@ mapPath = 'data/mapgen'
 ## Path to image files and their configuration
 imagePath = 'data/images'
 ## Path to soundeffects
-sfxPath = 'data/sfx'
+soundPath = 'data/sound'
 ## Path to fonts
 fontPath = 'data/fonts'
 ## Name of the module used to configure animation data

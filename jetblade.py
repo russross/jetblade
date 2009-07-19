@@ -9,6 +9,7 @@ import propmanager
 import eventmanager
 import animationmanager
 import fontmanager
+import soundmanager
 import font
 import map
 import player
@@ -151,6 +152,7 @@ def init():
     jetblade.eventManager = eventmanager.EventManager()
     jetblade.animationManager = animationmanager.AnimationManager()
     jetblade.fontManager = fontmanager.FontManager()
+    jetblade.soundManager = soundmanager.SoundManager()
     pygame.display.set_caption('Jetblade')
     jetblade.screen = util.setupScreen()
 
