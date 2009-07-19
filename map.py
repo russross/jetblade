@@ -859,11 +859,6 @@ class Map:
                         pygame.draw.rect(screen, (64, 64, 64), rect)
                     elif blocks[i][j] != BLOCK_EMPTY:
                         pygame.draw.rect(screen, (255, 255, 255), rect)
-#                        jetblade.imageManager.drawText(screen,
-#                                ['%d, %d' % (i, j)], 
-#                                (i * size, j * size + size / 2.0),
-#                                0, constants.tinyFontSize,
-#                                constants.TEXT_ALIGN_LEFT, (0, 0, 0, 255))
 
 #        if self.regions is not None:
 #            regionBlock = size / regionOverlayResolutionMultiplier

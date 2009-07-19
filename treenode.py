@@ -5,6 +5,7 @@ import seed
 import line
 import util
 import logger
+import font
 from vector2d import Vector2D
 
 import math
@@ -721,9 +722,8 @@ class TreeNode:
         if self.loopNode is None:
             strings.append(self.tunnelType)
 
-        jetblade.imageManager.drawText(screen, strings,
-                drawLoc, 0, constants.tinyFontSize, 
-                constants.TEXT_ALIGN_CENTER, (255, 0, 0, 255))
+        jetblade.fontManager.drawText('MODENINE', screen, strings,
+                drawLoc, 18, font.TEXT_ALIGN_CENTER, (255, 0, 0, 255))
 
     
     ## Recursively print the tree.

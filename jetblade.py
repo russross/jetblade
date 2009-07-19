@@ -8,6 +8,8 @@ import enveffectmanager
 import propmanager
 import eventmanager
 import animationmanager
+import fontmanager
+import font
 import map
 import player
 import camera
@@ -113,6 +115,7 @@ def init():
                       dest = 'isRecording',
                       help = "Record every frame of gameplay to a PNG file")
     parser.add_option('-l', '--loglevel', default = logger.LOG_INFORM,  
+                      type = 'int',
                       dest = 'logLevel',
                       help = "Set the log level to LEVEL (5: debug; 1: fatal)")
     (options, args) = parser.parse_args(sys.argv)
@@ -147,6 +150,7 @@ def init():
     jetblade.imageManager = imagemanager.ImageManager()
     jetblade.eventManager = eventmanager.EventManager()
     jetblade.animationManager = animationmanager.AnimationManager()
+    jetblade.fontManager = fontmanager.FontManager()
     pygame.display.set_caption('Jetblade')
     jetblade.screen = util.setupScreen()
 
@@ -268,8 +272,9 @@ def draw(zoomLevel, cam, progress):
         jetblade.player.draw(jetblade.screen, drawLoc, progress)
         jetblade.map.drawMidground(jetblade.screen, drawLoc, progress)
     if jetblade.shouldDisplayFPS:
-        jetblade.imageManager.drawText(jetblade.screen, 
-            ["FPS: " + str(jetblade.curFPS)], constants.fpsDisplayLoc, 0, constants.smallFontSize, constants.TEXT_ALIGN_RIGHT)
+        jetblade.fontManager.drawText('MODENINE', jetblade.screen, 
+            ["FPS: " + str(jetblade.curFPS)], constants.fpsDisplayLoc, 24, 
+            font.TEXT_ALIGN_RIGHT)
     pygame.display.update()
 
     if jetblade.isRecording:

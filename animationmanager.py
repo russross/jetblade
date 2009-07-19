@@ -31,10 +31,10 @@ class AnimationManager:
         path = constants.imagePath
         for directory in directories:
             path += '/' + directory
-            if os.path.exists(path + '/spriteConfig.py'):
+            if os.path.exists(path + '/' + constants.spriteFilename + '.py'):
                 modulePath = path
 
-        modulePath = modulePath.replace('/', '.') + '.spriteConfig'
+        modulePath = modulePath.replace('/', '.') + '.' + constants.spriteFilename
         spriteModule = __import__(modulePath, globals(), locals(), ['sprites'])
 
         animations = {}

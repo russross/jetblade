@@ -55,6 +55,20 @@ def setupScreen():
     return screen
 
 
+## Fade the given surface by the given alpha amount.
+def fadeAlpha(surface, alpha):
+    if alpha < 255:
+        if alpha < 0:
+            alpha = 0
+        # \todo: This is TERRIBLE. Figure out why pixels_alpha occasionally
+        # throws an exception
+        try:
+            pixels_alpha = pygame.surfarray.pixels_alpha(surface)
+            pixels_alpha[...] = (pixels_alpha * (alpha / 255.0)).astype(Numeric.UInt8)
+            del pixels_alpha
+        except Exception, e:
+            return
+
 ## Adjust the passed-in location so that it is relative to the upper-left
 # corner of the passed-in rect.
 def adjustLocForRect(loc, rect):

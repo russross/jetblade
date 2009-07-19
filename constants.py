@@ -42,27 +42,9 @@ sfxPath = 'data/sfx'
 ## Path to fonts
 fontPath = 'data/fonts'
 ## Name of the module used to configure animation data
-spriteFilename = 'spriteConfig.py'
-## Fonts to load. 
-# \todo Make this more modular (move it out to a font config module)
-fontNames = ['MODENINE.TTF', 'ETHNOCEN.TTF']
-## Distance between lines, as a multiplier on the size of the font.
-textLineVerticalOffsetMultiplier = .85
-
-## Set of font sizes to load. Only these sizes will be available in-game.
-fontSizes = [6, 12, 18, 36, 54, 128]
-miniFontSize = 6
-tinyFontSize = 12
-smallFontSize = 18
-mediumFontSize = 36
-largeFontSize = 54
-hugeFontSize = 128
-## Align text to the left, in ImageManager.drawText
-TEXT_ALIGN_LEFT = 1
-## Align text to the middle, in ImageManager.drawText
-TEXT_ALIGN_CENTER = 2
-## Align text to the right, in ImageManager.drawText
-TEXT_ALIGN_RIGHT = 3
+spriteFilename = 'spriteConfig'
+## Name of the module used to configure fonts
+fontFilename = 'fontConfig'
 
 ## Location to display the FPS string onscreen.
 fpsDisplayLoc = Vector2D(sw - 20, sh - 20)

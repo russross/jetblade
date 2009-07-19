@@ -85,13 +85,13 @@ class Animation:
             # Draw the bounding polygon and location information
             self.polygon.draw(screen, loc, camera)
             gridLoc = loc.toGridspace()
-            jetblade.imageManager.drawText(screen,
+            jetblade.fontManager.drawText('MODENINE', screen,
                     ['%d' % gridLoc.x,
                      '%d' % gridLoc.y,
                      '%d' % loc.x,
                      '%d' % loc.y],
                     util.adjustLocForCenter(drawLoc.addScalar(25), camera, screen.get_rect()),
-                    0, constants.tinyFontSize)
+                    12)
 
     ## Reset internal state so the animation can be cleanly re-run.
     def reset(self):

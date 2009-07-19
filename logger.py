@@ -1,4 +1,5 @@
 import jetblade
+import constants
 
 import pygame
 import sys
@@ -76,7 +77,7 @@ def error(*entries):
 ## Print an error to the screen, wait a bit, then exit the program. Call this
 # function when unrecoverable errors have occurred. 
 def fatal(*entries):
-    message = log(LOG_FATAL, *entries)
+    message = logger.log(LOG_FATAL, *entries)
     errorString = "Sorry, an error occurred: " + message
     errorString2 = "The program will now shut down."
     errorFont = pygame.font.Font(None, 24)
