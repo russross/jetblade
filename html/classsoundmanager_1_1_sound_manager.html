@@ -36,12 +36,16 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsoundmanager_1_1_sound_manager.html#6132bb331ea3a0ad99462a55506a0bbf">__init__</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Load all sounds.  <a href="#6132bb331ea3a0ad99462a55506a0bbf"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsoundmanager_1_1_sound_manager.html#200b55721b1eddf5c9e251064ea76cef">loadSound</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsoundmanager_1_1_sound_manager.html#8be273a8ee2c1f7951aa52923b1a8a16">loadSoundDirectory</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Load an individual sound by its path.  <a href="#200b55721b1eddf5c9e251064ea76cef"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Load an entire directory of sounds.  <a href="#8be273a8ee2c1f7951aa52923b1a8a16"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsoundmanager_1_1_sound_manager.html#cee8c2a15358c7c0de761a1c7874c40f">playSound</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Play an individual sound by its name.  <a href="#cee8c2a15358c7c0de761a1c7874c40f"></a><br></td></tr>
+<tr><td colspan="2"><br><h2>Public Attributes</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8ddd69840116c87c375abefc425c4cfe"></a><!-- doxytag: member="soundmanager::SoundManager::soundNameToSoundMap" ref="8ddd69840116c87c375abefc425c4cfe" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><b>soundNameToSoundMap</b></td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 This class handles loading and playing of sound effects. 
@@ -66,16 +70,16 @@ This class handles loading and playing of sound effects.
 <p>
 Load all sounds. 
 <p>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000013">Todo:</a></b></dt><dd>: Make this configurable. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000009">Todo:</a></b></dt><dd>: Make this configurable. </dd></dl>
 
 </div>
 </div><p>
-<a class="anchor" name="200b55721b1eddf5c9e251064ea76cef"></a><!-- doxytag: member="soundmanager::SoundManager::loadSound" ref="200b55721b1eddf5c9e251064ea76cef" args="" -->
+<a class="anchor" name="8be273a8ee2c1f7951aa52923b1a8a16"></a><!-- doxytag: member="soundmanager::SoundManager::loadSoundDirectory" ref="8be273a8ee2c1f7951aa52923b1a8a16" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">def soundmanager.SoundManager.loadSound           </td>
+          <td class="memname">def soundmanager.SoundManager.loadSoundDirectory           </td>
           <td>(</td>
           <td class="paramtype">&nbsp;</td>
           <td class="paramname"> <em>self</em>, </td>
@@ -84,7 +88,7 @@ Load all sounds.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>name</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>directory</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -96,9 +100,9 @@ Load all sounds.
 <div class="memdoc">
 
 <p>
-Load an individual sound by its path. 
+Load an entire directory of sounds. 
 <p>
-
+Recurse if we encounter more directories. 
 </div>
 </div><p>
 <a class="anchor" name="cee8c2a15358c7c0de761a1c7874c40f"></a><!-- doxytag: member="soundmanager::SoundManager::playSound" ref="cee8c2a15358c7c0de761a1c7874c40f" args="" -->
@@ -115,7 +119,7 @@ Load an individual sound by its path.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>sound</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>soundName</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -135,7 +139,7 @@ Play an individual sound by its name.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>soundmanager.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jul 16 17:42:34 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

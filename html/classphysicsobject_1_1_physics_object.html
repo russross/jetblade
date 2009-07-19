@@ -235,9 +235,18 @@ Make whatever state changes the AI/player control calls for.
           <td class="memname">def physicsobject.PhysicsObject.completeAnimation           </td>
           <td>(</td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>self</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>animation</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
         </tr>
       </table>
 </div>
@@ -246,6 +255,8 @@ Make whatever state changes the AI/player control calls for.
 <p>
 Handle completion of animations. 
 <p>
+
+<p>Reimplemented in <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#77f930d031db44bcc85a8f395151cee8">terrestrialobject.TerrestrialObject</a>.</p>
 
 </div>
 </div><p>
@@ -268,7 +279,7 @@ Handle completion of animations.
 <p>
 React to colliding with objects by killing velocity and backing out until we are not intersecting again. 
 <p>
-Use self.adjestCollision() to modify ejection vectors and distances; use self.hit[Floor|Wall|Ceiling] to react to running into terrain of those types. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000008">Todo:</a></b></dt><dd>Currently assumes all collisions are with terrain. </dd></dl>
+Use self.adjestCollision() to modify ejection vectors and distances; use self.hit[Floor|Wall|Ceiling] to react to running into terrain of those types. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>Currently assumes all collisions are with terrain. </dd></dl>
 
 </div>
 </div><p>
@@ -444,7 +455,7 @@ Apply gravity to velocity and velocity to location, then run collision detection
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>physicsobject.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jul 16 17:42:34 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

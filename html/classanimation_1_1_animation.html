@@ -39,9 +39,6 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classanimation_1_1_animation.html#685119bd66b172ac8dacbe428a4d5c24">update</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Advance self.frames.  <a href="#685119bd66b172ac8dacbe428a4d5c24"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classanimation_1_1_animation.html#3a3c90c68783269b12a584a63843b98a">completeAnimation</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Our owner calls this if the animation is complete; we update its state as necessary now.  <a href="#3a3c90c68783269b12a584a63843b98a"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classanimation_1_1_animation.html#01938b18fcf8d803ae303757ff6aa1c4">draw</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Draw the animation to screen, taking self.drawOffset into account.  <a href="#01938b18fcf8d803ae303757ff6aa1c4"></a><br></td></tr>
@@ -50,6 +47,9 @@
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Reset internal state so the animation can be cleanly re-run.  <a href="#7fc3c2851f09f5f9d517e1794d2abc1c"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8adaf91a7149807063cf4d7310ab7bc4"></a><!-- doxytag: member="animation::Animation::getPolygon" ref="8adaf91a7149807063cf4d7310ab7bc4" args="" -->
 def&nbsp;</td><td class="memItemRight" valign="bottom"><b>getPolygon</b></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="909b08d1a5896a1aec16198d4ad1b839"></a><!-- doxytag: member="animation::Animation::getMoveOffset" ref="909b08d1a5896a1aec16198d4ad1b839" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><b>getMoveOffset</b></td></tr>
 
 <tr><td colspan="2"><br><h2>Public Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classanimation_1_1_animation.html#cb4a102c2d0eceadb5e4864ae9949b97">group</a></td></tr>
@@ -161,37 +161,6 @@ Every animation is tied to a single polygon for collision detection. Animations 
 Create a new <a class="el" href="classanimation_1_1_animation.html" title="Animations are sequences of images and the logic needed to know when, where, and...">Animation</a> instance. 
 <p>
 
-</div>
-</div><p>
-<a class="anchor" name="3a3c90c68783269b12a584a63843b98a"></a><!-- doxytag: member="animation::Animation::completeAnimation" ref="3a3c90c68783269b12a584a63843b98a" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def animation.Animation.completeAnimation           </td>
-          <td>(</td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>owner</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Our owner calls this if the animation is complete; we update its state as necessary now. 
-<p>
-Currently that just means applying self.moveOffset 
 </div>
 </div><p>
 <a class="anchor" name="01938b18fcf8d803ae303757ff6aa1c4"></a><!-- doxytag: member="animation::Animation::draw" ref="01938b18fcf8d803ae303757ff6aa1c4" args="" -->
@@ -487,7 +456,7 @@ If this is not None, then it specifies how rapidly animation frames update in te
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>animation.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jul 16 17:42:34 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

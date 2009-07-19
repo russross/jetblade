@@ -33,9 +33,9 @@
 <a href="classsprite_1_1_sprite-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="5eb42df4c5f6debeeab3cc4791ad29c2"></a><!-- doxytag: member="sprite::Sprite::__init__" ref="5eb42df4c5f6debeeab3cc4791ad29c2" args="" -->
-def&nbsp;</td><td class="memItemRight" valign="bottom"><b>__init__</b></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#5eb42df4c5f6debeeab3cc4791ad29c2">__init__</a></td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Instantiate a <a class="el" href="classsprite_1_1_sprite.html" title="Sprites are display classes for handling dynamic game objects like creatures.">Sprite</a>.  <a href="#5eb42df4c5f6debeeab3cc4791ad29c2"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#cb352d77ede40055daf6c516bd54964b">setAnimation</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set the current animation for the sprite.  <a href="#cb352d77ede40055daf6c516bd54964b"></a><br></td></tr>
@@ -60,9 +60,6 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>__init__</b></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#f2cd9496b59a564a34f04bde16a33d40">getCurrentAnimation</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return the current animation, defaulting to not including the facing if any.  <a href="#f2cd9496b59a564a34f04bde16a33d40"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#863400aebac80d2b4429a97ef8eb28e1">collidePolygon</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Do collision detection against the provided polygon, which is at the provided location.  <a href="#863400aebac80d2b4429a97ef8eb28e1"></a><br></td></tr>
 <tr><td colspan="2"><br><h2>Public Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#edc49d7c8aa4dc02b31b2d916c112744">name</a></td></tr>
 
@@ -81,21 +78,22 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>__init__</b></td></tr>
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Object this is a sprite for.  <a href="#1e59abb952e13b8ee1665b8005be3b74"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#d56cd741eb94a3ca5cd3e419a901f888">prevLoc</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Previous location of the parent object, for interpolation of drawing location.  <a href="#d56cd741eb94a3ca5cd3e419a901f888"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#7a0a9bb68126eb55712ceeb0fe2eb495">curLoc</a></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Drawing location as of previous physics update, for location interpolation.  <a href="#d56cd741eb94a3ca5cd3e419a901f888"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="7a0a9bb68126eb55712ceeb0fe2eb495"></a><!-- doxytag: member="sprite::Sprite::curLoc" ref="7a0a9bb68126eb55712ceeb0fe2eb495" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#7a0a9bb68126eb55712ceeb0fe2eb495">curLoc</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Current location of the parent object, for interpolation of drawing location.  <a href="#7a0a9bb68126eb55712ceeb0fe2eb495"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Drawing location as of most recent physics update, for location interpolation. <br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Sprites are display classes for handling dynamic game objects like creatures. 
 <p>
 Each sprite contains a set of Animation instances, and tracks the "parent object's" locations as of the last two physics updates so that drawing can smoothly interpolate between those points. <hr><h2>Member Function Documentation</h2>
-<a class="anchor" name="863400aebac80d2b4429a97ef8eb28e1"></a><!-- doxytag: member="sprite::Sprite::collidePolygon" ref="863400aebac80d2b4429a97ef8eb28e1" args="" -->
+<a class="anchor" name="5eb42df4c5f6debeeab3cc4791ad29c2"></a><!-- doxytag: member="sprite::Sprite::__init__" ref="5eb42df4c5f6debeeab3cc4791ad29c2" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">def sprite.Sprite.collidePolygon           </td>
+          <td class="memname">def sprite.Sprite.__init__           </td>
           <td>(</td>
           <td class="paramtype">&nbsp;</td>
           <td class="paramname"> <em>self</em>, </td>
@@ -104,13 +102,19 @@ Each sprite contains a set of Animation instances, and tracks the "parent object
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>polygon</em>, </td>
+          <td class="paramname"> <em>name</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>loc</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>owner</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>loc</em> = <code>None</code></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -122,7 +126,7 @@ Each sprite contains a set of Animation instances, and tracks the "parent object
 <div class="memdoc">
 
 <p>
-Do collision detection against the provided polygon, which is at the provided location. 
+Instantiate a <a class="el" href="classsprite_1_1_sprite.html" title="Sprites are display classes for handling dynamic game objects like creatures.">Sprite</a>. 
 <p>
 
 </div>
@@ -159,6 +163,12 @@ Do collision detection against the provided polygon, which is at the provided lo
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>drawLoc</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
           <td class="paramname"> <em>scale</em> = <code>1</code></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -173,6 +183,11 @@ Do collision detection against the provided polygon, which is at the provided lo
 <p>
 Draw the current animation frame. 
 <p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>drawLoc</em>&nbsp;</td><td>The location to draw the sprite. This is optional; if it is not provided, then the sprite will derive its own draw location based on its locations at the previous two physics updates. </td></tr>
+  </table>
+</dl>
 
 </div>
 </div><p>
@@ -204,7 +219,7 @@ Draw the current animation frame.
 <p>
 Return the current animation, defaulting to not including the facing if any. 
 <p>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000015">Todo:</a></b></dt><dd>Assumes that the facing is the last two characters of the string. Probably a better way to handle this. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000011">Todo:</a></b></dt><dd>Assumes that the facing is the last two characters of the string. Probably a better way to handle this. </dd></dl>
 
 </div>
 </div><p>
@@ -338,7 +353,7 @@ Set the current animation for the sprite.
     <tr><td valign="top"></td><td valign="top"><em>shouldResetAnimation</em>&nbsp;</td><td>If true, the frame of the animation is reset; otherwise it is preserved. </td></tr>
   </table>
 </dl>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000014">Todo:</a></b></dt><dd>shouldResetAnimation should be handled better. Currently we need it so we can "try out" different polygons for collision detection (c.f. TerrestrialObject crawl logic) without interfering with smooth animation. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000010">Todo:</a></b></dt><dd>shouldResetAnimation should be handled better. Currently we need it so we can "try out" different polygons for collision detection (c.f. TerrestrialObject crawl logic) without interfering with smooth animation. </dd></dl>
 
 </div>
 </div><p>
@@ -381,9 +396,18 @@ Set the current animation to what the previous one was.
           <td class="memname">def sprite.Sprite.update           </td>
           <td>(</td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>self</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>loc</em> = <code>None</code></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
         </tr>
       </table>
 </div>
@@ -392,7 +416,12 @@ Set the current animation to what the previous one was.
 <p>
 Update the displayed animation. 
 <p>
-If the animation has finished, apply whatever closing logic is necessary. 
+If the animation has finished, apply whatever closing logic is necessary. <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>loc</em>&nbsp;</td><td>The location of the sprite as of this update. This is technically optional if you are going to specify a drawing location every time you call <a class="el" href="classsprite_1_1_sprite.html#5be2640d7a43b68a148e543777fcd278" title="Draw the current animation frame.">Sprite.draw()</a>. </td></tr>
+  </table>
+</dl>
+
 </div>
 </div><p>
 <hr><h2>Member Data Documentation</h2>
@@ -409,23 +438,6 @@ If the animation has finished, apply whatever closing logic is necessary.
 
 <p>
 Mapping of animation names to Animation instances. 
-<p>
-
-</div>
-</div><p>
-<a class="anchor" name="7a0a9bb68126eb55712ceeb0fe2eb495"></a><!-- doxytag: member="sprite::Sprite::curLoc" ref="7a0a9bb68126eb55712ceeb0fe2eb495" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classsprite_1_1_sprite.html#7a0a9bb68126eb55712ceeb0fe2eb495">sprite.Sprite.curLoc</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Current location of the parent object, for interpolation of drawing location. 
 <p>
 
 </div>
@@ -510,7 +522,7 @@ Sometimes we need to know what we were just doing.
 <div class="memdoc">
 
 <p>
-Previous location of the parent object, for interpolation of drawing location. 
+Drawing location as of previous physics update, for location interpolation. 
 <p>
 
 </div>
@@ -518,7 +530,7 @@ Previous location of the parent object, for interpolation of drawing location.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>sprite.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jul 16 17:42:35 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

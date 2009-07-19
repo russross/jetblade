@@ -216,7 +216,7 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>getBlockAtGridLoc</b><
 The <a class="el" href="classmap_1_1_map.html" title="The Map class handles creating, updating, and displaying the game map.">Map</a> class handles creating, updating, and displaying the game map. 
 <p>
 This includes the following structures:<ul>
-<li>The root TreeNode for the tree that describes the high-level structure of the map tunnels.</li><li>A grid of terrain tiles.</li><li>Another grid for environmental effects.</li><li>A quadtree containing all background props. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>Several dicts in this class don't match the style guideline. </dd></dl>
+<li>The root TreeNode for the tree that describes the high-level structure of the map tunnels.</li><li>A grid of terrain tiles.</li><li>Another grid for environmental effects.</li><li>A quadtree containing all background props. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>Several dicts in this class don't match the style guideline. </dd></dl>
 </li></ul>
 <hr><h2>Member Function Documentation</h2>
 <a class="anchor" name="c4547ef6e6d9a6b9e450694c3b7cc48e"></a><!-- doxytag: member="map::Map::__init__" ref="c4547ef6e6d9a6b9e450694c3b7cc48e" args="" -->
@@ -1173,7 +1173,7 @@ Either create or load a map.
 <p>
 This is called right after setBlocks, which puts block terrain info tuples into self.blocks. 
 <p>
-For each block in self.blocks that contains a tuple, create a Block instance. At this time, also instantiate any props that are attached to the blocks. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd>Replace block info tuples with some container class. </dd></dl>
+For each block in self.blocks that contains a tuple, create a Block instance. At this time, also instantiate any props that are attached to the blocks. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>Replace block info tuples with some container class. </dd></dl>
 
 </div>
 </div><p>
@@ -1196,7 +1196,7 @@ For each block in self.blocks that contains a tuple, create a Block instance. At
 <p>
 Load map information from disk. 
 <p>
-The filename is equal to the name of the map. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000007">Todo:</a></b></dt><dd>This parser is very brittle, and while the map file format is not meant to be directly user-editable, there's no reason we couldn't be more flexible here. </dd></dl>
+The filename is equal to the name of the map. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>This parser is very brittle, and while the map file format is not meant to be directly user-editable, there's no reason we couldn't be more flexible here. </dd></dl>
 
 </div>
 </div><p>
@@ -1609,7 +1609,7 @@ This quadtree holds lines; we use it to make certain that limbs of the tree do n
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>map.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jul 16 17:42:34 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

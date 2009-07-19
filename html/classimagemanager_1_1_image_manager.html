@@ -25,7 +25,7 @@
   </div>
 </div>
 <div class="contents">
-<h1>imagemanager.ImageManager Class Reference</h1><!-- doxytag: class="imagemanager::ImageManager" -->This class handles loading and display of images and fonts.  
+<h1>imagemanager.ImageManager Class Reference</h1><!-- doxytag: class="imagemanager::ImageManager" -->This class handles loading and display of images.  
 <a href="#_details">More...</a>
 <p>
 
@@ -54,16 +54,7 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classimagemanager_1_1_image_manager.html#78a20bacc7082c1593f5992966ed8fef">drawObjectAt</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Draw an object at a specific location on the screen (e.g.  <a href="#78a20bacc7082c1593f5992966ed8fef"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classimagemanager_1_1_image_manager.html#3bd966bbd498346da565def50be2c1dc">drawText</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Draw some text to the screen at the specified location.  <a href="#3bd966bbd498346da565def50be2c1dc"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classimagemanager_1_1_image_manager.html#76f7dd2eb78566524667f2b814fde6b9">fadeAlpha</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Fade the given surface by the given alpha amount.  <a href="#76f7dd2eb78566524667f2b814fde6b9"></a><br></td></tr>
 <tr><td colspan="2"><br><h2>Public Attributes</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classimagemanager_1_1_image_manager.html#056431c5486d745bb67f623f6cc03adc">fonts</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Maps font names to font sizes to PyGame Font instances.  <a href="#056431c5486d745bb67f623f6cc03adc"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classimagemanager_1_1_image_manager.html#b8aeb30bbe8df2de9e313e9750742cc9">animationSets</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Maps animation group names to sets of animations.  <a href="#b8aeb30bbe8df2de9e313e9750742cc9"></a><br></td></tr>
@@ -75,7 +66,7 @@
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Individual loaded surfaces.  <a href="#92da1d5c447c419893c72de8dbdfebe1"></a><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-This class handles loading and display of images and fonts. 
+This class handles loading and display of images. 
 <p>
 <hr><h2>Member Function Documentation</h2>
 <a class="anchor" name="ed05e9bf815da14eacb03b189922f84a"></a><!-- doxytag: member="imagemanager::ImageManager::__init__" ref="ed05e9bf815da14eacb03b189922f84a" args="" -->
@@ -241,119 +232,6 @@ Draw an object at a specific location on the screen (e.g.
 for HUD elements). Apply any scaling or alpha blending needing. 
 </div>
 </div><p>
-<a class="anchor" name="3bd966bbd498346da565def50be2c1dc"></a><!-- doxytag: member="imagemanager::ImageManager::drawText" ref="3bd966bbd498346da565def50be2c1dc" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def imagemanager.ImageManager.drawText           </td>
-          <td>(</td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>screen</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>texts</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>loc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>fontNameNum</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>fontSize</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>align</em> = <code><a class="el" href="namespaceconstants.html#f3ce8142e3746a103cf8b948db5051c0">constants.TEXT_ALIGN_LEFT</a></code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>color</em> = <code>(255,&nbsp;255</code></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Draw some text to the screen at the specified location. 
-<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>texts</em>&nbsp;</td><td>A list of strings. Each string is drawn on a separate line. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>fontNameNum</em>&nbsp;</td><td>Index into <a class="el" href="namespaceconstants.html#77ed0653d058c72ea5d38f10d50acc51" title="Fonts to load.">constants.fontNames</a> </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>fontSize</em>&nbsp;</td><td>Integer. Must be one of the values in <a class="el" href="namespaceconstants.html#f31048483f3c3e30df78bea2ac620421" title="Set of font sizes to load.">constants.fontSizes</a>. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>align,:</em>&nbsp;</td><td>Text alignment. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>color,:</em>&nbsp;</td><td>PyGame-style color tuple, with alpha. </td></tr>
-  </table>
-</dl>
-
-</div>
-</div><p>
-<a class="anchor" name="76f7dd2eb78566524667f2b814fde6b9"></a><!-- doxytag: member="imagemanager::ImageManager::fadeAlpha" ref="76f7dd2eb78566524667f2b814fde6b9" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def imagemanager.ImageManager.fadeAlpha           </td>
-          <td>(</td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>surface</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>alpha</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Fade the given surface by the given alpha amount. 
-<p>
-
-</div>
-</div><p>
 <a class="anchor" name="b1a6334298f076b3694c09cb24ed8d12"></a><!-- doxytag: member="imagemanager::ImageManager::loadAnimation" ref="b1a6334298f076b3694c09cb24ed8d12" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -488,23 +366,6 @@ Maps animation group names to sets of animations.
 Typically an animation group is all of the animations for a single creature. 
 </div>
 </div><p>
-<a class="anchor" name="056431c5486d745bb67f623f6cc03adc"></a><!-- doxytag: member="imagemanager::ImageManager::fonts" ref="056431c5486d745bb67f623f6cc03adc" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classimagemanager_1_1_image_manager.html#056431c5486d745bb67f623f6cc03adc">imagemanager.ImageManager.fonts</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Maps font names to font sizes to PyGame Font instances. 
-<p>
-
-</div>
-</div><p>
 <a class="anchor" name="92da1d5c447c419893c72de8dbdfebe1"></a><!-- doxytag: member="imagemanager::ImageManager::surfaces" ref="92da1d5c447c419893c72de8dbdfebe1" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -525,7 +386,7 @@ Individual loaded surfaces.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>imagemanager.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Jul 16 17:42:34 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
