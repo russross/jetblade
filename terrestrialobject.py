@@ -47,6 +47,11 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         self.airDeceleration = defaultAirDeceleration
         ## Speed when crawling (no acceleration)
         self.crawlSpeed = defaultCrawlSpeed
+        ## Indicates that the creature is performing an uninterruptible 
+        # animation and should not change animations for the duration. Set in
+        # your AI routines; it will be automatically unset when the animation
+        # completes, or can be manually deactivated.
+        self.isAnimationLocked = False
         ## Used to signal that the creature has started a jump. Set this in 
         # your AI routines to jump.
         self.justJumped = False
@@ -89,6 +94,8 @@ class TerrestrialObject(physicsobject.PhysicsObject):
     # gravity as needed if the creature is in the air.
     def preCollisionUpdate(self):
         logger.debug("At beginning of update, loc is",self.loc,"and vel",self.vel,"and action",self.sprite.getCurrentAnimation(False))
+        if self.isAnimationLocked:
+            return
         # We need to start out with self.jumpFrames = self.maxJumpRiseFrames
         # but can't do this in the constructor because inheritors from this
         # code might override self.maxJumpRiseFrames.
@@ -125,10 +132,10 @@ class TerrestrialObject(physicsobject.PhysicsObject):
             self.vel = self.vel.addX(accelDirection * accelFactor)
         elif self.wasCrawling:
             if self.runDirection == self.facing:
-                self.vel = Vector2D(self.crawlSpeed * self.runDirection, self.vel.y)
+                self.vel = self.vel.setX(self.crawlSpeed * self.runDirection)
             else:
                 # No inertia while crawling.
-                self.vel = Vector2D(0, self.vel.y)
+                self.vel = self.vel.setX(0)
 
         if abs(self.vel.x) > constants.EPSILON:
             # This conditional ensures that we do not reset the creature's
@@ -143,7 +150,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                 logger.debug("Commencing jump")
                 self.isGrounded = False
                 self.isHanging = False
-                self.vel = Vector2D(self.vel.x, self.jumpSpeed)
+                self.vel = self.vel.setY(self.jumpSpeed)
                 self.jumpFrames = 0
                 self.isGravityOn = False
                 if self.isHanging or abs(self.vel.x) < constants.EPSILON:
@@ -190,7 +197,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
             # Ran out of ground. Either we start falling, or we look for a 
             # block below us and try to hug it. 
             footLoc = self.getFootLoc(True) # Get rear foot location
-            belowLoc = footLoc.add(Vector2D(0, abs(self.vel.x) + 1))
+            belowLoc = footLoc.addY(abs(self.vel.x) + 1)
             if (jetblade.map.getBlockAtGridLoc(footLoc.toGridspace()) or
                     jetblade.map.getBlockAtGridLoc(belowLoc.toGridspace())):
                 # Either rear foot is already in the same space as a block, 
@@ -217,23 +224,24 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                     self.loc = self.loc.addY(oldTop.y - newTop.y)
 
 
-        if self.isGrounded:
-            if not self.isCrawling:
-                accelDirection = self.getAccelDirection()
-                if accelDirection == self.facing:
-                    self.sprite.setAnimation('run')
-                elif abs(self.vel.x) > constants.EPSILON:
-                    self.sprite.setAnimation('runstop')
-                elif not self.runDirection:
-                    self.sprite.setAnimation('idle')
-            else: # Crawling
-                if self.runDirection:
-                    if self.runDirection == self.facing:
+        if not self.isAnimationLocked:
+            if self.isGrounded:
+                if not self.isCrawling:
+                    accelDirection = self.getAccelDirection()
+                    if accelDirection == self.facing:
+                        self.sprite.setAnimation('run')
+                    elif abs(self.vel.x) > constants.EPSILON:
+                        self.sprite.setAnimation('runstop')
+                    elif not self.runDirection:
+                        self.sprite.setAnimation('idle')
+                else: # Crawling
+                    if self.runDirection:
+                        if self.runDirection == self.facing:
+                            self.sprite.setAnimation('crawl')
+                        else:
+                            self.sprite.setAnimation('crawlturn')
+                    elif self.sprite.getCurrentAnimation() not in ['crawl', 'crawlturn']:
                         self.sprite.setAnimation('crawl')
-                    else:
-                        self.sprite.setAnimation('crawlturn')
-                elif self.sprite.getCurrentAnimation() not in ['crawl', 'crawlturn']:
-                    self.sprite.setAnimation('crawl')
         logger.debug("At end of update, loc is",self.loc,"and vel",self.vel,"and action",self.sprite.getCurrentAnimation(True))
 
 
@@ -251,7 +259,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         # \todo We assume we hit a terrain block here; this isn't necessarily
         # valid.
         block = collision.altObject
-        if (not jetblade.map.getBlockAtGridLoc(block.gridLoc.add(Vector2D(0, -1))) and 
+        if (not jetblade.map.getBlockAtGridLoc(block.gridLoc.addY(-1)) and 
                 self.wasGrounded and 
                 abs(collision.vector.y) < constants.EPSILON and
                 self.blockIsAtFootLevel(block)):
@@ -349,8 +357,12 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         if self.canHang and self.canGrabLedge():
             # Lock location to the top of the ledge
             # \todo Incorporate some kind of offset here?
-            self.loc = Vector2D(self.loc.x, 
-                                int((self.loc.y - self.vel.y) / constants.blockSize + .5) * constants.blockSize)
+            self.loc = self.loc.setY(
+                int(
+                    (self.loc.y - self.vel.y) / 
+                    constants.blockSize + .5
+                   ) * constants.blockSize
+            )
             self.vel = Vector2D(0, 0)
             self.isHanging = True
             self.jumpFrames = 0
@@ -367,10 +379,13 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         headLoc = self.getHeadLoc()
         # Round headLoc to the nearest column in the self.facing direction; 
         # this gets us the right column of blocks to try to grab.
-        headLoc = Vector2D(int(headLoc.x / constants.blockSize + .5 * self.facing) * constants.blockSize, 
-                           headLoc.y)
+        headLoc = headLoc.setX(
+            int(
+                headLoc.x / constants.blockSize + .5 * self.facing
+               ) * constants.blockSize
+        )
         headGridLoc = headLoc.toGridspace()
-        locs = [Vector2D(headGridLoc.x, headGridLoc.y - i) for i in [0, 1, 2]]
+        locs = [headGridLoc.addY(-i) for i in [0, 1, 2]]
         blocks = [jetblade.map.getBlockAtGridLoc(loc) for loc in locs]
         headRange = range1d.Range1D(headLoc.y - self.vel.y, headLoc.y)
         logger.debug("Head is at",headLoc,"grid",headGridLoc,"range",headRange,"and blocks are",blocks)
@@ -429,6 +444,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         elif action == 'crawlturn':
             self.facing *= -1
             self.sprite.setAnimation('crawl')
+        self.isAnimationLocked = False
         return physicsobject.PhysicsObject.completeAnimation(self, animation)
 
 

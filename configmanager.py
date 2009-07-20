@@ -13,6 +13,7 @@ defaultPlayerKeys = {
     'climb': pygame.K_UP,
     'jump': pygame.K_SPACE,
     'crouch': pygame.K_DOWN,
+    'attack': pygame.K_LSHIFT,
     'zoomin': pygame.K_PERIOD,
     'zoomout': pygame.K_COMMA,
     'startRecording': pygame.K_a,

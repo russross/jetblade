@@ -96,6 +96,16 @@ class Vector2D(tuple):
         return Vector2D(x, y)
 
 
+    ## Return a Vector2D instance that is us with the desired X component
+    def setX(self, xVal):
+        return Vector2D(xVal, self.y)
+
+
+    ## As setX for the Y component
+    def setY(self, yVal):
+        return Vector2D(self.x, yVal)
+
+
     ## As add, but average instead.
     def average(self, alt):
         x = (self[0] + alt[0]) / 2.0

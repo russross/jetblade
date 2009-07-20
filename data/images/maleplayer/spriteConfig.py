@@ -23,117 +23,120 @@ def crawlTurnUpdateFunc(obj):
         return -1
     return 0
 
+standingPolygon = [(55,10), (95,10), (95,145), (55,145)]
+crawlingPolygon = [(35,95), (115,95), (115,145), (35,145)]
+
 sprites = {
     'idle-l' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'updateRate' : .25,
     },
     'idle-r' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'updateRate' : .25,
     },
     'jump-l' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'loop' : False,
         'updateRate' : .5,
     },
     'jump-r' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'loop' : False,
         'updateRate' : .5,
     },
     'fall-l' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'loop' : False,
         'updateRate' : 1/3.0,
     },
     'fall-r' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'loop' : False,
         'updateRate' : 1/3.0,
     },
     'standjump-l' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'loop' : False,
         'updateRate' : .5,
     },
     'standjump-r' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'loop' : False,
         'updateRate' : .5,
     },
     'standfall-l' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'loop' : False,
         'updateRate' : 1/3.0,
     },
     'standfall-r' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'loop' : False,
         'updateRate' : 1/3.0,
     },
     'hang-l' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'drawOffset' : (0, 6),
         'updateRate' : .2,
     },
     'hang-r' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'drawOffset' : (0, 6),
         'updateRate' : .2,
     },
     'climb-l' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'loop' : False,
         'drawOffset' : (-75, -75),
         'moveOffset' : (-50, -131),
     },
     'climb-r' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'loop' : False,
         'drawOffset' : (-75, -75),
         'moveOffset' : (50, -131),
     },
     'run-l' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'updateFunc' : runUpdateFunc,
     },
     'run-r' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'updateFunc' : runUpdateFunc, 
     },
     'runstop-l' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'updateRate' : 1,
     },
     'runstop-r' : {
-        'polygon' : [(55,10), (95,10), (95,145), (55,145)],
+        'polygon' : standingPolygon,
         'updateRate' : 1,
     },
-    'crouch-l' : {
-        'polygon' : [(55,65), (95,65), (95,145), (55,145)],
-        'updateRate' : .25,
-    },
-    'crouch-r' : {
-        'polygon' : [(55,65), (95,65), (95,145), (55,145)],
-        'updateRate' : .25,
-    },
     'crawl-l' : {
-        'polygon' : [(35,95), (115,95), (115,145), (35,145)],
+        'polygon' : crawlingPolygon,
         'updateFunc' : crawlUpdateFunc,
     },
     'crawl-r' : {
-        'polygon' : [(35,95), (115,95), (115,145), (35,145)],
+        'polygon' : crawlingPolygon,
         'updateFunc' : crawlUpdateFunc,
     },
     'crawlturn-l' : {
-        'polygon' : [(35,95), (115,95), (115,145), (35,145)],
+        'polygon' : crawlingPolygon,
         'loop' : False,
         'updateFunc' : crawlTurnUpdateFunc,
     },
     'crawlturn-r' : {
-        'polygon' : [(35,95), (115,95), (115,145), (35,145)],
+        'polygon' : crawlingPolygon,
         'loop' : False,
         'updateFunc' : crawlTurnUpdateFunc,
+    },
+    'kick1-l' : {
+        'polygon' : standingPolygon,
+        'loop' : False,
+    },
+    'kick1-r' : {
+        'polygon' : standingPolygon,
+        'loop' : False,
     },
 }

@@ -47,7 +47,7 @@ class Sprite:
             else:
                 action += '-r'
         logger.debug("Sprite",self.name,"setting animation",action)
-        if action != self.currentAnimation:
+        if action != self.currentAnimation or self.animations[self.currentAnimation].isComplete:
             if shouldResetAnimation:
                 self.animations[self.currentAnimation].reset()
             self.prevAnimation = self.currentAnimation
@@ -77,7 +77,7 @@ class Sprite:
             # We're facing the wrong way. Turn around, but keep the same current
             # frame.
             curFrame = curAnim.frame
-            self.setAnimation(self.getCurrentAnimation(False))
+            self.setAnimation(self.getCurrentAnimation())
             curAnim = self.animations[self.currentAnimation]
             curAnim.frame = curFrame
         if curAnim.update(self.owner):

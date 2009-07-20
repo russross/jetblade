@@ -1,6 +1,7 @@
 import terrestrialobject
 import jetblade
 import logger
+from vector2d import Vector2D
 
 ## The Player class handles the player's avatar in the game. 
 class Player(terrestrialobject.TerrestrialObject):
@@ -17,6 +18,7 @@ class Player(terrestrialobject.TerrestrialObject):
         isJumping = False 
         runDirection = 0
         isClimbing = False
+        isAttacking = False
         for event in jetblade.eventManager.getCurrentActions():
             if event.action == 'left':
                 runDirection = -1
@@ -28,6 +30,13 @@ class Player(terrestrialobject.TerrestrialObject):
                 isClimbing = True
             elif event.action == 'crouch':
                 shouldCrawl = True
+            elif event.action == 'attack':
+                isAttacking = True
+
+        if self.isGrounded and isAttacking:
+            self.sprite.setAnimation('kick1')
+            self.isAnimationLocked = True
+            self.vel = Vector2D(0, 0)
 
         if shouldCrawl and self.isGrounded:
             logger.debug("Input: crawling")
