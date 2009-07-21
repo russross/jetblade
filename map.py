@@ -951,10 +951,10 @@ class Map:
         min = Vector2D(rect.topleft).toGridspace().sub((1, 1))
         max = Vector2D(rect.bottomright).toGridspace().add((2, 2))
         for x in range(min.x, max.x):
-            if x < 0 or x > self.numCols:
+            if x < 0 or x >= self.numCols:
                 continue
             for y in range(min.y, max.y):
-                if y < 0 or y > self.numRows:
+                if y < 0 or y >= self.numRows:
                     continue
                 for effect in self.envGrid[x][y]:
                     effect.draw(screen, Vector2D(x, y).toRealspace(), 
@@ -968,10 +968,10 @@ class Map:
         min = Vector2D(rect.topleft).toGridspace().sub((1, 1))
         max = Vector2D(rect.bottomright).toGridspace().add((2, 2))
         for x in range(min.x, max.x):
-            if x < 0 or x > self.numCols:
+            if x < 0 or x >= self.numCols:
                 continue
             for y in range(min.y, max.y):
-                if y < 0 or y > self.numRows or not self.blocks[x][y]:
+                if y < 0 or y >= self.numRows or not self.blocks[x][y]:
                     continue
                 self.blocks[x][y].draw(screen, cameraLoc, progress)
 
@@ -1127,6 +1127,7 @@ class Map:
                 self.width = self.numCols * constants.blockSize
                 self.numRows = int(rows)
                 self.height = self.numRows * constants.blockSize
+                logger.inform("Loading a",self.numCols,"by",self.numRows,"map")
                 self.blocks = []
                 self.envGrid = []
                 for i in range(0, self.numCols):
@@ -1141,6 +1142,7 @@ class Map:
                 mode = 'start'
             elif mode == 'start':
                 if line == 'blocks:':
+                    logger.inform("Loading block information at",pygame.time.get_ticks())
                     mode = 'blocks'
                     continue
                 # Read starting location
@@ -1148,6 +1150,7 @@ class Map:
                 self.startLoc = Vector2D(int(x), int(y))
             elif mode == 'blocks':
                 if line == 'enveffects:':
+                    logger.inform("Loading environmental effects at",pygame.time.get_ticks())
                     mode = 'enveffects'
                     continue
                 (x, y, orientation, zone, region) = line.split(',')
@@ -1161,6 +1164,7 @@ class Map:
                                             terrainInfoCache[(zone, region)])
             elif mode == 'enveffects':
                 if line == 'bgprops:':
+                    logger.inform("Loading background props at",pygame.time.get_ticks())
                     mode = 'bgprops'
                     continue
                 (location, effects) = line.split(':')

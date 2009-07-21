@@ -22,7 +22,7 @@ class Prop:
     ## Draw the prop. This is called by the game's Map instance before any 
     # other objects are drawn. 
     def draw(self, screen, camera, progress, scale = 1):
-        self.sprite.draw(screen, camera, progress, scale)
+        self.sprite.draw(screen, camera, progress, None, scale)
 
 
     ## Return the bounding box for the prop. Required for props to be insertable
