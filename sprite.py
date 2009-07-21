@@ -1,6 +1,8 @@
 import jetblade
 import logger
 
+import pygame
+
 ## Amount to add to drawing location to prevent visual jitter
 drawRoundAmount = .000005
 
@@ -47,7 +49,7 @@ class Sprite:
             else:
                 action += '-r'
         logger.debug("Sprite",self.name,"setting animation",action)
-        if action != self.currentAnimation or self.animations[self.currentAnimation].isComplete:
+        if action != self.currentAnimation:
             if shouldResetAnimation:
                 self.animations[self.currentAnimation].reset()
             self.prevAnimation = self.currentAnimation
@@ -114,6 +116,20 @@ class Sprite:
         loc = self.prevLoc.interpolate(self.curLoc, progress)
         loc = loc.addScalar(drawRoundAmount).int()
         return loc
+
+
+    ## Return a PyGame Rect describing our bounding box.
+    def getBounds(self, loc):
+        polygon = self.animations[self.currentAnimation].getPolygon()
+        upperLeft = polygon.upperLeft.add(loc)
+        size = polygon.lowerRight.sub(polygon.upperLeft)
+        return pygame.Rect(upperLeft, size)
+
+
+    ## Set the animation to use the provided polygon instead of the one it's
+    # currently using.
+    def overridePolygon(self, newPolygon):
+        self.animations[self.currentAnimation].setPolygon(newPolygon)
 
 
     ## Retrieve the current animation's polygon, or the previous animation's

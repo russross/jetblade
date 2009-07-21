@@ -706,7 +706,7 @@ class TreeNode:
         p1 = self.loc.multiply(scale)
         if self.parent is not None:
             p2 = self.parent.loc.multiply(scale)
-            pygame.draw.line(screen, self.color, p1.tuple(), p2.tuple(), 4)
+            pygame.draw.line(screen, self.color, p1, p2, 4)
         for child in self.children:
             # Note this does not include junction nodes
             child.draw(screen, scale)

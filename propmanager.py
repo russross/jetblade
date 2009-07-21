@@ -1,5 +1,7 @@
 import prop
 import util
+import logger
+import constants
 from vector2d import Vector2D
 
 import sys
@@ -20,12 +22,13 @@ class PropManager:
             self.propConfigCache[terrain.zone] = dict()
         if terrain.region not in self.propConfigCache[terrain.zone]:
             # Load the prop config into the config cache first
-            filename = 'terrain.' + terrain.zone + '.' + terrain.region + '.props.propConfig'
+            filename = constants.spritePath + '/terrain/' + terrain.zone + '/' + terrain.region + '/props/propConfig'
+            filename = filename.replace('/', '.')
             module = None
             try:
                 module = __import__(filename, globals(), locals(), ['props'])
             except Exception, e:
-                util.fatal("Unable to load",filename,":",e.message)
+                logger.fatal("Unable to load",filename,":",e.message)
             
             propMap = module.props        
             self.propConfigCache[terrain.zone][terrain.region] = dict()

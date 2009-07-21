@@ -1,5 +1,7 @@
+import constants
+import jetblade
+
 import sys
-import util
 
 ## This class handles loading and caching information on enviromental effects.
 class EnvEffectManager:
@@ -12,8 +14,9 @@ class EnvEffectManager:
     def loadEnvEffect(self, name):
         if name in self.envMap:
             return self.envMap[name]
-        modulePath = 'environments.' + name
-        initFunc = util.loadDynamicClass(modulePath)
+        modulePath = constants.mapPath + '/environments/' + name
+        modulePath = modulePath.replace('/', '.')
+        initFunc = jetblade.dynamicClassManager.loadDynamicClass(modulePath)
         classInstance = initFunc(name)
         self.envMap[name] = classInstance
         return classInstance

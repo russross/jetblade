@@ -23,7 +23,8 @@ defaultLogLevel = LOG_INFORM
 ## Time in milliseconds to wait after displaying a fatal error, 
 # before exiting the program.
 errorMessageDelayTime = 10000
-
+## Length of lines when displaying fatal errors
+fatalMessageLineLength = 140
 
 ## This class simply performs logging and tracks the current log level.
 # Instead of calling its log function directly, use one of the module-level
@@ -78,20 +79,19 @@ def error(*entries):
 # function when unrecoverable errors have occurred. 
 def fatal(*entries):
     message = logger.log(LOG_FATAL, *entries)
-    errorString = "Sorry, an error occurred: " + message
-    errorString2 = "The program will now shut down."
+    errorStrings = ["Sorry, an error occurred: "]
+    for i in range(0, len(message), fatalMessageLineLength):
+        errorStrings.append(message[i*fatalMessageLineLength:(i+1)*fatalMessageLineLength])
+    errorStrings.append("The program will now shut down.")
     errorFont = pygame.font.Font(None, 24)
-    textSurface = errorFont.render(errorString, True, (255, 255, 255))
-    textSurface2 = errorFont.render(errorString2, True, (255, 255, 255))
-    rect = textSurface.get_rect()
-    rect.centerx = constants.sw / 2.0
-    rect.centery = constants.sh / 2.0
-    rect2 = textSurface.get_rect()
-    rect2.centerx = constants.sw / 2.0
-    rect2.centery = constants.sh / 2.0 + 30
     jetblade.screen.fill((0, 0, 0))
-    jetblade.screen.blit(textSurface, rect)
-    jetblade.screen.blit(textSurface2, rect2)
+    for i in range(0, len(errorStrings)):
+        line = errorStrings[i]
+        textSurface = errorFont.render(line, True, (255, 255, 255))
+        rect = textSurface.get_rect()
+        rect.centerx = constants.sw / 2.0
+        rect.centery = constants.sh / 2.0 + 20 * i
+        jetblade.screen.blit(textSurface, rect)
     pygame.display.update()
     pygame.time.delay(errorMessageDelayTime)
     sys.exit()

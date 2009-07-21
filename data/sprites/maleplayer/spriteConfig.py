@@ -1,6 +1,7 @@
 import math
 
-def runUpdateFunc(obj):
+## Run animation cycle rate depends on velocity.
+def runUpdate(obj):
     speed = obj.vel.magnitude()
     if speed < .25 * obj.maxVel.x:
         return 2/3.0
@@ -11,17 +12,36 @@ def runUpdateFunc(obj):
     else:
         return 2
 
-def crawlUpdateFunc(obj):
+
+## Crawling either is on or off.
+def crawlUpdate(obj):
     if obj.runDirection:
         return .5
     return 0
 
-def crawlTurnUpdateFunc(obj):
+
+## Turn around
+def crawlTurnUpdate(obj):
     if obj.runDirection != obj.facing:
         return 1
     elif obj.runDirection:
         return -1
     return 0
+
+
+## Create an attack on the left
+def kickLeft(obj, manager):
+    manager.addNewObject('attacks/baseattack', 
+                         [(55,30), (95,30), (95,145), (55,145)],
+                         (-40, 0), obj, 7, 10)
+
+
+## Create an attack on the right
+def kickRight(obj, manager):
+    manager.addNewObject('attacks/baseattack', 
+                         [(55,30), (95,30), (95,145), (55,145)],
+                         (40, 0), obj, 7, 10)
+    
 
 standingPolygon = [(55,10), (95,10), (95,145), (55,145)]
 crawlingPolygon = [(35,95), (115,95), (115,145), (35,145)]
@@ -99,11 +119,11 @@ sprites = {
     },
     'run-l' : {
         'polygon' : standingPolygon,
-        'updateFunc' : runUpdateFunc,
+        'updateFunc' : runUpdate
     },
     'run-r' : {
         'polygon' : standingPolygon,
-        'updateFunc' : runUpdateFunc, 
+        'updateFunc' : runUpdate 
     },
     'runstop-l' : {
         'polygon' : standingPolygon,
@@ -115,28 +135,34 @@ sprites = {
     },
     'crawl-l' : {
         'polygon' : crawlingPolygon,
-        'updateFunc' : crawlUpdateFunc,
+        'updateFunc' : crawlUpdate
     },
     'crawl-r' : {
         'polygon' : crawlingPolygon,
-        'updateFunc' : crawlUpdateFunc,
+        'updateFunc' : crawlUpdate
     },
     'crawlturn-l' : {
         'polygon' : crawlingPolygon,
         'loop' : False,
-        'updateFunc' : crawlTurnUpdateFunc,
+        'updateFunc' : crawlTurnUpdate
     },
     'crawlturn-r' : {
         'polygon' : crawlingPolygon,
         'loop' : False,
-        'updateFunc' : crawlTurnUpdateFunc,
+        'updateFunc' : crawlTurnUpdate
     },
     'kick1-l' : {
         'polygon' : standingPolygon,
         'loop' : False,
+        'frameActions' : {
+            10 : kickLeft,
+        },
     },
     'kick1-r' : {
         'polygon' : standingPolygon,
         'loop' : False,
+        'frameActions' : {
+            10 : kickRight,
+        },
     },
 }

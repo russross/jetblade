@@ -28,7 +28,7 @@ class AnimationManager:
         # spriteConfigs for similar sprites.
         directories = name.split('/')
         modulePath = ''
-        path = constants.imagePath
+        path = constants.spritePath
         for directory in directories:
             path += '/' + directory
             if os.path.exists(path + '/' + constants.spriteFilename + '.py'):
@@ -55,9 +55,12 @@ class AnimationManager:
             moveOffset = Vector2D(0, 0)
             if 'moveOffset' in data:
                 moveOffset = Vector2D(data['moveOffset'])
+            frameActions = dict()
+            if 'frameActions' in data:
+                frameActions = data['frameActions']
             animations[animationName] = animation.Animation(name, animationName, 
                         animPolygon, shouldLoop, updateRate, updateFunc, 
-                        drawOffset, moveOffset)
+                        drawOffset, moveOffset, frameActions)
 
         self.animationsCache[name] = animations
         return animations

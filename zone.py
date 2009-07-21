@@ -1,5 +1,5 @@
 import constants
-import util
+import logger
 import range1d
 from vector2d import Vector2D
 
@@ -34,7 +34,9 @@ class Region:
 ## Load all Zone and Region data from the zones.py file. 
 def loadZoneData():
     try:
-        zoneConfigModule = __import__('zones', globals(), locals(), ['zones'])
+        path = constants.mapPath + '/zones'
+        path = path.replace('/', '.')
+        zoneConfigModule = __import__(path, globals(), locals(), ['zones'])
         zoneConfigData = zoneConfigModule.zones
         # Pull out the frequency information to a separate dict
         for zoneName, zoneData in zoneConfigData.iteritems():
@@ -55,7 +57,7 @@ def loadZoneData():
             zoneData['regionWeights'] = weights
         return zoneConfigData
     except Exception, e:
-        util.fatal("Failed to load zone data:",e)
+        logger.fatal("Failed to load zone data:",e)
 
 
 ## Place a starting point for each zone in the area [[0, 1], [0, 1]] such

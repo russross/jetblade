@@ -225,11 +225,11 @@ class Map:
     def createMap(self):
         self.width = int(minUniverseWidth + random.uniform(0, universeDimensionVariance))
         self.height = int(minUniverseHeight + random.uniform(0, universeDimensionVariance))
-        self.backgroundQuadTree = quadtree.QuadTree(pygame.rect.Rect((0, 0), (self.width, self.height)))
+        self.backgroundQuadTree = quadtree.QuadTree(self.getBounds())
 
         ## This quadtree holds lines; we use it to make certain that limbs of
         # the tree do not come too close to each other (or intersect). 
-        self.treeLines = quadtree.QuadTree(pygame.rect.Rect((0, 0), (self.width, self.height)))
+        self.treeLines = quadtree.QuadTree(self.getBounds())
         self.treeLines.addObjects([line.Line(Vector2D(0, 0), Vector2D(self.width, 0)),
                 line.Line(Vector2D(self.width, 0), Vector2D(self.width, self.height)),
                 line.Line(Vector2D(self.width, self.height), Vector2D(0, self.height)),
@@ -237,7 +237,7 @@ class Map:
 
         ## A quadtree of Platform instances created during fixAccessibility, 
         # that will be converted into actual blocks near the end of mapgen.
-        self.platformsQuadTree = quadtree.QuadTree(pygame.rect.Rect((0, 0), (self.width, self.height)))
+        self.platformsQuadTree = quadtree.QuadTree(self.getBounds())
         
         self.numCols = self.width / constants.blockSize
         self.numRows = self.height / constants.blockSize
@@ -519,12 +519,11 @@ class Map:
                         loc = fillStack.pop(0)
                         newChunk.append(loc)
                         for neighbor in loc.NEWSPerimeter():
-                            neighborKey = neighbor.tuple()
                             if (self.getIsInBounds(neighbor) and 
                                     self.blocks[neighbor.x][neighbor.y] != BLOCK_EMPTY and
-                                    neighborKey not in seenSpaces):
+                                    neighbor not in seenSpaces):
                                 fillStack.append(neighbor)
-                                seenSpaces.add(neighborKey)
+                                seenSpaces.add(neighbor)
                     chunks.append(newChunk)
 
         for chunk in chunks:
@@ -874,22 +873,22 @@ class Map:
         if (deadSeeds is not None and len(deadSeeds) and 
                 hasattr(deadSeeds[deadSeeds.keys()[0]].node, 'color')):
             for loc, seed in deadSeeds.iteritems():
-                drawLoc = loc.multiply(size).addScalar(add).tuple()
+                drawLoc = loc.multiply(size).addScalar(add)
                 pygame.draw.circle(screen, seed.node.color, drawLoc, add)
 
         if seeds is not None:
             for loc, seed in seeds.iteritems():
-                drawLoc = loc.multiply(size).addScalar(add).tuple()
+                drawLoc = loc.multiply(size).addScalar(add)
                 diff = 255 if seed.life <= 0 else int(255 / seed.life)
                 pygame.draw.circle(screen, (0, diff, 255-diff), drawLoc, add)
 
         if marks is not None:
             for loc in marks:
-                drawLoc = loc.multiply(size).addScalar(add).tuple()
+                drawLoc = loc.multiply(size).addScalar(add)
                 pygame.draw.circle(screen, (255, 0, 0), drawLoc, add)
 
         if self.markLoc is not None:
-            drawLoc = self.markLoc.multiply(size).addScalar(add).tuple()
+            drawLoc = self.markLoc.multiply(size).addScalar(add)
             pygame.draw.circle(screen, (0, 255, 255), drawLoc, add+4, 4)
 
             if shouldZoom:
@@ -1137,7 +1136,7 @@ class Map:
                         self.blocks[i].append(BLOCK_EMPTY)
                         self.envGrid[i].append([])
 
-                self.backgroundQuadTree = quadtree.QuadTree(pygame.rect.Rect((0, 0), (self.width, self.height)))
+                self.backgroundQuadTree = quadtree.QuadTree(self.getBounds())
                 
                 mode = 'start'
             elif mode == 'start':
@@ -1256,4 +1255,9 @@ class Map:
                 field in self.zoneData[info.zone]['regions'][info.region]):
             return self.zoneData[info.zone]['regions'][info.region][field]
         return None
+
+
+    ## Return the size of the game map as a PyGame Rect.
+    def getBounds(self):
+        return pygame.rect.Rect((0, 0), (self.width, self.height))
 

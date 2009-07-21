@@ -1,5 +1,7 @@
 import constants
 import util
+import logger
+from vector2d import Vector2D
 
 import pygame
 
@@ -40,6 +42,7 @@ class QuadTree:
             if child.canAcceptObject(object):
                 child.addObject(object)
                 return
+        logger.debug("Adding object",object,"with bounds",object.getBounds(),"to quadtree at depth",self.depth)
         self.objects.append(object)
         if (not self.children and 
                 self.rect.width > minCellDim and
@@ -83,20 +86,59 @@ class QuadTree:
         self.rebalanceTree()
 
 
+    ## Update all objects in the tree. Rebalance as we go, by returning all 
+    # objects that we cannot hold any longer, and pushing down objects that
+    # can fit into one of our children.
+    def update(self):
+        displacedObjects = []
+        newObjects = []
+        for object in self.objects:
+            if object.update():
+                if not self.canAcceptObject(object):
+                    displacedObjects.append(object)
+                else:
+                    newObjects.append(object)
+            else:
+                logger.debug("Object",object,"is dead")
+        
+        for child in self.children:
+            for object in child.update():
+                if not self.canAcceptObject(object):
+                    displacedObjects.append(object)
+                else:
+                    newObjects.append(object)
+        self.objects = []
+        self.addObjects(newObjects)
+        if self.parent is None:
+            self.addObjects(displacedObjects)
+        else:
+            return displacedObjects
+
+
+
     ## Draw the objects in this node and all children, that intersect with the 
     # current view.
     def draw(self, screen, camera, progress, scale = 1):
         screenRect = screen.get_rect()
-        screenRect.center = camera.tuple()
+        screenRect.center = camera
         for object in self.objects:
             objectRect = object.getBounds()
             objectRect.width *= scale
             objectRect.height *= scale
             objectRect.topleft = (objectRect.topleft[0] * scale, objectRect.topleft[1] * scale)
             if objectRect.colliderect(screenRect):
-                object.draw(screen, camera, scale)
+                object.draw(screen, camera, progress, scale)
         for child in self.children:
-            child.draw(screen, camera, progress, scale)
+            if child.rect.colliderect(screenRect):
+                child.draw(screen, camera, progress, scale)
+
+        if logger.getLogLevel() == logger.LOG_DEBUG:
+            # Draw our bounding rect, inset by a pixel for each level of depth.
+            drawRect = pygame.Rect(Vector2D(1, 1).multiply(self.depth).add(self.rect.topleft),
+                                   Vector2D(-2, -2).multiply(self.depth).add(self.rect.size))
+            drawRect.center = util.adjustLocForCenter(Vector2D(self.rect.center), camera, screen.get_rect())
+            pygame.draw.rect(screen, (0, 0, 255), drawRect, 1)
+            
 
 
     ## Return all objects in this node and any child nodes.

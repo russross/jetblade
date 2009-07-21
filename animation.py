@@ -11,7 +11,7 @@ import logger
 class Animation:
     ## Create a new Animation instance.
     def __init__(self, group, name, polygon, shouldLoop, 
-                 updateRate, updateFunc, drawOffset, moveOffset):
+                 updateRate, updateFunc, drawOffset, moveOffset, frameActions):
         
         ## The collection of animations that this one is a part of. For example,
         # in "player/run-l" the group would be "player"
@@ -47,6 +47,9 @@ class Animation:
         # animation never completes.
         self.moveOffset = moveOffset
 
+        ## Actions to take on specific frames of the animation
+        self.frameActions = frameActions
+
         ## Individual frames of the animation.
         self.frames = jetblade.imageManager.loadAnimation(self.group + '/' + self.name)
         ## Current frame of animation; an index into self.frames.
@@ -60,11 +63,15 @@ class Animation:
     # False otherwise.
     def update(self, owner):
         logger.debug("Updating animation",self.name,"from frame",self.frame,)
+        curFrame = self.frame
         if self.frame < len(self.frames) - 1 or self.shouldLoop:
             if self.updateFunc is not None:
                 self.frame += self.updateFunc(owner)
             else:
                 self.frame += self.updateRate
+        if (int(curFrame) != int(self.frame) and 
+                int(self.frame) in self.frameActions):
+            self.frameActions[int(self.frame)](owner, jetblade.gameObjectManager)
         if (not self.shouldLoop and not self.isComplete and 
                 self.frame >= len(self.frames) - 1):
             # Animation done
@@ -98,6 +105,10 @@ class Animation:
         logger.debug("Animation",self.name,"resetting")
         self.frame = 0
         self.isComplete = False
+    
+
+    def setPolygon(self, newPolygon):
+        self.polygon = newPolygon
     
     
     def getPolygon(self):

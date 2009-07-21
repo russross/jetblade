@@ -3,6 +3,8 @@
 import jetblade
 import imagemanager
 import configmanager
+import dynamicclassmanager
+import gameobjectmanager
 import featuremanager
 import enveffectmanager
 import propmanager
@@ -145,6 +147,7 @@ def init():
     pygame.init()
     jetblade.shouldDisplayFPS = 1
     jetblade.configManager = configmanager.ConfigManager()
+    jetblade.dynamicClassManager = dynamicclassmanager.DynamicClassManager()
     jetblade.featureManager = featuremanager.FeatureManager()
     jetblade.envEffectManager = enveffectmanager.EnvEffectManager()
     jetblade.propManager = propmanager.PropManager()
@@ -156,8 +159,6 @@ def init():
     pygame.display.set_caption('Jetblade')
     jetblade.screen = util.setupScreen()
 
-    sys.path.append(constants.imagePath)
-    sys.path.append(constants.mapPath)
 
 
 ## Create the map(s) and player. If we've been told to make multiple maps
@@ -190,6 +191,8 @@ def startGame():
         if jetblade.shouldExitAfterMapgen:
             sys.exit()
     jetblade.player = player.Player()
+    jetblade.gameObjectManager = gameobjectmanager.GameObjectManager()
+    jetblade.gameObjectManager.addObject(jetblade.player)
 
 
 ## The main game loop. Performs a target of physicsUpdatesPerSecond
@@ -241,7 +244,7 @@ def gameLoop():
         while timeAccum >= physicsUpdateRate:
             count += 1
             physicsNum += 1
-            jetblade.player.update()
+            jetblade.gameObjectManager.update()
             cam.update()
             timeAccum -= physicsUpdateRate
 
@@ -269,9 +272,11 @@ def draw(zoomLevel, cam, progress):
         drawSurface = pygame.transform.rotozoom(drawSurface, 0, zoomLevel)
         jetblade.screen.blit(drawSurface, (0, 0))
     else:
+        logger.debug(cam,"has draw loc",drawLoc,"based on",jetblade.player.loc)
         jetblade.screen.fill((0, 0, 0))
         jetblade.map.drawBackground(jetblade.screen, drawLoc, progress)
-        jetblade.player.draw(jetblade.screen, drawLoc, progress)
+#        jetblade.player.draw(jetblade.screen, drawLoc, progress)
+        jetblade.gameObjectManager.draw(jetblade.screen, drawLoc, progress)
         jetblade.map.drawMidground(jetblade.screen, drawLoc, progress)
     if jetblade.shouldDisplayFPS:
         jetblade.fontManager.drawText('MODENINE', jetblade.screen, 

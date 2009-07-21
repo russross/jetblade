@@ -14,7 +14,7 @@ maxCollisionRetries = 15
 zipAmount = Vector2D(0, -constants.blockSize)
 
 ## Default acceleration due to gravity, in X and Y directions
-defaultGravity = Vector2D(0, 2)
+defaultGravity = Vector2D(0, 0)
 ## Default maximum velocity, in X and Y directions
 defaultMaxVel = Vector2D(20, 30)
 
@@ -28,20 +28,30 @@ class PhysicsObject:
     # \param name The name of the object; also the path to its animations 
     #             (e.g. 'data/images/maleplayer').
     def __init__(self, loc, name):
+        ## Name of object, used to look up the sprite.
         self.name = name
+        ## Location of the object
         self.loc = loc
+        ## Current velocity of the object
         self.vel = Vector2D(0, 0)
+        ## True if gravity should be applied during the update cycle.
         self.isGravityOn = True
+        ## Acceleration due to gravity, added to self.vel each update cycle.
         self.gravity = defaultGravity.copy()
+        ## Maximum velocity in X and Y directions (handled separately)
         self.maxVel = defaultMaxVel.copy()
+        ## Direction object is facing (1: right, -1: left)
         self.facing = 1
+        ## Sprite for animations and bounding polygons
         self.sprite = sprite.Sprite(name, self, self.loc)
+        ## List of collisions received since the last update cycle.
         self.collisions = []
 
 
     ## Apply gravity to velocity and velocity to location, then run collision
     # detection.
     def update(self):
+        logger.debug("Updating object",self.name)
         self.AIUpdate()
         self.preCollisionUpdate()
         if self.isGravityOn:
@@ -51,6 +61,7 @@ class PhysicsObject:
         self.handleCollisions()
         self.postCollisionUpdate()
         self.sprite.update(self.loc)
+        return True
 
 
     ## Make whatever state changes the AI/player control calls for.
@@ -152,14 +163,19 @@ class PhysicsObject:
 
 
     ## Passthrough to Sprite.draw()
-    def draw(self, screen, camera, progress):
+    def draw(self, screen, camera, progress, scale = 1):
         logger.debug("Drawing",self.name,"at",self.getDrawLoc(progress),"from",self.sprite.prevLoc,"and",self.sprite.curLoc)
-        self.sprite.draw(screen, camera, progress)
+        self.sprite.draw(screen, camera, progress, None, scale)
 
 
     ## Passthrough to Sprite.getDrawLoc()
     def getDrawLoc(self, progress):
         return self.sprite.getDrawLoc(progress)
+
+
+    ## Passthrough to Sprite.getBounds()
+    def getBounds(self):
+        return self.sprite.getBounds(self.loc)
 
 
     ## Return a string representing the facing of the object

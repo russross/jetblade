@@ -29,11 +29,6 @@ class Vector2D(tuple):
         return Vector2D(self[0], self[1])
 
 
-    ## Return a tuple of our values.
-    def tuple(self):
-        return (self[0], self[1])
-
-
     ## Access the first element (used by the x property)
     def _getX_(self):
         return self[0]

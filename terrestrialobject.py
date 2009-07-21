@@ -17,6 +17,8 @@ defaultAirDeceleration = 1
 defaultCrawlSpeed = 3
 ## Default speed at the start of a jump
 defaultJumpSpeed = -20
+## Default gravity
+defaultGravity = Vector2D(0, 2)
 ## Default number of frames that creature can ignore gravity by "holding the 
 # jump button" to adjust jump height.
 defaultMaxJumpRiseFrames = 10
@@ -31,6 +33,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
     ## Instantiate a TerrestrialObject
     def __init__(self, loc, name):
         physicsobject.PhysicsObject.__init__(self, loc, name)
+        self.gravity = defaultGravity
         ## When grounded, we apply running acceleration, can jump, and
         # can crouch if the creature has that ability.
         self.isGrounded = True
@@ -444,6 +447,8 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         elif action == 'crawlturn':
             self.facing *= -1
             self.sprite.setAnimation('crawl')
+        elif self.isGrounded:
+            self.sprite.setAnimation('idle')
         self.isAnimationLocked = False
         return physicsobject.PhysicsObject.completeAnimation(self, animation)
 

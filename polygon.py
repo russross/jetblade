@@ -135,7 +135,7 @@ class Polygon:
             drawColor = (255, 0, 0)
         drawPoints = []
         for point in self.points:
-            drawPoints.append(util.adjustLocForCenter(point.add(loc), camera, screen.get_rect()).tuple())
+            drawPoints.append(util.adjustLocForCenter(point.add(loc), camera, screen.get_rect()))
         pygame.draw.lines(screen, drawColor, 1, drawPoints, 4)
         self.hit = False
 

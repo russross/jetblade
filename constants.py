@@ -35,8 +35,10 @@ BIGNUM = 999988887777666655554444333322221111
 
 ## Path to the custom map generation modules
 mapPath = 'data/mapgen'
+## Path to custom game object modules
+objectsPath = 'data/objects'
 ## Path to image files and their configuration
-imagePath = 'data/images'
+spritePath = 'data/sprites'
 ## Path to soundeffects
 soundPath = 'data/sound'
 ## Path to fonts
