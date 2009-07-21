@@ -1,15 +1,14 @@
-standardPolygon = [(0, 0), (10, 0), (5, 10)]
 sprites = {
     '1' : {
-        'polygon' : standardPolygon
+        'polygon' : [(0, 0), (307, 0), (307, 589), (0, 589)],
     },
     '2' : {
-        'polygon' : standardPolygon
+        'polygon' : [(0, 0), (325, 0), (325, 467), (0, 467)],
     },
     '3' : {
-        'polygon' : standardPolygon
+        'polygon' : [(0, 0), (519, 0), (519, 382), (0, 382)],
     },
     '4' : {
-        'polygon' : standardPolygon
+        'polygon' : [(0, 0), (107, 0), (107, 52), (0, 52)],
     },
 }
