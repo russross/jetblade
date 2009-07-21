@@ -16,7 +16,7 @@ def getClassName():
 class BaseAttack(physicsobject.PhysicsObject):
     ## Instantiate a BaseAttack
     def __init__(self, points, offset, owner, duration, damage):
-        ## Time left until this object should blank itself
+        ## Time left until this object should die
         self.remainingTime = duration
         ## Damage dealt on contact
         self.damage = damage

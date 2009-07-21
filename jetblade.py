@@ -272,10 +272,8 @@ def draw(zoomLevel, cam, progress):
         drawSurface = pygame.transform.rotozoom(drawSurface, 0, zoomLevel)
         jetblade.screen.blit(drawSurface, (0, 0))
     else:
-        logger.debug(cam,"has draw loc",drawLoc,"based on",jetblade.player.loc)
         jetblade.screen.fill((0, 0, 0))
         jetblade.map.drawBackground(jetblade.screen, drawLoc, progress)
-#        jetblade.player.draw(jetblade.screen, drawLoc, progress)
         jetblade.gameObjectManager.draw(jetblade.screen, drawLoc, progress)
         jetblade.map.drawMidground(jetblade.screen, drawLoc, progress)
     if jetblade.shouldDisplayFPS:

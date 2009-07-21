@@ -6,7 +6,6 @@ import logger
 # simply looking pretty. 
 class Prop:
     def __init__(self, loc, terrain, group, item):
-        logger.debug("Making new prop",terrain,group,item,"at",loc)
         ## Location of the prop in realspace.
         self.loc = loc
         ## TerrainInfo instance describing the local terrain
