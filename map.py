@@ -64,7 +64,7 @@ minHorizDistToOtherPlatforms = 6
 ## Minimum vertical distance between platforms.
 minVertDistToOtherPlatforms = 4
 ## Platforms have widths randomly selected from this list.
-platformWidths = [1, 2, 2, 3]
+platformWidths = [2, 2, 3]
 
 ## This maps different block configurations to block types, for setting terrain
 # in getBlockType(). We'll convert each array into a set of scalar signatures
@@ -1071,13 +1071,15 @@ class Map:
         longestOverlap = -constants.BIGNUM
         resultVector = None
         resultBlock = None
+        polyRect = poly.getBounds(loc)
         for x in range(upperLeft.x, lowerRight.x):
             if x < 0 or x >= self.numCols:
                 continue
             for y in range(upperLeft.y, lowerRight.y):
                 if y < 0 or y >= self.numRows:
                     continue
-                if self.blocks[x][y] not in (None, BLOCK_EMPTY):
+                if (self.blocks[x][y] not in (None, BLOCK_EMPTY) and
+                        self.blocks[x][y].getBounds().colliderect(polyRect)):
                     (overlap, vector) = self.blocks[x][y].collidePolygon(poly, loc)
                     if vector is not None:
                         if overlap > longestOverlap:

@@ -172,6 +172,19 @@ class Vector2D(tuple):
         return Vector2D(x, y)
 
 
+    ## Return the multiplier of the given vector that gets it closest to us.
+    # In other words, project us onto the given vector, and get the distance
+    # from that projection to the origin.
+    def getComponentOn(self, vector):
+        projection = self.projectOnto(vector)
+        distanceFromOrigin = None
+        if abs(projection.x) > constants.EPSILON:
+            distanceFromOrigin = projection.x / vector.x
+        else:
+            distanceFromOrigin = projection.y / vector.y
+        return distanceFromOrigin
+
+
     ## Interpolate between us and alt with the given bias
     def interpolate(self, alt, altWeight):
         delta = alt.sub(self).multiply(altWeight)

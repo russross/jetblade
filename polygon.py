@@ -7,6 +7,10 @@ from vector2d import Vector2D
 import pygame
 import os
 
+## Maximum number of already-calculated projections onto vectors that we 
+# should cache for this polygon.
+maxCachedProjections = 30
+
 ## The Polygon class represents convex bounding polygons used for collision 
 # detection.
 class Polygon:
@@ -60,6 +64,11 @@ class Polygon:
             vector = prevPoint.sub(point).normalize().invert()
             self.projectionVectors.append(vector)
             prevPoint = point
+        ## Cache of vectors we've been projected onto in the past.
+        self.vectorToProjectionCache = dict()
+        ## Incrementing counter to track how old elements in the cache are.
+        self.projectionCacheUseCounter = 0
+
 
     ## Use the Separating Axis Theorem to collide two convex polygons.
     # See http://www.metanetsoftware.com/technique/tutorialA.html
@@ -99,13 +108,15 @@ class Polygon:
         return self.projectionVectors
 
 
-    ## Project the polygon onto the given vector. Return the range (min, max)
-    # along the vector formed by that projection.
+    ## Project us onto the given vector assuming we are at loc. Return the 
+    # range (min, max) along the vector formed by that projection.
     def projectOntoVector(self, loc, vector):
+        if vector in self.vectorToProjectionCache:
+            result = self.vectorToProjectionCache[vector]['result']
+            return result.addScalar(loc.getComponentOn(vector))
         result = range1d.Range1D()
         for point in self.points:
-            adjustedPoint = point.add(loc)
-            projectedPoint = adjustedPoint.projectOnto(vector)
+            projectedPoint = point.projectOnto(vector)
             distanceFromOrigin = None
             if abs(vector.x) > constants.EPSILON:
                 distanceFromOrigin = projectedPoint.x / vector.x
@@ -115,6 +126,23 @@ class Polygon:
                 result.min = distanceFromOrigin
             if distanceFromOrigin > result.max:
                 result.max = distanceFromOrigin
+        
+        self.vectorToProjectionCache[vector] = {
+            'use' : self.projectionCacheUseCounter,
+            'result' : result
+        }
+        self.projectionCacheUseCounter += 1
+        if len(self.vectorToProjectionCache) > maxCachedProjections:
+            logger.inform("Cache has grown too big")
+            oldestProjectionVector = None
+            oldestUse = self.projectionCacheUseCounter
+            for key, projectionData in self.vectorToProjectionCache.iteritems():
+                if projectionData['use'] < oldestUse:
+                    oldestUse = projectionData['use']
+                    oldestProjectionVector = key
+            logger.inform("Removing entry for",oldestProjectionVector)
+            del self.vectorToProjectionCache[oldestProjectionVector]
+        return result.addScalar(loc.getComponentOn(vector))
         return result
 
 
@@ -182,6 +210,11 @@ class Polygon:
                         cmp(point.x - currentPoint.x, 0) == direction)):
                 currentPoint = point
         return currentPoint
+
+
+    ## Return a PyGame rect describing our boundary at the given location.
+    def getBounds(self, loc):
+        return pygame.Rect(self.upperLeft.add(loc), self.lowerRight.sub(self.upperLeft))
 
 
     def __str__(self):

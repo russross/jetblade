@@ -30,7 +30,7 @@ class Block:
 
         imagePath = 'terrain/' + self.terrain.zone + '/' + self.terrain.region + '/blocks'
         ## To allow blocks to be animated, we use Sprites for drawing them.
-        self.sprite = sprite.Sprite(imagePath, self, self.loc)
+        self.sprite = sprite.Sprite(imagePath, self, self.loc, False)
         self.sprite.setAnimation(self.orientation, False)
 
 
@@ -57,6 +57,11 @@ class Block:
     ## Return the bounding polygon
     def getPolygon(self):
         return self.sprite.getPolygon()
+
+
+    ## Get our bounding polygon
+    def getBounds(self):
+        return self.sprite.getBounds(self.loc)
 
 
     ## Return a scalar indicating which spaces adjacent to this block are 

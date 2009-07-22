@@ -13,12 +13,15 @@ drawRoundAmount = .000005
 class Sprite:
 
     ## Instantiate a Sprite.
-    def __init__(self, name, owner, loc = None):
+    # \param shouldCreateCopy Passthrough argument for 
+    # AnimationManager.loadAnimations. \todo Find a better way to handle this
+    # so the passthrough isn't needed.
+    def __init__(self, name, owner, loc = None, shouldCreateCopy = True):
         ## Name of the sprite, a.k.a. the path to the directory containing the 
         # animations in the sprite.
         self.name = name
         ## Mapping of animation names to Animation instances. 
-        self.animations = jetblade.animationManager.loadAnimations(name)
+        self.animations = jetblade.animationManager.loadAnimations(name, shouldCreateCopy)
         ## Current active animation. 
         self.currentAnimation = self.animations.keys()[0]
         ## Previous animation. Sometimes we need to know what we were just
@@ -121,9 +124,7 @@ class Sprite:
     ## Return a PyGame Rect describing our bounding box.
     def getBounds(self, loc):
         polygon = self.animations[self.currentAnimation].getPolygon()
-        upperLeft = polygon.upperLeft.add(loc)
-        size = polygon.lowerRight.sub(polygon.upperLeft)
-        return pygame.Rect(upperLeft, size)
+        return polygon.getBounds(loc)
 
 
     ## Set the animation to use the provided polygon instead of the one it's

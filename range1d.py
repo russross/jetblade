@@ -16,7 +16,12 @@ class Range1D:
     ## Clamp the given value so it is contained by us.
     def clamp(self, value):
         return min(self.max, max(self.min, value))
-    
+
+
+    ## Add an offset to min and max
+    def addScalar(self, value):
+        return Range1D(self.min + value, self.max + value)
+
 
     ## Return the amount of overlap between ourself and the given range.
     def getOverlap(self, range):
