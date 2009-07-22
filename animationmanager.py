@@ -6,6 +6,7 @@ from vector2d import Vector2D
 
 import pygame
 import os
+import copy
 
 ## The AnimationManager class handles loading and instantiating Animations and 
 # their Polygons.
@@ -19,8 +20,15 @@ class AnimationManager:
     # \param name The path to a directory containing directories of image files
     # (individual animations) and a spriteConfig.py file that holds 
     # information on those animations.
-    def loadAnimations(self, name):
+    # \param shouldCreateCopy True if the animation needs to be a copy of the 
+    # cached version, false otherwise. If it isn't a copy, then we'll end up 
+    # with multiple references to the same animation...but this doesn't matter
+    # for things like terrain, and having each terrain block have its own
+    # animation is slow.
+    def loadAnimations(self, name, shouldCreateCopy = True):
         if name in self.animationsCache:
+            if shouldCreateCopy:
+                return self.copy(name)
             return self.animationsCache[name]
         
         # Search for a file named 'spriteConfig.py' through the path specified 
@@ -63,6 +71,16 @@ class AnimationManager:
                         drawOffset, moveOffset, frameActions)
 
         self.animationsCache[name] = animations
-        return animations
+        if shouldCreateCopy:
+            return self.copy(name)
+        return self.animationsCache[name]
     
+    
+    ## Create a copy of the given dict (including copies of the animations 
+    # involved) and return it.
+    def copy(self, name):
+        result = dict()
+        for animationName in self.animationsCache[name]:
+            result[animationName] = self.animationsCache[name][animationName].copy()
+        return result
     

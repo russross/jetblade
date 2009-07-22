@@ -58,6 +58,14 @@ class Animation:
         ## Tracks if we've reached the end of the animation.
         self.isComplete = False
 
+
+    ## Create a blank copy of this animation set.
+    def copy(self):
+        return Animation(self.group, self.name, self.polygon, self.shouldLoop,
+                         self.updateRate, self.updateFunc, self.drawOffset,
+                         self.moveOffset, self.frameActions)
+
+
     ## Advance self.frames. If self.updateFunc is specified, use that;
     # otherwise, use self.updateRate. Return True if the animation is complete,
     # False otherwise.
