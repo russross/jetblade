@@ -6,10 +6,10 @@ from vector2d import Vector2D
 import pygame
 
 ## Minimum cell width/height, to prevent dicing up the quadtree too far.
-minCellDim = 200
+minCellDim = 1000
 
-## Minimum number of objects in one cell to require splitting the cell up.
-numObjectsToExtendTree = 6
+## Number of objects in a node before we try to push objects down into the tree.
+maxObjectsPerNode = 6
 
 ## QuadTree instances are nodes in a recursive quad tree used to hold 2D
 # objects. They are useful for spatial partitioning for efficient collision
@@ -34,6 +34,10 @@ class QuadTree:
         ## List of objects in this node.
         self.objects = []
 
+        if (not self.children and 
+                self.rect.width > minCellDim):
+            self.extendTree()
+
 
     ## Add an object to the node. Rebalance the tree afterwards if needed.
     def addObject(self, object):
@@ -44,10 +48,8 @@ class QuadTree:
                 return
         logger.debug("Adding object",object,"with bounds",object.getBounds(),"to quadtree at depth",self.depth)
         self.objects.append(object)
-        if (not self.children and 
-                self.rect.width > minCellDim and
-                len(self.objects) > numObjectsToExtendTree):
-            self.extendTree()
+        if len(self.objects) > maxObjectsPerNode:
+            self.rebalanceTree()
 
 
     ## Add many objects by iteratively calling self.addObject().
@@ -72,7 +74,7 @@ class QuadTree:
         self.objects = newObjects
 
 
-    ## Create four children for this node, and give them any objects we can.
+    ## Create four children for this node.
     def extendTree(self):
         dims = (self.rect.width / 2.0, self.rect.height / 2.0)
         childRects = [
@@ -83,7 +85,6 @@ class QuadTree:
         ]
         for rect in childRects:
             self.children.append(QuadTree(rect, self, self.depth + 1))
-        self.rebalanceTree()
 
 
     ## Update all objects in the tree. Rebalance as we go, by returning all 
