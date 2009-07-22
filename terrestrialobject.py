@@ -350,6 +350,8 @@ class TerrestrialObject(physicsobject.PhysicsObject):
     def hitFloor(self, collision):
         physicsobject.PhysicsObject.hitFloor(self, collision)
         self.isGrounded = True
+        if not self.wasGrounded:
+            self.vel = self.vel.setX(0)
         self.jumpFrames = 0
         return True
 
