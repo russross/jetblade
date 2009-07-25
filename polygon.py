@@ -34,6 +34,9 @@ class Polygon:
         ## Lower-right corner of the polygon's bounding box.
         self.lowerRight = Vector2D(lowerRight)
 
+        ## Bounding box rectangle
+        self.rect = pygame.Rect(self.upperLeft, self.lowerRight.sub(self.upperLeft))
+
         # Detect if the points we're given make a concave polygon, by looking
         # to see if any of the interior angles go in the wrong direction.
         polygonDirection = None
@@ -214,7 +217,9 @@ class Polygon:
 
     ## Return a PyGame rect describing our boundary at the given location.
     def getBounds(self, loc):
-        return pygame.Rect(self.upperLeft.add(loc), self.lowerRight.sub(self.upperLeft))
+        result = pygame.Rect(self.rect)
+        result.topleft = loc.add(self.upperLeft)
+        return result
 
 
     def __str__(self):
