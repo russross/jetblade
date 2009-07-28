@@ -70,7 +70,6 @@ class Animation:
     # otherwise, use self.updateRate. Return True if the animation is complete,
     # False otherwise.
     def update(self, owner):
-        logger.debug("Updating animation",self.name,"from frame",self.frame,)
         curFrame = self.frame
         if self.frame < len(self.frames) - 1 or self.shouldLoop:
             if self.updateFunc is not None:
@@ -85,7 +84,6 @@ class Animation:
             # Animation done
             self.isComplete = True
             return True
-        logger.debug("to frame",self.frame)
         return False
 
 

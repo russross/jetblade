@@ -36,6 +36,11 @@ class Polygon:
 
         ## Bounding box rectangle
         self.rect = pygame.Rect(self.upperLeft, self.lowerRight.sub(self.upperLeft))
+        ## Most recent parameter to self.getBounds(), to prevent unnecessary
+        # recalculations.
+        self.lastRectLoc = None
+        ## Our rect at self.lastRectLoc
+        self.rectAtLastLoc = None
 
         # Detect if the points we're given make a concave polygon, by looking
         # to see if any of the interior angles go in the wrong direction.
@@ -217,8 +222,12 @@ class Polygon:
 
     ## Return a PyGame rect describing our boundary at the given location.
     def getBounds(self, loc):
+        if loc == self.lastRectLoc:
+            return self.rectAtLastLoc
         result = pygame.Rect(self.rect)
         result.topleft = loc.add(self.upperLeft)
+        self.lastLoc = loc
+        self.rectAtLastLoc = result
         return result
 
 

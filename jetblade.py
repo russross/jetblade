@@ -65,16 +65,8 @@ from pygame.locals import *
 # and runs the main game loop.
 # By default, when started, Jetblade will generate a map, save the map 
 # definition file to disk (using the map seed as the filename), and then 
-# switch to gameplay mode. 
-# Notable commandline options:
-# - -debug: turn on debugging output (warning: verbose!)
-# - -num X: generate X maps, and exit
-# - -saveimage: save an image of the entire map after generating, then exit
-# - -justmapgen: only generate a map; don't begin gameplay afterwards
-# - -seed X: use X as a seed for map generation
-# - -mapfile X: try to load X as a map definition file, and start gameplay mode
-# - -record: record every rendered frame to disk. Note: this can be toggled
-#    during gameplay as well.
+# switch to gameplay mode. Run `jetblade.py -h` or `jetblade.py --help` to
+# get a list of commandline options.
 
 ## Number of physics updates to try to make each second. Tweaking this directly
 # determines the speed of gameplay, to the limits of the computer's hardware.
@@ -190,9 +182,11 @@ def startGame():
                 jetblade.map.drawAll(str(jetblade.seed) + '.png')
         if jetblade.shouldExitAfterMapgen:
             sys.exit()
-    jetblade.player = player.Player()
     jetblade.gameObjectManager = gameobjectmanager.GameObjectManager()
+    jetblade.player = player.Player()
     jetblade.gameObjectManager.addObject(jetblade.player)
+#    for i in range(1, 44):
+#        jetblade.gameObjectManager.addNewObject('creatures/darkclone', jetblade.player.loc.add((i*50, 0)))
 
 
 ## The main game loop. Performs a target of physicsUpdatesPerSecond
@@ -215,7 +209,7 @@ def gameLoop():
     zoomLevel = 1
 
     while 1:
-        logger.debug("Frame %d Physics %d" % (jetblade.frameNum, physicsNum))
+        logger.debug("Frame %d Physics %d Time %d" % (jetblade.frameNum, physicsNum, pygame.time.get_ticks()))
         events = jetblade.eventManager.processEvents([], constants.CONTEXT_GAME)
         # Check for a couple of events.
         for event in events:

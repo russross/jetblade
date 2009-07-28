@@ -1,6 +1,7 @@
 import constants
 import util
 import logger
+import range1d
 from vector2d import Vector2D
 
 import pygame
@@ -9,7 +10,7 @@ import pygame
 minCellDim = 1000
 
 ## Number of objects in a node before we try to push objects down into the tree.
-maxObjectsPerNode = 6
+maxObjectsPerNode = 12
 
 ## QuadTree instances are nodes in a recursive quad tree used to hold 2D
 # objects. They are useful for spatial partitioning for efficient collision
@@ -39,41 +40,6 @@ class QuadTree:
             self.extendTree()
 
 
-    ## Add an object to the node. Rebalance the tree afterwards if needed.
-    def addObject(self, object):
-        rect = object.getBounds()
-        for child in self.children:
-            if child.canAcceptObject(object):
-                child.addObject(object)
-                return
-        logger.debug("Adding object",object,"with bounds",object.getBounds(),"to quadtree at depth",self.depth)
-        self.objects.append(object)
-        if len(self.objects) > maxObjectsPerNode:
-            self.rebalanceTree()
-
-
-    ## Add many objects by iteratively calling self.addObject().
-    def addObjects(self, objects):
-        for object in objects:
-            self.addObject(object)
-
-
-    ## Push objects in this level down into deeper levels of the tree, if 
-    # possible.
-    def rebalanceTree(self):
-        newObjects = []
-        for object in self.objects:
-            didPutObjectInChild = 0
-            for child in self.children:
-                if child.canAcceptObject(object):
-                    child.addObject(object)
-                    didPutObjectInChild = 1
-                    break
-            if not didPutObjectInChild:
-                newObjects.append(object)
-        self.objects = newObjects
-
-
     ## Create four children for this node.
     def extendTree(self):
         dims = (self.rect.width / 2.0, self.rect.height / 2.0)
@@ -85,6 +51,73 @@ class QuadTree:
         ]
         for rect in childRects:
             self.children.append(QuadTree(rect, self, self.depth + 1))
+
+
+    ## Add an object to the node. Rebalance the tree afterwards if needed.
+    def addObject(self, object, shouldRebalance = True):
+        if self.parent is None and len(self.objects) == 11:
+            logger.debug("Before rebalancing, tree is:")
+            self.printTree()
+        if len(self.objects) < maxObjectsPerNode - 1:
+            logger.debug("Adding object",object,"with bounds",object.getBounds(),"to quadtree at depth",self.depth)
+            self.objects.append(object)
+        else:
+            # Adding the object here would put us at the limit per node, so 
+            # try pushing it down deeper.
+            
+            if not self.tryAddObjectToChildren(object):
+                self.objects.append(object)
+                logger.debug("Unable to push object", object, 
+                             "deeper into tree, so it must stay at depth",
+                             self.depth, "where we have", 
+                             len(self.objects), "objects")
+                if shouldRebalance:
+                    self.rebalanceTree()
+        if self.parent is None:
+            logger.debug("After rebalancing, tree is:")
+            self.printTree()
+
+
+    ## Add many objects by iteratively calling self.addObject().
+    def addObjects(self, objects):
+        for object in objects:
+            self.addObject(object, False)
+        self.rebalanceTree(True)
+
+
+    ## Try to push the given object down to our children. Return true on 
+    # success, false on failure
+    def tryAddObjectToChildren(self, object):
+        if not len(self.children):
+            return False
+        rect = object.getBounds()
+        horizRange = range1d.Range1D(rect.left, rect.right)
+        vertRange = range1d.Range1D(rect.top, rect.bottom)
+        nodeCenter = self.rect.center
+        if (horizRange.contains(nodeCenter[0]) or
+                vertRange.contains(nodeCenter[1])):
+            # The object's bounding rect crosses a midpoint, so children
+            # couldn't possibly hold it.
+            return False
+        else:
+            for child in self.children:
+                if child.canAcceptObject(object):
+                    child.addObject(object)
+                    return True
+
+
+    ## Push objects in this level down into deeper levels of the tree, if 
+    # possible.
+    def rebalanceTree(self, shouldRecurse = False):
+        if len(self.objects) > maxObjectsPerNode:
+            newObjects = []
+            for object in self.objects:
+                if not self.tryAddObjectToChildren(object):
+                    newObjects.append(object)
+            self.objects = newObjects
+        if shouldRecurse:
+            for child in self.children:
+                child.rebalanceTree()
 
 
     ## Update all objects in the tree. Rebalance as we go, by returning all 
@@ -163,3 +196,22 @@ class QuadTree:
     def canAcceptObject(self, object):
         return self.rect.contains(object.getBounds())
         
+
+    ## Recursively print the tree
+    def printTree(self):
+        logger.debug(self)
+        for child in self.children:
+            child.printTree()
+
+
+    ## Convert to string, non-recursively.
+    def __str__(self):
+        nodeTypeStr = ' (leaf) '
+        if len(self.children):
+            nodeTypeStr = ''
+        return ('[Quadtree ID ' + str(self.id)  + ' at depth ' + 
+                str(self.depth) + nodeTypeStr + ' bounds ' + 
+                str(Vector2D(self.rect.topleft)) + ' to ' + 
+                str(Vector2D(self.rect.bottomright)) +
+                ' with ' + str(len(self.objects)) + ' objects here and ' + 
+                str(len(self.getObjects())) + ' objects overall')

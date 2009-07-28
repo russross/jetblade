@@ -28,6 +28,9 @@ class PhysicsObject:
     # \param name The name of the object; also the path to its animations 
     #             (e.g. 'data/images/maleplayer').
     def __init__(self, loc, name):
+        ## Unique object ID
+        self.id = constants.globalId
+        constants.globalId += 1
         ## Name of object, used to look up the sprite.
         self.name = name
         ## Location of the object
@@ -51,7 +54,6 @@ class PhysicsObject:
     ## Apply gravity to velocity and velocity to location, then run collision
     # detection.
     def update(self):
-        logger.debug("Updating object",self.name)
         self.AIUpdate()
         self.preCollisionUpdate()
         if self.isGravityOn:
@@ -93,8 +95,6 @@ class PhysicsObject:
             numTries += 1
 
             collision = self.adjustCollision(collision)
-            logger.debug("Collision modified to",(collision.vector, collision.distance))
-            logger.debug("Hit object",collision.altObject)
             self.collisions.append(collision)
 
             shouldReactToCollision = self.hitTerrain(collision)
@@ -112,17 +112,11 @@ class PhysicsObject:
                     shouldReactToCollision = False
 
             if shouldReactToCollision:
-                logger.debug("Updating location from",self.loc)
                 self.loc = self.loc.add(collision.vector.multiply(collision.distance))
-                logger.debug("to",self.loc)
-            else:
-                logger.debug("Told to ignore collision")
 
             collision = jetblade.map.collidePolygon(self.sprite.getPolygon(), self.loc)
-            logger.debug("Retry collision data is",collision)
         if numTries == maxCollisionRetries:
             # We got stuck in a loop somehow. Eject upwards.
-            logger.debug("Hit a collision loop. Whoops.")
             self.loc = self.loc.add(zipAmount)
 
 
@@ -133,38 +127,29 @@ class PhysicsObject:
 
     ## React to hitting any terrain.
     def hitTerrain(self, collision):
-        logger.debug("Object", self.name, "hit terrain at", 
-                   collision.altObject.loc.toGridspace())
         return True
 
 
     ## React to hitting a wall.
     def hitWall(self, collision):
-        logger.debug("Object", self.name, "hit wall at",
-                   collision.altObject.loc.toGridspace()) 
         self.vel = Vector2D(0, self.vel.y)
         return True
 
 
     ## React to hitting the ceiling
     def hitCeiling(self, collision):
-        logger.debug("Object", self.name, "hit ceiling at",
-                   collision.altObject.loc.toGridspace()) 
         self.vel = Vector2D(self.vel.x, 0)
         return True
 
 
     ## React to hitting the floor.
     def hitFloor(self, collision):
-        logger.debug("Object", self.name, "hit floor at",
-                   collision.altObject.loc.toGridspace()) 
         self.vel = Vector2D(self.vel.x, 0)
         return True
 
 
     ## Passthrough to Sprite.draw()
     def draw(self, screen, camera, progress, scale = 1):
-        logger.debug("Drawing",self.name,"at",self.getDrawLoc(progress),"from",self.sprite.prevLoc,"and",self.sprite.curLoc)
         self.sprite.draw(screen, camera, progress, None, scale)
 
 

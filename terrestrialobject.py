@@ -96,7 +96,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
     ## Apply acceleration if the creature is moving; start jumps and negate 
     # gravity as needed if the creature is in the air.
     def preCollisionUpdate(self):
-        logger.debug("At beginning of update, loc is",self.loc,"and vel",self.vel,"and action",self.sprite.getCurrentAnimation(False))
+#        logger.debug("At beginning of update, loc is",self.loc,"and vel",self.vel,"and action",self.sprite.getCurrentAnimation(False))
         if self.isAnimationLocked:
             return
         # We need to start out with self.jumpFrames = self.maxJumpRiseFrames
@@ -147,10 +147,10 @@ class TerrestrialObject(physicsobject.PhysicsObject):
 
 
         if self.justJumped and self.jumpFrames <= self.maxJumpRiseFrames and not self.isCrawling:
-            logger.debug("JustJumped")
+#            logger.debug("JustJumped")
             if self.isGrounded or self.isHanging:
                 # Commence a jump
-                logger.debug("Commencing jump")
+#                logger.debug("Commencing jump")
                 self.isGrounded = False
                 self.isHanging = False
                 self.vel = self.vel.setY(self.jumpSpeed)
@@ -162,7 +162,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                     self.sprite.setAnimation('jump')
             else:
                 # Still in the rising phase of the jump
-                logger.debug("Going up")
+#                logger.debug("Going up")
                 self.jumpFrames += 1
         elif not self.isHanging:
             self.isGravityOn = True
@@ -205,14 +205,14 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                     jetblade.map.getBlockAtGridLoc(belowLoc.toGridspace())):
                 # Either rear foot is already in the same space as a block, 
                 # or there's a block there if we move down a bit.
-                logger.debug("Pushing self down to hug the ground")
+#                logger.debug("Pushing self down to hug the ground")
                 self.loc = self.loc.addY(abs(self.vel.x) + 1)
                 self.isGrounded = True
                 # Re-run collision detection so we're put back at the surface.
                 self.handleCollisions()
             else:
                 ## Commence freefall
-                logger.debug("Ran out of ground; commencing freefall")
+#                logger.debug("Ran out of ground; commencing freefall")
                 self.jumpFrames = self.maxJumpRiseFrames
                 oldTop = self.getHeadLoc()
                 self.sprite.setAnimation('fall')
@@ -245,7 +245,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                             self.sprite.setAnimation('crawlturn')
                     elif self.sprite.getCurrentAnimation() not in ['crawl', 'crawlturn']:
                         self.sprite.setAnimation('crawl')
-        logger.debug("At end of update, loc is",self.loc,"and vel",self.vel,"and action",self.sprite.getCurrentAnimation(True))
+#        logger.debug("At end of update, loc is",self.loc,"and vel",self.vel,"and action",self.sprite.getCurrentAnimation(True))
 
 
     ## Adjust collision detection inputs so that we can properly track the
@@ -258,7 +258,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         # Recognize this situation because we're on the ground, getting
         # ejected straight horizontally by a block at foot level that has no
         # block above it.
-        logger.debug("Adjusting collision data",collision)
+#        logger.debug("Adjusting collision data",collision)
         # \todo We assume we hit a terrain block here; this isn't necessarily
         # valid.
         block = collision.altObject
@@ -266,7 +266,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                 self.wasGrounded and 
                 abs(collision.vector.y) < constants.EPSILON and
                 self.blockIsAtFootLevel(block)):
-            logger.debug("Converting sloped block collision")
+#            logger.debug("Converting sloped block collision")
             collision.distance = self.gravity.y
             collision.vector = Vector2D(0, -1)
 
@@ -274,7 +274,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         # is any vertical component, to prevent sliding down slopes.
         # Also lets us slide along ceilings at full speed when jumping.
         if self.wasGrounded and collision.vector.y < -constants.EPSILON:
-            logger.debug("Converting partially-horizontal vector to vertical vector")
+#            logger.debug("Converting partially-horizontal vector to vertical vector")
             collision.vector = Vector2D(0, collision.vector.y +
                     abs(collision.vector.x) * cmp(collision.vector.y, 0))
 
@@ -287,7 +287,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         if (self.wasCrawling and not self.shouldCrawl and 
                 collision.vector.y < 0 and 
                 self.getFootLoc().y > block.getBlockCorner(Vector2D(self.facing, 1)).y):
-            logger.debug("Flipping vertical component of vector to push us down after standing")
+#            logger.debug("Flipping vertical component of vector to push us down after standing")
             collision.vector = Vector2D(collision.vector.x, -collision.vector.y)
 
         return collision
@@ -305,14 +305,14 @@ class TerrestrialObject(physicsobject.PhysicsObject):
             if (self.shouldCrawl and not self.wasCrawling and
                     abs(collision.vector.x) > 0):
                 # Hit a wall when we tried to crouch, so force us to stand
-                logger.debug("Forcing to stand")
+#                logger.debug("Forcing to stand")
                 self.isCrawling = False
                 shouldChangeAction = True
             elif (not self.shouldCrawl and self.wasCrawling and 
                     collision.vector.y >= 0):
                 # Hit our heads on the ceiling or a wall when we tried to 
                 # stand, so force a crouch.
-                logger.debug("Forcing into a crawl")
+#                logger.debug("Forcing into a crawl")
                 self.isCrawling = True
                 self.wasCrawling = True
                 shouldChangeAction = True
@@ -334,7 +334,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
     def hitCeiling(self, collision):
         physicsobject.PhysicsObject.hitCeiling(self, collision)
         if not self.wasGrounded:
-            logger.debug("Bopped our heads while jumping")
+#            logger.debug("Bopped our heads while jumping")
             # We were in the middle of rising, so we need to turn gravity back 
             # on.
             self.isGravityOn = True
@@ -393,12 +393,12 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         locs = [headGridLoc.addY(-i) for i in [0, 1, 2]]
         blocks = [jetblade.map.getBlockAtGridLoc(loc) for loc in locs]
         headRange = range1d.Range1D(headLoc.y - self.vel.y, headLoc.y)
-        logger.debug("Head is at",headLoc,"grid",headGridLoc,"range",headRange,"and blocks are",blocks)
+#        logger.debug("Head is at",headLoc,"grid",headGridLoc,"range",headRange,"and blocks are",blocks)
         for i in [0, 1]:
             if blocks[i] and not blocks[i+1]:
                 top = blocks[i].getBlockCorner(Vector2D(-self.facing, -1))
                 if headRange.contains(top.y):
-                    logger.debug("Can grab block",blocks[i],"with top at",top)
+#                    logger.debug("Can grab block",blocks[i],"with top at",top)
                     return True
         return False
 
@@ -429,9 +429,9 @@ class TerrestrialObject(physicsobject.PhysicsObject):
     def blockIsAtFootLevel(self, block):
         footLoc = self.getFootLoc()
         blockTop = block.getBlockCorner(Vector2D(-1 * cmp(self.vel.x, 0), -1))
-        logger.debug("Foot is at",footLoc,"compare block at",blockTop,
-                   "velocity is",self.vel,"distance",footLoc.distance(blockTop),
-                   "magnitude",self.vel.magnitude())
+#        logger.debug("Foot is at",footLoc,"compare block at",blockTop,
+#                   "velocity is",self.vel,"distance",footLoc.distance(blockTop),
+#                   "magnitude",self.vel.magnitude())
         return footLoc.distance(blockTop) < self.vel.magnitude() + constants.EPSILON
 
 
@@ -462,5 +462,5 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                 (self.runDirection != self.facing and
                  abs(self.vel.x) > constants.EPSILON)):
             accelDirection = -self.facing
-        logger.debug("Accel direction is",accelDirection,"from",self.runDirection,self.facing,self.vel)
+#        logger.debug("Accel direction is",accelDirection,"from",self.runDirection,self.facing,self.vel)
         return accelDirection

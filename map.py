@@ -337,7 +337,7 @@ class Map:
                 if not self.blocks[x][y]:
                     numUsedSpaces += 1
         totalSpaces = self.numCols * self.numRows
-        percent = numUsedSpaces / float(totalSpaces)
+        percent = numUsedSpaces / float(totalSpaces) * 100
         logger.inform(numUsedSpaces,"of",totalSpaces,"spaces are occupied for a %.2f%% occupancy rate" % percent)
 
 
@@ -469,6 +469,9 @@ class Map:
                 elif self.blocks[i][j] == BLOCK_WALL:
                     (type, signature) = self.getBlockType(i, j)
                     self.blocks[i][j] = (type, signature)
+                else:
+                    # This is probably unnecessary.
+                    self.blocks[i][j] = BLOCK_EMPTY
 
 
     ## Return the type of block that should be drawn at the given grid loc.
@@ -1078,14 +1081,13 @@ class Map:
             for y in range(upperLeft.y, lowerRight.y):
                 if y < 0 or y >= self.numRows:
                     continue
-                if (self.blocks[x][y] not in (None, BLOCK_EMPTY) and
+                if (self.blocks[x][y] != BLOCK_EMPTY and
                         self.blocks[x][y].getBounds().colliderect(polyRect)):
                     (overlap, vector) = self.blocks[x][y].collidePolygon(poly, loc)
-                    if vector is not None:
-                        if overlap > longestOverlap:
-                            longestOverlap = overlap
-                            resultVector = vector
-                            resultBlock = self.blocks[x][y]
+                    if vector is not None and overlap > longestOverlap:
+                        longestOverlap = overlap
+                        resultVector = vector
+                        resultBlock = self.blocks[x][y]
         if resultVector is not None:
             logger.debug("Collision result is",(longestOverlap, resultVector, resultBlock.orientation),"against block at",resultBlock.gridLoc)
             logger.debug("Polygon",poly,"at",loc,"hit polygon",resultBlock.sprite.getPolygon(),"at",resultBlock.loc)

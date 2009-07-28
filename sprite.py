@@ -51,8 +51,8 @@ class Sprite:
                 action += '-l'
             else:
                 action += '-r'
-        logger.debug("Sprite",self.name,"setting animation",action)
         if action != self.currentAnimation:
+            logger.debug("Sprite",self.name,"setting animation",action)
             if shouldResetAnimation:
                 self.animations[self.currentAnimation].reset()
             self.prevAnimation = self.currentAnimation
