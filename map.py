@@ -959,9 +959,9 @@ class Map:
     def drawBackground(self, screen, cameraLoc, progress):
         self.backgroundQuadTree.draw(screen, cameraLoc, progress)
         rect = screen.get_rect()
-        rect.center = cameraLoc
-        min = Vector2D(rect.topleft).toGridspace().sub((1, 1))
-        max = Vector2D(rect.bottomright).toGridspace().add((2, 2))
+        rect.center = cameraLoc.tuple()
+        min = Vector2D(rect.topleft).toGridspace().sub(Vector2D(1, 1))
+        max = Vector2D(rect.bottomright).toGridspace().add(Vector2D(2, 2))
         for x in range(min.x, max.x):
             if x < 0 or x >= self.numCols:
                 continue
@@ -976,9 +976,9 @@ class Map:
     ## Draw the terrain tiles.
     def drawMidground(self, screen, cameraLoc, progress):
         rect = screen.get_rect()
-        rect.center = cameraLoc
-        min = Vector2D(rect.topleft).toGridspace().sub((1, 1))
-        max = Vector2D(rect.bottomright).toGridspace().add((2, 2))
+        rect.center = cameraLoc.tuple()
+        min = Vector2D(rect.topleft).toGridspace().sub(Vector2D(1, 1))
+        max = Vector2D(rect.bottomright).toGridspace().add(Vector2D(2, 2))
         for x in range(min.x, max.x):
             if x < 0 or x >= self.numCols:
                 continue
@@ -1078,8 +1078,8 @@ class Map:
     # the largest ejection vector (as that is the tile that the polygon probably
     # hit first).
     def collidePolygon(self, poly, loc):
-        upperLeft = poly.upperLeft.add(loc).toGridspace().add((-1, -1))
-        lowerRight = poly.lowerRight.add(loc).toGridspace().add((2, 2))
+        upperLeft = poly.upperLeft.add(loc).toGridspace().add(Vector2D(-1, -1))
+        lowerRight = poly.lowerRight.add(loc).toGridspace().add(Vector2D(2, 2))
         longestOverlap = -constants.BIGNUM
         resultVector = None
         resultBlock = None

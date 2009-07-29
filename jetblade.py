@@ -2,7 +2,7 @@
 
 # Compile any Cython modules first
 import pyximport; pyximport.install()
-import vector2d
+from vector2d import Vector2D
 
 
 import game
@@ -24,7 +24,7 @@ import optparse
 from pygame.locals import *
 
 ## Location to display the FPS string onscreen.
-fpsDisplayLoc = vector2d.Vector2D(constants.sw - 20, constants.sh - 20)
+fpsDisplayLoc = Vector2D(constants.sw - 20, constants.sh - 20)
 
 ## \mainpage Jetblade
 # This is the documentation for the Jetblade project. Jetblade is a 
@@ -172,7 +172,8 @@ def startGame():
     game.player = player.Player()
     game.gameObjectManager.addObject(game.player)
     for i in range(1, 44):
-        game.gameObjectManager.addNewObject('creatures/darkclone', game.player.loc.add((i*50, 0)))
+        game.gameObjectManager.addNewObject('creatures/darkclone',
+                game.player.loc.add(Vector2D(i*50, 0)))
 
 
 ## The main game loop. Performs a target of physicsUpdatesPerSecond
@@ -230,7 +231,7 @@ def gameLoop():
 
         logger.debug("Did",count,"physics updates, have",timeAccum,"in the accumulator towards next physics update (step",physicsUpdateRate,")")
 
-        game.draw(zoomLevel, cam, timeAccum / physicsUpdateRate)
+        draw(zoomLevel, cam, timeAccum / physicsUpdateRate)
  
         game.frameNum += 1
         framesSincePrevSec += 1
