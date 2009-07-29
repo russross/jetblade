@@ -3,7 +3,7 @@
 # Compile any Cython modules first
 import pyximport; pyximport.install()
 from vector2d import Vector2D
-
+import range1d
 
 import game
 
@@ -171,9 +171,9 @@ def startGame():
     game.gameObjectManager.setup()
     game.player = player.Player()
     game.gameObjectManager.addObject(game.player)
-    for i in range(1, 44):
+    for i in range(1, 88):
         game.gameObjectManager.addNewObject('creatures/darkclone',
-                game.player.loc.add(Vector2D(i*50, 0)))
+                game.player.loc.add(Vector2D(i*10, 0)))
 
 
 ## The main game loop. Performs a target of physicsUpdatesPerSecond
@@ -196,6 +196,11 @@ def gameLoop():
     zoomLevel = 1
 
     while 1:
+        if pygame.time.get_ticks() > 10000:
+            logger.inform("Finished",game.frameNum, 
+                          "frames for an average framerate of",
+                          game.frameNum*1000/pygame.time.get_ticks())
+            sys.exit()
         logger.debug("Frame %d Physics %d Time %d" % (game.frameNum, physicsNum, pygame.time.get_ticks()))
         events = game.eventManager.processEvents([], constants.CONTEXT_GAME)
         # Check for a couple of events.

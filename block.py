@@ -39,7 +39,7 @@ class Block:
     def getBlockCorner(self, direction):
         poly = self.sprite.getPolygon()
         targetX = poly.lowerRight.x
-        if direction < 0:
+        if direction.x < 0:
             targetX = poly.upperLeft.x
         return self.loc.add(poly.getPointAtX(targetX, direction.y))
 

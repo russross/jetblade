@@ -15,9 +15,6 @@ maxCachedProjections = 30
 # detection.
 class Polygon:
     def __init__(self, points):
-        self.id = constants.globalId
-        constants.globalId += 1
-
         ## Array of points in the polygon. 
         self.points = points
         
@@ -36,11 +33,6 @@ class Polygon:
 
         ## Bounding box rectangle
         self.rect = pygame.Rect(self.upperLeft.tuple(), self.lowerRight.sub(self.upperLeft).tuple())
-        ## Most recent parameter to self.getBounds(), to prevent unnecessary
-        # recalculations.
-        self.lastRectLoc = Vector2D(-constants.BIGNUM, -constants.BIGNUM)
-        ## Our rect at self.lastRectLoc
-        self.rectAtLastLoc = None
 
         # Detect if the points we're given make a concave polygon, by looking
         # to see if any of the interior angles go in the wrong direction.
@@ -124,12 +116,7 @@ class Polygon:
             return result.addScalar(loc.getComponentOn(vector))
         result = range1d.Range1D()
         for point in self.points:
-            projectedPoint = point.projectOnto(vector)
-            distanceFromOrigin = None
-            if abs(vector.x) > constants.EPSILON:
-                distanceFromOrigin = projectedPoint.x / vector.x
-            else:
-                distanceFromOrigin = projectedPoint.y / vector.y
+            distanceFromOrigin = point.getComponentOn(vector)
             if distanceFromOrigin < result.min:
                 result.min = distanceFromOrigin
             if distanceFromOrigin > result.max:
@@ -222,12 +209,8 @@ class Polygon:
 
     ## Return a PyGame rect describing our boundary at the given location.
     def getBounds(self, loc):
-        if loc == self.lastRectLoc:
-            return self.rectAtLastLoc
         result = pygame.Rect(self.rect)
         result.topleft = loc.add(self.upperLeft).tuple()
-        self.lastLoc = loc
-        self.rectAtLastLoc = result
         return result
 
 

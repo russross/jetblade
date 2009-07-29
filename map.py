@@ -962,10 +962,10 @@ class Map:
         rect.center = cameraLoc.tuple()
         min = Vector2D(rect.topleft).toGridspace().sub(Vector2D(1, 1))
         max = Vector2D(rect.bottomright).toGridspace().add(Vector2D(2, 2))
-        for x in range(min.x, max.x):
+        for x in range(min.ix, max.ix):
             if x < 0 or x >= self.numCols:
                 continue
-            for y in range(min.y, max.y):
+            for y in range(min.iy, max.iy):
                 if y < 0 or y >= self.numRows:
                     continue
                 for effect in self.envGrid[x][y]:
@@ -979,10 +979,10 @@ class Map:
         rect.center = cameraLoc.tuple()
         min = Vector2D(rect.topleft).toGridspace().sub(Vector2D(1, 1))
         max = Vector2D(rect.bottomright).toGridspace().add(Vector2D(2, 2))
-        for x in range(min.x, max.x):
+        for x in range(min.ix, max.ix):
             if x < 0 or x >= self.numCols:
                 continue
-            for y in range(min.y, max.y):
+            for y in range(min.iy, max.iy):
                 if y < 0 or y >= self.numRows or not self.blocks[x][y]:
                     continue
                 self.blocks[x][y].draw(screen, cameraLoc, progress)
@@ -1084,39 +1084,56 @@ class Map:
         resultVector = None
         resultBlock = None
         polyRect = poly.getBounds(loc)
-        for x in range(upperLeft.x, lowerRight.x):
-            if x < 0 or x >= self.numCols:
+        excludedColumns = dict()
+        excludedRows = dict()
+        for x in range(max(0, upperLeft.ix), min(self.numCols, lowerRight.ix)):
+            if x in excludedColumns:
                 continue
-            for y in range(upperLeft.y, lowerRight.y):
-                if y < 0 or y >= self.numRows:
+            for y in range(max(0, upperLeft.iy), min(self.numRows, lowerRight.iy)):
+                if y in excludedRows:
                     continue
                 if (self.blocks[x][y] != BLOCK_EMPTY and
                         self.blocks[x][y].getBounds().colliderect(polyRect)):
                     (overlap, vector) = self.blocks[x][y].collidePolygon(poly, loc)
-                    if vector is not None and overlap > longestOverlap:
-                        longestOverlap = overlap
-                        resultVector = vector
-                        resultBlock = self.blocks[x][y]
+                    if vector is not None:
+                        if overlap > longestOverlap:
+                            longestOverlap = overlap
+                            resultVector = vector
+                            resultBlock = self.blocks[x][y]
+                        # Prune out some blocks that we needn't care about. If
+                        # a creature runs horizontally into one block, then
+                        # all blocks immediately above/below that block are
+                        # uninteresting, for example.
+                        if abs(vector.y) < constants.EPSILON:
+                            excludedColumns[x] = True
+                        elif abs(vector.x) < constants.EPSILON:
+                            excludedRows[y] = True
         if resultVector is not None:
-            logger.debug("Collision result is",(longestOverlap, resultVector, resultBlock.orientation),"against block at",resultBlock.gridLoc)
-            logger.debug("Polygon",poly,"at",loc,"hit polygon",resultBlock.sprite.getPolygon(),"at",resultBlock.loc)
-            checkLoc = resultBlock.gridLoc.add(resultVector)
-            checkBlock = self.getBlockAtGridLoc(checkLoc)
-            if checkBlock and checkBlock != resultBlock:
-                logger.debug("Ejection vector points into another block")
-                # Objects that get sufficiently embedded in the walls can get 
-                # inaccurate ejection vectors because the shortest path for one 
-                # tile of the wall is into another tile. Manually correct
-                # the ejection vector if this happens.
-                # \todo It'd be nice if we didn't have to do this.
-                for checkLoc in resultBlock.gridLoc.NEWSPerimeter():
-                    if not self.getBlockAtGridLoc(checkLoc):
-                        delta = checkLoc.sub(resultBlock.gridLoc)
-                        logger.debug("Converting ejection vector from",resultVector,"to",delta)
-                        resultVector = delta
-                        break
+            resultVector = self.fixEjectionVector(resultVector, resultBlock)
         return collisiondata.CollisionData(resultVector, longestOverlap,
                                            'terrain', resultBlock)
+
+
+    ## Determine if there is a block adjacent to the given block along the
+    # provided vector. If there is, find an alternate direction that isn't
+    # obstructed.
+    def fixEjectionVector(self, vector, centerBlock):
+        checkLoc = centerBlock.gridLoc.add(vector)
+        checkBlock = self.getBlockAtGridLoc(checkLoc)
+        if checkBlock and checkBlock != centerBlock:
+            logger.debug("Ejection vector points into another block")
+            # Objects that get sufficiently embedded in the walls can get 
+            # inaccurate ejection vectors because the shortest path for one 
+            # tile of the wall is into another tile. Manually correct
+            # the ejection vector if this happens.
+            # \todo It'd be nice if we didn't have to do this.
+            for checkLoc in centerBlock.gridLoc.NEWSPerimeter():
+                if not self.getBlockAtGridLoc(checkLoc):
+                    delta = checkLoc.sub(centerBlock.gridLoc)
+                    logger.debug("Converting ejection vector from",vector,"to",delta)
+                    vector = delta
+                    break
+        return vector
 
 
     ## Load map information from disk. The filename is equal to the name of the
