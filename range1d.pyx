@@ -2,8 +2,10 @@ import constants
 
 ## A Range1D is simply a one-dimensional range, used when projecting Polygon 
 # instances onto vectors. 
-class Range1D:
-    def __init__(self, min = constants.BIGNUM, max = -constants.BIGNUM):
+cdef class Range1D:
+    cdef public double min
+    cdef public double max
+    def __new__(self, min = constants.BIGNUM, max = -constants.BIGNUM):
         self.min = min
         self.max = max
 
