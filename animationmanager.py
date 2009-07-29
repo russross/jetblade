@@ -83,4 +83,4 @@ class AnimationManager:
         for animationName in self.animationsCache[name]:
             result[animationName] = self.animationsCache[name][animationName].copy()
         return result
-    
+

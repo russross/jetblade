@@ -109,3 +109,4 @@ class ConfigManager:
 
     def getIsFirstTimePlaying(self):
         return self.isFirstTimePlaying
+

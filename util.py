@@ -1,4 +1,4 @@
-import jetblade
+import game
 import constants
 import line
 import logger
@@ -46,7 +46,7 @@ def getClipboardText():
 ## Create the display surface. 
 def setupScreen():
     mode = 0
-    if jetblade.configManager.getConfigValue('fullscreen'):
+    if game.configManager.getConfigValue('fullscreen'):
         mode = pygame.FULLSCREEN
     screen = pygame.display.set_mode((constants.sw, constants.sh), mode)
     if screen is None:

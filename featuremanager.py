@@ -1,4 +1,4 @@
-import jetblade
+import game
 import constants
 
 ## This class manages the different map feature modules in data/mapgen/features.
@@ -12,8 +12,9 @@ class FeatureManager:
     # sector, and return it.
     def loadFeature(self, name, sector):
         if name in self.featureCache:
-            return self.featureCache[name](jetblade.map, sector)
+            return self.featureCache[name](game.map, sector)
         modulePath = constants.mapPath + '/features/' + name
         modulePath = modulePath.replace('/', '.')
-        self.featureCache[name] = jetblade.dynamicClassManager.loadDynamicClass(modulePath)
-        return self.featureCache[name](jetblade.map, sector)
+        self.featureCache[name] = game.dynamicClassManager.loadDynamicClass(modulePath)
+        return self.featureCache[name](game.map, sector)
+

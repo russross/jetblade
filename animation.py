@@ -1,6 +1,6 @@
 import util
+import game
 import constants
-import jetblade
 import logger
 
 ## Animations are sequences of images and the logic needed to know when, where, 
@@ -51,7 +51,7 @@ class Animation:
         self.frameActions = frameActions
 
         ## Individual frames of the animation.
-        self.frames = jetblade.imageManager.loadAnimation(self.group + '/' + self.name)
+        self.frames = game.imageManager.loadAnimation(self.group + '/' + self.name)
         ## Current frame of animation; an index into self.frames.
         self.frame = 0
         
@@ -78,7 +78,7 @@ class Animation:
                 self.frame += self.updateRate
         if (int(curFrame) != int(self.frame) and 
                 int(self.frame) in self.frameActions):
-            self.frameActions[int(self.frame)](owner, jetblade.gameObjectManager)
+            self.frameActions[int(self.frame)](owner, game.gameObjectManager)
         if (not self.shouldLoop and not self.isComplete and 
                 self.frame >= len(self.frames) - 1):
             # Animation done
@@ -93,12 +93,12 @@ class Animation:
         if self.drawOffset.magnitudeSquared() > constants.EPSILON or scale != 1:
             drawLoc = loc.add(self.drawOffset).multiply(scale).round()
         surface = util.getDrawFrame(self.frame, self.frames)
-        jetblade.imageManager.drawGameObjectAt(screen, surface, drawLoc, camera, scale)
+        game.imageManager.drawGameObjectAt(screen, surface, drawLoc, camera, scale)
         if logger.getLogLevel() == logger.LOG_DEBUG:
             # Draw the bounding polygon and location information
             self.polygon.draw(screen, loc, camera)
             gridLoc = loc.toGridspace()
-            jetblade.fontManager.drawText('MODENINE', screen,
+            game.fontManager.drawText('MODENINE', screen,
                     ['%d' % gridLoc.x,
                      '%d' % gridLoc.y,
                      '%d' % loc.x,

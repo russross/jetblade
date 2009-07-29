@@ -1,7 +1,7 @@
 import constants
 from vector2d import Vector2D
 
-import jetblade
+import game
 import pygame
 from pygame import *
 
@@ -14,7 +14,7 @@ class EventManager:
     # pressed).
     def getCurrentActions(self):
         result = []
-        for action in jetblade.configManager.getCurrentActions():
+        for action in game.configManager.getCurrentActions():
             result.append(Event(action, KEYDOWN))
         return result
 
@@ -26,7 +26,7 @@ class EventManager:
             if event.type == QUIT:
                 actions.append(Event(constants.ACTION_QUIT))
             elif event.type in (KEYDOWN, KEYUP):
-                action = jetblade.configManager.getActionForKey(event.key, context)
+                action = game.configManager.getActionForKey(event.key, context)
                 if action is not None:
                     actions.append(Event(action, event.type))
             elif event.type == MOUSEMOTION:

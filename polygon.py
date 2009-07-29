@@ -35,10 +35,10 @@ class Polygon:
         self.lowerRight = Vector2D(lowerRight)
 
         ## Bounding box rectangle
-        self.rect = pygame.Rect(self.upperLeft, self.lowerRight.sub(self.upperLeft))
+        self.rect = pygame.Rect(self.upperLeft.tuple(), self.lowerRight.sub(self.upperLeft).tuple())
         ## Most recent parameter to self.getBounds(), to prevent unnecessary
         # recalculations.
-        self.lastRectLoc = None
+        self.lastRectLoc = Vector2D(-constants.BIGNUM, -constants.BIGNUM)
         ## Our rect at self.lastRectLoc
         self.rectAtLastLoc = None
 
@@ -171,7 +171,7 @@ class Polygon:
             drawColor = (255, 0, 0)
         drawPoints = []
         for point in self.points:
-            drawPoints.append(util.adjustLocForCenter(point.add(loc), camera, screen.get_rect()))
+            drawPoints.append(util.adjustLocForCenter(point.add(loc), camera, screen.get_rect()).tuple())
         pygame.draw.lines(screen, drawColor, 1, drawPoints, 4)
         self.hit = False
 
@@ -225,7 +225,7 @@ class Polygon:
         if loc == self.lastRectLoc:
             return self.rectAtLastLoc
         result = pygame.Rect(self.rect)
-        result.topleft = loc.add(self.upperLeft)
+        result.topleft = loc.add(self.upperLeft).tuple()
         self.lastLoc = loc
         self.rectAtLastLoc = result
         return result

@@ -47,7 +47,7 @@ class Maze(straight.StraightTunnel):
         changedBlocks = set()
         for loc in self.sector.spaces:
             if loc.x % 2 or loc.y % 2:
-                self.map.blocks[loc.x][loc.y] = map.BLOCK_WALL
+                self.map.blocks[loc.ix][loc.iy] = map.BLOCK_WALL
                 changedBlocks.add(loc)
 
         # Run the growing tree algorithm
@@ -60,7 +60,7 @@ class Maze(straight.StraightTunnel):
             # Check verticial clearance
             verticalClearance = 0
             for i in range(1, mazeMaximumColumnHeight):
-                offY = cell.y + i
+                offY = cell.iy + i
                 # This is a bit of a hack -- stop checking once we run
                 # outside the self.sector. Assume that platforms will fix 
                 # accessibility once we're out.
@@ -68,14 +68,14 @@ class Maze(straight.StraightTunnel):
                 # and end up with blocked-off corridors.
                 # \todo Find a better way to handle this.
                 if (offY >= self.map.numRows or 
-                        self.map.blocks[cell.x][offY] != map.BLOCK_EMPTY or
+                        self.map.blocks[cell.ix][offY] != map.BLOCK_EMPTY or
                         Vector2D(cell.x, offY) not in self.sector.spaces):
                     break
                 verticalClearance += 1
             for i in range(1, mazeMaximumColumnHeight):
-                offY = cell.y - i
+                offY = cell.iy - i
                 if (offY < 0 or 
-                        self.map.blocks[cell.x][offY] != map.BLOCK_EMPTY or
+                        self.map.blocks[cell.ix][offY] != map.BLOCK_EMPTY or
                         Vector2D(cell.x, offY) not in self.sector.spaces):
                     break
                 verticalClearance += 1
@@ -101,7 +101,7 @@ class Maze(straight.StraightTunnel):
             cellStack.append(neighbor)
             # Get the offset to reach the wall.
             delta = neighbor.sub(cell).divide(2).int()
-            self.map.blocks[delta.x][delta.y] = map.BLOCK_EMPTY
+            self.map.blocks[delta.ix][delta.iy] = map.BLOCK_EMPTY
 
         # Step five: because of our limit on vertical expansion, it's possible 
         # to get incomplete mazes. Check for blocks that aren't in seenCells 
@@ -115,7 +115,7 @@ class Maze(straight.StraightTunnel):
 
         if shouldRevert:
             for block in changedBlocks:
-                self.map.blocks[block.x][block.y] = map.BLOCK_EMPTY
+                self.map.blocks[block.ix][block.iy] = map.BLOCK_EMPTY
         else:
             # Step six: clear some space at the beginning and end of the maze.
             for loc in [startLoc, endLoc]:

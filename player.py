@@ -1,5 +1,5 @@
 import terrestrialobject
-import jetblade
+import game
 import logger
 from vector2d import Vector2D
 
@@ -8,7 +8,7 @@ class Player(terrestrialobject.TerrestrialObject):
     ## Instantiate a Player object
     # \todo (Long-term) Add support for the female version
     def __init__(self):
-        terrestrialobject.TerrestrialObject.__init__(self, jetblade.map.getStartLoc().toRealspace(), 'maleplayer')
+        terrestrialobject.TerrestrialObject.__init__(self, game.map.getStartLoc().toRealspace(), 'maleplayer')
         self.canHang = True
 
 
@@ -19,7 +19,7 @@ class Player(terrestrialobject.TerrestrialObject):
         runDirection = 0
         isClimbing = False
         isAttacking = False
-        for event in jetblade.eventManager.getCurrentActions():
+        for event in game.eventManager.getCurrentActions():
             if event.action == 'left':
                 runDirection = -1
             elif event.action == 'right': 

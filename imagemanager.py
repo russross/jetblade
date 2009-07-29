@@ -79,8 +79,7 @@ class ImageManager:
         if scale != 1:
             surface = pygame.transform.rotozoom(surface, 0, scale)
         rect = surface.get_rect()
-        rect.topleft = (loc.x, loc.y)
+        rect.topleft = loc.tuple()
         screen.blit(surface, rect)
         return rect
-
 

@@ -154,7 +154,7 @@ class QuadTree:
     # current view.
     def draw(self, screen, camera, progress, scale = 1):
         screenRect = screen.get_rect()
-        screenRect.center = camera
+        screenRect.center = camera.tuple()
         for object in self.objects:
             objectRect = object.getBounds()
             objectRect.width *= scale
@@ -168,8 +168,8 @@ class QuadTree:
 
         if logger.getLogLevel() == logger.LOG_DEBUG:
             # Draw our bounding rect, inset by a pixel for each level of depth.
-            drawRect = pygame.Rect(Vector2D(1, 1).multiply(self.depth).add(self.rect.topleft),
-                                   Vector2D(-2, -2).multiply(self.depth).add(self.rect.size))
+            drawRect = pygame.Rect(Vector2D(1, 1).multiply(self.depth).add(self.rect.topleft).tuple(),
+                                   Vector2D(-2, -2).multiply(self.depth).add(self.rect.size).tuple())
             drawRect.center = util.adjustLocForCenter(Vector2D(self.rect.center), camera, screen.get_rect())
             pygame.draw.rect(screen, (0, 0, 255), drawRect, 1)
             

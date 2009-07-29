@@ -1,4 +1,4 @@
-import jetblade
+import game
 import quadtree
 import constants
 import logger
@@ -8,12 +8,21 @@ import logger
 class GameObjectManager:
     ## Instantiate a manager
     def __init__(self):
-        ## QuadTree that holds all dynamic objects
-        self.objectTree = quadtree.QuadTree(jetblade.map.getBounds())
-    
+        ## QuadTree that holds all dynamic objects. Delay instantiating this
+        # until the game map is ready.
+        self.objectTree = None
+  
+  
+    ## Set up our tree now that the map's done being made.
+    def setup(self):
+        if self.objectTree is None:
+            self.objectTree = quadtree.QuadTree(game.map.getBounds())
+
 
     ## Update all objects
     def update(self):
+        if logger.getLogLevel() == logger.LOG_DEBUG:
+            logger.debug("Updating",len(self.objectTree.getObjects()),"objects")
         self.objectTree.update()
 
 
@@ -32,6 +41,7 @@ class GameObjectManager:
         logger.inform("Adding object named",objectName,"with args",*args)
         objectPath = constants.objectsPath + '/' + objectName
         objectPath = objectPath.replace('/', '.')
-        objectFunc = jetblade.dynamicClassManager.loadDynamicClass(objectPath)
+        objectFunc = game.dynamicClassManager.loadDynamicClass(objectPath)
         newObject = objectFunc(*args)
         self.objectTree.addObject(newObject)
+

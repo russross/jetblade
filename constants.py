@@ -1,5 +1,3 @@
-from vector2d import Vector2D
-
 import math
 import pygame
 from pygame.locals import *
@@ -47,9 +45,6 @@ fontPath = 'data/fonts'
 spriteFilename = 'spriteConfig'
 ## Name of the module used to configure fonts
 fontFilename = 'fontConfig'
-
-## Location to display the FPS string onscreen.
-fpsDisplayLoc = Vector2D(sw - 20, sh - 20)
 
 ACTION_QUIT = 'quit'
 

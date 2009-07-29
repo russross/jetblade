@@ -1,5 +1,5 @@
 import straight
-import jetblade
+import game
 import map
 import constants
 import logger
@@ -42,20 +42,20 @@ class Pit(straight.StraightTunnel):
 
         # Set up walls to contain the bottom of the pit.
         for y in range(surfaceY, bottomY + 1):
-            self.map.blocks[start.x][y] = map.BLOCK_WALL
-            self.map.blocks[end.x][y] = map.BLOCK_WALL
+            self.map.blocks[start.ix][y] = map.BLOCK_WALL
+            self.map.blocks[end.ix][y] = map.BLOCK_WALL
 
         # Now fill the pit with stuff.
         # \todo Make this more variable. For now, just add water.
-        water = jetblade.envEffectManager.loadEnvEffect('water')
-        for x in range(start.x, end.x + 1):
+        water = game.envEffectManager.loadEnvEffect('water')
+        for x in range(start.ix, end.ix + 1):
             for y in range(surfaceY, bottomY + 1):
                 water.addSpace(Vector2D(x, y), self.map)
 
         # Now add platforms across the pit.
         # \todo Add a variety of platform types. Keep in mind the ceiling may
         # be low.
-        for x in range(start.x, end.x + 1, map.minHorizDistToOtherPlatforms):
+        for x in range(start.ix, end.ix + 1, map.minHorizDistToOtherPlatforms):
             top = int(random.uniform(surfaceY - 2, surfaceY + 1))
             for y in range(top, bottomY):
                 self.map.blocks[x][y] = map.BLOCK_WALL

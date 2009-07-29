@@ -5,12 +5,12 @@ import zone
 import block
 import enveffect
 import prop
-import jetblade
+import game
 import util
 import logger
 import quadtree
 import seed
-import platform
+import floatingplatform
 import terraininfo
 import collisiondata
 from vector2d import Vector2D
@@ -277,14 +277,17 @@ class Map:
         # Expand the seeds and carve out those tunnels. 
         logger.inform("Expanding seeds at",pygame.time.get_ticks())
         (self.blocks, self.deadSeeds) = self.expandSeeds(self.seeds, self.blocks)
+#        self.drawStatus()
 
         # Clean up the points where tunnels meet.
         logger.inform("Creating junctions at",pygame.time.get_ticks())
         self.createJunctions()
+#        self.drawStatus()
 
         # Remove isolated chunks of land.
         logger.inform("Removing islands at",pygame.time.get_ticks())
         self.removeIslands()
+#        self.drawStatus()
 
         # Make the walls a bit thicker.
         logger.inform("Expanding walls at",pygame.time.get_ticks())
@@ -294,19 +297,23 @@ class Map:
         # Tell the tree nodes which spaces belong to them.
         logger.inform("Assigning squares at",pygame.time.get_ticks())
         self.assignSquares()
+#        self.drawStatus()
 
         # Fill in tunnels with interesting terrain.
         logger.inform("Creating tunnel features at",pygame.time.get_ticks())
         self.tree.createFeatures()
+#        self.drawStatus()
 
         # Reassign any seeds that got isolated in the last step to prevent
         # loops in the next step.
         logger.inform("Fixing seed ownership at",pygame.time.get_ticks())
         (self.blocks, self.deadSeeds) = self.fixSeedOwnership(self.blocks, self.deadSeeds)
+#        self.drawStatus()
 
         # Walk the walls of sectors of the tree and add platforms where needed.
         logger.inform("Fixing accessibility at",pygame.time.get_ticks())
         self.fixAccessibility()
+#        self.drawStatus()
 
         # Mark those platforms on the map.
         logger.inform("Building platforms at",pygame.time.get_ticks())
@@ -325,10 +332,10 @@ class Map:
 
         # \todo Pick a better starting point for the player.
         self.startLoc = Vector2D(int(self.numCols / 2), int(self.numRows / 2))
-        while self.blocks[self.startLoc.x][self.startLoc.y] != BLOCK_EMPTY:
+        while self.blocks[self.startLoc.ix][self.startLoc.iy] != BLOCK_EMPTY:
             self.startLoc = self.startLoc.addY(-1)
 
-        self.writeMap(str(jetblade.seed))
+        self.writeMap(str(game.seed))
 
         logger.inform("Done making map at",pygame.time.get_ticks())
         numUsedSpaces = 0
@@ -510,20 +517,21 @@ class Map:
         
         for i in range(0, self.numCols):
             for j in range(0, self.numRows):
+                startLoc = Vector2D(i, j)
                 if (self.blocks[i][j] == BLOCK_WALL and 
-                        (i, j) not in seenSpaces):
+                        startLoc not in seenSpaces):
                     # Start a new chunk of contiguous land. Floodfill out from
                     # this point, grabbing all adjacent occupied spaces and
                     # adding them to the chunk.
                     newChunk = []
-                    fillStack = [Vector2D(i, j)]
-                    seenSpaces.add((i, j))
+                    fillStack = [startLoc]
+                    seenSpaces.add(startLoc)
                     while fillStack:
                         loc = fillStack.pop(0)
                         newChunk.append(loc)
                         for neighbor in loc.NEWSPerimeter():
                             if (self.getIsInBounds(neighbor) and 
-                                    self.blocks[neighbor.x][neighbor.y] != BLOCK_EMPTY and
+                                    self.blocks[neighbor.ix][neighbor.iy] != BLOCK_EMPTY and
                                     neighbor not in seenSpaces):
                                 fillStack.append(neighbor)
                                 seenSpaces.add(neighbor)
@@ -532,7 +540,7 @@ class Map:
         for chunk in chunks:
             if len(chunk) < minimumIslandSize:
                 for loc in chunk:
-                    self.blocks[loc.x][loc.y] = BLOCK_EMPTY
+                    self.blocks[loc.ix][loc.iy] = BLOCK_EMPTY
 
 
     ## This is called right after setBlocks, which puts block terrain info
@@ -553,7 +561,7 @@ class Map:
                     blockLoc = loc.toRealspace()
                     self.blocks[i][j] = block.Block(blockLoc, type, signature, terrain)
                     # Choose a prop to attach to the block.
-                    newProp = jetblade.propManager.selectProp(terrain, signature)
+                    newProp = game.propManager.selectProp(terrain, signature)
                     if newProp is not None:
                         newProp.loc = newProp.loc.add(blockLoc)
                         self.addBackgroundObject(newProp)
@@ -594,12 +602,12 @@ class Map:
                 # If the counter expires while the seed is not in open space,
                 # replace it with a wall.
                 if (not self.getIsInBounds(loc, numCols, numRows) or 
-                        (curSeed.life <= 0 and blocks[loc.x][loc.y] != BLOCK_EMPTY)):
+                        (curSeed.life <= 0 and blocks[loc.ix][loc.iy] != BLOCK_EMPTY)):
                     deadSeeds[loc] = curSeed
-                    blocks[loc.x][loc.y] = BLOCK_WALL
+                    blocks[loc.ix][loc.iy] = BLOCK_WALL
                     continue
 
-                if (blocks[loc.x][loc.y] == BLOCK_WALL):
+                if (blocks[loc.ix][loc.iy] == BLOCK_WALL):
                     # A wall sprung up under us. Check if there's a dead
                     # seed there; if so, try to merge with it.
                     if loc in deadSeeds:
@@ -607,12 +615,12 @@ class Map:
                         if newSeed is not None:
                             newSeeds[loc] = newSeed
                             del deadSeeds[loc]
-                            blocks[loc.x][loc.y] = BLOCK_UNALLOCATED
+                            blocks[loc.ix][loc.iy] = BLOCK_UNALLOCATED
                     else:
                         # No seeds on walls.
                         continue
                     
-                if blocks[loc.x][loc.y] == BLOCK_EMPTY:
+                if blocks[loc.ix][loc.iy] == BLOCK_EMPTY:
                     # No seeds on empty space
                     deadSeeds[loc] = curSeed
                     continue
@@ -637,12 +645,12 @@ class Map:
                             altSeed.age = constants.BIGNUM
                             curSeed.life = 0
                             curSeed.age = constants.BIGNUM
-                            blocks[loc.x][loc.y] = BLOCK_WALL
-                            blocks[adjLoc.x][adjLoc.y] = BLOCK_WALL
-                    elif blocks[loc.x][loc.y] == BLOCK_UNALLOCATED:
+                            blocks[loc.ix][loc.iy] = BLOCK_WALL
+                            blocks[adjLoc.ix][adjLoc.iy] = BLOCK_WALL
+                    elif blocks[loc.ix][loc.iy] == BLOCK_UNALLOCATED:
                         # No seed there; plant one.
                         newSeeds[adjLoc] = seed.Seed(curSeed.node, curSeed.life - 1, curSeed.age + 1)
-                    elif (blocks[adjLoc.x][adjLoc.y] != BLOCK_EMPTY and
+                    elif (blocks[adjLoc.ix][adjLoc.iy] != BLOCK_EMPTY and
                             deadSeeds.has_key(adjLoc)):
                         # Hit a wall containing a dead seed; try to merge
                         # with it.
@@ -650,12 +658,12 @@ class Map:
                         if newSeed is not None:
                             newSeeds[adjLoc] = newSeed
                             del deadSeeds[adjLoc]
-                            blocks[adjLoc.x][adjLoc.y] = BLOCK_UNALLOCATED
+                            blocks[adjLoc.ix][adjLoc.iy] = BLOCK_UNALLOCATED
    
                 # Done expanding; zero our location if we didn't wall it 
                 # earlier.
-                if blocks[loc.x][loc.y] != BLOCK_WALL:
-                    blocks[loc.x][loc.y] = BLOCK_EMPTY
+                if blocks[loc.ix][loc.iy] != BLOCK_WALL:
+                    blocks[loc.ix][loc.iy] = BLOCK_EMPTY
                 deadSeeds[loc] = curSeed
             seeds = newSeeds
         return (blocks, deadSeeds)
@@ -685,7 +693,7 @@ class Map:
     ## Assign all open spaces to the sectors that own them.
     def assignSquares(self):
         for loc, seed in self.deadSeeds.iteritems():
-            if self.blocks[loc.x][loc.y] == BLOCK_EMPTY:
+            if self.blocks[loc.ix][loc.iy] == BLOCK_EMPTY:
                 seed.node.assignSpace(loc)
 
 
@@ -717,7 +725,7 @@ class Map:
                         newChunk.append(loc)
                         for neighbor in loc.NEWSPerimeter():
                             if (not self.getIsInBounds(neighbor, numCols, numRows) or
-                                    blocks[neighbor.x][neighbor.y] != BLOCK_EMPTY):
+                                    blocks[neighbor.ix][neighbor.iy] != BLOCK_EMPTY):
                                 continue
                             if (neighbor not in spaceToChunkMap and 
                                     neighbor in seeds and 
@@ -759,7 +767,7 @@ class Map:
                     # Couldn't find a valid neighbor for this seed; it must be
                     # isolated by walls. Turn it into one.
                     for loc in chunk:
-                        blocks[loc.x][loc.y] = BLOCK_WALL
+                        blocks[loc.ix][loc.iy] = BLOCK_WALL
                         
         return (blocks, seeds)
 
@@ -784,7 +792,7 @@ class Map:
         # about the sector, move currentSpace out along direction and
         # recalculate distance.
         while (self.getIsInBounds(currentSpace) and
-                (self.blocks[intCurrent.x][intCurrent.y] == BLOCK_EMPTY or
+                (self.blocks[intCurrent.ix][intCurrent.iy] == BLOCK_EMPTY or
                      distance < 2) and
                 (node is None or intCurrent in self.deadSeeds and
                     self.deadSeeds[intCurrent].node == node)):
@@ -823,9 +831,9 @@ class Map:
             last = int(loc.x + width / 2.0)
             for x in range(first, last):
                 if (x < 0 or x >= self.numCols or 
-                        self.blocks[x][loc.y] == BLOCK_UNALLOCATED):
+                        self.blocks[x][loc.iy] == BLOCK_UNALLOCATED):
                     continue
-                self.blocks[x][loc.y] = BLOCK_WALL
+                self.blocks[x][loc.iy] = BLOCK_WALL
 
 
     ## Draw an intermediary status image and saves it to disk. These are often 
@@ -877,22 +885,23 @@ class Map:
                 hasattr(deadSeeds[deadSeeds.keys()[0]].node, 'color')):
             for loc, seed in deadSeeds.iteritems():
                 drawLoc = loc.multiply(size).addScalar(add)
-                pygame.draw.circle(screen, seed.node.color, drawLoc, add)
+                pygame.draw.circle(screen, seed.node.color, 
+                                   (drawLoc.ix, drawLoc.iy), add)
 
         if seeds is not None:
             for loc, seed in seeds.iteritems():
                 drawLoc = loc.multiply(size).addScalar(add)
                 diff = 255 if seed.life <= 0 else int(255 / seed.life)
-                pygame.draw.circle(screen, (0, diff, 255-diff), drawLoc, add)
+                pygame.draw.circle(screen, (0, diff, 255-diff), drawLoc.tuple(), add)
 
         if marks is not None:
             for loc in marks:
                 drawLoc = loc.multiply(size).addScalar(add)
-                pygame.draw.circle(screen, (255, 0, 0), drawLoc, add)
+                pygame.draw.circle(screen, (255, 0, 0), drawLoc.tuple(), add)
 
         if self.markLoc is not None:
             drawLoc = self.markLoc.multiply(size).addScalar(add)
-            pygame.draw.circle(screen, (0, 255, 255), drawLoc, add+4, 4)
+            pygame.draw.circle(screen, (0, 255, 255), drawLoc.tuple(), add+4, 4)
 
             if shouldZoom:
                 subRect = pygame.Rect((self.markLoc.x * size - 400, 
@@ -906,11 +915,11 @@ class Map:
             self.tree.draw(screen, scale)
 
         pygame.image.save(screen, 'premap-%03d' % self.statusIter + '.png')
-        jetblade.screen.fill((0, 0, 0))
+        game.screen.fill((0, 0, 0))
         if self.markLoc is None:
             # Non-zoomed view, so scale it so it all fits.
             screen = pygame.transform.rotozoom(screen, 0, constants.sw / float(self.width * scale))
-        jetblade.screen.blit(screen, (0, 0))
+        game.screen.blit(screen, (0, 0))
         pygame.display.update()
         logger.debug("Status drawn")
 
@@ -1045,7 +1054,7 @@ class Map:
     def addPlatform(self, loc, size):
         loc = loc.int()
         if self.getIsInBounds(loc):
-            newPlatform = platform.Platform(loc, size)
+            newPlatform = floatingplatform.FloatingPlatform(loc, size)
             self.platformsQuadTree.addObject(newPlatform)
 
 
@@ -1058,7 +1067,7 @@ class Map:
     def addEnvEffect(self, loc, effect):
         loc = loc.int()
         if self.getIsInBounds(loc):
-            self.envGrid[loc.x][loc.y].append(effect)
+            self.envGrid[loc.ix][loc.iy].append(effect)
 
 
     def getStartLoc(self):
@@ -1225,10 +1234,8 @@ class Map:
             numCols = self.numCols
         if numRows is None:
             numRows = self.numRows
-        # Avoid using the Vector2D x and y properties because they are slightly
-        # slower and this function gets called a *lot*. 
-        return (loc[0] >= 0 and loc[0] < numCols and
-                loc[1] >= 0 and loc[1] < numRows)
+        return (loc.x >= 0 and loc.x < numCols and
+                loc.y >= 0 and loc.y < numRows)
 
 
     ## Returns the region information at the given location. See makeRegions()
@@ -1246,7 +1253,7 @@ class Map:
         if not self.getIsInBounds(loc):
             return None
         loc = loc.int()
-        return self.blocks[loc.x][loc.y]
+        return self.blocks[loc.ix][loc.iy]
 
 
     ## Get the TreeNode that owns the given space, if any.

@@ -30,3 +30,4 @@ class FontManager:
         if fontName not in self.fontNameToFontMap:
             logger.fatal("Invalid font name",fontName)
         self.fontNameToFontMap[fontName].drawText(*entries)
+

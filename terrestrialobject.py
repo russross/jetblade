@@ -1,7 +1,7 @@
 import physicsobject
 import logger
 import constants
-import jetblade
+import game
 import range1d
 from vector2d import Vector2D
 
@@ -201,8 +201,8 @@ class TerrestrialObject(physicsobject.PhysicsObject):
             # block below us and try to hug it. 
             footLoc = self.getFootLoc(True) # Get rear foot location
             belowLoc = footLoc.addY(abs(self.vel.x) + 1)
-            if (jetblade.map.getBlockAtGridLoc(footLoc.toGridspace()) or
-                    jetblade.map.getBlockAtGridLoc(belowLoc.toGridspace())):
+            if (game.map.getBlockAtGridLoc(footLoc.toGridspace()) or
+                    game.map.getBlockAtGridLoc(belowLoc.toGridspace())):
                 # Either rear foot is already in the same space as a block, 
                 # or there's a block there if we move down a bit.
 #                logger.debug("Pushing self down to hug the ground")
@@ -262,7 +262,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         # \todo We assume we hit a terrain block here; this isn't necessarily
         # valid.
         block = collision.altObject
-        if (not jetblade.map.getBlockAtGridLoc(block.gridLoc.addY(-1)) and 
+        if (not game.map.getBlockAtGridLoc(block.gridLoc.addY(-1)) and 
                 self.wasGrounded and 
                 abs(collision.vector.y) < constants.EPSILON and
                 self.blockIsAtFootLevel(block)):
@@ -391,7 +391,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         )
         headGridLoc = headLoc.toGridspace()
         locs = [headGridLoc.addY(-i) for i in [0, 1, 2]]
-        blocks = [jetblade.map.getBlockAtGridLoc(loc) for loc in locs]
+        blocks = [game.map.getBlockAtGridLoc(loc) for loc in locs]
         headRange = range1d.Range1D(headLoc.y - self.vel.y, headLoc.y)
 #        logger.debug("Head is at",headLoc,"grid",headGridLoc,"range",headRange,"and blocks are",blocks)
         for i in [0, 1]:
@@ -445,7 +445,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
             self.isGrounded = True
             self.isGravityOn = True
             self.sprite.setAnimation('crawl')
-            jetblade.soundManager.playSound('menutone.ogg')
+            game.soundManager.playSound('menutone.ogg')
         elif action == 'crawlturn':
             self.facing *= -1
             self.sprite.setAnimation('crawl')

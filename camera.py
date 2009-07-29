@@ -1,4 +1,4 @@
-import jetblade
+import game
 import util
 
 ## The maximum speed for the camera to move, to prevent jerky camera motion 
@@ -12,13 +12,13 @@ class Camera:
     def __init__(self):
         ## curLoc and prevLoc are used to interpolate the camera's position for
         # smooth movement between physics updates.
-        self.curLoc = jetblade.player.getDrawLoc(1).copy()
+        self.curLoc = game.player.getDrawLoc(1).copy()
         self.prevLoc = self.curLoc
 
     ## Update the camera's current and previous locations. 
     def update(self):
         self.prevLoc = self.curLoc.copy()
-        target = jetblade.player.getDrawLoc(1)
+        target = game.player.getDrawLoc(1)
         delta = target.sub(self.curLoc)
         magnitude = delta.magnitude()
         if magnitude > maxCameraSpeed:

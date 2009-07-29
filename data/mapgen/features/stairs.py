@@ -29,7 +29,7 @@ class StairsTunnel(straight.StraightTunnel):
         touchedColumns = set()
         for loc in self.sector.spaces:
             if (loc.x not in touchedColumns and 
-                    self.map.blocks[loc.x][loc.y + 1] == map.BLOCK_WALL and 
+                    self.map.blocks[loc.ix][loc.iy + 1] == map.BLOCK_WALL and 
                     loc.y > loc.x * slope + intercept):
                 touchedColumns.add(loc.x)
                 distToCeiling = self.sector.getDistToCeiling(loc)
@@ -41,7 +41,7 @@ class StairsTunnel(straight.StraightTunnel):
                 currentLoc = Vector2D(loc.x, targetY)
                 while currentLoc.y <= loc.y:
                     if self.sector.getIsOurSpace(currentLoc):
-                        self.map.blocks[currentLoc.x][currentLoc.y] = map.BLOCK_WALL
+                        self.map.blocks[currentLoc.ix][currentLoc.iy] = map.BLOCK_WALL
                     currentLoc = currentLoc.addY(1)
 
 

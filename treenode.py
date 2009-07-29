@@ -1,4 +1,4 @@
-import jetblade
+import game
 import constants
 import map
 import seed
@@ -140,14 +140,14 @@ class TreeNode:
         
         if self.parent is None:
             # Map our location to the region map to get our terrain info.
-            self.terrainInfo = jetblade.map.getTerrainInfoAtGridLoc(self.loc.toGridspace())
+            self.terrainInfo = game.map.getTerrainInfoAtGridLoc(self.loc.toGridspace())
         elif self.parent.getRegionTransitionDistance() < minRegionTransitionDistance:
             # Too close to the parent to switch terrain, so use theirs.
             self.terrainInfo = self.parent.getTerrainInfo()
             self.regionTransitionDistance = self.parent.getRegionTransitionDistance() + 1
         else:
             # Try to transition to a different terrain.
-            self.terrainInfo = jetblade.map.getTerrainInfoAtGridLoc(self.parent.loc.toGridspace())
+            self.terrainInfo = game.map.getTerrainInfoAtGridLoc(self.parent.loc.toGridspace())
             if self.terrainInfo != self.parent.terrainInfo:
                 self.regionTransitionDistance = 0
             else:
@@ -155,11 +155,11 @@ class TreeNode:
 
         # Select tunnel type and load the relevant module.
         ## The tunnel feature type, e.g. straight, bumpy, staircase.
-        self.tunnelType = util.pickWeightedOption(jetblade.map.getRegionInfo(self.terrainInfo, 'tunnelTypes'))
+        self.tunnelType = util.pickWeightedOption(game.map.getRegionInfo(self.terrainInfo, 'tunnelTypes'))
 
         ## The module that contains the information needed to create our tunnel
         # feature type.
-        self.featureModule = jetblade.featureManager.loadFeature(self.tunnelType, self)
+        self.featureModule = game.featureManager.loadFeature(self.tunnelType, self)
 
         ## This color is used for debugging output only.
         self.color = (random.randint(64,255), random.randint(64,255), random.randint(64,255))
@@ -182,7 +182,7 @@ class TreeNode:
                           direction + math.pi / 2.0, 
                           direction + math.pi,
                           direction + 3 * math.pi / 2.0)
-            if jetblade.map.getRegionInfo(self.terrainInfo, 'aligned'):
+            if game.map.getRegionInfo(self.terrainInfo, 'aligned'):
                 # Must align to the grid.
                 directions = (0, math.pi / 2.0, math.pi, 3 * math.pi / 2.0)
 
@@ -206,7 +206,7 @@ class TreeNode:
                     directions = [direction - math.pi/6.0, 
                                   direction + math.pi/6.0]
                     # Check for alignment with the grid.
-                    if jetblade.map.getRegionInfo(self.terrainInfo, 'aligned'):
+                    if game.map.getRegionInfo(self.terrainInfo, 'aligned'):
                         # Round rootDirection to a cardinal direction.
                         newBaseDirection = math.floor((rootDirection + math.pi / 4.0) / (math.pi / 2.0)) * math.pi / 2.0
                         directions = [newBaseDirection, 
@@ -222,9 +222,9 @@ class TreeNode:
                     childY = self.loc.y + math.sin(direction) * length
                     childLoc = Vector2D(childX, childY)
                     childLine = line.Line(self.loc, childLoc)
-                    if (childX > 0 and childX < jetblade.map.width and
-                        childY > 0 and childY < jetblade.map.height and
-                        jetblade.map.getIsValidLine(childLine, [self.loc])):
+                    if (childX > 0 and childX < game.map.width and
+                        childY > 0 and childY < game.map.height and
+                        game.map.getIsValidLine(childLine, [self.loc])):
                         self.children.append(TreeNode(childLoc, self, self.depth + 1))
                         didCreateOrRecurse = 1
                         
@@ -232,7 +232,7 @@ class TreeNode:
                 # Now that we're done trying to add children, add these lines
                 # to the map. Adding them earlier would result in spurious 
                 # lines being created because of the retry logic.
-                jetblade.map.addLine(line.Line(self.loc, child.loc))
+                game.map.addLine(line.Line(self.loc, child.loc))
         else:
             # Call createTree on any children
             for child in self.children:
@@ -270,13 +270,13 @@ class TreeNode:
                     
                 dist = self.loc.distance(node.loc)
                 nodeLine = line.Line(self.loc, node.loc)
-                if (jetblade.map.getIsValidLine(nodeLine, [self.loc, node.loc]) and 
+                if (game.map.getIsValidLine(nodeLine, [self.loc, node.loc]) and 
                         not node.getConnections()):
 
                     self.children.append(TreeNode(node.loc, self, self.depth + 1, node))
                     self.parent.setConnectionDistance(self, 1)
                     node.setConnectionDistance(self, 1)
-                    jetblade.map.addLine(nodeLine)
+                    game.map.addLine(nodeLine)
                     break
 
         for child in self.children:
@@ -318,10 +318,10 @@ class TreeNode:
         if self.parent is not None:
             self.featureModule.createFeature()
 
-            environment = util.pickWeightedOption(jetblade.map.getRegionInfo(self.terrainInfo, 'environments'))
+            environment = util.pickWeightedOption(game.map.getRegionInfo(self.terrainInfo, 'environments'))
             if environment is not None:
-                effect = jetblade.envEffectManager.loadEnvEffect(environment)
-                effect.createRegion(jetblade.map, self)
+                effect = game.envEffectManager.loadEnvEffect(environment)
+                effect.createRegion(game.map, self)
 
         for child in self.children:
             child.createFeatures()
@@ -372,15 +372,15 @@ class TreeNode:
 
 
     def getTunnelWidth(self):
-        return random.choice(jetblade.map.getRegionInfo(self.terrainInfo, 'tunnelWidths')) * constants.blockSize
+        return random.choice(game.map.getRegionInfo(self.terrainInfo, 'tunnelWidths')) * constants.blockSize
 
 
     def getTunnelLength(self):
-        return random.choice(jetblade.map.getRegionInfo(self.terrainInfo, 'tunnelLengths')) * constants.blockSize
+        return random.choice(game.map.getRegionInfo(self.terrainInfo, 'tunnelLengths')) * constants.blockSize
 
 
     def getJunctionRadius(self):
-        widths = jetblade.map.getRegionInfo(self.terrainInfo, 'tunnelWidths')
+        widths = game.map.getRegionInfo(self.terrainInfo, 'tunnelWidths')
         return widths[0] * constants.blockSize
 
 
@@ -394,47 +394,47 @@ class TreeNode:
         center = self.loc.toGridspace()
         radius = int(self.getJunctionRadius() / constants.blockSize)
         distFunc = Vector2D.distance
-        if jetblade.map.getRegionInfo(self.terrainInfo, 'aligned'):
+        if game.map.getRegionInfo(self.terrainInfo, 'aligned'):
             # Make a square junction instead of a circular one.
             distFunc = Vector2D.distanceSquare
 
         # Iterate over points in the accepted area, converting them to 
         # open space surrounded by walls if they are related to us.
-        for x in range(max(center.x - radius, 1), 
-                       min(center.x + radius, jetblade.map.numCols - 1)):
-            for y in range(max(center.y - radius, 1), 
-                           min(center.y + radius, jetblade.map.numRows - 1)):
+        for x in range(max(center.ix - radius, 1), 
+                       min(center.ix + radius, game.map.numCols - 1)):
+            for y in range(max(center.iy - radius, 1), 
+                           min(center.iy + radius, game.map.numRows - 1)):
                 point = Vector2D(x, y)
                 dist = distFunc(point, center)
-                canClaimPoint = jetblade.map.blocks[x][y] == map.BLOCK_UNALLOCATED
-                if point in jetblade.map.deadSeeds:
-                    canClaimPoint = self.getRelationType(jetblade.map.deadSeeds[point].node) != 'none'
+                canClaimPoint = game.map.blocks[x][y] == map.BLOCK_UNALLOCATED
+                if point in game.map.deadSeeds:
+                    canClaimPoint = self.getRelationType(game.map.deadSeeds[point].node) != 'none'
                 if dist <= radius and canClaimPoint:
-                    jetblade.map.blocks[x][y] = map.BLOCK_EMPTY
+                    game.map.blocks[x][y] = map.BLOCK_EMPTY
                     # Reassign the space to a dummy child
                     if self.junctionChild is None:
                         self.junctionChild = TreeNode(self.loc, self, constants.BIGNUM, None, 1)
                         self.junctionChild.color = (0, 0, 0)
-                    jetblade.map.assignSpace(point, self.junctionChild)
+                    game.map.assignSpace(point, self.junctionChild)
                     
                     # Patch walls around the deleted space
                     for nearPoint in point.perimeter():
-                        if not jetblade.map.getIsInBounds(nearPoint):
+                        if not game.map.getIsInBounds(nearPoint):
                             continue
                         # If we hit a space that's not a wall or open space, or
                         # if we hit a space that's owned by a non-junction node
                         # of the tree that we aren't connected to, put a wall 
                         # in.
                         altNode = None
-                        if nearPoint in jetblade.map.deadSeeds:
-                            altNode = jetblade.map.deadSeeds[nearPoint].node
-                        if (jetblade.map.blocks[nearPoint.x][nearPoint.y] == map.BLOCK_UNALLOCATED or 
+                        if nearPoint in game.map.deadSeeds:
+                            altNode = game.map.deadSeeds[nearPoint].node
+                        if (game.map.blocks[nearPoint.ix][nearPoint.iy] == map.BLOCK_UNALLOCATED or 
                                 (altNode is not None and
                                  self.getRelationType(altNode) == 'none' and
                                  not altNode.getIsJunctionNode()
                                 )):
-                            jetblade.map.blocks[nearPoint.x][nearPoint.y] = map.BLOCK_WALL
-                            jetblade.map.deadSeeds[nearPoint] = seed.Seed(self.junctionChild, 0, constants.BIGNUM)
+                            game.map.blocks[nearPoint.ix][nearPoint.iy] = map.BLOCK_WALL
+                            game.map.deadSeeds[nearPoint] = seed.Seed(self.junctionChild, 0, constants.BIGNUM)
 
         for child in self.children:
             child.createJunctions()
@@ -549,7 +549,7 @@ class TreeNode:
         bottomLoc = bottomLoc.toGridspace()
         topLoc = topLoc.toGridspace()
         platformWidth = random.choice(map.platformWidths)
-        jetblade.map.addPlatform(bottomLoc, platformWidth)
+        game.map.addPlatform(bottomLoc, platformWidth)
 
         # Now place platforms along the tunnel on alternating sides.
         platformPattern = random.choice(verticalTunnelPlatformPatterns)
@@ -565,7 +565,7 @@ class TreeNode:
                     platformLoc = platformLoc.addX(direction)
                 platformLoc = platformLoc.addX(-direction)
             if self.getIsOurSpace(platformLoc):
-                jetblade.map.addPlatform(platformLoc, platformWidth)
+                game.map.addPlatform(platformLoc, platformWidth)
             index = (index + 1) % len(platformPattern)
 
 
@@ -627,9 +627,9 @@ class TreeNode:
                         # Draw the line perpendicular to the local surface instead.
                         lineDelta = delta.copy().invert().normalize()
                         buildDistance = map.minDistForPlatform
-                    distance = jetblade.map.getDistanceToWall(currentSpace, lineDelta, self)
+                    distance = game.map.getDistanceToWall(currentSpace, lineDelta, self)
                     if distance > buildDistance:
-                        jetblade.map.markPlatform(currentSpace, lineDelta, distance)
+                        game.map.markPlatform(currentSpace, lineDelta, distance)
                         spacesSinceLastPlatform = 0
                 recentSpaces.append(currentSpace)
                 spacesSinceLastPlatform += 1
@@ -652,7 +652,7 @@ class TreeNode:
         else: # Couldn't find a good space to start from
             pass
 #                print "Unable to find a good starting place for",self.id
-#            jetblade.map.drawStatus() 
+#            game.map.drawStatus() 
 
 
     ## Mark the given gridspace location as being part of our sector.
@@ -706,7 +706,7 @@ class TreeNode:
         p1 = self.loc.multiply(scale)
         if self.parent is not None:
             p2 = self.parent.loc.multiply(scale)
-            pygame.draw.line(screen, self.color, p1, p2, 4)
+            pygame.draw.line(screen, self.color, p1.tuple(), p2.tuple(), 4)
         for child in self.children:
             # Note this does not include junction nodes
             child.draw(screen, scale)
@@ -722,7 +722,7 @@ class TreeNode:
         if self.loopNode is None:
             strings.append(self.tunnelType)
 
-        jetblade.fontManager.drawText('MODENINE', screen, strings,
+        game.fontManager.drawText('MODENINE', screen, strings,
                 drawLoc, 18, font.TEXT_ALIGN_CENTER, (255, 0, 0, 255))
 
     

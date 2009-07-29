@@ -30,3 +30,4 @@ class DynamicClassManager:
             return initFunc
         except Exception, e:
             logger.fatal("Failed to load module",path,":",e)
+

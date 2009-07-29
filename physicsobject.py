@@ -1,7 +1,7 @@
 import sprite
 import constants
-import jetblade
 import logger
+import game
 from vector2d import Vector2D
 
 ## Magnitude of the horizontal portion of a normalized vector, past which we 
@@ -89,7 +89,7 @@ class PhysicsObject:
     # \todo Currently assumes all collisions are with terrain.
     def handleCollisions(self):
         self.collisions = []
-        collision = jetblade.map.collidePolygon(self.sprite.getPolygon(), self.loc)
+        collision = game.map.collidePolygon(self.sprite.getPolygon(), self.loc)
         numTries = 0
         while collision.vector is not None and numTries < maxCollisionRetries:
             numTries += 1
@@ -114,7 +114,7 @@ class PhysicsObject:
             if shouldReactToCollision:
                 self.loc = self.loc.add(collision.vector.multiply(collision.distance))
 
-            collision = jetblade.map.collidePolygon(self.sprite.getPolygon(), self.loc)
+            collision = game.map.collidePolygon(self.sprite.getPolygon(), self.loc)
         if numTries == maxCollisionRetries:
             # We got stuck in a loop somehow. Eject upwards.
             self.loc = self.loc.add(zipAmount)

@@ -1,12 +1,11 @@
-import util
 import constants
 
 import pygame
 
 ## A simple container class for platforms that we plan to add to the map during
 # mapgen.
-class Platform:
-    ## Instantiate a Platform. 
+class FloatingPlatform:
+    ## Instantiate a FloatingPlatform. 
     # The loc and width parameters are in gridspace units; convert them into
     # realspace units because the QuadTree class works better on larger units.
     # \param loc The location, in gridspace, of the platform
@@ -24,5 +23,5 @@ class Platform:
 
     ## Convert to string
     def __str__(self):
-        return "[Platform at " + str(self.loc) + " with width " + str(self.width) + "]"
+        return "[FloatingPlatform at " + str(self.loc) + " with width " + str(self.width) + "]"
 

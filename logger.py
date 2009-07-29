@@ -1,4 +1,4 @@
-import jetblade
+import game
 import constants
 
 import pygame
@@ -84,14 +84,14 @@ def fatal(*entries):
         errorStrings.append(message[i*fatalMessageLineLength:(i+1)*fatalMessageLineLength])
     errorStrings.append("The program will now shut down.")
     errorFont = pygame.font.Font(None, 24)
-    jetblade.screen.fill((0, 0, 0))
+    game.screen.fill((0, 0, 0))
     for i in range(0, len(errorStrings)):
         line = errorStrings[i]
         textSurface = errorFont.render(line, True, (255, 255, 255))
         rect = textSurface.get_rect()
         rect.centerx = constants.sw / 2.0
         rect.centery = constants.sh / 2.0 + 20 * i
-        jetblade.screen.blit(textSurface, rect)
+        game.screen.blit(textSurface, rect)
     pygame.display.update()
     pygame.time.delay(errorMessageDelayTime)
     sys.exit()

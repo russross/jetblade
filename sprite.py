@@ -1,4 +1,4 @@
-import jetblade
+import game
 import logger
 
 import pygame
@@ -21,7 +21,7 @@ class Sprite:
         # animations in the sprite.
         self.name = name
         ## Mapping of animation names to Animation instances. 
-        self.animations = jetblade.animationManager.loadAnimations(name, shouldCreateCopy)
+        self.animations = game.animationManager.loadAnimations(name, shouldCreateCopy)
         ## Current active animation. 
         self.currentAnimation = self.animations.keys()[0]
         ## Previous animation. Sometimes we need to know what we were just

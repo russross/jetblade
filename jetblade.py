@@ -1,17 +1,12 @@
 #!/usr/local/bin/python2.5
 
-import jetblade
-import imagemanager
-import configmanager
-import dynamicclassmanager
-import gameobjectmanager
-import featuremanager
-import enveffectmanager
-import propmanager
-import eventmanager
-import animationmanager
-import fontmanager
-import soundmanager
+# Compile any Cython modules first
+import pyximport; pyximport.install()
+import vector2d
+
+
+import game
+
 import font
 import map
 import player
@@ -22,12 +17,14 @@ import logger
 
 import sys
 import random
-import os
 import pygame
 import cProfile
 import time
 import optparse
 from pygame.locals import *
+
+## Location to display the FPS string onscreen.
+fpsDisplayLoc = vector2d.Vector2D(constants.sw - 20, constants.sh - 20)
 
 ## \mainpage Jetblade
 # This is the documentation for the Jetblade project. Jetblade is a 
@@ -79,9 +76,8 @@ slowPhysicsUpdatesPerSecond = 4
 # hooks.
 def run():
     init()
-    while 1:
-        startGame()
-        gameLoop()
+    startGame()
+    gameLoop()
 
 
 ## Process commandline flags and set up singletons.
@@ -114,79 +110,69 @@ def init():
                       dest = 'logLevel',
                       help = "Set the log level to LEVEL (5: debug; 1: fatal)")
     (options, args) = parser.parse_args(sys.argv)
-    jetblade.seed = options.seed
-    jetblade.mapFilename = options.mapFilename
-    jetblade.shouldSaveImage = options.shouldSaveImage
-    jetblade.numMaps = options.numMaps
-    jetblade.shouldExitAfterMapgen = options.shouldExitAfterMapgen
-    jetblade.isRecording = options.isRecording
+    game.seed = options.seed
+    game.mapFilename = options.mapFilename
+    game.shouldSaveImage = options.shouldSaveImage
+    game.numMaps = options.numMaps
+    game.shouldExitAfterMapgen = options.shouldExitAfterMapgen
+    game.isRecording = options.isRecording
     logger.setLogLevel(options.logLevel)
 
-    if jetblade.numMaps > 1 and jetblade.mapFilename is not None:
+    if game.numMaps > 1 and game.mapFilename is not None:
         logger.error("Cannot use multiple-map generation with a sourced map file.")
         sys.exit()
-    elif jetblade.numMaps > 1 and jetblade.seed is not None:
+    elif game.numMaps > 1 and game.seed is not None:
         logger.error("Cannot use multiple-map generation with a fixed random seed.")
         sys.exit()
-    elif jetblade.seed is None:
-        jetblade.seed = int(time.time())
+    elif game.seed is None:
+        game.seed = int(time.time())
     
-    if jetblade.shouldExitAfterMapgen and jetblade.mapFilename is not None:
+    if game.shouldExitAfterMapgen and game.mapFilename is not None:
         logger.error("-justmapgen and -mapfile are incompatible")
         sys.exit()
 
 
     pygame.init()
-    jetblade.shouldDisplayFPS = 1
-    jetblade.configManager = configmanager.ConfigManager()
-    jetblade.dynamicClassManager = dynamicclassmanager.DynamicClassManager()
-    jetblade.featureManager = featuremanager.FeatureManager()
-    jetblade.envEffectManager = enveffectmanager.EnvEffectManager()
-    jetblade.propManager = propmanager.PropManager()
-    jetblade.imageManager = imagemanager.ImageManager()
-    jetblade.eventManager = eventmanager.EventManager()
-    jetblade.animationManager = animationmanager.AnimationManager()
-    jetblade.fontManager = fontmanager.FontManager()
-    jetblade.soundManager = soundmanager.SoundManager()
+    game.shouldDisplayFPS = 1
     pygame.display.set_caption('Jetblade')
-    jetblade.screen = util.setupScreen()
+    game.screen = util.setupScreen()
 
 
 
 ## Create the map(s) and player. If we've been told to make multiple maps
 # or to save the map, then exit once we're done.
 def startGame():
-    jetblade.map = None
-    if jetblade.mapFilename:
-        jetblade.map = map.Map(jetblade.mapFilename)
-        jetblade.map.init()
-        if jetblade.shouldSaveImage:
-            jetblade.map.drawAll('%d.png' % jetblade.seed)
-        if jetblade.shouldExitAfterMapgen:
+    game.map = None
+    if game.mapFilename:
+        game.map = map.Map(game.mapFilename)
+        game.map.init()
+        if game.shouldSaveImage:
+            game.map.drawAll('%d.png' % game.seed)
+        if game.shouldExitAfterMapgen:
             sys.exit()
     else:
-        for i in range(0, jetblade.numMaps):
-            jetblade.envEffectManager.reset()
-            jetblade.propManager.reset()
-            logger.inform("Making map %d of %d" % (i + 1, jetblade.numMaps))
-            if jetblade.numMaps == 1:
-                logger.inform("Using seed",jetblade.seed)
-                random.seed(str(jetblade.seed))
+        for i in range(0, game.numMaps):
+            game.envEffectManager.reset()
+            game.propManager.reset()
+            logger.inform("Making map %d of %d" % (i + 1, game.numMaps))
+            if game.numMaps == 1:
+                logger.inform("Using seed",game.seed)
+                random.seed(str(game.seed))
             else:
-                jetblade.seed = int(time.time())
-                logger.inform("Using seed",jetblade.seed)
-                random.seed(str(jetblade.seed))
-            jetblade.map = map.Map()
-            jetblade.map.init()
-            if jetblade.shouldSaveImage:
-                jetblade.map.drawAll(str(jetblade.seed) + '.png')
-        if jetblade.shouldExitAfterMapgen:
+                game.seed = int(time.time())
+                logger.inform("Using seed",game.seed)
+                random.seed(str(game.seed))
+            game.map = map.Map()
+            game.map.init()
+            if game.shouldSaveImage:
+                game.map.drawAll(str(game.seed) + '.png')
+        if game.shouldExitAfterMapgen:
             sys.exit()
-    jetblade.gameObjectManager = gameobjectmanager.GameObjectManager()
-    jetblade.player = player.Player()
-    jetblade.gameObjectManager.addObject(jetblade.player)
-#    for i in range(1, 44):
-#        jetblade.gameObjectManager.addNewObject('creatures/darkclone', jetblade.player.loc.add((i*50, 0)))
+    game.gameObjectManager.setup()
+    game.player = player.Player()
+    game.gameObjectManager.addObject(game.player)
+    for i in range(1, 44):
+        game.gameObjectManager.addNewObject('creatures/darkclone', game.player.loc.add((i*50, 0)))
 
 
 ## The main game loop. Performs a target of physicsUpdatesPerSecond
@@ -200,23 +186,23 @@ def gameLoop():
     timeAccum = 0
     physicsUpdateRate = 1000.0 / physicsUpdatesPerSecond
     curSec = int(curTs / 1000)
-    jetblade.frameNum = 0
+    game.frameNum = 0
     physicsNum = 0
     framesSincePrevSec = 0
-    jetblade.curFPS = 0
+    game.curFPS = 0
 
     cam = camera.Camera()
     zoomLevel = 1
 
     while 1:
-        logger.debug("Frame %d Physics %d Time %d" % (jetblade.frameNum, physicsNum, pygame.time.get_ticks()))
-        events = jetblade.eventManager.processEvents([], constants.CONTEXT_GAME)
+        logger.debug("Frame %d Physics %d Time %d" % (game.frameNum, physicsNum, pygame.time.get_ticks()))
+        events = game.eventManager.processEvents([], constants.CONTEXT_GAME)
         # Check for a couple of events.
         for event in events:
             if event.type in (KEYDOWN, KEYUP):
                 if event.action == 'startRecording' and event.type == KEYUP:
-                    jetblade.isRecording = not jetblade.isRecording
-                    if jetblade.isRecording:
+                    game.isRecording = not game.isRecording
+                    if game.isRecording:
                         # Recording images to disk takes so long that it 
                         # causes massive frameskip; tweak the target 
                         # physics update rate to compensate.
@@ -238,19 +224,19 @@ def gameLoop():
         while timeAccum >= physicsUpdateRate:
             count += 1
             physicsNum += 1
-            jetblade.gameObjectManager.update()
+            game.gameObjectManager.update()
             cam.update()
             timeAccum -= physicsUpdateRate
 
         logger.debug("Did",count,"physics updates, have",timeAccum,"in the accumulator towards next physics update (step",physicsUpdateRate,")")
 
-        jetblade.draw(zoomLevel, cam, timeAccum / physicsUpdateRate)
+        game.draw(zoomLevel, cam, timeAccum / physicsUpdateRate)
  
-        jetblade.frameNum += 1
+        game.frameNum += 1
         framesSincePrevSec += 1
         
         if int(curTs / 1000) != curSec:
-            jetblade.curFPS = framesSincePrevSec
+            game.curFPS = framesSincePrevSec
             logger.debug("FPS: ",framesSincePrevSec)
             curSec = int(curTs / 1000)
             framesSincePrevSec = 0
@@ -262,22 +248,22 @@ def draw(zoomLevel, cam, progress):
 
     if zoomLevel != 1:
         drawSurface = pygame.Surface((constants.sw / zoomLevel, constants.sh / zoomLevel))
-        jetblade.map.draw(drawSurface, drawLoc, progress)
+        game.map.draw(drawSurface, drawLoc, progress)
         drawSurface = pygame.transform.rotozoom(drawSurface, 0, zoomLevel)
-        jetblade.screen.blit(drawSurface, (0, 0))
+        game.screen.blit(drawSurface, (0, 0))
     else:
-        jetblade.screen.fill((0, 0, 0))
-        jetblade.map.drawBackground(jetblade.screen, drawLoc, progress)
-        jetblade.gameObjectManager.draw(jetblade.screen, drawLoc, progress)
-        jetblade.map.drawMidground(jetblade.screen, drawLoc, progress)
-    if jetblade.shouldDisplayFPS:
-        jetblade.fontManager.drawText('MODENINE', jetblade.screen, 
-            ["FPS: " + str(jetblade.curFPS)], constants.fpsDisplayLoc, 24, 
+        game.screen.fill((0, 0, 0))
+        game.map.drawBackground(game.screen, drawLoc, progress)
+        game.gameObjectManager.draw(game.screen, drawLoc, progress)
+        game.map.drawMidground(game.screen, drawLoc, progress)
+    if game.shouldDisplayFPS:
+        game.fontManager.drawText('MODENINE', game.screen, 
+            ["FPS: " + str(game.curFPS)], fpsDisplayLoc, 24, 
             font.TEXT_ALIGN_RIGHT)
     pygame.display.update()
 
-    if jetblade.isRecording:
-        pygame.image.save(jetblade.screen, 'screenshot-%04d' % (jetblade.frameNum) + '.png')
+    if game.isRecording:
+        pygame.image.save(game.screen, 'screenshot-%04d' % (game.frameNum) + '.png')
 
 if __name__ == '__main__':
 #    run()

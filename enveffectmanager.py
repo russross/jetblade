@@ -1,5 +1,5 @@
 import constants
-import jetblade
+import game
 
 import sys
 
@@ -16,7 +16,7 @@ class EnvEffectManager:
             return self.envMap[name]
         modulePath = constants.mapPath + '/environments/' + name
         modulePath = modulePath.replace('/', '.')
-        initFunc = jetblade.dynamicClassManager.loadDynamicClass(modulePath)
+        initFunc = game.dynamicClassManager.loadDynamicClass(modulePath)
         classInstance = initFunc(name)
         self.envMap[name] = classInstance
         return classInstance
@@ -25,3 +25,4 @@ class EnvEffectManager:
     ## Clear our cache
     def reset(self):
         self.envMap = dict()
+
