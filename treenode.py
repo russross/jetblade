@@ -355,8 +355,8 @@ class TreeNode:
             if startLoc.distance(endLoc) < 1:
                 return (None, None)
 
-        startLoc = startLoc.int()
-        endLoc = endLoc.int()
+        startLoc = startLoc.toInt()
+        endLoc = endLoc.toInt()
         return (startLoc, endLoc)
 
 
@@ -587,7 +587,7 @@ class TreeNode:
         # Find a wall from that point
         while (self.getIsOurSpace(originalSpace)):
             originalSpace = originalSpace.addY(1)
-        originalSpace = originalSpace.addY(-1).int()
+        originalSpace = originalSpace.addY(-1).toInt()
         # If we can't find our sector, then probably all of it
         # got absorbed by other sectors or pushed into walls, so don't 
         # do the wallwalker. Otherwise, carry on.
@@ -668,7 +668,7 @@ class TreeNode:
     ## Return true if the passed-in location is one of the open spaces owned
     # by this node.
     def getIsOurSpace(self, loc):
-        return loc.int() in self.spaces
+        return loc.toInt() in self.spaces
 
 
     ## Return true if this node is one of the "blank" leaf nodes placed at 

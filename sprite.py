@@ -117,7 +117,7 @@ class Sprite:
     # visual jittering caused by very minor positional variation.
     def getDrawLoc(self, progress):
         loc = self.prevLoc.interpolate(self.curLoc, progress)
-        loc = loc.addScalar(drawRoundAmount).int()
+        loc = loc.addScalar(drawRoundAmount).toInt()
         return loc
 
 

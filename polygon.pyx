@@ -2,10 +2,12 @@ import constants
 import util
 import logger
 import range1d
+from vector2d cimport Vector2D
 from vector2d import Vector2D
+from range1d cimport Range1D
+from range1d import Range1D
 
 import pygame
-import os
 
 ## Maximum number of already-calculated projections onto vectors that we 
 # should cache for this polygon.
@@ -13,7 +15,15 @@ maxCachedProjections = 30
 
 ## The Polygon class represents convex bounding polygons used for collision 
 # detection.
-class Polygon:
+cdef class Polygon:
+    cdef list points
+    cdef public bool hit
+    cdef list projectionVectors
+    cdef dict vectorToProjectionCache
+    cdef int projectionCacheUseCounter
+    cdef public Vector2D upperLeft
+    cdef public Vector2D lowerRight
+    cdef rect
     def __init__(self, points):
         ## Array of points in the polygon. 
         self.points = points
@@ -72,7 +82,8 @@ class Polygon:
 
     ## Use the Separating Axis Theorem to collide two convex polygons.
     # See http://www.metanetsoftware.com/technique/tutorialA.html
-    def runSAT(self, myLoc, alt, altLoc):
+    cpdef public tuple runSAT(Polygon self, Vector2D myLoc, 
+                              Polygon alt, Vector2D altLoc):
         projectionVectors = self.getProjectionVectors()
 
         smallestOverlap = constants.BIGNUM
@@ -104,13 +115,13 @@ class Polygon:
         return (smallestOverlap, overlapVector)
 
 
-    def getProjectionVectors(self):
+    cpdef public list getProjectionVectors(Polygon self):
         return self.projectionVectors
 
 
     ## Project us onto the given vector assuming we are at loc. Return the 
     # range (min, max) along the vector formed by that projection.
-    def projectOntoVector(self, loc, vector):
+    cpdef public Range1D projectOntoVector(Polygon self, Vector2D loc, Vector2D vector):
         if vector in self.vectorToProjectionCache:
             result = self.vectorToProjectionCache[vector]['result']
             return result.addScalar(loc.getComponentOn(vector))
@@ -143,7 +154,8 @@ class Polygon:
 
     ## Return the ejection distance of the given polygon out of ourselves along
     # the provided vector.
-    def getEjectionDistanceAlongVector(self, vector, myLoc, alt, altLoc):
+    cpdef public double getEjectionDistanceAlongVector(Polygon self, 
+            Vector2D vector, Vector2D myLoc, Polygon alt, Vector2D altLoc):
         myProj = self.projectOntoVector(myLoc, vector)
         altProj = alt.projectOntoVector(altLoc, vector)
         distance = myProj.getOverlap(altProj)
@@ -164,7 +176,7 @@ class Polygon:
 
 
     ## Return the center, as the average of all points in the polygon.
-    def getCenter(self):
+    cpdef public Vector2D getCenter(Polygon self):
         center = Vector2D(0, 0)
         for point in self.points:
             center = center.add(point)
@@ -174,7 +186,7 @@ class Polygon:
 
     ## Return the point on the polygon that matches the given Y coordinate and 
     # is furthest in the specified direction
-    def getPointAtHeight(self, targetY, direction):
+    cpdef public Vector2D getPointAtHeight(Polygon self, double targetY, double direction):
         currentPoint = None
         for point in self.points:
             if abs(point.y - targetY) < constants.EPSILON:
@@ -186,7 +198,7 @@ class Polygon:
     ## Return the point on the polygon that matches the given X coordinate and
     # is highest or lowest (depending on direction)
     # Just a tweaked version of getPointAtHeight
-    def getPointAtX(self, targetX, direction):
+    cpdef public Vector2D getPointAtX(Polygon self, double targetX, double direction):
         currentPoint = None
         for point in self.points:
             if abs(point.x - targetX) < constants.EPSILON:
@@ -197,7 +209,8 @@ class Polygon:
 
     ## Return the point on the polygon that is furthest in the specified 
     # direction and is between the specified heights.
-    def getPointBetweenHeights(self, targetRange, direction):
+    cpdef public Vector2D getPointBetweenHeights(Polygon self, 
+            Range1D targetRange, double direction):
         currentPoint = None
         for point in self.points:
             if (currentPoint is None or 

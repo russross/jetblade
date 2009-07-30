@@ -785,7 +785,7 @@ class Map:
     # that node's area as walls.
     def getDistanceToWall(self, start, direction, node = None):
         currentSpace = start.copy()
-        intCurrent = currentSpace.int()
+        intCurrent = currentSpace.toInt()
         distance = 0
         # While currentSpace is valid, it's empty space (or filled space close
         # to the start), and we're in the specified sector or we don't care 
@@ -797,7 +797,7 @@ class Map:
                 (node is None or intCurrent in self.deadSeeds and
                     self.deadSeeds[intCurrent].node == node)):
             currentSpace = currentSpace.add(direction)
-            intCurrent = currentSpace.int()
+            intCurrent = currentSpace.toInt()
             distance = currentSpace.distance(start)
         return distance
 
@@ -808,7 +808,7 @@ class Map:
         totalDistance = 0
         while totalDistance < distance:
             buildDistance = minDistForPlatform + totalDistance
-            buildLoc = start.add(direction.multiply(buildDistance)).int()
+            buildLoc = start.add(direction.multiply(buildDistance)).toInt()
             shouldBuild = 1
             realLoc = buildLoc.toRealspace()
             width = minHorizDistToOtherPlatforms * constants.blockSize
@@ -1052,7 +1052,7 @@ class Map:
     # later, as it might interfere with TreeNode.fixAccessibility() if done
     # now.
     def addPlatform(self, loc, size):
-        loc = loc.int()
+        loc = loc.toInt()
         if self.getIsInBounds(loc):
             newPlatform = floatingplatform.FloatingPlatform(loc, size)
             self.platformsQuadTree.addObject(newPlatform)
@@ -1065,7 +1065,7 @@ class Map:
 
     ## Mark the given tile as containing the selected environmental effect.
     def addEnvEffect(self, loc, effect):
-        loc = loc.int()
+        loc = loc.toInt()
         if self.getIsInBounds(loc):
             self.envGrid[loc.ix][loc.iy].append(effect)
 
@@ -1258,7 +1258,7 @@ class Map:
     ## Returns the region information at the given location. See makeRegions()
     # for more information on regions.
     def getTerrainInfoAtGridLoc(self, loc):
-        regionLoc = loc.multiply(regionOverlayResolutionMultiplier).int()
+        regionLoc = loc.multiply(regionOverlayResolutionMultiplier).toInt()
         if regionLoc in self.regions:
             return self.regions[regionLoc]
         logger.warn("At",loc,"(adjusted to",regionLoc,") I don't have any region info")
@@ -1269,7 +1269,7 @@ class Map:
     def getBlockAtGridLoc(self, loc):
         if not self.getIsInBounds(loc):
             return None
-        loc = loc.int()
+        loc = loc.toInt()
         return self.blocks[loc.ix][loc.iy]
 
 

@@ -1,10 +1,6 @@
 import logger
 import sprite
 
-## These block types do not have square polygons. HACK; ideally we wouldn't
-# need this.
-nonSquareBlockOrientations = ['upleft', 'upright', 'downleft', 'downright']
-
 ## Blocks are solid, nonmoving bits of terrain. 
 class Block:
 

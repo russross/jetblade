@@ -3,30 +3,28 @@ import constants
 ## A Range1D is simply a one-dimensional range, used when projecting Polygon 
 # instances onto vectors. 
 cdef class Range1D:
-    cdef public double min
-    cdef public double max
     def __new__(self, min = constants.BIGNUM, max = -constants.BIGNUM):
         self.min = min
         self.max = max
 
 
     ## Return true if the provided scalar is in our range
-    def contains(self, value):
+    cpdef public bool contains(Range1D self, double value):
         return value >= self.min and value <= self.max
 
     
     ## Clamp the given value so it is contained by us.
-    def clamp(self, value):
+    cpdef public double clamp(Range1D self, double value):
         return min(self.max, max(self.min, value))
 
 
     ## Add an offset to min and max
-    def addScalar(self, value):
+    cpdef public Range1D addScalar(Range1D self, double value):
         return Range1D(self.min + value, self.max + value)
 
 
     ## Return the amount of overlap between ourself and the given range.
-    def getOverlap(self, range):
+    cpdef public double getOverlap(Range1D self, Range1D range):
         result = -1
         if (self.max >= range.min and self.max <= range.max and
             self.min <= range.min):

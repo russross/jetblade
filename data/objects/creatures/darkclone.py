@@ -1,5 +1,5 @@
 import terrestrialobject
-import jetblade
+import game
 
 def getClassName():
     return 'DarkClone'
@@ -8,13 +8,13 @@ def getClassName():
 ## Standard "evil clone" of the player.
 class DarkClone(terrestrialobject.TerrestrialObject):
     def __init__(self, loc):
-        terrestrialobject.TerrestrialObject.__init__(self, loc, jetblade.player.name)
+        terrestrialobject.TerrestrialObject.__init__(self, loc, game.player.name)
         self.canHang = True
         self.prevVel = self.vel
 
 
     def AIUpdate(self):
-        self.runDirection = cmp(0, self.loc.sub(jetblade.player.loc).x)
+        self.runDirection = cmp(0, self.loc.sub(game.player.loc).x)
         if self.isHanging:
             self.justStartedClimbing = True
         elif (not self.isGrounded or 

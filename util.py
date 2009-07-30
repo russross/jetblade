@@ -16,14 +16,6 @@ import random
 # specific class.
 
 
-## Retrieves the location of the user's home directory, depending on OS.
-def getHomePath():
-    if sys.platform in ['win32', 'cygwin']:
-        return os.environ.get('APPDATA')
-    else: # Assume OSX/Linux; both should work
-        return os.environ.get('HOME')
-
-
 ## Retrieve the text from the clipboard, using different methods depending on
 # OS.
 def getClipboardText():

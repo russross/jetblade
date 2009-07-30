@@ -3,6 +3,7 @@
 # Compile any Cython modules first
 import pyximport; pyximport.install()
 from vector2d import Vector2D
+import polygon
 import range1d
 
 import game
