@@ -25,7 +25,7 @@ import optparse
 from pygame.locals import *
 
 ## Location to display the FPS string onscreen.
-fpsDisplayLoc = Vector2D(constants.sw - 20, constants.sh - 20)
+fpsDisplayLoc = Vector2D(constants.sw - 20, constants.sh - 40)
 
 ## \mainpage Jetblade
 # This is the documentation for the Jetblade project. Jetblade is a 
@@ -152,7 +152,7 @@ def startGame():
         if game.shouldExitAfterMapgen:
             sys.exit()
     else:
-        for i in range(0, game.numMaps):
+        for i in xrange(0, game.numMaps):
             game.envEffectManager.reset()
             game.propManager.reset()
             logger.inform("Making map %d of %d" % (i + 1, game.numMaps))
@@ -172,7 +172,7 @@ def startGame():
     game.gameObjectManager.setup()
     game.player = player.Player()
     game.gameObjectManager.addObject(game.player)
-    for i in range(1, 88):
+    for i in xrange(1, 88):
         game.gameObjectManager.addNewObject('creatures/darkclone',
                 game.player.loc.add(Vector2D(i*10, 0)))
 
@@ -265,7 +265,8 @@ def draw(zoomLevel, cam, progress):
         game.map.drawMidground(game.screen, drawLoc, progress)
     if game.shouldDisplayFPS:
         game.fontManager.drawText('MODENINE', game.screen, 
-            ["FPS: " + str(game.curFPS)], fpsDisplayLoc, 24, 
+            ["FPS: " + str(game.curFPS),
+             'Frame: ' + str(game.frameNum)], fpsDisplayLoc, 18, 
             font.TEXT_ALIGN_RIGHT)
     pygame.display.update()
 

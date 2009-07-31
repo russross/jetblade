@@ -71,7 +71,7 @@ def placeZones(zoneConfigData):
         zonePoints[zoneName] = Vector2D(random.random(),
                 random.uniform(elevationRange[0], elevationRange[1]))
     
-    for i in range(0, zonePlacementIterations):
+    for i in xrange(0, zonePlacementIterations):
         newPoints = dict()
         for zoneName, zoneLoc in zonePoints.iteritems():
             vector = Vector2D(0, 0)

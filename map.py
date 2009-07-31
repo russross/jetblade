@@ -254,10 +254,10 @@ class Map:
         logger.inform("Laying out grid at",pygame.time.get_ticks())
         self.blocks = []
         self.envGrid = []
-        for i in range(0, self.numCols):
+        for i in xrange(0, self.numCols):
             self.blocks.append([])
             self.envGrid.append([])
-            for j in range(0, self.numRows):
+            for j in xrange(0, self.numRows):
                 self.blocks[i].append(BLOCK_UNALLOCATED)
                 self.envGrid[i].append([])
         
@@ -339,8 +339,8 @@ class Map:
 
         logger.inform("Done making map at",pygame.time.get_ticks())
         numUsedSpaces = 0
-        for x in range(0, self.numCols):
-            for y in range(0, self.numRows):
+        for x in xrange(0, self.numCols):
+            for y in xrange(0, self.numRows):
                 if not self.blocks[x][y]:
                     numUsedSpaces += 1
         totalSpaces = self.numCols * self.numRows
@@ -369,9 +369,9 @@ class Map:
         blocks = []
         zoneToBlocksMap = dict()
         blockToZoneMap = dict()
-        for i in range(0, cols):
+        for i in xrange(0, cols):
             blocks.append([])
-            for j in range(0, rows):
+            for j in xrange(0, rows):
                 blocks[i].append(BLOCK_UNALLOCATED)
                 # Map (i, j) to the ranges ([0, 1], [0, 1]) and find the zone
                 # point that is closest to that location. Mark (i, j) as 
@@ -420,8 +420,8 @@ class Map:
         # convert the ones that weren't touched into a default for that region,
         # while we turn everything into "open space" for fixSeedOwnership, which
         # will eliminate islands for us.
-        for i in range(0, cols):
-            for j in range(0, rows):
+        for i in xrange(0, cols):
+            for j in xrange(0, rows):
                 if blocks[i][j] == BLOCK_UNALLOCATED:
                     space = Vector2D(i, j)
                     zoneName = blockToZoneMap[space]
@@ -453,11 +453,11 @@ class Map:
         # terrain mismatches.
         amount = wallThickness / 2
         newBlocks = copy.deepcopy(self.blocks)
-        for i in range(amount, self.numCols - amount):
-            for j in range(amount, self.numRows - amount):
+        for i in xrange(amount, self.numCols - amount):
+            for j in xrange(amount, self.numRows - amount):
                 if self.blocks[i][j] == BLOCK_WALL:
-                    for ii in range(-amount, amount + 1):
-                        for jj in range(-amount, amount + 1):
+                    for ii in xrange(-amount, amount + 1):
+                        for jj in xrange(-amount, amount + 1):
                             newBlocks[i-ii][j-jj] = BLOCK_WALL
         self.blocks = newBlocks
 
@@ -469,8 +469,8 @@ class Map:
     # - 2: filled space next to empty space
     # - Tuple of block typestring (e.g. 'upleft') and adjacency signature
     def setBlocks(self):
-        for i in range(0, self.numCols):
-            for j in range(0, self.numRows):
+        for i in xrange(0, self.numCols):
+            for j in xrange(0, self.numRows):
                 if self.blocks[i][j] == BLOCK_UNALLOCATED:
                     self.blocks[i][j] = ('center', 0)
                 elif self.blocks[i][j] == BLOCK_WALL:
@@ -491,8 +491,8 @@ class Map:
         adjacencies = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
         numOpen = 0
 
-        for i in range(x-1,x+2):
-            for j in range(y-1,y+2):
+        for i in xrange(x-1,x+2):
+            for j in xrange(y-1,y+2):
                 if self.getBlockAtGridLoc(Vector2D(i, j)) == BLOCK_EMPTY:
                     adjacencies[j-(y-1)][i-(x-1)] = 0
                     numOpen += 1
@@ -515,8 +515,8 @@ class Map:
         chunks = []
         seenSpaces = set()
         
-        for i in range(0, self.numCols):
-            for j in range(0, self.numRows):
+        for i in xrange(0, self.numCols):
+            for j in xrange(0, self.numRows):
                 startLoc = Vector2D(i, j)
                 if (self.blocks[i][j] == BLOCK_WALL and 
                         startLoc not in seenSpaces):
@@ -549,8 +549,8 @@ class Map:
     # At this time, also instantiate any props that are attached to the blocks.
     # \todo Replace block info tuples with some container class.
     def instantiateBlocks(self):
-        for i in range(0, self.numCols):
-            for j in range(0, self.numRows):
+        for i in xrange(0, self.numCols):
+            for j in xrange(0, self.numRows):
                 if isinstance(self.blocks[i][j], tuple):
                     (type, signature) = self.blocks[i][j]
                     loc = Vector2D(i, j)
@@ -710,8 +710,8 @@ class Map:
         numCols = len(blocks)
         numRows = len(blocks[0])
         
-        for i in range(0, numCols):
-            for j in range(0, numRows):
+        for i in xrange(0, numCols):
+            for j in xrange(0, numRows):
                 key = Vector2D(i, j)
                 if (blocks[i][j] == BLOCK_EMPTY and 
                         key not in spaceToChunkMap and 
@@ -829,7 +829,7 @@ class Map:
             width = platform.width
             first = int(loc.x - width / 2.0)
             last = int(loc.x + width / 2.0)
-            for x in range(first, last):
+            for x in xrange(first, last):
                 if (x < 0 or x >= self.numCols or 
                         self.blocks[x][loc.iy] == BLOCK_UNALLOCATED):
                     continue
@@ -862,8 +862,8 @@ class Map:
         if blocks is not None:
             numCols = len(blocks)
             numRows = len(blocks[0])
-            for i in range(0, numCols):
-                for j in range(0, numRows):
+            for i in xrange(0, numCols):
+                for j in xrange(0, numRows):
                     rect = pygame.rect.Rect((i * size, j * size), (size, size))
                     if blocks[i][j] in (BLOCK_UNALLOCATED, None):
                         pygame.draw.rect(screen, (64, 64, 64), rect)
@@ -935,14 +935,14 @@ class Map:
         
         self.backgroundQuadTree.draw(screen, center, 0, scale)
                 
-        for x in range(0, self.numCols):
-            for y in range(0, self.numRows):
+        for x in xrange(0, self.numCols):
+            for y in xrange(0, self.numRows):
                 for effect in self.envGrid[x][y]:
                     effect.draw(screen, Vector2D(x, y).toRealspace(), center, 0, scale)
 
-        for y in range(self.numRows - 1, 0, -1):
+        for y in xrange(self.numRows - 1, 0, -1):
             # Draw from bottom to top because blocks may "hang" down a bit.
-            for x in range(0, self.numCols):
+            for x in xrange(0, self.numCols):
                 block = self.blocks[x][y]
                 if block:
                     block.draw(screen, center, 0, scale)
@@ -962,10 +962,10 @@ class Map:
         rect.center = cameraLoc.tuple()
         min = Vector2D(rect.topleft).toGridspace().sub(Vector2D(1, 1))
         max = Vector2D(rect.bottomright).toGridspace().add(Vector2D(2, 2))
-        for x in range(min.ix, max.ix):
+        for x in xrange(min.ix, max.ix):
             if x < 0 or x >= self.numCols:
                 continue
-            for y in range(min.iy, max.iy):
+            for y in xrange(min.iy, max.iy):
                 if y < 0 or y >= self.numRows:
                     continue
                 for effect in self.envGrid[x][y]:
@@ -979,10 +979,10 @@ class Map:
         rect.center = cameraLoc.tuple()
         min = Vector2D(rect.topleft).toGridspace().sub(Vector2D(1, 1))
         max = Vector2D(rect.bottomright).toGridspace().add(Vector2D(2, 2))
-        for x in range(min.ix, max.ix):
+        for x in xrange(min.ix, max.ix):
             if x < 0 or x >= self.numCols:
                 continue
-            for y in range(min.iy, max.iy):
+            for y in xrange(min.iy, max.iy):
                 if y < 0 or y >= self.numRows or not self.blocks[x][y]:
                     continue
                 self.blocks[x][y].draw(screen, cameraLoc, progress)
@@ -1086,10 +1086,10 @@ class Map:
         polyRect = poly.getBounds(loc)
         excludedColumns = dict()
         excludedRows = dict()
-        for x in range(max(0, upperLeft.ix), min(self.numCols, lowerRight.ix)):
+        for x in xrange(max(0, upperLeft.ix), min(self.numCols, lowerRight.ix)):
             if x in excludedColumns:
                 continue
-            for y in range(max(0, upperLeft.iy), min(self.numRows, lowerRight.iy)):
+            for y in xrange(max(0, upperLeft.iy), min(self.numRows, lowerRight.iy)):
                 if y in excludedRows:
                     continue
                 if (self.blocks[x][y] != BLOCK_EMPTY and
@@ -1160,10 +1160,10 @@ class Map:
                 logger.inform("Loading a",self.numCols,"by",self.numRows,"map")
                 self.blocks = []
                 self.envGrid = []
-                for i in range(0, self.numCols):
+                for i in xrange(0, self.numCols):
                     self.blocks.append([])
                     self.envGrid.append([])
-                    for j in range(0, self.numRows):
+                    for j in xrange(0, self.numRows):
                         self.blocks[i].append(BLOCK_EMPTY)
                         self.envGrid[i].append([])
 
@@ -1225,15 +1225,15 @@ class Map:
         fh.write("%d,%d\n" % (self.numCols, self.numRows))
         fh.write("%d,%d\n" % (self.startLoc.x, self.startLoc.y))
         fh.write("blocks:\n")
-        for x in range(0, self.numCols):
-            for y in range(0, self.numRows):
+        for x in xrange(0, self.numCols):
+            for y in xrange(0, self.numRows):
                 if self.blocks[x][y] not in (BLOCK_EMPTY, None):
                     block = self.blocks[x][y]
                     fh.write("%d,%d,%s,%s,%s\n" % (x, y, block.orientation,
                         block.terrain.zone, block.terrain.region))
         fh.write("enveffects:\n")
-        for x in range(0, self.numCols):
-            for y in range(0, self.numRows):
+        for x in xrange(0, self.numCols):
+            for y in xrange(0, self.numRows):
                 if self.envGrid[x][y]:
                     string = ",".join(effect.name for effect in self.envGrid[x][y])
                     fh.write("%d,%d:%s\n" % (x, y, string))

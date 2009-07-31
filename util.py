@@ -121,7 +121,7 @@ def adjacencyArrayToSignatures(kernel):
         array.extend(row)
 
     result = [0]
-    for i in range(0, len(array)):
+    for i in xrange(0, len(array)):
         temp = []
         if array[i] == 2:
             temp.extend(result)

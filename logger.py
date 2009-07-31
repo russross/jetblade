@@ -80,12 +80,12 @@ def error(*entries):
 def fatal(*entries):
     message = logger.log(LOG_FATAL, *entries)
     errorStrings = ["Sorry, an error occurred: "]
-    for i in range(0, len(message), fatalMessageLineLength):
+    for i in xrange(0, len(message), fatalMessageLineLength):
         errorStrings.append(message[i*fatalMessageLineLength:(i+1)*fatalMessageLineLength])
     errorStrings.append("The program will now shut down.")
     errorFont = pygame.font.Font(None, 24)
     game.screen.fill((0, 0, 0))
-    for i in range(0, len(errorStrings)):
+    for i in xrange(0, len(errorStrings)):
         line = errorStrings[i]
         textSurface = errorFont.render(line, True, (255, 255, 255))
         rect = textSurface.get_rect()

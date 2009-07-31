@@ -400,10 +400,10 @@ class TreeNode:
 
         # Iterate over points in the accepted area, converting them to 
         # open space surrounded by walls if they are related to us.
-        for x in range(max(center.ix - radius, 1), 
-                       min(center.ix + radius, game.map.numCols - 1)):
-            for y in range(max(center.iy - radius, 1), 
-                           min(center.iy + radius, game.map.numRows - 1)):
+        for x in xrange(max(center.ix - radius, 1), 
+                        min(center.ix + radius, game.map.numCols - 1)):
+            for y in xrange(max(center.iy - radius, 1), 
+                            min(center.iy + radius, game.map.numRows - 1)):
                 point = Vector2D(x, y)
                 dist = distFunc(point, center)
                 canClaimPoint = game.map.blocks[x][y] == map.BLOCK_UNALLOCATED
