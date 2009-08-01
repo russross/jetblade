@@ -23,6 +23,11 @@ cdef class Range1D:
         return Range1D(self.min + value, self.max + value)
 
 
+    ## Extend us so that we contain the given value.
+    cpdef public Range1D extend(Range1D self, double value):
+        return Range1D(min(self.min, value), max(self.max, value))
+
+
     ## Return the amount of overlap between ourself and the given range.
     cpdef public double getOverlap(Range1D self, Range1D range):
         result = -1

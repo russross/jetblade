@@ -1,12 +1,11 @@
 import constants
 import util
-import logger
 import range1d
 from vector2d cimport Vector2D
 from vector2d import Vector2D
 from range1d cimport Range1D
 from range1d import Range1D
-
+import logger
 import pygame
 
 ## Maximum number of already-calculated projections onto vectors that we 
@@ -47,7 +46,7 @@ cdef class Polygon:
         # Detect if the points we're given make a concave polygon, by looking
         # to see if any of the interior angles go in the wrong direction.
         polygonDirection = None
-        for i in range(0, len(self.points)):
+        for i in xrange(0, len(self.points)):
             p1 = self.points[(i-1) % len(self.points)]
             p2 = self.points[i]
             p3 = self.points[(i+1) % len(self.points)]
@@ -86,8 +85,13 @@ cdef class Polygon:
                               Polygon alt, Vector2D altLoc):
         projectionVectors = self.getProjectionVectors()
 
-        smallestOverlap = constants.BIGNUM
-        overlapVector = None
+        cdef:
+            double smallestOverlap = constants.BIGNUM
+            Vector2D overlapVector = None
+            Vector2D displacedLoc
+            Range1D range1
+            Range1D range2
+            double overlap
         for vector in projectionVectors:
             range1 = self.projectOntoVector(myLoc, vector)
             range2 = alt.projectOntoVector(altLoc, vector)
@@ -122,16 +126,14 @@ cdef class Polygon:
     ## Project us onto the given vector assuming we are at loc. Return the 
     # range (min, max) along the vector formed by that projection.
     cpdef public Range1D projectOntoVector(Polygon self, Vector2D loc, Vector2D vector):
+        cdef Range1D result
         if vector in self.vectorToProjectionCache:
             result = self.vectorToProjectionCache[vector]['result']
             return result.addScalar(loc.getComponentOn(vector))
         result = range1d.Range1D()
         for point in self.points:
             distanceFromOrigin = point.getComponentOn(vector)
-            if distanceFromOrigin < result.min:
-                result.min = distanceFromOrigin
-            if distanceFromOrigin > result.max:
-                result.max = distanceFromOrigin
+            result = result.extend(distanceFromOrigin)
         
         self.vectorToProjectionCache[vector] = {
             'use' : self.projectionCacheUseCounter,
@@ -177,7 +179,7 @@ cdef class Polygon:
 
     ## Return the center, as the average of all points in the polygon.
     cpdef public Vector2D getCenter(Polygon self):
-        center = Vector2D(0, 0)
+        cdef Vector2D center = Vector2D(0, 0)
         for point in self.points:
             center = center.add(point)
         center = center.divide(len(self.points))
@@ -187,7 +189,7 @@ cdef class Polygon:
     ## Return the point on the polygon that matches the given Y coordinate and 
     # is furthest in the specified direction
     cpdef public Vector2D getPointAtHeight(Polygon self, double targetY, double direction):
-        currentPoint = None
+        cdef Vector2D currentPoint = None
         for point in self.points:
             if abs(point.y - targetY) < constants.EPSILON:
                 if currentPoint is None or cmp(point.x - currentPoint.x, 0) == direction:
@@ -199,7 +201,7 @@ cdef class Polygon:
     # is highest or lowest (depending on direction)
     # Just a tweaked version of getPointAtHeight
     cpdef public Vector2D getPointAtX(Polygon self, double targetX, double direction):
-        currentPoint = None
+        cdef Vector2D currentPoint = None
         for point in self.points:
             if abs(point.x - targetX) < constants.EPSILON:
                 if currentPoint is None or cmp(point.y - currentPoint.y, 0) == direction:
@@ -211,7 +213,7 @@ cdef class Polygon:
     # direction and is between the specified heights.
     cpdef public Vector2D getPointBetweenHeights(Polygon self, 
             Range1D targetRange, double direction):
-        currentPoint = None
+        cdef Vector2D currentPoint = None
         for point in self.points:
             if (currentPoint is None or 
                     (targetRange.contains(point.y) and 
@@ -234,9 +236,11 @@ cdef class Polygon:
         result += ']'
         return result
 
-#    def printAdjusted(self, loc):
-#        for point in self.points: # 'print' <--- to trigger my vim commands
-#            print '(', point[0] + loc[0], ',', point[1] + loc[1], ')',
-#        print ''
+    def printAdjusted(self, loc):
+        result = 'polygon at ['
+        for point in self.points: 
+            result += str(point.add(loc)) + ', '
+        result += ']'
+        return result
 
 

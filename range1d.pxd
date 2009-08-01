@@ -8,6 +8,7 @@ cdef class Range1D:
     cpdef public bool contains(Range1D self, double value)
     cpdef public double clamp(Range1D self, double value)
     cpdef public Range1D addScalar(Range1D self, double value)
+    cpdef public Range1D extend(Range1D self, double value)
     cpdef public double getOverlap(Range1D self, Range1D range)
 
 

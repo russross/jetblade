@@ -29,6 +29,9 @@ class Block:
         self.sprite = sprite.Sprite(imagePath, self, self.loc, False)
         self.sprite.setAnimation(self.orientation, False)
 
+        ## Bounding rect
+        self.rect = self.sprite.getBounds(self.loc)
+
 
     ## Return the location of the vertex in the block's polygon that is 
     # furthest in the given direction.
@@ -55,9 +58,10 @@ class Block:
         return self.sprite.getPolygon()
 
 
-    ## Get our bounding polygon
+    ## Get our bounding polygon. We assume that blocks don't move once created,
+    # so their bounding rectangles are fixed.
     def getBounds(self):
-        return self.sprite.getBounds(self.loc)
+        return self.rect
 
 
     ## Return a scalar indicating which spaces adjacent to this block are 

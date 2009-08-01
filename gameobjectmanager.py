@@ -38,7 +38,9 @@ class GameObjectManager:
 
     ## Instantiate a new object of the given name and add it to the tree
     def addNewObject(self, objectName, *args):
-        logger.inform("Adding object named",objectName,"with args",*args)
+        if logger.getLogLevel() >= logger.LOG_INFORM:
+            numObjects = len(self.objectTree.getObjects()) + 1
+            logger.inform("Adding",numObjects,"th object named",objectName,"with args",*args)
         objectPath = constants.objectsPath + '/' + objectName
         objectPath = objectPath.replace('/', '.')
         objectFunc = game.dynamicClassManager.loadDynamicClass(objectPath)

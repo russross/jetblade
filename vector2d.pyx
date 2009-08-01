@@ -163,7 +163,7 @@ cdef class Vector2D:
     # from that projection to the origin.
     cpdef public double getComponentOn(Vector2D self, Vector2D vector):
         cdef Vector2D projection = self.projectOnto(vector)
-        if abs(projection.x) > constants.EPSILON:
+        if abs(vector.x) > constants.EPSILON:
             return projection.x / vector.x
         return projection.y / vector.y
 
