@@ -209,7 +209,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                 self.loc = self.loc.addY(abs(self.vel.x) + 1)
                 self.isGrounded = True
                 # Re-run collision detection so we're put back at the surface.
-                self.handleCollisions()
+                self.checkTerrain()
             else:
                 ## Commence freefall
 #                logger.debug("Ran out of ground; commencing freefall")
@@ -258,37 +258,33 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         # Recognize this situation because we're on the ground, getting
         # ejected straight horizontally by a block at foot level that has no
         # block above it.
-#        logger.debug("Adjusting collision data",collision)
-        # \todo We assume we hit a terrain block here; this isn't necessarily
-        # valid.
-        block = collision.altObject
-        if (not game.map.getBlockAtGridLoc(block.gridLoc.addY(-1)) and 
-                self.wasGrounded and 
-                abs(collision.vector.y) < constants.EPSILON and
-                self.blockIsAtFootLevel(block)):
-#            logger.debug("Converting sloped block collision")
-            collision.distance = self.gravity.y
-            collision.vector = Vector2D(0, -1)
+        if collision.type == 'terrain':
+            block = collision.altObject
+            if (not game.map.getBlockAtGridLoc(block.gridLoc.addY(-1)) and 
+                    self.wasGrounded and 
+                    abs(collision.vector.y) < constants.EPSILON and
+                    self.blockIsAtFootLevel(block)):
+                collision.distance = self.gravity.y
+                collision.vector = Vector2D(0, -1)
 
-        # Convert sideways displacement into vertical displacement if there
-        # is any vertical component, to prevent sliding down slopes.
-        # Also lets us slide along ceilings at full speed when jumping.
-        if self.wasGrounded and collision.vector.y < -constants.EPSILON:
-#            logger.debug("Converting partially-horizontal vector to vertical vector")
-            collision.vector = Vector2D(0, collision.vector.y +
-                    abs(collision.vector.x) * cmp(collision.vector.y, 0))
+            # Convert sideways displacement into vertical displacement if there
+            # is any vertical component, to prevent sliding down slopes.
+            # Also lets us slide along ceilings at full speed when jumping.
+            if self.wasGrounded and collision.vector.y < -constants.EPSILON:
+                collision.vector = Vector2D(0, collision.vector.y +
+                        abs(collision.vector.x) * cmp(collision.vector.y, 0))
 
-        # If we just tried to stand up, force all vertical ejection directions
-        # from blocks above our feet to be downwards. 
-        # We do this because the act of standing can badly 
-        # embed us into a block, causing it to be confused about which direction
-        # we should be ejected in. Without this, we can get ejected upwards
-        # through a block that, last frame, we were crawling beneath.
-        if (self.wasCrawling and not self.shouldCrawl and 
-                collision.vector.y < 0 and 
-                self.getFootLoc().y > block.getBlockCorner(Vector2D(self.facing, 1)).y):
-#            logger.debug("Flipping vertical component of vector to push us down after standing")
-            collision.vector = Vector2D(collision.vector.x, -collision.vector.y)
+            # If we just tried to stand up, force all vertical ejection 
+            # directions from blocks above our feet to be downwards. 
+            # We do this because the act of standing can badly 
+            # embed us into a block, causing it to be confused about which 
+            # direction we should be ejected in. Without this, we can get 
+            # ejected upwards through a block that, last frame, we were 
+            # crawling beneath.
+            if (self.wasCrawling and not self.shouldCrawl and 
+                    collision.vector.y < 0 and 
+                    self.getFootLoc().y > block.getBlockCorner(Vector2D(self.facing, 1)).y):
+                collision.vector = Vector2D(collision.vector.x, -collision.vector.y)
 
         return collision
 

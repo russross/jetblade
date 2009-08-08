@@ -248,11 +248,11 @@ cdef class Vector2D:
 
 ## List of offsets in North, East, West, South directions. Used for iterating 
 # over spaces adjacent to a given space in the map.
-cdef list NEWSPerimeterOrder = [Vector2D(0, -1), Vector2D(1, 0),
-                                Vector2D(-1, 0), Vector2D(0, 1)]
+NEWSPerimeterOrder = [Vector2D(0, -1), Vector2D(1, 0),
+                      Vector2D(-1, 0), Vector2D(0, 1)]
 ## List of offsets in all 8 directions. Used for iterating over spaces adjacent
 # to a given space in the map.
-cdef list perimeterOrder = [Vector2D(0, -1), Vector2D(1, -1), Vector2D(1, 0),
-                            Vector2D(1, 1), Vector2D(0, 1), Vector2D(-1, 1),
-                            Vector2D(-1, 0), Vector2D(-1, -1)]
+perimeterOrder = [Vector2D(0, -1), Vector2D(1, -1), Vector2D(1, 0),
+                  Vector2D(1, 1), Vector2D(0, 1), Vector2D(-1, 1),
+                  Vector2D(-1, 0), Vector2D(-1, -1)]
 

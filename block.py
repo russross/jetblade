@@ -5,7 +5,7 @@ import sprite
 class Block:
 
     ## Create a new Block instance.
-    def __init__(self, loc, orientation, adjacencySignature, terrain):
+    def __init__(self, loc, orientation, terrain):
 
         ## Location in realspace
         self.loc = loc
@@ -16,10 +16,6 @@ class Block:
         ## There are currently 20 different block orientations, most of which
         # have a square collision polygon.
         self.orientation = orientation
-
-        ## Adjacency signatures are a short way of indicating which of the 8
-        # neighboring spaces are occupied by blocks. 
-        self.adjacencySignature = adjacencySignature
 
         ## TerrainInfo instance to let the block know what it looks like.
         self.terrain = terrain
@@ -62,12 +58,6 @@ class Block:
     # so their bounding rectangles are fixed.
     def getBounds(self):
         return self.rect
-
-
-    ## Return a scalar indicating which spaces adjacent to this block are 
-    # occupied.
-    def getAdjacencySignature(self):
-        return self.adjacencySignature
 
 
     ## Convert to string for output

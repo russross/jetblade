@@ -2,6 +2,7 @@ import sprite
 import constants
 import logger
 import game
+import collisiondata
 from vector2d import Vector2D
 
 ## Magnitude of the horizontal portion of a normalized vector, past which we 
@@ -60,7 +61,7 @@ class PhysicsObject:
             self.vel = self.vel.add(self.gravity)
         self.vel = self.vel.clamp(self.maxVel)
         self.loc = self.loc.add(self.vel)
-        self.handleCollisions()
+        self.checkTerrain()
         self.postCollisionUpdate()
         self.sprite.update(self.loc)
         return True
@@ -81,43 +82,58 @@ class PhysicsObject:
         pass
 
 
-    ## React to colliding with objects by killing velocity and backing out
+    ## React to colliding with terrain by killing velocity and backing out
     # until we are not intersecting again.
-    # Use self.adjestCollision() to modify ejection vectors and distances;
-    # use self.hit[Floor|Wall|Ceiling] to react to running into terrain of 
-    # those types.
-    # \todo Currently assumes all collisions are with terrain.
-    def handleCollisions(self):
+    def checkTerrain(self):
         self.collisions = []
         collision = game.map.collidePolygon(self.sprite.getPolygon(), self.loc)
         numTries = 0
         while collision.vector is not None and numTries < maxCollisionRetries:
             numTries += 1
-
-            collision = self.adjustCollision(collision)
-            self.collisions.append(collision)
-
-            shouldReactToCollision = self.hitTerrain(collision)
-            if collision.vector.y > constants.EPSILON:
-                if not self.hitCeiling(collision):
-                    shouldReactToCollision = False
-            elif collision.vector.y < -constants.EPSILON:
-                if not self.hitFloor(collision):
-                    shouldReactToCollision = False
-
-            # Hit a wall
-            if (abs(collision.vector.x) > wallHorizontalVectorComponent and
-                    cmp(self.vel.x, 0) != cmp(collision.vector.x, 0)):
-                if not self.hitWall(collision):
-                    shouldReactToCollision = False
-
-            if shouldReactToCollision:
-                self.loc = self.loc.add(collision.vector.multiply(collision.distance))
-
+            self.processCollision(collision)
             collision = game.map.collidePolygon(self.sprite.getPolygon(), self.loc)
         if numTries == maxCollisionRetries:
             # We got stuck in a loop somehow. Eject upwards.
             self.loc = self.loc.add(zipAmount)
+
+
+    ## Hit a non-terrain object. 
+    def hitObject(self, alt):
+        (overlap, vector) = alt.getPolygon().runSAT(alt.loc,
+                                                    self.getPolygon(), self.loc)
+        if vector is not None:
+            collision = collisiondata.CollisionData(vector, overlap, alt.name, alt)
+            logger.debug("Object",self.id,"at",self.loc,"hit",alt.id,"at", 
+                         alt.loc,":",collision)
+            self.processCollision(collision)
+
+
+    ## Handle running into something.
+    # Use self.adjustCollision() to modify ejection vectors and distances;
+    # use self.hit[Floor|Wall|Ceiling] to react to running into terrain of 
+    # those types.
+    # \todo Currently assumes all collisions are with terrain.
+    def processCollision(self, collision):
+        collision = self.adjustCollision(collision)
+        self.collisions.append(collision)
+
+        shouldReactToCollision = self.hitTerrain(collision)
+        if collision.vector.y > constants.EPSILON:
+            if not self.hitCeiling(collision):
+                shouldReactToCollision = False
+        elif collision.vector.y < -constants.EPSILON:
+            if not self.hitFloor(collision):
+                shouldReactToCollision = False
+
+        # Hit a wall
+        if (abs(collision.vector.x) > wallHorizontalVectorComponent and
+                cmp(self.vel.x, 0) != cmp(collision.vector.x, 0)):
+            if not self.hitWall(collision):
+                shouldReactToCollision = False
+
+        if shouldReactToCollision:
+            self.loc = self.loc.add(collision.vector.multiply(collision.distance))
+
 
 
     ## Perform any necessary tweaks to the collision vector or distance.
@@ -161,6 +177,11 @@ class PhysicsObject:
     ## Passthrough to Sprite.getBounds()
     def getBounds(self):
         return self.sprite.getBounds(self.loc)
+
+
+    ## Passthrough to Sprite.getPolygon()
+    def getPolygon(self):
+        return self.sprite.getPolygon(self.loc)
 
 
     ## Return a string representing the facing of the object

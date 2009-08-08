@@ -81,6 +81,8 @@ cdef class Polygon:
 
     ## Use the Separating Axis Theorem to collide two convex polygons.
     # See http://www.metanetsoftware.com/technique/tutorialA.html
+    # Return a tuple (distance, vector), such that if the alt polygon were
+    # moved distance * vector then it would no longer overlap.
     cpdef public tuple runSAT(Polygon self, Vector2D myLoc, 
                               Polygon alt, Vector2D altLoc):
         projectionVectors = self.getProjectionVectors()

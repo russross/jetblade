@@ -1,3 +1,5 @@
+from vector2d import Vector2D
+
 import math
 
 ## Run animation cycle rate depends on velocity.
@@ -30,17 +32,17 @@ def crawlTurnUpdate(obj):
 
 
 ## Create an attack on the left
-def kickLeft(obj, manager):
-    manager.addNewObject('attacks/baseattack', 
+def kickLeft(obj, game):
+    game.gameObjectManager.addNewObject('attacks/baseattack', 
                          [(55,30), (95,30), (95,145), (55,145)],
-                         (-40, 0), obj, 7, 10)
+                          Vector2D(-40, 0), obj, 7, 10)
 
 
 ## Create an attack on the right
-def kickRight(obj, manager):
-    manager.addNewObject('attacks/baseattack', 
+def kickRight(obj, game):
+    game.gameObjectManager.addNewObject('attacks/baseattack', 
                          [(55,30), (95,30), (95,145), (55,145)],
-                         (40, 0), obj, 7, 10)
+                          Vector2D(40, 0), obj, 7, 10)
     
 
 standingPolygon = [(55,10), (95,10), (95,145), (55,145)]

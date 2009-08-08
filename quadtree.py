@@ -123,9 +123,19 @@ class QuadTree:
     ## Update all objects in the tree. Rebalance as we go, by returning all 
     # objects that we cannot hold any longer, and pushing down objects that
     # can fit into one of our children.
-    def update(self):
+    def update(self, collisionCandidates = []):
         displacedObjects = []
         newObjects = []
+        colliders = []
+        colliders.extend(self.objects)
+        colliders.extend(collisionCandidates)
+        # Check each object against other objects for collision.
+        for i, firstObject in enumerate(colliders):
+            for secondObject in colliders[i+1:]:
+                if firstObject.getBounds().colliderect(secondObject.getBounds()):
+                    firstObject.hitObject(secondObject)
+                    secondObject.hitObject(firstObject)
+                
         for object in self.objects:
             if object.update():
                 if not self.canAcceptObject(object):

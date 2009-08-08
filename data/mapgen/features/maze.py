@@ -35,7 +35,7 @@ class Maze(straight.StraightTunnel):
 
         # Get the root of the tree we're building
         delta = startLoc.sub(endLoc).normalize()
-        firstCell = startLoc.int()
+        firstCell = startLoc.toInt()
         if firstCell.x % 2:
             firstCell = firstCell.addX(cmp(delta.x, 0) or 1)
         if firstCell.y % 2:
@@ -100,7 +100,7 @@ class Maze(straight.StraightTunnel):
             seenCells.add(neighbor)
             cellStack.append(neighbor)
             # Get the offset to reach the wall.
-            delta = neighbor.sub(cell).divide(2).int()
+            delta = neighbor.sub(cell).divide(2).toInt()
             self.map.blocks[delta.ix][delta.iy] = map.BLOCK_EMPTY
 
         # Step five: because of our limit on vertical expansion, it's possible 

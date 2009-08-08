@@ -319,14 +319,11 @@ class Map:
         logger.inform("Building platforms at",pygame.time.get_ticks())
         self.buildPlatforms()
 
-        # Set the block types for each cell in self.blocks.
-        logger.inform("Setting block types at",pygame.time.get_ticks())
-        self.setBlocks()
-
         # Turn those block types into instances of the Block class.
         logger.inform("Instantiating blocks at",pygame.time.get_ticks())
         self.instantiateBlocks()
 
+        logger.inform("Drawing status at",pygame.time.get_ticks())
         self.markLoc = None
         self.drawStatus(self.blocks, None, self.deadSeeds)
 
@@ -335,6 +332,7 @@ class Map:
         while self.blocks[self.startLoc.ix][self.startLoc.iy] != BLOCK_EMPTY:
             self.startLoc = self.startLoc.addY(-1)
 
+        logger.inform("Saving map file at",pygame.time.get_ticks())
         self.writeMap(str(game.seed))
 
         logger.inform("Done making map at",pygame.time.get_ticks())
@@ -468,17 +466,27 @@ class Map:
     # - 1: filled space surrounded by other filled space
     # - 2: filled space next to empty space
     # - Tuple of block typestring (e.g. 'upleft') and adjacency signature
-    def setBlocks(self):
+    def instantiateBlocks(self):
         for i in xrange(0, self.numCols):
             for j in xrange(0, self.numRows):
+                loc = Vector2D(i, j)
+                terrain = self.getTerrainInfoAtGridLoc(loc)
+                sector = self.getSectorAtGridLoc(loc)
+                if sector is not None:
+                    terrain = sector.getTerrainInfo()
+                blockLoc = loc.toRealspace()
+
                 if self.blocks[i][j] == BLOCK_UNALLOCATED:
-                    self.blocks[i][j] = ('center', 0)
+                    self.blocks[i][j] = block.Block(blockLoc, 'center', terrain)
                 elif self.blocks[i][j] == BLOCK_WALL:
                     (type, signature) = self.getBlockType(i, j)
-                    self.blocks[i][j] = (type, signature)
-                else:
-                    # This is probably unnecessary.
-                    self.blocks[i][j] = BLOCK_EMPTY
+                    self.blocks[i][j] = block.Block(blockLoc, type, terrain)
+                    # Choose a prop to attach to the block.
+                    newProp = game.propManager.selectProp(terrain, signature)
+                    if newProp is not None:
+                        newProp.loc = newProp.loc.add(blockLoc)
+                        self.addBackgroundObject(newProp)
+                # else self.blocks[i][j] == BLOCK_EMPTY, do nothing
 
 
     ## Return the type of block that should be drawn at the given grid loc.
@@ -489,13 +497,11 @@ class Map:
         # 0 = empty.
         # 1 = occupied.
         adjacencies = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
-        numOpen = 0
 
         for i in xrange(x-1,x+2):
             for j in xrange(y-1,y+2):
                 if self.getBlockAtGridLoc(Vector2D(i, j)) == BLOCK_EMPTY:
                     adjacencies[j-(y-1)][i-(x-1)] = 0
-                    numOpen += 1
 
         # We should always get 1 result back because all values in the 
         # adjacencies array are 0 or 1 (see that function for more information).
@@ -541,30 +547,6 @@ class Map:
             if len(chunk) < minimumIslandSize:
                 for loc in chunk:
                     self.blocks[loc.ix][loc.iy] = BLOCK_EMPTY
-
-
-    ## This is called right after setBlocks, which puts block terrain info
-    # tuples into self.blocks. For each block in self.blocks that contains a 
-    # tuple, create a Block instance.
-    # At this time, also instantiate any props that are attached to the blocks.
-    # \todo Replace block info tuples with some container class.
-    def instantiateBlocks(self):
-        for i in xrange(0, self.numCols):
-            for j in xrange(0, self.numRows):
-                if isinstance(self.blocks[i][j], tuple):
-                    (type, signature) = self.blocks[i][j]
-                    loc = Vector2D(i, j)
-                    terrain = self.getTerrainInfoAtGridLoc(loc)
-                    sector = self.getSectorAtGridLoc(loc)
-                    if sector is not None:
-                        terrain = sector.getTerrainInfo()
-                    blockLoc = loc.toRealspace()
-                    self.blocks[i][j] = block.Block(blockLoc, type, signature, terrain)
-                    # Choose a prop to attach to the block.
-                    newProp = game.propManager.selectProp(terrain, signature)
-                    if newProp is not None:
-                        newProp.loc = newProp.loc.add(blockLoc)
-                        self.addBackgroundObject(newProp)
 
 
     ## Plant a seed for hollowing out part of the map at the desired
@@ -1192,7 +1174,7 @@ class Map:
                 if (zone, region) not in terrainInfoCache:
                     terrainInfoCache[(zone, region)] = terraininfo.TerrainInfo(zone, region)
                 self.blocks[x][y] = block.Block(Vector2D(x, y).toRealspace(),
-                                            orientation, None, 
+                                            orientation, 
                                             terrainInfoCache[(zone, region)])
             elif mode == 'enveffects':
                 if line == 'bgprops:':
@@ -1219,6 +1201,7 @@ class Map:
                         prop.Prop(Vector2D(x, y), 
                                   terrainInfoCache[(zone, region)], 
                                   group, item))
+        logger.inform("Done loading map at",pygame.time.get_ticks())
 
 
     ## Write our map to disk so it can be read by loadMap().

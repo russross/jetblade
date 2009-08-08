@@ -172,9 +172,8 @@ def startGame():
     game.gameObjectManager.setup()
     game.player = player.Player()
     game.gameObjectManager.addObject(game.player)
-    for i in xrange(1, 88):
-        game.gameObjectManager.addNewObject('creatures/darkclone',
-                game.player.loc.add(Vector2D(i*10, 0)))
+    game.gameObjectManager.addNewObject('creatures/darkclone',
+            game.player.loc.add(Vector2D(300, 0)))
 
 
 ## The main game loop. Performs a target of physicsUpdatesPerSecond
@@ -228,12 +227,14 @@ def gameLoop():
         timeAccum += dt
 
         count = 0
-        while timeAccum >= physicsUpdateRate:
+        if timeAccum > physicsUpdateRate:
+            # Only do at most one physics update between drawings, even if more
+            # time has passed.
             count += 1
             physicsNum += 1
             game.gameObjectManager.update()
             cam.update()
-            timeAccum -= physicsUpdateRate
+            timeAccum -= int(timeAccum / physicsUpdateRate) * physicsUpdateRate
 
         logger.debug("Did",count,"physics updates, have",timeAccum,"in the accumulator towards next physics update (step",physicsUpdateRate,")")
 
