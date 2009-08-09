@@ -54,6 +54,9 @@ class Animation:
         self.frames = game.imageManager.loadAnimation(self.group + '/' + self.name)
         ## Current frame of animation; an index into self.frames.
         self.frame = 0
+
+        ## Previous frame as of the last update
+        self.prevFrame = 0
         
         ## Tracks if we've reached the end of the animation.
         self.isComplete = False
@@ -70,13 +73,13 @@ class Animation:
     # otherwise, use self.updateRate. Return True if the animation is complete,
     # False otherwise.
     def update(self, owner):
-        curFrame = self.frame
+        self.prevFrame = self.frame
         if self.frame < len(self.frames) - 1 or self.shouldLoop:
             if self.updateFunc is not None:
                 self.frame += self.updateFunc(owner)
             else:
                 self.frame += self.updateRate
-        if (int(curFrame) != int(self.frame) and 
+        if (int(self.prevFrame) != int(self.frame) and 
                 int(self.frame) in self.frameActions):
             self.frameActions[int(self.frame)](owner, game)
         if (not self.shouldLoop and not self.isComplete and 
@@ -88,11 +91,12 @@ class Animation:
 
 
     ## Draw the animation to screen, taking self.drawOffset into account.
-    def draw(self, screen, camera, loc, scale = 1):
+    def draw(self, screen, camera, loc, progress, scale = 1):
         drawLoc = loc
         if self.drawOffset.magnitudeSquared() > constants.EPSILON or scale != 1:
             drawLoc = loc.add(self.drawOffset).multiply(scale).round()
-        surface = util.getDrawFrame(self.frame, self.frames)
+        frame = int(self.prevFrame + (self.frame - self.prevFrame) * progress)
+        surface = util.getDrawFrame(frame, self.frames)
         game.imageManager.drawGameObjectAt(screen, surface, drawLoc, camera, scale)
         if logger.getLogLevel() == logger.LOG_DEBUG:
             # Draw the bounding polygon and location information
@@ -110,6 +114,7 @@ class Animation:
     def reset(self):
         logger.debug("Animation",self.name,"resetting")
         self.frame = 0
+        self.prevFrame = 0
         self.isComplete = False
     
 

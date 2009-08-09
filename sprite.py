@@ -108,7 +108,7 @@ class Sprite:
     def draw(self, screen, camera, progress, drawLoc = None, scale = 1):
         if drawLoc is None:
             drawLoc = self.getDrawLoc(progress)
-        self.animations[self.currentAnimation].draw(screen, camera, drawLoc, scale)
+        self.animations[self.currentAnimation].draw(screen, camera, drawLoc, progress, scale)
 
 
     ## Interpolate between self.prevLoc and self.curLoc, using progress to 
