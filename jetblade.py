@@ -69,9 +69,6 @@ fpsDisplayLoc = Vector2D(constants.sw - 20, constants.sh - 40)
 ## Number of physics updates to try to make each second. Tweaking this directly
 # determines the speed of gameplay, to the limits of the computer's hardware.
 physicsUpdatesPerSecond = 30
-## Number of physics updates to try to make each second when we're recording
-# images of the game to file.
-slowPhysicsUpdatesPerSecond = 4
 
 ## Wrapper around the introductory logic; this is where we set our cProfile 
 # hooks.
@@ -172,8 +169,8 @@ def startGame():
     game.gameObjectManager.setup()
     game.player = player.Player()
     game.gameObjectManager.addObject(game.player)
-    game.gameObjectManager.addNewObject('creatures/darkclone',
-            game.player.loc.add(Vector2D(300, 0)))
+#    game.gameObjectManager.addNewObject('creatures/darkclone',
+#            game.player.loc.add(Vector2D(300, 0)))
 
 
 ## The main game loop. Performs a target of physicsUpdatesPerSecond
@@ -196,11 +193,11 @@ def gameLoop():
     zoomLevel = 1
 
     while 1:
-        if pygame.time.get_ticks() > 10000:
-            logger.inform("Finished",game.frameNum, 
-                          "frames for an average framerate of",
-                          game.frameNum*1000/pygame.time.get_ticks())
-            sys.exit()
+#        if pygame.time.get_ticks() > 10000:
+#            logger.inform("Finished",game.frameNum, 
+#                          "frames for an average framerate of",
+#                          game.frameNum*1000/pygame.time.get_ticks())
+#            sys.exit()
         logger.debug("Frame %d Physics %d Time %d" % (game.frameNum, physicsNum, pygame.time.get_ticks()))
         events = game.eventManager.processEvents([], constants.CONTEXT_GAME)
         # Check for a couple of events.
@@ -208,13 +205,6 @@ def gameLoop():
             if event.type in (KEYDOWN, KEYUP):
                 if event.action == 'startRecording' and event.type == KEYUP:
                     game.isRecording = not game.isRecording
-                    if game.isRecording:
-                        # Recording images to disk takes so long that it 
-                        # causes massive frameskip; tweak the target 
-                        # physics update rate to compensate.
-                        physicsUpdateRate = 1000.0 / slowPhysicsUpdatesPerSecond
-                    else:
-                        physicsUpdateRate = 1000.0 / physicsUpdatesPerSecond
                 elif event.action == 'toggleDebug' and event.type == KEYUP:
                     if logger.getLogLevel() != logger.LOG_DEBUG:
                         logger.setLogLevel(logger.LOG_DEBUG)
