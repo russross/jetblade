@@ -11,7 +11,7 @@ class GameObjectManager:
         ## QuadTree that holds all dynamic objects. Delay instantiating this
         # until the game map is ready.
         self.objectTree = None
-  
+
   
     ## Set up our tree now that the map's done being made.
     def setup(self):
@@ -23,7 +23,10 @@ class GameObjectManager:
     def update(self):
         if logger.getLogLevel() == logger.LOG_DEBUG:
             logger.debug("Updating",len(self.objectTree.getObjects()),"objects")
-        self.objectTree.update()
+        self.objectTree.prepObjects()
+        self.objectTree.runObjectCollisionDetection()
+        self.objectTree.runTerrainCollisionDetection()
+        self.objectTree.cleanupObjects()
 
 
     ## Draw all objects

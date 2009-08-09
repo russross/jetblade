@@ -78,7 +78,7 @@ class Animation:
                 self.frame += self.updateRate
         if (int(curFrame) != int(self.frame) and 
                 int(self.frame) in self.frameActions):
-            self.frameActions[int(self.frame)](owner, game.gameObjectManager)
+            self.frameActions[int(self.frame)](owner, game)
         if (not self.shouldLoop and not self.isComplete and 
                 self.frame >= len(self.frames) - 1):
             # Animation done

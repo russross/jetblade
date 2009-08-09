@@ -1056,46 +1056,56 @@ class Map:
         return self.startLoc
 
 
-    ## Collide the provided polygon against terrain tiles. Return the tile with
-    # the largest ejection vector (as that is the tile that the polygon probably
-    # hit first).
-    def collidePolygon(self, poly, loc):
-        longestOverlap = -constants.BIGNUM
+    ## Collide the given object against our terrain. Iterate over all blocks
+    # near the object's polygon, run SAT on them, and inform the object of 
+    # the results.
+    def collideObject(self, object):
         resultVector = None
         resultBlock = None
-        polyRect = poly.getBounds(loc)
-        excludedColumns = dict()
-        excludedRows = dict()
-        upperLeft = poly.upperLeft.add(loc).toGridspace().add(Vector2D(-1, -1))
-        lowerRight = poly.lowerRight.add(loc).toGridspace().add(Vector2D(2, 2))
-        xvals = range(max(0, upperLeft.ix), min(self.numCols, lowerRight.ix))
-        yvals = range(max(0, upperLeft.iy), min(self.numRows, lowerRight.iy))
-        for x in xvals:
-            if x in excludedColumns:
-                continue
-            for y in yvals:
-                if y in excludedRows:
+        isFirstPass = True
+        numAttempts = 0
+        while isFirstPass or resultVector is not None:
+            isFirstPass = False
+            resultVector = None
+            numAttempts += 1
+
+            longestOverlap = -constants.BIGNUM
+            poly = object.getPolygon()
+            loc = object.loc
+            polyRect = poly.getBounds(loc)
+            excludedColumns = dict()
+            excludedRows = dict()
+            upperLeft = poly.upperLeft.add(loc).toGridspace().add(Vector2D(-1, -1))
+            lowerRight = poly.lowerRight.add(loc).toGridspace().add(Vector2D(2, 2))
+            xvals = range(max(0, upperLeft.ix), min(self.numCols, lowerRight.ix))
+            yvals = range(max(0, upperLeft.iy), min(self.numRows, lowerRight.iy))
+            for x in xvals:
+                if x in excludedColumns:
                     continue
-                if (self.blocks[x][y] != BLOCK_EMPTY and
-                        self.blocks[x][y].getBounds().colliderect(polyRect)):
-                    (overlap, vector) = self.blocks[x][y].collidePolygon(poly, loc)
-                    if vector is not None:
-                        if overlap > longestOverlap:
-                            longestOverlap = overlap
-                            resultVector = vector
-                            resultBlock = self.blocks[x][y]
-                        # Prune out some blocks that we needn't care about. If
-                        # a creature runs horizontally into one block, then
-                        # all blocks immediately above/below that block are
-                        # uninteresting, for example.
-                        if abs(vector.y) < constants.EPSILON:
-                            excludedColumns[x] = True
-                        elif abs(vector.x) < constants.EPSILON:
-                            excludedRows[y] = True
-        if resultVector is not None:
-            resultVector = self.fixEjectionVector(resultVector, resultBlock)
-        return collisiondata.CollisionData(resultVector, longestOverlap,
-                                           'terrain', resultBlock)
+                for y in yvals:
+                    if y in excludedRows:
+                        continue
+                    if (self.blocks[x][y] != BLOCK_EMPTY and
+                            self.blocks[x][y].getBounds().colliderect(polyRect)):
+                        (overlap, vector) = self.blocks[x][y].collidePolygon(poly, loc)
+                        if vector is not None:
+                            if overlap > longestOverlap:
+                                longestOverlap = overlap
+                                resultVector = vector
+                                resultBlock = self.blocks[x][y]
+                            # Prune out some blocks that we needn't care about. If
+                            # a creature runs horizontally into one block, then
+                            # all blocks immediately above/below that block are
+                            # uninteresting, for example.
+                            if abs(vector.y) < constants.EPSILON:
+                                excludedColumns[x] = True
+                            elif abs(vector.x) < constants.EPSILON:
+                                excludedRows[y] = True
+            if resultVector is not None:
+                resultVector = self.fixEjectionVector(resultVector, resultBlock)
+                collision =  collisiondata.CollisionData(resultVector, 
+                                    longestOverlap, 'terrain', resultBlock)
+                object.processCollision(collision)
 
 
     ## Determine if there is a block adjacent to the given block along the

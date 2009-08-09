@@ -52,24 +52,17 @@ class PhysicsObject:
         self.collisions = []
 
 
-    ## Apply gravity to velocity and velocity to location, then run collision
-    # detection.
-    def update(self):
-        self.AIUpdate()
-        self.preCollisionUpdate()
+    ## Make whatever state changes the AI/player control calls for.
+    def AIUpdate(self):
+        pass
+
+
+    ## Apply gravity to velocity and velocity to location.
+    def applyPhysics(self):
         if self.isGravityOn:
             self.vel = self.vel.add(self.gravity)
         self.vel = self.vel.clamp(self.maxVel)
         self.loc = self.loc.add(self.vel)
-        self.checkTerrain()
-        self.postCollisionUpdate()
-        self.sprite.update(self.loc)
-        return True
-
-
-    ## Make whatever state changes the AI/player control calls for.
-    def AIUpdate(self):
-        pass
 
 
     ## Called right before self.handleCollisions(), to prepare.
@@ -80,6 +73,12 @@ class PhysicsObject:
     ## Called after self.handleCollisions(), to do any necessary cleanup.
     def postCollisionUpdate(self):
         pass
+
+
+    ## Return if we are alive. Returning false here causes the object to be 
+    # removed from the game.
+    def getIsAlive(self):
+        return True
 
 
     ## React to colliding with terrain by killing velocity and backing out
@@ -103,7 +102,7 @@ class PhysicsObject:
                                                     self.getPolygon(), self.loc)
         if vector is not None:
             collision = collisiondata.CollisionData(vector, overlap, alt.name, alt)
-            logger.debug("Object",self.id,"at",self.loc,"hit",alt.id,"at", 
+            logger.inform("Object",self.id,"at",self.loc,"hit",alt.id,"at", 
                          alt.loc,":",collision)
             self.processCollision(collision)
 

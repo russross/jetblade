@@ -1,3 +1,4 @@
+import game
 import constants
 import util
 import logger
@@ -118,6 +119,79 @@ class QuadTree:
         if shouldRecurse:
             for child in self.children:
                 child.rebalanceTree()
+
+
+    ## Prepare all objects in the tree for collision detection.
+    # \todo Reshuffle objects around after applying physics.
+    def prepObjects(self):
+        for object in self.objects:
+            object.AIUpdate()
+            object.preCollisionUpdate()
+            object.applyPhysics()
+        for child in self.children:
+            child.prepObjects()
+
+
+    ## Collide all objects against each other. 
+    # NOTE: we assume that this does not change their locations, which would
+    # require rebalancing the tree.
+    def runObjectCollisionDetection(self, colliders = []):
+        newColliders = []
+        for object in colliders:
+            if self.rect.colliderect(object.getBounds()):
+                newColliders.append(object)
+        newColliders.extend(self.objects)
+        myObjectsIndex = len(self.objects)
+        for i, firstObject in enumerate(newColliders[:-1]):
+            firstRect = firstObject.getBounds()
+            if self.rect.colliderect(firstRect):
+                for secondObject in newColliders[i+1:]:
+                    secondRect = secondObject.getBounds()
+                    if firstRect.colliderect(secondRect):
+                        firstObject.hitObject(secondObject)
+                        secondObject.hitObject(firstObject)
+        for child in self.children:
+            child.runObjectCollisionDetection(newColliders)
+
+
+    ## Collide all objects against terrain.
+    def runTerrainCollisionDetection(self):
+        for object in self.objects:
+            game.map.collideObject(object)
+            object.postCollisionUpdate()
+            # \todo Move this into the object itself. We shouldn't be updating
+            # its sprite for it.
+            object.sprite.update(object.loc)
+        for child in self.children:
+            child.runTerrainCollisionDetection()
+
+
+    ## Run cleanup after all collision detection. Rebalance the tree at this
+    # time, by returning all objects that we cannot hold any longer and pushing
+    # down objects that our children can accept.
+    def cleanupObjects(self):
+        ourNewObjects = []
+        parentsNewObjects = []
+        for object in self.objects:
+            if object.getIsAlive():
+                if not self.canAcceptObject(object):
+                    parentsNewObjects.append(object)
+                else:
+                    didAddToChild = False
+                    for child in self.children:
+                        if child.canAcceptObject(object):
+                            child.addObject(object)
+                            didAddToChild = True
+                            break
+                    if not didAddToChild:
+                        ourNewObjects.append(object)
+        for child in self.children:
+            ourNewObjects.extend(child.cleanupObjects())
+        if self.parent is None:
+            ourNewObjects.extend(parentsNewObjects)
+        self.objects = ourNewObjects
+        return parentsNewObjects
+        
 
 
     ## Update all objects in the tree. Rebalance as we go, by returning all 

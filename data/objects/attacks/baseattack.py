@@ -25,16 +25,21 @@ class BaseAttack(physicsobject.PhysicsObject):
         ## Owner of the attack
         self.owner = owner
         physicsobject.PhysicsObject.__init__(self, owner.loc.add(offset), 'empty')
-        ## Bounding polygon
+        self.gravity = Vector2D(0, 0)
+        # Set a new bounding polygon for our sprite
         newPolygon = polygon.Polygon([Vector2D(p) for p in points])
         self.sprite.overridePolygon(newPolygon)
 
 
     ## Update. Keep our location up to date and check our counter
-    def update(self):
+    def AIUpdate(self):
         logger.debug("Updating base attack at",self.loc)
         self.loc = self.owner.loc.add(self.offset)
         self.remainingTime -= 1
+
+
+    ## Kill us off if the attack is over.
+    def getIsAlive(self):
         if self.remainingTime <= 0:
             return False
         return True
