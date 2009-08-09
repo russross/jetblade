@@ -29,6 +29,11 @@ class GameObjectManager:
         self.objectTree.cleanupObjects()
 
 
+    ## Run an object against terrain collision detection.
+    def checkObjectAgainstTerrain(self, object):
+        game.map.collideObject(object)
+
+
     ## Draw all objects
     def draw(self, screen, camera, progress, scale = 1):
         self.objectTree.draw(screen, camera, progress, scale)

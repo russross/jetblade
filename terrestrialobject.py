@@ -118,7 +118,9 @@ class TerrestrialObject(physicsobject.PhysicsObject):
             # Apply horizontal acceleration or deceleration as needed.
             accelFactor = 1
             accelDirection = self.getAccelDirection()
-            if accelDirection == self.runDirection:
+            if (self.runDirection and 
+                    (accelDirection == self.facing or 
+                     abs(self.vel.x) < constants.EPSILON)):
                 # Accelerate
                 if self.isGrounded:
                     accelFactor = self.runAcceleration
@@ -208,8 +210,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
 #                logger.debug("Pushing self down to hug the ground")
                 self.loc = self.loc.addY(abs(self.vel.x) + 1)
                 self.isGrounded = True
-                # Re-run collision detection so we're put back at the surface.
-                self.checkTerrain()
+                game.gameObjectManager.checkObjectAgainstTerrain(self)
             else:
                 ## Commence freefall
 #                logger.debug("Ran out of ground; commencing freefall")
@@ -347,7 +348,8 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         physicsobject.PhysicsObject.hitFloor(self, collision)
         self.isGrounded = True
         if not self.wasGrounded:
-            self.vel = self.vel.setX(0)
+            # Reduce runspeed on landing
+            self.vel = self.vel.setX(self.vel.x / 2.0)
         self.jumpFrames = 0
         return True
 
