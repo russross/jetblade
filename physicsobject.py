@@ -34,6 +34,8 @@ class PhysicsObject:
         constants.globalId += 1
         ## Name of object, used to look up the sprite.
         self.name = name
+        ## Faction of object, for use in reacting to collisions
+        self.faction = name
         ## Location of the object
         self.loc = loc
         ## Current velocity of the object
@@ -44,12 +46,18 @@ class PhysicsObject:
         self.gravity = defaultGravity.copy()
         ## Maximum velocity in X and Y directions (handled separately)
         self.maxVel = defaultMaxVel.copy()
+        ## Controls if we limit self.vel to be less than self.maxVel
+        self.shouldApplyVelocityCap = True
         ## Direction object is facing (1: right, -1: left)
         self.facing = 1
         ## Sprite for animations and bounding polygons
         self.sprite = sprite.Sprite(name, self, self.loc)
         ## List of collisions received since the last update cycle.
         self.collisions = []
+        ## Damage to do to other objects on contact.
+        self.touchDamage = 0
+        ## Damage that can be sustained before discorporating
+        self.health = constants.BIGNUM
 
 
     ## Make whatever state changes the AI/player control calls for.
@@ -61,7 +69,8 @@ class PhysicsObject:
     def applyPhysics(self):
         if self.isGravityOn:
             self.vel = self.vel.add(self.gravity)
-        self.vel = self.vel.clamp(self.maxVel)
+        if self.shouldApplyVelocityCap:
+            self.vel = self.vel.clamp(self.maxVel)
         self.loc = self.loc.add(self.vel)
 
 
@@ -78,22 +87,13 @@ class PhysicsObject:
     ## Return if we are alive. Returning false here causes the object to be 
     # removed from the game.
     def getIsAlive(self):
-        return True
+        return self.health > 0
 
 
-    ## React to colliding with terrain by killing velocity and backing out
-    # until we are not intersecting again.
-    def checkTerrain(self):
-        self.collisions = []
-        collision = game.map.collidePolygon(self.sprite.getPolygon(), self.loc)
-        numTries = 0
-        while collision.vector is not None and numTries < maxCollisionRetries:
-            numTries += 1
-            self.processCollision(collision)
-            collision = game.map.collidePolygon(self.sprite.getPolygon(), self.loc)
-        if numTries == maxCollisionRetries:
-            # We got stuck in a loop somehow. Eject upwards.
-            self.loc = self.loc.add(zipAmount)
+    ## Perform any actions required on death, e.g. explosions, dropping items,
+    # etc.
+    def die(self):
+        pass
 
 
     ## Hit a non-terrain object. 
@@ -101,9 +101,7 @@ class PhysicsObject:
         (overlap, vector) = alt.getPolygon().runSAT(alt.loc,
                                                     self.getPolygon(), self.loc)
         if vector is not None:
-            collision = collisiondata.CollisionData(vector, overlap, alt.name, alt)
-            logger.inform("Object",self.id,"at",self.loc,"hit",alt.id,"at", 
-                         alt.loc,":",collision)
+            collision = collisiondata.CollisionData(vector, overlap, alt.faction, alt)
             self.processCollision(collision)
 
 
@@ -113,26 +111,26 @@ class PhysicsObject:
     # those types.
     # \todo Currently assumes all collisions are with terrain.
     def processCollision(self, collision):
-        collision = self.adjustCollision(collision)
-        self.collisions.append(collision)
+        if collision.type == 'solid':
+            collision = self.adjustCollision(collision)
+            self.collisions.append(collision)
 
-        shouldReactToCollision = self.hitTerrain(collision)
-        if collision.vector.y > constants.EPSILON:
-            if not self.hitCeiling(collision):
-                shouldReactToCollision = False
-        elif collision.vector.y < -constants.EPSILON:
-            if not self.hitFloor(collision):
-                shouldReactToCollision = False
+            shouldReactToCollision = self.hitTerrain(collision)
+            if collision.vector.y > constants.EPSILON and self.vel.y < 0:
+                if not self.hitCeiling(collision):
+                    shouldReactToCollision = False
+            elif collision.vector.y < -constants.EPSILON and self.vel.y > 0:
+                if not self.hitFloor(collision):
+                    shouldReactToCollision = False
 
-        # Hit a wall
-        if (abs(collision.vector.x) > wallHorizontalVectorComponent and
-                cmp(self.vel.x, 0) != cmp(collision.vector.x, 0)):
-            if not self.hitWall(collision):
-                shouldReactToCollision = False
+            # Hit a wall
+            if (abs(collision.vector.x) > wallHorizontalVectorComponent and
+                    cmp(self.vel.x, 0) != cmp(collision.vector.x, 0)):
+                if not self.hitWall(collision):
+                    shouldReactToCollision = False
 
-        if shouldReactToCollision:
-            self.loc = self.loc.add(collision.vector.multiply(collision.distance))
-
+            if shouldReactToCollision:
+                self.loc = self.loc.add(collision.vector.multiply(collision.distance))
 
 
     ## Perform any necessary tweaks to the collision vector or distance.
@@ -147,19 +145,22 @@ class PhysicsObject:
 
     ## React to hitting a wall.
     def hitWall(self, collision):
-        self.vel = Vector2D(0, self.vel.y)
+        logger.debug("Object",self.id,"with velocity",self.vel,"hit a wall")
+        self.vel = self.vel.setX(0)
         return True
 
 
     ## React to hitting the ceiling
     def hitCeiling(self, collision):
-        self.vel = Vector2D(self.vel.x, 0)
+        logger.debug("Object",self.id,"with velocity",self.vel,"hit a ceiling")
+        self.vel = self.vel.setY(0)
         return True
 
 
     ## React to hitting the floor.
     def hitFloor(self, collision):
-        self.vel = Vector2D(self.vel.x, 0)
+        logger.debug("Object",self.id,"with velocity",self.vel,"hit a floor")
+        self.vel = self.vel.setY(0)
         return True
 
 
