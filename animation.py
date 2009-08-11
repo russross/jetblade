@@ -128,3 +128,7 @@ class Animation:
 
     def getMoveOffset(self):
         return self.moveOffset
+
+
+    def __str__(self):
+        return '[Animation ' + self.name + ' at frame ' + str(self.frame) + ']'
