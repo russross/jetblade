@@ -185,6 +185,9 @@ class QuadTree:
                             break
                     if not didAddToChild:
                         ourNewObjects.append(object)
+            else:
+                # Object is no longer alive; start death.
+                object.die()
         for child in self.children:
             ourNewObjects.extend(child.cleanupObjects())
         if self.parent is None:
