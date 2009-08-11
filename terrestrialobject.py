@@ -54,6 +54,8 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         # animation and should not change animations for the duration. Set in
         # your AI routines; it will be automatically unset when the animation
         # completes, or can be manually deactivated.
+        # \todo Move this to the Sprite level and handle it automatically when
+        # setting animations.
         self.isAnimationLocked = False
         ## Used to signal that the creature has started a jump. Set this in 
         # your AI routines to jump.
@@ -112,6 +114,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
             self.sprite.setAnimation('crawl', True, False)
         elif not self.shouldCrawl and self.isCrawling:
             self.isCrawling = False
+            logger.debug("Standing from a crawl")
             self.sprite.setAnimation('idle', True, False)
 
         if not self.isHanging and not self.wasCrawling:
@@ -435,6 +438,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
 
     ## Wrap up after finishing a climb.
     def completeAnimation(self, animation):
+        logger.debug("Finishing animation",animation)
         action = animation.name[:-2]
         if action == 'climb':
             self.isHanging = False

@@ -169,8 +169,8 @@ def startGame():
     game.gameObjectManager.setup()
     game.player = player.Player()
     game.gameObjectManager.addObject(game.player)
-#    game.gameObjectManager.addNewObject('creatures/darkclone',
-#            game.player.loc.add(Vector2D(300, 0)))
+    game.gameObjectManager.addNewObject('creatures/darkclone',
+            game.player.loc.add(Vector2D(300, 0)))
 
 
 ## The main game loop. Performs a target of physicsUpdatesPerSecond
