@@ -13,19 +13,20 @@ def getClassName():
 # duration, a positional offset from another object, and a damage rating.
 # Note that this attack does not have any associated graphics (hence why we're
 # working with Polygons directly instead of Sprites). 
+# \todo Attacks can get pushed around by terrain. This shouldn't happen.
 class BaseAttack(physicsobject.PhysicsObject):
     ## Instantiate a BaseAttack
     def __init__(self, points, offset, owner, duration, damage):
         ## Time left until this object should die
         self.remainingTime = duration
-        ## Damage dealt on contact
-        self.damage = damage
         ## Positional offset from owner
         self.offset = offset
         ## Owner of the attack
         self.owner = owner
         physicsobject.PhysicsObject.__init__(self, owner.loc.add(offset), 'empty')
+        self.touchDamage = damage
         self.gravity = Vector2D(0, 0)
+        self.faction = self.owner.faction
         # Set a new bounding polygon for our sprite
         newPolygon = polygon.Polygon([Vector2D(p) for p in points])
         self.sprite.overridePolygon(newPolygon)
