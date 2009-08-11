@@ -1104,7 +1104,7 @@ class Map:
             if resultVector is not None:
                 resultVector = self.fixEjectionVector(resultVector, resultBlock)
                 collision =  collisiondata.CollisionData(resultVector, 
-                                    longestOverlap, 'terrain', resultBlock)
+                                    longestOverlap, 'solid', resultBlock)
                 object.processCollision(collision)
 
 
