@@ -112,12 +112,14 @@ sprites = {
         'loop' : False,
         'drawOffset' : (-75, -75),
         'moveOffset' : (-50, -131),
+        'interruptible' : False,
     },
     'climb-r' : {
         'polygon' : standingPolygon,
         'loop' : False,
         'drawOffset' : (-75, -75),
         'moveOffset' : (50, -131),
+        'interruptible' : False,
     },
     'run-l' : {
         'polygon' : standingPolygon,
@@ -146,18 +148,22 @@ sprites = {
     'crawlturn-l' : {
         'polygon' : crawlingPolygon,
         'loop' : False,
-        'updateFunc' : crawlTurnUpdate
+        'updateFunc' : crawlTurnUpdate,
     },
     'crawlturn-r' : {
         'polygon' : crawlingPolygon,
         'loop' : False,
-        'updateFunc' : crawlTurnUpdate
+        'updateFunc' : crawlTurnUpdate,
     },
     'flinch-l' : {
         'polygon' : standingPolygon,
+        'updateRate' : .1,
+        'interruptible' : False,
     },
     'flinch-r' : {
         'polygon' : standingPolygon,
+        'updateRate' : .1,
+        'interruptible' : False,
     },
     'kick1-l' : {
         'polygon' : standingPolygon,
@@ -166,6 +172,7 @@ sprites = {
             10 : kickLeft,
         },
         'updateRate' : 1.5,
+        'interruptible' : False,
     },
     'kick1-r' : {
         'polygon' : standingPolygon,
@@ -174,5 +181,6 @@ sprites = {
             10 : kickRight,
         },
         'updateRate' : 1.5,
+        'interruptible' : False,
     },
 }

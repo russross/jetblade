@@ -25,16 +25,16 @@ class AnimationManager:
     # with multiple references to the same animation...but this doesn't matter
     # for things like terrain, and having each terrain block have its own
     # animation is slow.
-    def loadAnimations(self, name, shouldCreateCopy = True):
-        if name in self.animationsCache:
+    def loadAnimations(self, spriteName, shouldCreateCopy = True):
+        if spriteName in self.animationsCache:
             if shouldCreateCopy:
-                return self.copy(name)
-            return self.animationsCache[name]
+                return self.copy(spriteName)
+            return self.animationsCache[spriteName]
         
         # Search for a file named 'spriteConfig.py' through the path specified 
-        # in name. Use the deepest one we find. This lets us share 
+        # in spriteName. Use the deepest one we find. This lets us share 
         # spriteConfigs for similar sprites.
-        directories = name.split('/')
+        directories = spriteName.split('/')
         modulePath = ''
         path = constants.spritePath
         for directory in directories:
@@ -51,6 +51,9 @@ class AnimationManager:
             shouldLoop = True
             if 'loop' in data:
                 shouldLoop = data['loop']
+            isInterruptible = True
+            if 'interruptible' in data:
+                isInterruptible = data['interruptible']
             updateRate = 1
             if 'updateRate' in data:
                 updateRate = data['updateRate']
@@ -66,14 +69,16 @@ class AnimationManager:
             frameActions = dict()
             if 'frameActions' in data:
                 frameActions = data['frameActions']
-            animations[animationName] = animation.Animation(name, animationName, 
-                        animPolygon, shouldLoop, updateRate, updateFunc, 
-                        drawOffset, moveOffset, frameActions)
+            animations[animationName] = animation.Animation(
+                        spriteName, animationName, 
+                        animPolygon, shouldLoop, isInterruptible, updateRate, 
+                        updateFunc, drawOffset, moveOffset, frameActions
+            )
 
-        self.animationsCache[name] = animations
+        self.animationsCache[spriteName] = animations
         if shouldCreateCopy:
-            return self.copy(name)
-        return self.animationsCache[name]
+            return self.copy(spriteName)
+        return self.animationsCache[spriteName]
     
     
     ## Create a copy of the given dict (including copies of the animations 

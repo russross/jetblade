@@ -50,13 +50,6 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         self.airDeceleration = defaultAirDeceleration
         ## Speed when crawling (no acceleration)
         self.crawlSpeed = defaultCrawlSpeed
-        ## Indicates that the creature is performing an uninterruptible 
-        # animation and should not change animations for the duration. Set in
-        # your AI routines; it will be automatically unset when the animation
-        # completes, or can be manually deactivated.
-        # \todo Move this to the Sprite level and handle it automatically when
-        # setting animations.
-        self.isAnimationLocked = False
         ## Used to signal that the creature has started a jump. Set this in 
         # your AI routines to jump.
         self.justJumped = False
@@ -99,8 +92,6 @@ class TerrestrialObject(physicsobject.PhysicsObject):
     # gravity as needed if the creature is in the air.
     def preCollisionUpdate(self):
 #        logger.debug("At beginning of update, loc is",self.loc,"and vel",self.vel,"and action",self.sprite.getCurrentAnimation(False))
-        if self.isAnimationLocked:
-            return
         # We need to start out with self.jumpFrames = self.maxJumpRiseFrames
         # but can't do this in the constructor because inheritors from this
         # code might override self.maxJumpRiseFrames.
@@ -231,24 +222,23 @@ class TerrestrialObject(physicsobject.PhysicsObject):
                     self.loc = self.loc.addY(oldTop.y - newTop.y)
 
 
-        if not self.isAnimationLocked:
-            if self.isGrounded:
-                if not self.isCrawling:
-                    accelDirection = self.getAccelDirection()
-                    if accelDirection == self.facing:
-                        self.sprite.setAnimation('run')
-                    elif abs(self.vel.x) > constants.EPSILON:
-                        self.sprite.setAnimation('runstop')
-                    elif not self.runDirection:
-                        self.sprite.setAnimation('idle')
-                else: # Crawling
-                    if self.runDirection:
-                        if self.runDirection == self.facing:
-                            self.sprite.setAnimation('crawl')
-                        else:
-                            self.sprite.setAnimation('crawlturn')
-                    elif self.sprite.getCurrentAnimation() not in ['crawl', 'crawlturn']:
+        if self.isGrounded:
+            if not self.isCrawling:
+                accelDirection = self.getAccelDirection()
+                if accelDirection == self.facing:
+                    self.sprite.setAnimation('run')
+                elif abs(self.vel.x) > constants.EPSILON:
+                    self.sprite.setAnimation('runstop')
+                elif not self.runDirection:
+                    self.sprite.setAnimation('idle')
+            else: # Crawling
+                if self.runDirection:
+                    if self.runDirection == self.facing:
                         self.sprite.setAnimation('crawl')
+                    else:
+                        self.sprite.setAnimation('crawlturn')
+                elif self.sprite.getCurrentAnimation() not in ['crawl', 'crawlturn']:
+                    self.sprite.setAnimation('crawl')
 #        logger.debug("At end of update, loc is",self.loc,"and vel",self.vel,"and action",self.sprite.getCurrentAnimation(True))
 
 
@@ -453,7 +443,6 @@ class TerrestrialObject(physicsobject.PhysicsObject):
             self.sprite.setAnimation('crawl')
         elif self.isGrounded:
             self.sprite.setAnimation('idle')
-        self.isAnimationLocked = False
         return physicsobject.PhysicsObject.completeAnimation(self, animation)
 
 

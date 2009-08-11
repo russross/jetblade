@@ -11,8 +11,6 @@ mercyInvincibilityFrames = 45
 defaultHealth = 100
 ## Velocity to impart when hit (when facing right)
 flinchVel = Vector2D(-40, -10)
-## Number of frames to flinch for
-flinchFrames = 3
 
 energyDisplayLoc = Vector2D(20, 20)
 energyDisplayColor = (250, 250, 100, 150)
@@ -33,7 +31,7 @@ class Player(terrestrialobject.TerrestrialObject):
 
     ## Set appropriate flags according to the current input.
     def AIUpdate(self):
-        if mercyInvincibilityFrames - self.invincibilityTimer < flinchFrames:
+        if self.sprite.getCurrentAnimation() == 'flinch':
             # No updates to state when flinching.
             self.invincibilityTimer -= 1
             return
@@ -58,7 +56,6 @@ class Player(terrestrialobject.TerrestrialObject):
 
         if self.isGrounded and isAttacking:
             self.sprite.setAnimation('kick1')
-            self.isAnimationLocked = True
             self.vel = Vector2D(0, 0)
 
         if shouldCrawl and self.isGrounded:
@@ -87,12 +84,6 @@ class Player(terrestrialobject.TerrestrialObject):
 
         if self.invincibilityTimer > 0:
             self.invincibilityTimer -= 1
-            if (self.sprite.getCurrentAnimation() == 'flinch' and 
-                    mercyInvincibilityFrames - self.invincibilityTimer >= flinchFrames):
-                # Restore control after finishing the flinch.
-                self.isAnimationLocked = False
-                self.isGravityOn = True
-                self.shouldApplyVelocityCap = True
 
 
     ## Make the player flicker if they're invincible. Display the player's
@@ -118,8 +109,14 @@ class Player(terrestrialobject.TerrestrialObject):
             self.sprite.setAnimation('flinch')
             self.vel = Vector2D(flinchVel.x * cmp(collision.altObject.loc.x, self.loc.x), flinchVel.y)
             self.isGrounded = False
-            self.isAnimationLocked = True
             self.isGravityOn = False
             self.shouldApplyVelocityCap = False
 
 
+    def completeAnimation(self, animation):
+        action = animation.name[:-2]
+        if action == 'flinch':
+            # Restore control after finishing the flinch.
+            self.isGravityOn = True
+            self.shouldApplyVelocityCap = True
+        return terrestrialobject.TerrestrialObject.completeAnimation(self, animation)

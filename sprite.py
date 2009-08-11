@@ -45,7 +45,11 @@ class Sprite:
     # \todo shouldResetAnimation should be handled better. Currently we need
     # it so we can "try out" different polygons for collision detection (c.f.
     # TerrestrialObject crawl logic) without interfering with smooth animation.
-    def setAnimation(self, action, shouldUseFacing = True, shouldResetAnimation = True):
+    def setAnimation(self, action, shouldUseFacing = True, 
+                     shouldResetAnimation = True):
+        curAnim = self.animations[self.currentAnimation]
+        if (not curAnim.isInterruptible and not curAnim.isComplete):
+            return
         if shouldUseFacing:
             if self.owner.facing < 0:
                 action += '-l'
@@ -54,7 +58,7 @@ class Sprite:
         if action != self.currentAnimation:
             logger.debug("Sprite",self.name,"setting animation",action)
             if shouldResetAnimation:
-                self.animations[self.currentAnimation].reset()
+                curAnim.reset()
             self.prevAnimation = self.currentAnimation
             self.currentAnimation = action
 

@@ -10,7 +10,7 @@ import logger
 # when to change animation frames.
 class Animation:
     ## Create a new Animation instance.
-    def __init__(self, group, name, polygon, shouldLoop, 
+    def __init__(self, group, name, polygon, shouldLoop, isInterruptible,
                  updateRate, updateFunc, drawOffset, moveOffset, frameActions):
         
         ## The collection of animations that this one is a part of. For example,
@@ -27,7 +27,12 @@ class Animation:
         # frames, and will therefore never complete.
         # If false, then once the final frame is reached, the animation will
         # stay on that frame indefinitely.
-        self.shouldLoop = shouldLoop
+        # Uninterruptible animations cannot loop.
+        self.shouldLoop = shouldLoop and isInterruptible
+
+        ## If true, then the animation is not interruptible by transitioning to
+        # other animations.
+        self.isInterruptible = isInterruptible
 
         ## If this is not None, then it specifies how rapidly animation frames
         # update in terms of physics updates (1 => 1 frame advanced per 
@@ -65,8 +70,8 @@ class Animation:
     ## Create a blank copy of this animation set.
     def copy(self):
         return Animation(self.group, self.name, self.polygon, self.shouldLoop,
-                         self.updateRate, self.updateFunc, self.drawOffset,
-                         self.moveOffset, self.frameActions)
+                         self.isInterruptible, self.updateRate, self.updateFunc,
+                         self.drawOffset, self.moveOffset, self.frameActions)
 
 
     ## Advance self.frames. If self.updateFunc is specified, use that;
@@ -74,7 +79,7 @@ class Animation:
     # False otherwise.
     def update(self, owner):
         self.prevFrame = self.frame
-        if self.frame < len(self.frames) - 1 or self.shouldLoop:
+        if self.frame < len(self.frames) or self.shouldLoop:
             if self.updateFunc is not None:
                 self.frame += self.updateFunc(owner)
             else:
@@ -83,7 +88,7 @@ class Animation:
                 int(self.frame) in self.frameActions):
             self.frameActions[int(self.frame)](owner, game)
         if (not self.shouldLoop and not self.isComplete and 
-                self.frame >= len(self.frames) - 1):
+                self.frame >= len(self.frames)):
             # Animation done
             self.isComplete = True
             return True
