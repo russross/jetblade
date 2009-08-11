@@ -35,14 +35,14 @@ def crawlTurnUpdate(obj):
 def kickLeft(obj, game):
     game.gameObjectManager.addNewObject('attacks/baseattack', 
                          [(55,30), (95,30), (95,145), (55,145)],
-                          Vector2D(-40, 0), obj, 7, 10)
+                          Vector2D(-40, 0), obj, 4, 10)
 
 
 ## Create an attack on the right
 def kickRight(obj, game):
     game.gameObjectManager.addNewObject('attacks/baseattack', 
                          [(55,30), (95,30), (95,145), (55,145)],
-                          Vector2D(40, 0), obj, 7, 10)
+                          Vector2D(40, 0), obj, 4, 10)
     
 
 standingPolygon = [(55,10), (95,10), (95,145), (55,145)]
@@ -153,12 +153,19 @@ sprites = {
         'loop' : False,
         'updateFunc' : crawlTurnUpdate
     },
+    'flinch-l' : {
+        'polygon' : standingPolygon,
+    },
+    'flinch-r' : {
+        'polygon' : standingPolygon,
+    },
     'kick1-l' : {
         'polygon' : standingPolygon,
         'loop' : False,
         'frameActions' : {
             10 : kickLeft,
         },
+        'updateRate' : 1.5,
     },
     'kick1-r' : {
         'polygon' : standingPolygon,
@@ -166,5 +173,6 @@ sprites = {
         'frameActions' : {
             10 : kickRight,
         },
+        'updateRate' : 1.5,
     },
 }
