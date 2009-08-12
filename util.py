@@ -76,11 +76,6 @@ def adjustLocForCenter(loc, center, rect):
     return adjustLocForRect(loc, rect)
 
 
-## Get an image from the list based on the provided index.
-def getDrawFrame(index, surfaces):
-    return surfaces[int(index) % len(surfaces)]
-
-
 ## Limit angles to the range [0, 2pi].
 def clampDirection(dir):
     result = dir % (math.pi * 2)
