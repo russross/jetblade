@@ -42,6 +42,7 @@ class Sprite:
     # -l or -r appended, depending on self.owner.facing
     # \param shouldResetAnimation If true, the frame of the animation is 
     # reset; otherwise it is preserved. 
+    # Return True if we succeed in changing the animation; false otherwise.
     # \todo shouldResetAnimation should be handled better. Currently we need
     # it so we can "try out" different polygons for collision detection (c.f.
     # TerrestrialObject crawl logic) without interfering with smooth animation.
@@ -49,7 +50,7 @@ class Sprite:
                      shouldResetAnimation = True):
         curAnim = self.animations[self.currentAnimation]
         if (not curAnim.isInterruptible and not curAnim.isComplete):
-            return
+            return False
         if shouldUseFacing:
             if self.owner.facing < 0:
                 action += '-l'
@@ -61,12 +62,13 @@ class Sprite:
                 curAnim.reset()
             self.prevAnimation = self.currentAnimation
             self.currentAnimation = action
+        return True
 
 
     ## Set the current animation to what the previous one was.
     def setPreviousAnimation(self, shouldResetAnimation = True):
         logger.debug("Returning to previous animation",self.prevAnimation)
-        self.setAnimation(self.prevAnimation, False, shouldResetAnimation)
+        return self.setAnimation(self.prevAnimation, False, shouldResetAnimation)
 
 
     ## Reset the currently-running animation.

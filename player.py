@@ -106,11 +106,11 @@ class Player(terrestrialobject.TerrestrialObject):
         if collision.type == 'enemy' and self.invincibilityTimer == 0:
             self.invincibilityTimer = mercyInvincibilityFrames
             self.health -= collision.altObject.touchDamage
-            self.sprite.setAnimation('flinch')
-            self.vel = Vector2D(flinchVel.x * cmp(collision.altObject.loc.x, self.loc.x), flinchVel.y)
-            self.isGrounded = False
-            self.isGravityOn = False
-            self.shouldApplyVelocityCap = False
+            if self.sprite.setAnimation('flinch'):
+                self.vel = Vector2D(flinchVel.x * cmp(collision.altObject.loc.x, self.loc.x), flinchVel.y)
+                self.isGrounded = False
+                self.isGravityOn = False
+                self.shouldApplyVelocityCap = False
 
 
     def completeAnimation(self, animation):
