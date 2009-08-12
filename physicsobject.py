@@ -95,6 +95,12 @@ class PhysicsObject:
     def die(self):
         pass
 
+    
+    ## Return true if collisions against the given faction type should be 
+    # performed.
+    def shouldCollideAgainstFaction(self, faction):
+        return True
+
 
     ## Hit a non-terrain object. 
     def hitObject(self, alt):
@@ -109,7 +115,6 @@ class PhysicsObject:
     # Use self.adjustCollision() to modify ejection vectors and distances;
     # use self.hit[Floor|Wall|Ceiling] to react to running into terrain of 
     # those types.
-    # \todo Currently assumes all collisions are with terrain.
     def processCollision(self, collision):
         if collision.type == 'solid':
             collision = self.adjustCollision(collision)

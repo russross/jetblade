@@ -148,8 +148,10 @@ class QuadTree:
                 for secondObject in newColliders[i+1:]:
                     secondRect = secondObject.getBounds()
                     if firstRect.colliderect(secondRect):
-                        firstObject.hitObject(secondObject)
-                        secondObject.hitObject(firstObject)
+                        if firstObject.shouldCollideAgainstFaction(secondObject.faction):
+                            firstObject.hitObject(secondObject)
+                        if secondObject.shouldCollideAgainstFaction(firstObject.faction):
+                            secondObject.hitObject(firstObject)
         for child in self.children:
             child.runObjectCollisionDetection(newColliders)
 
@@ -157,7 +159,8 @@ class QuadTree:
     ## Collide all objects against terrain.
     def runTerrainCollisionDetection(self):
         for object in self.objects:
-            game.map.collideObject(object)
+            if object.shouldCollideAgainstFaction('solid'):
+                game.map.collideObject(object)
             object.postCollisionUpdate()
             # \todo Move this into the object itself. We shouldn't be updating
             # its sprite for it.

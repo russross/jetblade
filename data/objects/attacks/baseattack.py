@@ -39,6 +39,13 @@ class BaseAttack(physicsobject.PhysicsObject):
         self.remainingTime -= 1
 
 
+    ## We don't care about collisions with terrain ('solid') type.
+    def shouldCollideAgainstFaction(self, faction):
+        if faction == 'solid':
+            return False
+        return True
+
+
     ## Kill us off if the attack is over.
     def getIsAlive(self):
         if self.remainingTime <= 0:
