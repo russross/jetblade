@@ -79,7 +79,7 @@ class Animation:
     # False otherwise.
     def update(self, owner):
         self.prevFrame = self.frame
-        if self.frame < len(self.frames) or self.shouldLoop:
+        if not self.isComplete or self.shouldLoop:
             if self.updateFunc is not None:
                 self.frame += self.updateFunc(owner)
             else:
@@ -101,7 +101,9 @@ class Animation:
         if self.drawOffset.magnitudeSquared() > constants.EPSILON or scale != 1:
             drawLoc = loc.add(self.drawOffset).multiply(scale).round()
         frame = int(self.prevFrame + (self.frame - self.prevFrame) * progress)
-        surface = util.getDrawFrame(frame, self.frames)
+        if self.isComplete:
+            frame = len(self.frames) - 1
+        surface = self.frames[int(frame) % len(self.frames)]
         game.imageManager.drawGameObjectAt(screen, surface, drawLoc, camera, scale)
         if logger.getLogLevel() == logger.LOG_DEBUG:
             # Draw the bounding polygon and location information
