@@ -25,7 +25,7 @@
   </div>
 </div>
 <div class="contents">
-<h1>player.Player Class Reference</h1><!-- doxytag: class="player::Player" --><!-- doxytag: inherits="terrestrialobject::TerrestrialObject" -->The <a class="el" href="classplayer_1_1_player.html" title="The Player class handles the player&#39;s avatar in the game.">Player</a> class handles the player's avatar in the game.  
+<h1>player.Player Class Reference</h1><!-- doxytag: class="player::Player" --><!-- doxytag: inherits="terrestrialobject::TerrestrialObject" -->The <a class="el" href="classplayer_1_1_player.html" title="The Player class handles the player&#39;s avatar in the game.">Player</a> class handles the player's avatar in the <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a>.  
 <a href="#_details">More...</a>
 <p>
 <div class="dynheader">
@@ -49,10 +49,35 @@ Inheritance diagram for player.Player:</div>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplayer_1_1_player.html#24240fe9df8b2bceebc901ef9c95f85b">AIUpdate</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set appropriate flags according to the current input.  <a href="#24240fe9df8b2bceebc901ef9c95f85b"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplayer_1_1_player.html#b857f117eb19dc186cbb53ffeaa8f8e5">draw</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Make the player flicker if they're invincible.  <a href="#b857f117eb19dc186cbb53ffeaa8f8e5"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplayer_1_1_player.html#246bbda15fe96e16dde28b9a990f5ee4">processCollision</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Process a collision.  <a href="#246bbda15fe96e16dde28b9a990f5ee4"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplayer_1_1_player.html#ead79687ed002d985af045ce9f892d76">completeAnimation</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Wrap up after finishing a climb.  <a href="#ead79687ed002d985af045ce9f892d76"></a><br></td></tr>
 <tr><td colspan="2"><br><h2>Public Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplayer_1_1_player.html#869f06ec9863a3ecb4b51cc95f11d3c0">canHang</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Signals if the creature has the ability to hang from ledges.  <a href="#869f06ec9863a3ecb4b51cc95f11d3c0"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="7ae53b934c7d653947338263db2aeb6f"></a><!-- doxytag: member="player::Player::faction" ref="7ae53b934c7d653947338263db2aeb6f" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplayer_1_1_player.html#7ae53b934c7d653947338263db2aeb6f">faction</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Faction of object, for use in reacting to collisions. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="2644e1a9f0cc117b647f6f7bb32dd6a6"></a><!-- doxytag: member="player::Player::health" ref="2644e1a9f0cc117b647f6f7bb32dd6a6" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplayer_1_1_player.html#2644e1a9f0cc117b647f6f7bb32dd6a6">health</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Amount of health remaining before dying. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="9fd701ee0098aae870a9e9aa7c4c0deb"></a><!-- doxytag: member="player::Player::invincibilityTimer" ref="9fd701ee0098aae870a9e9aa7c4c0deb" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplayer_1_1_player.html#9fd701ee0098aae870a9e9aa7c4c0deb">invincibilityTimer</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Invincibility time after getting hit. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="1601a536dde8a98dafe28ebb1f49bb67"></a><!-- doxytag: member="player::Player::vel" ref="1601a536dde8a98dafe28ebb1f49bb67" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplayer_1_1_player.html#1601a536dde8a98dafe28ebb1f49bb67">vel</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Current velocity of the object. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplayer_1_1_player.html#0072d591ae0c7a60c701a89f767ba8b2">shouldCrawl</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Used to signal that the creature should try to crawl.  <a href="#0072d591ae0c7a60c701a89f767ba8b2"></a><br></td></tr>
@@ -71,9 +96,19 @@ Inheritance diagram for player.Player:</div>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplayer_1_1_player.html#0d7e2b4cab03b3443f743a57648a2fe2">runDirection</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Direction creature is trying to move in.  <a href="#0d7e2b4cab03b3443f743a57648a2fe2"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplayer_1_1_player.html#fa3c00a35d15ee908f6e040da02054eb">isGrounded</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">When grounded, we apply running acceleration, can jump, and can crouch if the creature has that ability.  <a href="#fa3c00a35d15ee908f6e040da02054eb"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplayer_1_1_player.html#eeea352666bd70d5f2e355a98ff1027f">isGravityOn</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">True if gravity should be applied during the update cycle.  <a href="#eeea352666bd70d5f2e355a98ff1027f"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="4ac091f9a412fcd431f600b20dbd6f07"></a><!-- doxytag: member="player::Player::shouldApplyVelocityCap" ref="4ac091f9a412fcd431f600b20dbd6f07" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplayer_1_1_player.html#4ac091f9a412fcd431f600b20dbd6f07">shouldApplyVelocityCap</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Controls if we limit self.vel to be less than self.maxVel. <br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-The <a class="el" href="classplayer_1_1_player.html" title="The Player class handles the player&#39;s avatar in the game.">Player</a> class handles the player's avatar in the game. 
+The <a class="el" href="classplayer_1_1_player.html" title="The Player class handles the player&#39;s avatar in the game.">Player</a> class handles the player's avatar in the <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a>. 
 <p>
 <hr><h2>Member Function Documentation</h2>
 <a class="anchor" name="0d24e16944b6174affb80c7da8528c41"></a><!-- doxytag: member="player::Player::__init__" ref="0d24e16944b6174affb80c7da8528c41" args="" -->
@@ -95,7 +130,7 @@ The <a class="el" href="classplayer_1_1_player.html" title="The Player class han
 <p>
 Instantiate a <a class="el" href="classplayer_1_1_player.html" title="The Player class handles the player&#39;s avatar in the game.">Player</a> object. 
 <p>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd>(Long-term) Add support for the female version </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000007">Todo:</a></b></dt><dd>(Long-term) Add support for the female version </dd></dl>
 
 </div>
 </div><p>
@@ -123,6 +158,109 @@ Set appropriate flags according to the current input.
 
 </div>
 </div><p>
+<a class="anchor" name="ead79687ed002d985af045ce9f892d76"></a><!-- doxytag: member="player::Player::completeAnimation" ref="ead79687ed002d985af045ce9f892d76" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def player.Player.completeAnimation           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>animation</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Wrap up after finishing a climb. 
+<p>
+
+<p>Reimplemented from <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#77f930d031db44bcc85a8f395151cee8">terrestrialobject.TerrestrialObject</a>.</p>
+
+</div>
+</div><p>
+<a class="anchor" name="b857f117eb19dc186cbb53ffeaa8f8e5"></a><!-- doxytag: member="player::Player::draw" ref="b857f117eb19dc186cbb53ffeaa8f8e5" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def player.Player.draw           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>screen</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>args</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Make the player flicker if they're invincible. 
+<p>
+Display the player's vital statistics. 
+</div>
+</div><p>
+<a class="anchor" name="246bbda15fe96e16dde28b9a990f5ee4"></a><!-- doxytag: member="player::Player::processCollision" ref="246bbda15fe96e16dde28b9a990f5ee4" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def player.Player.processCollision           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>collision</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Process a collision. 
+<p>
+Take damage from enemies if we're vulnerable 
+<p>Reimplemented from <a class="el" href="classphysicsobject_1_1_physics_object.html#860cabc97be1a4089a994db0a1e0a7a5">physicsobject.PhysicsObject</a>.</p>
+
+</div>
+</div><p>
 <hr><h2>Member Data Documentation</h2>
 <a class="anchor" name="869f06ec9863a3ecb4b51cc95f11d3c0"></a><!-- doxytag: member="player::Player::canHang" ref="869f06ec9863a3ecb4b51cc95f11d3c0" args="" -->
 <div class="memitem">
@@ -140,6 +278,44 @@ Signals if the creature has the ability to hang from ledges.
 <p>
 
 <p>Reimplemented from <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#cb67818d24125a58587408aad64f245c">terrestrialobject.TerrestrialObject</a>.</p>
+
+</div>
+</div><p>
+<a class="anchor" name="eeea352666bd70d5f2e355a98ff1027f"></a><!-- doxytag: member="player::Player::isGravityOn" ref="eeea352666bd70d5f2e355a98ff1027f" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classplayer_1_1_player.html#eeea352666bd70d5f2e355a98ff1027f">player.Player.isGravityOn</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+True if gravity should be applied during the update cycle. 
+<p>
+
+<p>Reimplemented from <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#05f78ffe984735f44769d004dffd8030">terrestrialobject.TerrestrialObject</a>.</p>
+
+</div>
+</div><p>
+<a class="anchor" name="fa3c00a35d15ee908f6e040da02054eb"></a><!-- doxytag: member="player::Player::isGrounded" ref="fa3c00a35d15ee908f6e040da02054eb" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classplayer_1_1_player.html#fa3c00a35d15ee908f6e040da02054eb">player.Player.isGrounded</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+When grounded, we apply running acceleration, can jump, and can crouch if the creature has that ability. 
+<p>
+
+<p>Reimplemented from <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#13ae0c30a9da49f8a5ba41c82a9dd68e">terrestrialobject.TerrestrialObject</a>.</p>
 
 </div>
 </div><p>
@@ -241,7 +417,7 @@ Used to signal that the creature should try to crawl.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>player.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:33 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

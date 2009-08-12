@@ -25,7 +25,7 @@
   </div>
 </div>
 <div class="contents">
-<h1>sprite.Sprite Class Reference</h1><!-- doxytag: class="sprite::Sprite" -->Sprites are display classes for handling dynamic game objects like creatures.  
+<h1>sprite.Sprite Class Reference</h1><!-- doxytag: class="sprite::Sprite" -->Sprites are display classes for handling dynamic <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> objects like creatures.  
 <a href="#_details">More...</a>
 <p>
 
@@ -54,6 +54,12 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#126b81078a6e3e67d81c7aac29acb9f5">getDrawLoc</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Interpolate between self.prevLoc and self.curLoc, using progress to weight the two locations.  <a href="#126b81078a6e3e67d81c7aac29acb9f5"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#7589d14e8a1cab3cde8ac9ac22a1645c">getBounds</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return a PyGame Rect describing our bounding box.  <a href="#7589d14e8a1cab3cde8ac9ac22a1645c"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#461cc81c697fd75790489d8048386ce1">overridePolygon</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set the animation to use the provided polygon instead of the one it's currently using.  <a href="#461cc81c697fd75790489d8048386ce1"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#6da62ee84c4cf1fdb21b99c7378f7266">getPolygon</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Retrieve the current animation's polygon, or the previous animation's polygon if needed.  <a href="#6da62ee84c4cf1fdb21b99c7378f7266"></a><br></td></tr>
@@ -85,7 +91,7 @@
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Drawing location as of most recent physics update, for location interpolation. <br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-Sprites are display classes for handling dynamic game objects like creatures. 
+Sprites are display classes for handling dynamic <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> objects like creatures. 
 <p>
 Each sprite contains a set of Animation instances, and tracks the "parent object's" locations as of the last two physics updates so that drawing can smoothly interpolate between those points. <hr><h2>Member Function Documentation</h2>
 <a class="anchor" name="5eb42df4c5f6debeeab3cc4791ad29c2"></a><!-- doxytag: member="sprite::Sprite::__init__" ref="5eb42df4c5f6debeeab3cc4791ad29c2" args="" -->
@@ -114,7 +120,13 @@ Each sprite contains a set of Animation instances, and tracks the "parent object
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>loc</em> = <code>None</code></td><td>&nbsp;</td>
+          <td class="paramname"> <em>loc</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>shouldCreateCopy</em> = <code>True</code></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -128,6 +140,12 @@ Each sprite contains a set of Animation instances, and tracks the "parent object
 <p>
 Instantiate a <a class="el" href="classsprite_1_1_sprite.html" title="Sprites are display classes for handling dynamic game objects like creatures.">Sprite</a>. 
 <p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>shouldCreateCopy</em>&nbsp;</td><td>Passthrough argument for AnimationManager.loadAnimations. </td></tr>
+  </table>
+</dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000011">Todo:</a></b></dt><dd>Find a better way to handle this so the passthrough isn't needed. </dd></dl>
 
 </div>
 </div><p>
@@ -191,6 +209,37 @@ Draw the current animation frame.
 
 </div>
 </div><p>
+<a class="anchor" name="7589d14e8a1cab3cde8ac9ac22a1645c"></a><!-- doxytag: member="sprite::Sprite::getBounds" ref="7589d14e8a1cab3cde8ac9ac22a1645c" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def sprite.Sprite.getBounds           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>loc</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Return a PyGame Rect describing our bounding box. 
+<p>
+
+</div>
+</div><p>
 <a class="anchor" name="f2cd9496b59a564a34f04bde16a33d40"></a><!-- doxytag: member="sprite::Sprite::getCurrentAnimation" ref="f2cd9496b59a564a34f04bde16a33d40" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -219,7 +268,7 @@ Draw the current animation frame.
 <p>
 Return the current animation, defaulting to not including the facing if any. 
 <p>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000011">Todo:</a></b></dt><dd>Assumes that the facing is the last two characters of the string. Probably a better way to handle this. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000013">Todo:</a></b></dt><dd>Assumes that the facing is the last two characters of the string. Probably a better way to handle this. </dd></dl>
 
 </div>
 </div><p>
@@ -281,6 +330,37 @@ Round drawing locations to the nearest hundred-thousandth to prevent visual jitt
 
 <p>
 Retrieve the current animation's polygon, or the previous animation's polygon if needed. 
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="461cc81c697fd75790489d8048386ce1"></a><!-- doxytag: member="sprite::Sprite::overridePolygon" ref="461cc81c697fd75790489d8048386ce1" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def sprite.Sprite.overridePolygon           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>newPolygon</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Set the animation to use the provided polygon instead of the one it's currently using. 
 <p>
 
 </div>
@@ -350,10 +430,10 @@ Set the current animation for the sprite.
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>shouldUseFacing</em>&nbsp;</td><td>If true, the actual animation name used has -l or -r appended, depending on self.owner.facing </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>shouldResetAnimation</em>&nbsp;</td><td>If true, the frame of the animation is reset; otherwise it is preserved. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>shouldResetAnimation</em>&nbsp;</td><td>If true, the frame of the animation is reset; otherwise it is preserved. Return True if we succeed in changing the animation; false otherwise. </td></tr>
   </table>
 </dl>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000010">Todo:</a></b></dt><dd>shouldResetAnimation should be handled better. Currently we need it so we can "try out" different polygons for collision detection (c.f. TerrestrialObject crawl logic) without interfering with smooth animation. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000012">Todo:</a></b></dt><dd>shouldResetAnimation should be handled better. Currently we need it so we can "try out" different polygons for collision detection (c.f. TerrestrialObject crawl logic) without interfering with smooth animation. </dd></dl>
 
 </div>
 </div><p>
@@ -530,7 +610,7 @@ Drawing location as of previous physics update, for location interpolation.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>sprite.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:33 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

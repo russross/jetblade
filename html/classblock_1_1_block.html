@@ -49,9 +49,9 @@
 def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classblock_1_1_block.html#14a6842fb13ad4d674643896a9f31367">getPolygon</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return the bounding polygon. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classblock_1_1_block.html#ba7bcebac7904c3c2ac4322309451599">getAdjacencySignature</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classblock_1_1_block.html#6562462e6d21e4d4660fe482d4d8075b">getBounds</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return a scalar indicating which spaces adjacent to this block are occupied.  <a href="#ba7bcebac7904c3c2ac4322309451599"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get our bounding polygon.  <a href="#6562462e6d21e4d4660fe482d4d8075b"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="f9255f5871ac693ccbd02b7b54caf6e8"></a><!-- doxytag: member="block::Block::__str__" ref="f9255f5871ac693ccbd02b7b54caf6e8" args="" -->
 def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classblock_1_1_block.html#f9255f5871ac693ccbd02b7b54caf6e8">__str__</a></td></tr>
 
@@ -68,15 +68,16 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classblock_1_1_block.html#ad9a8a842e1cbf833db3854704208f64">orientation</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">There are currently 20 different block orientations, most of which have a square collision polygon.  <a href="#ad9a8a842e1cbf833db3854704208f64"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classblock_1_1_block.html#441f7589bd65a6b8df091359c1ef12bb">adjacencySignature</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Adjacency signatures are a short way of indicating which of the 8 neighboring spaces are occupied by blocks.  <a href="#441f7589bd65a6b8df091359c1ef12bb"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classblock_1_1_block.html#9ba534b0144c8dbd5e2acab5010cb8d7">terrain</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">TerrainInfo instance to let the block know what it looks like.  <a href="#9ba534b0144c8dbd5e2acab5010cb8d7"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classblock_1_1_block.html#a05a8739ac36e0c4f46e3463a4ecfaf2">sprite</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">To allow blocks to be animated, we use Sprites for drawing them.  <a href="#a05a8739ac36e0c4f46e3463a4ecfaf2"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="95ba15be40abe56adcd995d4b5a2cff4"></a><!-- doxytag: member="block::Block::rect" ref="95ba15be40abe56adcd995d4b5a2cff4" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classblock_1_1_block.html#95ba15be40abe56adcd995d4b5a2cff4">rect</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Bounding rect. <br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Blocks are solid, nonmoving bits of terrain. 
@@ -103,12 +104,6 @@ Blocks are solid, nonmoving bits of terrain.
           <td></td>
           <td class="paramtype">&nbsp;</td>
           <td class="paramname"> <em>orientation</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>adjacencySignature</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -217,28 +212,6 @@ Draw the block.
 
 </div>
 </div><p>
-<a class="anchor" name="ba7bcebac7904c3c2ac4322309451599"></a><!-- doxytag: member="block::Block::getAdjacencySignature" ref="ba7bcebac7904c3c2ac4322309451599" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def block.Block.getAdjacencySignature           </td>
-          <td>(</td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>self</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Return a scalar indicating which spaces adjacent to this block are occupied. 
-<p>
-
-</div>
-</div><p>
 <a class="anchor" name="0e573b5853d1574cee8d7c429d301881"></a><!-- doxytag: member="block::Block::getBlockCorner" ref="0e573b5853d1574cee8d7c429d301881" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -270,24 +243,29 @@ Return the location of the vertex in the block's polygon that is furthest in the
 
 </div>
 </div><p>
-<hr><h2>Member Data Documentation</h2>
-<a class="anchor" name="441f7589bd65a6b8df091359c1ef12bb"></a><!-- doxytag: member="block::Block::adjacencySignature" ref="441f7589bd65a6b8df091359c1ef12bb" args="" -->
+<a class="anchor" name="6562462e6d21e4d4660fe482d4d8075b"></a><!-- doxytag: member="block::Block::getBounds" ref="6562462e6d21e4d4660fe482d4d8075b" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classblock_1_1_block.html#441f7589bd65a6b8df091359c1ef12bb">block.Block.adjacencySignature</a>          </td>
+          <td class="memname">def block.Block.getBounds           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>
-Adjacency signatures are a short way of indicating which of the 8 neighboring spaces are occupied by blocks. 
+Get our bounding polygon. 
 <p>
-
+We assume that blocks don't move once created, so their bounding rectangles are fixed. 
 </div>
 </div><p>
+<hr><h2>Member Data Documentation</h2>
 <a class="anchor" name="ad9a8a842e1cbf833db3854704208f64"></a><!-- doxytag: member="block::Block::orientation" ref="ad9a8a842e1cbf833db3854704208f64" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -342,7 +320,7 @@ TerrainInfo instance to let the block know what it looks like.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>block.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:32 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

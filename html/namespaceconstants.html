@@ -30,7 +30,7 @@
 <tr><td colspan="2"><br><h2>Variables</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#8326c5259ee1b78f76159d7a990738ea">gameName</a> = 'Jetblade RL'</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Name of the game, displayed as the title of the game window.  <a href="#8326c5259ee1b78f76159d7a990738ea"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Name of the <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a>, displayed as the title of the <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> window.  <a href="#8326c5259ee1b78f76159d7a990738ea"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#9cab39eab96e70e745dc88f9d57e5822">globalId</a> = 0</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">For debugging purposes, any class that needs to have a unique ID should use this object and increment it when they're done.  <a href="#9cab39eab96e70e745dc88f9d57e5822"></a><br></td></tr>
@@ -59,8 +59,12 @@ int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="names
 string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#f1148764a809fc36be8f4a7e54b0f1ff">mapPath</a> = 'data/mapgen'</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Path to the custom map generation modules. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="5cfef35f67b46633e023abf9d6c39303"></a><!-- doxytag: member="constants::imagePath" ref="5cfef35f67b46633e023abf9d6c39303" args="" -->
-string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#5cfef35f67b46633e023abf9d6c39303">imagePath</a> = 'data/images'</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="ea078aa856b2d7c4e0f54732d9486e7a"></a><!-- doxytag: member="constants::objectsPath" ref="ea078aa856b2d7c4e0f54732d9486e7a" args="" -->
+string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#ea078aa856b2d7c4e0f54732d9486e7a">objectsPath</a> = 'data/objects'</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Path to custom <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> object modules. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="97fd04ee857f0a211ee42616f4f4e575"></a><!-- doxytag: member="constants::spritePath" ref="97fd04ee857f0a211ee42616f4f4e575" args="" -->
+string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#97fd04ee857f0a211ee42616f4f4e575">spritePath</a> = 'data/sprites'</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Path to image files and their configuration. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="1916188ed31443447349475e05f74f50"></a><!-- doxytag: member="constants::soundPath" ref="1916188ed31443447349475e05f74f50" args="" -->
@@ -79,9 +83,6 @@ string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="na
 string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#3562ea1c2546d055cdbb845a123ae357">fontFilename</a> = 'fontConfig'</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Name of the module used to configure fonts. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">tuple&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceconstants.html#5e412b797f46d94734cb0a2788cd1ce7">fpsDisplayLoc</a> = <a class="el" href="classvector2d_1_1_vector2_d.html">Vector2D</a>(<a class="el" href="namespaceconstants.html#6f2fadc5d198b77168f356e34e6bd024">sw</a> - 20, <a class="el" href="namespaceconstants.html#28e05ab9da9a51493dffe5163a168d4b">sh</a> - 20)</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Location to display the FPS string onscreen.  <a href="#5e412b797f46d94734cb0a2788cd1ce7"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="454d3cde807b5aee2dfc7216fc8d2408"></a><!-- doxytag: member="constants::ACTION_QUIT" ref="454d3cde807b5aee2dfc7216fc8d2408" args="" -->
 string&nbsp;</td><td class="memItemRight" valign="bottom"><b>ACTION_QUIT</b> = 'quit'</td></tr>
 
@@ -183,23 +184,6 @@ Slightly less-small number than EPSILON, used for checking Line coincidence in M
 
 </div>
 </div><p>
-<a class="anchor" name="5e412b797f46d94734cb0a2788cd1ce7"></a><!-- doxytag: member="constants::fpsDisplayLoc" ref="5e412b797f46d94734cb0a2788cd1ce7" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">tuple <a class="el" href="namespaceconstants.html#5e412b797f46d94734cb0a2788cd1ce7">constants.fpsDisplayLoc</a> = <a class="el" href="classvector2d_1_1_vector2_d.html">Vector2D</a>(<a class="el" href="namespaceconstants.html#6f2fadc5d198b77168f356e34e6bd024">sw</a> - 20, <a class="el" href="namespaceconstants.html#28e05ab9da9a51493dffe5163a168d4b">sh</a> - 20)          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Location to display the FPS string onscreen. 
-<p>
-
-</div>
-</div><p>
 <a class="anchor" name="8326c5259ee1b78f76159d7a990738ea"></a><!-- doxytag: member="constants::gameName" ref="8326c5259ee1b78f76159d7a990738ea" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -212,7 +196,7 @@ Location to display the FPS string onscreen.
 <div class="memdoc">
 
 <p>
-Name of the game, displayed as the title of the game window. 
+Name of the <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a>, displayed as the title of the <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> window. 
 <p>
 
 </div>
@@ -235,7 +219,7 @@ So this is one that actually *isn't* constant.
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:32 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

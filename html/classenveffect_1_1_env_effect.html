@@ -81,16 +81,16 @@ Inheritance diagram for enveffect.EnvEffect:</div>
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Name of the effect, which is the same as the module name for the effect's code (and not necessarily the same as the class in that module!).  <a href="#062c46c1cc8bed756225fae73f4c592f"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classenveffect_1_1_env_effect.html#fa933f7d6457e84c95cc83d713e730ee">residentObjects</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Dict of game objects currently in the effect.  <a href="#fa933f7d6457e84c95cc83d713e730ee"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Dict of <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> objects currently in the effect.  <a href="#fa933f7d6457e84c95cc83d713e730ee"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classenveffect_1_1_env_effect.html#c7a9f72f39bcf49b92fb553f488d108c">handledObjects</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Dict of game objects that we handled this frame.  <a href="#c7a9f72f39bcf49b92fb553f488d108c"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Dict of <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> objects that we handled this frame.  <a href="#c7a9f72f39bcf49b92fb553f488d108c"></a><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Environmental effects are localized changes in physics or display. 
 <p>
 For example, areas that are underwater, having falling rain, wind, etc. Specific environmental effects are subclasses of the base class and should implement the following functions:<ul>
-<li>createRegion: Determines which parts of the map should have this effect running.</li><li>enter, traverse, and exit: Are triggered when any game object enters, moves through, or exits the area of the effect.</li><li>draw: Draw a single tile's worth of the effect. You can choose not to override this function, in which case a default behavior will be provided. </li></ul>
+<li>createRegion: Determines which parts of the map should have this effect running.</li><li>enter, traverse, and exit: Are triggered when any <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> object enters, moves through, or exits the area of the effect.</li><li>draw: Draw a single tile's worth of the effect. You can choose not to override this function, in which case a default behavior will be provided. </li></ul>
 <hr><h2>Member Function Documentation</h2>
 <a class="anchor" name="3b5e850dbc88a6a09ede1eb801f01012"></a><!-- doxytag: member="enveffect::EnvEffect::__init__" ref="3b5e850dbc88a6a09ede1eb801f01012" args="" -->
 <div class="memitem">
@@ -415,7 +415,7 @@ Specifically, find objects that have left our region (by being in self.residentO
 <div class="memdoc">
 
 <p>
-Dict of game objects that we handled this frame. 
+Dict of <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> objects that we handled this frame. 
 <p>
 
 </div>
@@ -449,7 +449,7 @@ Name of the effect, which is the same as the module name for the effect's code (
 <div class="memdoc">
 
 <p>
-Dict of game objects currently in the effect. 
+Dict of <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> objects currently in the effect. 
 <p>
 
 </div>
@@ -474,7 +474,7 @@ All spaces that have the effect.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>enveffect.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:32 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

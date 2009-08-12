@@ -39,24 +39,22 @@
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Create the map(s) and player.  <a href="#b102feaef3545c1a2ded474aba3e773e"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacejetblade.html#ff79926b50e00b04923671bc14d6c268">gameLoop</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The main game loop.  <a href="#ff79926b50e00b04923671bc14d6c268"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The main <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> loop.  <a href="#ff79926b50e00b04923671bc14d6c268"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacejetblade.html#ea56fee57e90e8cf19aeed289c78dabd">draw</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Draw the game.  <a href="#ea56fee57e90e8cf19aeed289c78dabd"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Draw the <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a>.  <a href="#ea56fee57e90e8cf19aeed289c78dabd"></a><br></td></tr>
 <tr><td colspan="2"><br><h2>Variables</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">tuple&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacejetblade.html#d2958b3687fec313154914146f41ff51">fpsDisplayLoc</a> = Vector2D(<a class="el" href="namespaceconstants.html#6f2fadc5d198b77168f356e34e6bd024">constants.sw</a> - 20, <a class="el" href="namespaceconstants.html#28e05ab9da9a51493dffe5163a168d4b">constants.sh</a> - 40)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Location to display the FPS string onscreen.  <a href="#d2958b3687fec313154914146f41ff51"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacejetblade.html#37c813b17245b53772e99244f9b5d0d8">physicsUpdatesPerSecond</a> = 30</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Number of physics updates to try to make each second.  <a href="#37c813b17245b53772e99244f9b5d0d8"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacejetblade.html#323eb249ca072213f899fa65aa2a5e6c">slowPhysicsUpdatesPerSecond</a> = 4</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Number of physics updates to try to make each second when we're recording images of the game to file.  <a href="#323eb249ca072213f899fa65aa2a5e6c"></a><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 This package contains the logic for setting up and running the program. 
 <p>
-It initializes PyGame, instantiates necessary global singletons, and runs the main game loop. By default, when started, Jetblade will generate a map, save the map definition file to disk (using the map seed as the filename), and then switch to gameplay mode. Notable commandline options:<ul>
-<li>-debug: turn on debugging output (warning: verbose!)</li><li>-num X: generate X maps, and exit</li><li>-saveimage: save an image of the entire map after generating, then exit</li><li>-justmapgen: only generate a map; don't begin gameplay afterwards</li><li>-seed X: use X as a seed for map generation</li><li>-mapfile X: try to load X as a map definition file, and start gameplay mode</li><li>-record: record every rendered frame to disk. Note: this can be toggled during gameplay as well. </li></ul>
-
+It initializes PyGame, instantiates necessary global singletons, and runs the main <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> loop. By default, when started, Jetblade will generate a map, save the map definition file to disk (using the map seed as the filename), and then switch to gameplay mode. Run `jetblade.py -h` or `jetblade.py --help` to get a list of commandline options. 
 <p>
 <hr><h2>Function Documentation</h2>
 <a class="anchor" name="ea56fee57e90e8cf19aeed289c78dabd"></a><!-- doxytag: member="jetblade::draw" ref="ea56fee57e90e8cf19aeed289c78dabd" args="" -->
@@ -91,7 +89,7 @@ It initializes PyGame, instantiates necessary global singletons, and runs the ma
 <div class="memdoc">
 
 <p>
-Draw the game. 
+Draw the <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a>. 
 <p>
 
 </div>
@@ -112,7 +110,7 @@ Draw the game.
 <div class="memdoc">
 
 <p>
-The main game loop. 
+The main <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> loop. 
 <p>
 Performs a target of physicsUpdatesPerSecond updates to the physics/game logic per second, and otherwise draws as many frames as possible between update cycles. For debugging purposes, you can turn on and off debugging output, and save the displayed frames to files. 
 </div>
@@ -181,6 +179,23 @@ If we've been told to make multiple maps or to save the map, then exit once we'r
 </div>
 </div><p>
 <hr><h2>Variable Documentation</h2>
+<a class="anchor" name="d2958b3687fec313154914146f41ff51"></a><!-- doxytag: member="jetblade::fpsDisplayLoc" ref="d2958b3687fec313154914146f41ff51" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">tuple <a class="el" href="namespacejetblade.html#d2958b3687fec313154914146f41ff51">jetblade.fpsDisplayLoc</a> = Vector2D(<a class="el" href="namespaceconstants.html#6f2fadc5d198b77168f356e34e6bd024">constants.sw</a> - 20, <a class="el" href="namespaceconstants.html#28e05ab9da9a51493dffe5163a168d4b">constants.sh</a> - 40)          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Location to display the FPS string onscreen. 
+<p>
+
+</div>
+</div><p>
 <a class="anchor" name="37c813b17245b53772e99244f9b5d0d8"></a><!-- doxytag: member="jetblade::physicsUpdatesPerSecond" ref="37c813b17245b53772e99244f9b5d0d8" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -198,25 +213,8 @@ Number of physics updates to try to make each second.
 Tweaking this directly determines the speed of gameplay, to the limits of the computer's hardware. 
 </div>
 </div><p>
-<a class="anchor" name="323eb249ca072213f899fa65aa2a5e6c"></a><!-- doxytag: member="jetblade::slowPhysicsUpdatesPerSecond" ref="323eb249ca072213f899fa65aa2a5e6c" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="namespacejetblade.html#323eb249ca072213f899fa65aa2a5e6c">jetblade.slowPhysicsUpdatesPerSecond</a> = 4          </td>
-        </tr>
-      </table>
 </div>
-<div class="memdoc">
-
-<p>
-Number of physics updates to try to make each second when we're recording images of the game to file. 
-<p>
-
-</div>
-</div><p>
-</div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:32 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

@@ -34,8 +34,10 @@ Inheritance diagram for physicsobject.PhysicsObject:</div>
 
 <p><center><img src="classphysicsobject_1_1_physics_object.png" usemap="#physicsobject.PhysicsObject_map" border="0" alt=""></center>
 <map name="physicsobject.PhysicsObject_map">
-<area href="classterrestrialobject_1_1_terrestrial_object.html" alt="terrestrialobject.TerrestrialObject" shape="rect" coords="0,56,199,80">
-<area href="classplayer_1_1_player.html" alt="player.Player" shape="rect" coords="0,112,199,136">
+<area href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html" alt="data.objects.attacks.baseattack.BaseAttack" shape="rect" coords="0,56,262,80">
+<area href="classterrestrialobject_1_1_terrestrial_object.html" alt="terrestrialobject.TerrestrialObject" shape="rect" coords="272,56,534,80">
+<area href="classdata_1_1objects_1_1creatures_1_1darkclone_1_1_dark_clone.html" alt="data.objects.creatures.darkclone.DarkClone" shape="rect" coords="136,112,398,136">
+<area href="classplayer_1_1_player.html" alt="player.Player" shape="rect" coords="408,112,670,136">
 </map>
 </div>
 
@@ -46,21 +48,33 @@ Inheritance diagram for physicsobject.PhysicsObject:</div>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#098e570f59a5d31b88e7a48635e784ca">__init__</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Instantiate a new object.  <a href="#098e570f59a5d31b88e7a48635e784ca"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#b6f278486509edd856ab55e982e754cf">update</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Apply gravity to velocity and velocity to location, then run collision detection.  <a href="#b6f278486509edd856ab55e982e754cf"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#141e285bef42e80e826bc3396fe8e684">AIUpdate</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Make whatever state changes the AI/player control calls for.  <a href="#141e285bef42e80e826bc3396fe8e684"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#62a4b7825eac95362b1995a89c0caa45">applyPhysics</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Apply gravity to velocity and velocity to location.  <a href="#62a4b7825eac95362b1995a89c0caa45"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#ebaaa226ae6809d1641612fe2561f93f">preCollisionUpdate</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Called right before self.handleCollisions(), to prepare.  <a href="#ebaaa226ae6809d1641612fe2561f93f"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#6e7f6593859e660fc14718743118ae43">postCollisionUpdate</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Called after self.handleCollisions(), to do any necessary cleanup.  <a href="#6e7f6593859e660fc14718743118ae43"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#a4aeec4650623f5861e47f01f9fb5987">handleCollisions</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#766fd03a47fe18b8bef9d42079f0917e">getIsAlive</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">React to colliding with objects by killing velocity and backing out until we are not intersecting again.  <a href="#a4aeec4650623f5861e47f01f9fb5987"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return if we are alive.  <a href="#766fd03a47fe18b8bef9d42079f0917e"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#adbdae669fc7e197f14beef14eb0134f">die</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Perform any actions required on death, e.g.  <a href="#adbdae669fc7e197f14beef14eb0134f"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#d9952528886516a960a21df1df2382db">shouldCollideAgainstFaction</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return true if collisions against the given faction type should be performed.  <a href="#d9952528886516a960a21df1df2382db"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#e0949492647f6585485e7b99ccf1e830">hitObject</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Hit a non-terrain object.  <a href="#e0949492647f6585485e7b99ccf1e830"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#860cabc97be1a4089a994db0a1e0a7a5">processCollision</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Handle running into something.  <a href="#860cabc97be1a4089a994db0a1e0a7a5"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#4013aa444287a83d17cbb9a2a6308cb3">adjustCollision</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Perform any necessary tweaks to the collision vector or distance.  <a href="#4013aa444287a83d17cbb9a2a6308cb3"></a><br></td></tr>
@@ -85,6 +99,14 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#0951edcce59e754a98dc148de9bbd1c4">getDrawLoc</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Passthrough to Sprite.getDrawLoc(). <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="12940dc803ee32665b1252071627481e"></a><!-- doxytag: member="physicsobject::PhysicsObject::getBounds" ref="12940dc803ee32665b1252071627481e" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#12940dc803ee32665b1252071627481e">getBounds</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Passthrough to Sprite.getBounds(). <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="56077a2b128186e8a052d10224e38c64"></a><!-- doxytag: member="physicsobject::PhysicsObject::getPolygon" ref="56077a2b128186e8a052d10224e38c64" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#56077a2b128186e8a052d10224e38c64">getPolygon</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Passthrough to Sprite.getPolygon(). <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="baaffdd2eb5595057414db668bcfd376"></a><!-- doxytag: member="physicsobject::PhysicsObject::getFacingString" ref="baaffdd2eb5595057414db668bcfd376" args="" -->
 def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#baaffdd2eb5595057414db668bcfd376">getFacingString</a></td></tr>
 
@@ -93,33 +115,57 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Handle completion of animations.  <a href="#495450bcc3b001146055886b312182ea"></a><br></td></tr>
 <tr><td colspan="2"><br><h2>Public Attributes</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="928e6be6c8a76f869ec30a0b35572bb1"></a><!-- doxytag: member="physicsobject::PhysicsObject::name" ref="928e6be6c8a76f869ec30a0b35572bb1" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>name</b></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="ffc5cae35c6858a9fddcd35f0e975da0"></a><!-- doxytag: member="physicsobject::PhysicsObject::id" ref="ffc5cae35c6858a9fddcd35f0e975da0" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#ffc5cae35c6858a9fddcd35f0e975da0">id</a></td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Unique object ID. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#928e6be6c8a76f869ec30a0b35572bb1">name</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Name of object, used to look up the sprite.  <a href="#928e6be6c8a76f869ec30a0b35572bb1"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="fa561b45a7e060ce86b2653598131648"></a><!-- doxytag: member="physicsobject::PhysicsObject::faction" ref="fa561b45a7e060ce86b2653598131648" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#fa561b45a7e060ce86b2653598131648">faction</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Faction of object, for use in reacting to collisions. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="c4d0c2144ec70423c694823d5ed51d76"></a><!-- doxytag: member="physicsobject::PhysicsObject::loc" ref="c4d0c2144ec70423c694823d5ed51d76" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>loc</b></td></tr>
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#c4d0c2144ec70423c694823d5ed51d76">loc</a></td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Location of the object. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="952a730d8c9f7924b41bdc91fa7eeddc"></a><!-- doxytag: member="physicsobject::PhysicsObject::vel" ref="952a730d8c9f7924b41bdc91fa7eeddc" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>vel</b></td></tr>
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#952a730d8c9f7924b41bdc91fa7eeddc">vel</a></td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="2fcc390c1cafc7ade171c6e64db47dbd"></a><!-- doxytag: member="physicsobject::PhysicsObject::isGravityOn" ref="2fcc390c1cafc7ade171c6e64db47dbd" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>isGravityOn</b></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Current velocity of the object. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#2fcc390c1cafc7ade171c6e64db47dbd">isGravityOn</a></td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="483246f2501765b14ba090451bcc90cc"></a><!-- doxytag: member="physicsobject::PhysicsObject::gravity" ref="483246f2501765b14ba090451bcc90cc" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>gravity</b></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">True if gravity should be applied during the update cycle.  <a href="#2fcc390c1cafc7ade171c6e64db47dbd"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#483246f2501765b14ba090451bcc90cc">gravity</a></td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Acceleration due to gravity, added to self.vel each update cycle.  <a href="#483246f2501765b14ba090451bcc90cc"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="836f741f58192e546e32dd92dfb5e703"></a><!-- doxytag: member="physicsobject::PhysicsObject::maxVel" ref="836f741f58192e546e32dd92dfb5e703" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>maxVel</b></td></tr>
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#836f741f58192e546e32dd92dfb5e703">maxVel</a></td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Maximum velocity in X and Y directions (handled separately). <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="a9f6e9614e9691392a3c4ae05e19c997"></a><!-- doxytag: member="physicsobject::PhysicsObject::shouldApplyVelocityCap" ref="a9f6e9614e9691392a3c4ae05e19c997" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#a9f6e9614e9691392a3c4ae05e19c997">shouldApplyVelocityCap</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Controls if we limit self.vel to be less than self.maxVel. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8dc7d3d8e8f57f32e97213ce8f6ffebb"></a><!-- doxytag: member="physicsobject::PhysicsObject::facing" ref="8dc7d3d8e8f57f32e97213ce8f6ffebb" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>facing</b></td></tr>
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#8dc7d3d8e8f57f32e97213ce8f6ffebb">facing</a></td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Direction object is facing (1: right, -1: left). <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="3d54a42e3879160c43bb2d58352d881a"></a><!-- doxytag: member="physicsobject::PhysicsObject::sprite" ref="3d54a42e3879160c43bb2d58352d881a" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>sprite</b></td></tr>
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#3d54a42e3879160c43bb2d58352d881a">sprite</a></td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="b2b2e6fd7d8384290212617dfdb679f4"></a><!-- doxytag: member="physicsobject::PhysicsObject::collisions" ref="b2b2e6fd7d8384290212617dfdb679f4" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>collisions</b></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Sprite for animations and bounding polygons. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#b2b2e6fd7d8384290212617dfdb679f4">collisions</a></td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">List of collisions received since the last update cycle.  <a href="#b2b2e6fd7d8384290212617dfdb679f4"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#e9704180413089660a75ccd9a03cef7b">touchDamage</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Damage to do to other objects on contact.  <a href="#e9704180413089660a75ccd9a03cef7b"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="ebb4e37cc7dab165242f6dad83af8bc1"></a><!-- doxytag: member="physicsobject::PhysicsObject::health" ref="ebb4e37cc7dab165242f6dad83af8bc1" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#ebb4e37cc7dab165242f6dad83af8bc1">health</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Damage that can be sustained before discorporating. <br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 <a class="el" href="classphysicsobject_1_1_physics_object.html" title="PhysicsObject is the base class for objects that need to interact with other objects...">PhysicsObject</a> is the base class for objects that need to interact with other objects, like creatures, mechanisms, etc. 
@@ -223,7 +269,29 @@ Perform any necessary tweaks to the collision vector or distance.
 Make whatever state changes the AI/player control calls for. 
 <p>
 
-<p>Reimplemented in <a class="el" href="classplayer_1_1_player.html#24240fe9df8b2bceebc901ef9c95f85b">player.Player</a>.</p>
+<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#96ba1b3f6476bc9d6c27e31a796851ae">data.objects.attacks.baseattack.BaseAttack</a>, <a class="el" href="classdata_1_1objects_1_1creatures_1_1darkclone_1_1_dark_clone.html#0bb4ad2664802fe369fc12778e92ec29">data.objects.creatures.darkclone.DarkClone</a>, and <a class="el" href="classplayer_1_1_player.html#24240fe9df8b2bceebc901ef9c95f85b">player.Player</a>.</p>
+
+</div>
+</div><p>
+<a class="anchor" name="62a4b7825eac95362b1995a89c0caa45"></a><!-- doxytag: member="physicsobject::PhysicsObject::applyPhysics" ref="62a4b7825eac95362b1995a89c0caa45" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def physicsobject.PhysicsObject.applyPhysics           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Apply gravity to velocity and velocity to location. 
+<p>
 
 </div>
 </div><p>
@@ -256,16 +324,16 @@ Make whatever state changes the AI/player control calls for.
 Handle completion of animations. 
 <p>
 
-<p>Reimplemented in <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#77f930d031db44bcc85a8f395151cee8">terrestrialobject.TerrestrialObject</a>.</p>
+<p>Reimplemented in <a class="el" href="classplayer_1_1_player.html#ead79687ed002d985af045ce9f892d76">player.Player</a>, and <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#77f930d031db44bcc85a8f395151cee8">terrestrialobject.TerrestrialObject</a>.</p>
 
 </div>
 </div><p>
-<a class="anchor" name="a4aeec4650623f5861e47f01f9fb5987"></a><!-- doxytag: member="physicsobject::PhysicsObject::handleCollisions" ref="a4aeec4650623f5861e47f01f9fb5987" args="" -->
+<a class="anchor" name="adbdae669fc7e197f14beef14eb0134f"></a><!-- doxytag: member="physicsobject::PhysicsObject::die" ref="adbdae669fc7e197f14beef14eb0134f" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">def physicsobject.PhysicsObject.handleCollisions           </td>
+          <td class="memname">def physicsobject.PhysicsObject.die           </td>
           <td>(</td>
           <td class="paramtype">&nbsp;</td>
           <td class="paramname"> <em>self</em>          </td>
@@ -277,9 +345,32 @@ Handle completion of animations.
 <div class="memdoc">
 
 <p>
-React to colliding with objects by killing velocity and backing out until we are not intersecting again. 
+Perform any actions required on death, e.g. 
 <p>
-Use self.adjestCollision() to modify ejection vectors and distances; use self.hit[Floor|Wall|Ceiling] to react to running into terrain of those types. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>Currently assumes all collisions are with terrain. </dd></dl>
+explosions, dropping items, etc. 
+</div>
+</div><p>
+<a class="anchor" name="766fd03a47fe18b8bef9d42079f0917e"></a><!-- doxytag: member="physicsobject::PhysicsObject::getIsAlive" ref="766fd03a47fe18b8bef9d42079f0917e" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def physicsobject.PhysicsObject.getIsAlive           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Return if we are alive. 
+<p>
+Returning false here causes the object to be removed from the <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a>. 
+<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#69966326784d7fdca210ad08594123a7">data.objects.attacks.baseattack.BaseAttack</a>.</p>
 
 </div>
 </div><p>
@@ -313,6 +404,37 @@ React to hitting the floor.
 <p>
 
 <p>Reimplemented in <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#0e03c9b722c3448d4d784ecc5e758bb8">terrestrialobject.TerrestrialObject</a>.</p>
+
+</div>
+</div><p>
+<a class="anchor" name="e0949492647f6585485e7b99ccf1e830"></a><!-- doxytag: member="physicsobject::PhysicsObject::hitObject" ref="e0949492647f6585485e7b99ccf1e830" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def physicsobject.PhysicsObject.hitObject           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>alt</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Hit a non-terrain object. 
+<p>
 
 </div>
 </div><p>
@@ -430,32 +552,168 @@ Called right before self.handleCollisions(), to prepare.
 
 </div>
 </div><p>
-<a class="anchor" name="b6f278486509edd856ab55e982e754cf"></a><!-- doxytag: member="physicsobject::PhysicsObject::update" ref="b6f278486509edd856ab55e982e754cf" args="" -->
+<a class="anchor" name="860cabc97be1a4089a994db0a1e0a7a5"></a><!-- doxytag: member="physicsobject::PhysicsObject::processCollision" ref="860cabc97be1a4089a994db0a1e0a7a5" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">def physicsobject.PhysicsObject.update           </td>
+          <td class="memname">def physicsobject.PhysicsObject.processCollision           </td>
           <td>(</td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>self</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>collision</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>
-Apply gravity to velocity and velocity to location, then run collision detection. 
+Handle running into something. 
 <p>
+Use self.adjustCollision() to modify ejection vectors and distances; use self.hit[Floor|Wall|Ceiling] to react to running into terrain of those types. 
+<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1creatures_1_1darkclone_1_1_dark_clone.html#75312b91633bc5cfea7f387b374c2a15">data.objects.creatures.darkclone.DarkClone</a>, and <a class="el" href="classplayer_1_1_player.html#246bbda15fe96e16dde28b9a990f5ee4">player.Player</a>.</p>
+
+</div>
+</div><p>
+<a class="anchor" name="d9952528886516a960a21df1df2382db"></a><!-- doxytag: member="physicsobject::PhysicsObject::shouldCollideAgainstFaction" ref="d9952528886516a960a21df1df2382db" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def physicsobject.PhysicsObject.shouldCollideAgainstFaction           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>faction</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Return true if collisions against the given faction type should be performed. 
+<p>
+
+<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#65f838fc3c544b08a6ed392bbc9d50a1">data.objects.attacks.baseattack.BaseAttack</a>.</p>
+
+</div>
+</div><p>
+<hr><h2>Member Data Documentation</h2>
+<a class="anchor" name="b2b2e6fd7d8384290212617dfdb679f4"></a><!-- doxytag: member="physicsobject::PhysicsObject::collisions" ref="b2b2e6fd7d8384290212617dfdb679f4" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classphysicsobject_1_1_physics_object.html#b2b2e6fd7d8384290212617dfdb679f4">physicsobject.PhysicsObject.collisions</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+List of collisions received since the last update cycle. 
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="483246f2501765b14ba090451bcc90cc"></a><!-- doxytag: member="physicsobject::PhysicsObject::gravity" ref="483246f2501765b14ba090451bcc90cc" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classphysicsobject_1_1_physics_object.html#483246f2501765b14ba090451bcc90cc">physicsobject.PhysicsObject.gravity</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Acceleration due to gravity, added to self.vel each update cycle. 
+<p>
+
+<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#0edd018a9df18c205f2fcd0240d9c15d">data.objects.attacks.baseattack.BaseAttack</a>, and <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#af96d64c732a550d7d1e1c1f7423f9ab">terrestrialobject.TerrestrialObject</a>.</p>
+
+</div>
+</div><p>
+<a class="anchor" name="2fcc390c1cafc7ade171c6e64db47dbd"></a><!-- doxytag: member="physicsobject::PhysicsObject::isGravityOn" ref="2fcc390c1cafc7ade171c6e64db47dbd" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classphysicsobject_1_1_physics_object.html#2fcc390c1cafc7ade171c6e64db47dbd">physicsobject.PhysicsObject.isGravityOn</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+True if gravity should be applied during the update cycle. 
+<p>
+
+<p>Reimplemented in <a class="el" href="classplayer_1_1_player.html#eeea352666bd70d5f2e355a98ff1027f">player.Player</a>, and <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#05f78ffe984735f44769d004dffd8030">terrestrialobject.TerrestrialObject</a>.</p>
+
+</div>
+</div><p>
+<a class="anchor" name="928e6be6c8a76f869ec30a0b35572bb1"></a><!-- doxytag: member="physicsobject::PhysicsObject::name" ref="928e6be6c8a76f869ec30a0b35572bb1" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classphysicsobject_1_1_physics_object.html#928e6be6c8a76f869ec30a0b35572bb1">physicsobject.PhysicsObject.name</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Name of object, used to look up the sprite. 
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="e9704180413089660a75ccd9a03cef7b"></a><!-- doxytag: member="physicsobject::PhysicsObject::touchDamage" ref="e9704180413089660a75ccd9a03cef7b" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classphysicsobject_1_1_physics_object.html#e9704180413089660a75ccd9a03cef7b">physicsobject.PhysicsObject.touchDamage</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Damage to do to other objects on contact. 
+<p>
+
+<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#4b64f1845cc50f1a7ccc4d256a549b7b">data.objects.attacks.baseattack.BaseAttack</a>, and <a class="el" href="classdata_1_1objects_1_1creatures_1_1darkclone_1_1_dark_clone.html#ebbe887d818deb63e4935a45dfd6154a">data.objects.creatures.darkclone.DarkClone</a>.</p>
 
 </div>
 </div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>physicsobject.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:33 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

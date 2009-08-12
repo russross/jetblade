@@ -28,9 +28,6 @@
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#68cb033f588517c4dc37098a0ad80418">getHomePath</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Retrieves the location of the user's home directory, depending on OS.  <a href="#68cb033f588517c4dc37098a0ad80418"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#e4359328d5e776c64dd610c5667e4b21">getClipboardText</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Retrieve the text from the clipboard, using different methods depending on OS.  <a href="#e4359328d5e776c64dd610c5667e4b21"></a><br></td></tr>
@@ -46,9 +43,6 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#52f751e5939b4becf3d59a40da643ef1">adjustLocForCenter</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">As adjustLocForRect, but move the rect so it is centered at the given location first.  <a href="#52f751e5939b4becf3d59a40da643ef1"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#e6e22199a5f8694bb4caada7584dba56">getDrawFrame</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get an image from the list based on the provided index.  <a href="#e6e22199a5f8694bb4caada7584dba56"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#d96674acfba72b811870b10776fd0157">clampDirection</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Limit angles to the range [0, 2pi].  <a href="#d96674acfba72b811870b10776fd0157"></a><br></td></tr>
@@ -60,9 +54,6 @@
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Convert a 3x3 array of 0s, 1s, and 2s into a list of scalar values:<ul>
 <li>0: add zero to result</li><li>1: add 2^index to result</li><li>2: represents "either 0 or 1", so duplicate the results and add 2^index to half the elements. </li></ul>
  <a href="#5c4fd01e11580aa87dcec6799981ee23"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html#f5f91bfc466cefbaaedbe5381b62c77b">loadDynamicClass</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Load a class from the named module.  <a href="#f5f91bfc466cefbaaedbe5381b62c77b"></a><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 The functions in <a class="el" href="namespaceutil.html" title="The functions in util are general utility functions that are not tied to any specific...">util</a> are general utility functions that are not tied to any specific class. 
@@ -236,80 +227,6 @@ Retrieve the text from the clipboard, using different methods depending on OS.
 
 </div>
 </div><p>
-<a class="anchor" name="e6e22199a5f8694bb4caada7584dba56"></a><!-- doxytag: member="util::getDrawFrame" ref="e6e22199a5f8694bb4caada7584dba56" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def util.getDrawFrame           </td>
-          <td>(</td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>index</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>surfaces</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Get an image from the list based on the provided index. 
-<p>
-
-</div>
-</div><p>
-<a class="anchor" name="68cb033f588517c4dc37098a0ad80418"></a><!-- doxytag: member="util::getHomePath" ref="68cb033f588517c4dc37098a0ad80418" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def util.getHomePath           </td>
-          <td>(</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Retrieves the location of the user's home directory, depending on OS. 
-<p>
-
-</div>
-</div><p>
-<a class="anchor" name="f5f91bfc466cefbaaedbe5381b62c77b"></a><!-- doxytag: member="util::loadDynamicClass" ref="f5f91bfc466cefbaaedbe5381b62c77b" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def util.loadDynamicClass           </td>
-          <td>(</td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>path</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Load a class from the named module. 
-<p>
-Assumes that the module includes a function getClassName() that indicates the name of the class to load. 
-</div>
-</div><p>
 <a class="anchor" name="2ca90d23fe50a8caf271a3a62c20f74f"></a><!-- doxytag: member="util::pickWeightedOption" ref="2ca90d23fe50a8caf271a3a62c20f74f" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -354,7 +271,7 @@ Create the display surface.
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:33 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

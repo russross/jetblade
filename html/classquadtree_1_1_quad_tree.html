@@ -36,18 +36,36 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="7880e73e9134579d03cb22384e41c946"></a><!-- doxytag: member="quadtree::QuadTree::__init__" ref="7880e73e9134579d03cb22384e41c946" args="" -->
 def&nbsp;</td><td class="memItemRight" valign="bottom"><b>__init__</b></td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#a70ef9685544e56742e75f234c0a4318">extendTree</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Create four children for this node.  <a href="#a70ef9685544e56742e75f234c0a4318"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#89f2ca5450f633fc11fc82f9a30d5ac1">addObject</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Add an object to the node.  <a href="#89f2ca5450f633fc11fc82f9a30d5ac1"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#d8cca2d4fadb6527f0aa2e48a7fd63d2">addObjects</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Add many objects by iteratively calling self.addObject().  <a href="#d8cca2d4fadb6527f0aa2e48a7fd63d2"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#ebaebfab8246c56f8261a40ca92fbf31">tryAddObjectToChildren</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Try to push the given object down to our children.  <a href="#ebaebfab8246c56f8261a40ca92fbf31"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#cf48737c4a8f2b72d5a40b6968a01e2d">rebalanceTree</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Push objects in this level down into deeper levels of the tree, if possible.  <a href="#cf48737c4a8f2b72d5a40b6968a01e2d"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#a70ef9685544e56742e75f234c0a4318">extendTree</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#9492e0df53b7d7eb53c6a347f4169b60">prepObjects</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Create four children for this node, and give them any objects we can.  <a href="#a70ef9685544e56742e75f234c0a4318"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Prepare all objects in the tree for collision detection.  <a href="#9492e0df53b7d7eb53c6a347f4169b60"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#ec82faebefdb4d46e0850b093f74ece6">runObjectCollisionDetection</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Collide all objects against each other.  <a href="#ec82faebefdb4d46e0850b093f74ece6"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#02a4f4ebb0d926c0bd00063019de512e">runTerrainCollisionDetection</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Collide all objects against terrain.  <a href="#02a4f4ebb0d926c0bd00063019de512e"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#a227584a5d9e8c377361bb50c4efe6f9">cleanupObjects</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Run cleanup after all collision detection.  <a href="#a227584a5d9e8c377361bb50c4efe6f9"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#de034f26f4b1fbf6117666748e6a5509">update</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Update all objects in the tree.  <a href="#de034f26f4b1fbf6117666748e6a5509"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#6e70dd8c3fce4c793782846c1e29c6a1">draw</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Draw the objects in this node and all children, that intersect with the current view.  <a href="#6e70dd8c3fce4c793782846c1e29c6a1"></a><br></td></tr>
@@ -60,6 +78,13 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>__init__</b></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#458bde9e05a353b83bfd662e69226373">canAcceptObject</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return true if this node can fully contain the given object.  <a href="#458bde9e05a353b83bfd662e69226373"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="6f65aa3bdbb3b944034e63ac633cbbb9"></a><!-- doxytag: member="quadtree::QuadTree::printTree" ref="6f65aa3bdbb3b944034e63ac633cbbb9" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#6f65aa3bdbb3b944034e63ac633cbbb9">printTree</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Recursively print the tree. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classquadtree_1_1_quad_tree.html#6ddcbcd813f239458c5b485b0bda3d85">__str__</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Convert to string, non-recursively.  <a href="#6ddcbcd813f239458c5b485b0bda3d85"></a><br></td></tr>
 <tr><td colspan="2"><br><h2>Public Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="39a6f298f4d5be67d708d19d484d8d2c"></a><!-- doxytag: member="quadtree::QuadTree::id" ref="39a6f298f4d5be67d708d19d484d8d2c" args="" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>id</b></td></tr>
@@ -84,6 +109,28 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>__init__</b></td></tr>
 <a class="el" href="classquadtree_1_1_quad_tree.html" title="QuadTree instances are nodes in a recursive quad tree used to hold 2D objects.">QuadTree</a> instances are nodes in a recursive quad tree used to hold 2D objects. 
 <p>
 They are useful for spatial partitioning for efficient collision detection involving dynamic or irregularly-placed objects. Note that we don't shove the map grid into a quadtree, as the grid itself handles spacial partitioning for us. <hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="6ddcbcd813f239458c5b485b0bda3d85"></a><!-- doxytag: member="quadtree::QuadTree::__str__" ref="6ddcbcd813f239458c5b485b0bda3d85" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def quadtree.QuadTree.__str__           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Convert to string, non-recursively. 
+<p>
+
+</div>
+</div><p>
 <a class="anchor" name="89f2ca5450f633fc11fc82f9a30d5ac1"></a><!-- doxytag: member="quadtree::QuadTree::addObject" ref="89f2ca5450f633fc11fc82f9a30d5ac1" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -98,7 +145,13 @@ They are useful for spatial partitioning for efficient collision detection invol
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>object</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>object</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>shouldRebalance</em> = <code>True</code></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -177,6 +230,28 @@ Return true if this node can fully contain the given object.
 
 </div>
 </div><p>
+<a class="anchor" name="a227584a5d9e8c377361bb50c4efe6f9"></a><!-- doxytag: member="quadtree::QuadTree::cleanupObjects" ref="a227584a5d9e8c377361bb50c4efe6f9" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def quadtree.QuadTree.cleanupObjects           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Run cleanup after all collision detection. 
+<p>
+Rebalance the tree at this time, by returning all objects that we cannot hold any longer and pushing down objects that our children can accept. 
+</div>
+</div><p>
 <a class="anchor" name="6e70dd8c3fce4c793782846c1e29c6a1"></a><!-- doxytag: member="quadtree::QuadTree::draw" ref="6e70dd8c3fce4c793782846c1e29c6a1" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -243,7 +318,7 @@ Draw the objects in this node and all children, that intersect with the current 
 <div class="memdoc">
 
 <p>
-Create four children for this node, and give them any objects we can. 
+Create four children for this node. 
 <p>
 
 </div>
@@ -301,12 +376,12 @@ Return all objects whose bounding rects intersect the given rect, in this node a
 
 </div>
 </div><p>
-<a class="anchor" name="cf48737c4a8f2b72d5a40b6968a01e2d"></a><!-- doxytag: member="quadtree::QuadTree::rebalanceTree" ref="cf48737c4a8f2b72d5a40b6968a01e2d" args="" -->
+<a class="anchor" name="9492e0df53b7d7eb53c6a347f4169b60"></a><!-- doxytag: member="quadtree::QuadTree::prepObjects" ref="9492e0df53b7d7eb53c6a347f4169b60" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">def quadtree.QuadTree.rebalanceTree           </td>
+          <td class="memname">def quadtree.QuadTree.prepObjects           </td>
           <td>(</td>
           <td class="paramtype">&nbsp;</td>
           <td class="paramname"> <em>self</em>          </td>
@@ -318,9 +393,156 @@ Return all objects whose bounding rects intersect the given rect, in this node a
 <div class="memdoc">
 
 <p>
+Prepare all objects in the tree for collision detection. 
+<p>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000009">Todo:</a></b></dt><dd>Reshuffle objects around after applying physics. </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="cf48737c4a8f2b72d5a40b6968a01e2d"></a><!-- doxytag: member="quadtree::QuadTree::rebalanceTree" ref="cf48737c4a8f2b72d5a40b6968a01e2d" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def quadtree.QuadTree.rebalanceTree           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>shouldRecurse</em> = <code>False</code></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
 Push objects in this level down into deeper levels of the tree, if possible. 
 <p>
 
+</div>
+</div><p>
+<a class="anchor" name="ec82faebefdb4d46e0850b093f74ece6"></a><!-- doxytag: member="quadtree::QuadTree::runObjectCollisionDetection" ref="ec82faebefdb4d46e0850b093f74ece6" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def quadtree.QuadTree.runObjectCollisionDetection           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>colliders</em> = <code>[]</code></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Collide all objects against each other. 
+<p>
+NOTE: we assume that this does not change their locations, which would require rebalancing the tree. 
+</div>
+</div><p>
+<a class="anchor" name="02a4f4ebb0d926c0bd00063019de512e"></a><!-- doxytag: member="quadtree::QuadTree::runTerrainCollisionDetection" ref="02a4f4ebb0d926c0bd00063019de512e" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def quadtree.QuadTree.runTerrainCollisionDetection           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Collide all objects against terrain. 
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="ebaebfab8246c56f8261a40ca92fbf31"></a><!-- doxytag: member="quadtree::QuadTree::tryAddObjectToChildren" ref="ebaebfab8246c56f8261a40ca92fbf31" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def quadtree.QuadTree.tryAddObjectToChildren           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>object</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Try to push the given object down to our children. 
+<p>
+Return true on success, false on failure 
+</div>
+</div><p>
+<a class="anchor" name="de034f26f4b1fbf6117666748e6a5509"></a><!-- doxytag: member="quadtree::QuadTree::update" ref="de034f26f4b1fbf6117666748e6a5509" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def quadtree.QuadTree.update           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>collisionCandidates</em> = <code>[]</code></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Update all objects in the tree. 
+<p>
+Rebalance as we go, by returning all objects that we cannot hold any longer, and pushing down objects that can fit into one of our children. 
 </div>
 </div><p>
 <hr><h2>Member Data Documentation</h2>
@@ -412,7 +634,7 @@ Bounding box for the node; unless the node is the root of the tree, no objects i
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>quadtree.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:33 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

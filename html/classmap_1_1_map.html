@@ -25,7 +25,7 @@
   </div>
 </div>
 <div class="contents">
-<h1>map.Map Class Reference</h1><!-- doxytag: class="map::Map" -->The <a class="el" href="classmap_1_1_map.html" title="The Map class handles creating, updating, and displaying the game map.">Map</a> class handles creating, updating, and displaying the game map.  
+<h1>map.Map Class Reference</h1><!-- doxytag: class="map::Map" -->The <a class="el" href="classmap_1_1_map.html" title="The Map class handles creating, updating, and displaying the game map.">Map</a> class handles creating, updating, and displaying the <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> map.  
 <a href="#_details">More...</a>
 <p>
 
@@ -53,18 +53,15 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmap_1_1_map.html#15dbdc8e7f11ee9c0166556e76c5c99b">expandWalls</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Widen every wall by adding walls on either side.  <a href="#15dbdc8e7f11ee9c0166556e76c5c99b"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmap_1_1_map.html#f2bab2ed39f7d23db66ec2d589a0d0e5">setBlocks</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmap_1_1_map.html#01f1f483a55da4d6b20491bb18940dfd">instantiateBlocks</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Replace the values in self.blocks with block type info.  <a href="#f2bab2ed39f7d23db66ec2d589a0d0e5"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Replace the values in self.blocks with block type info.  <a href="#01f1f483a55da4d6b20491bb18940dfd"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmap_1_1_map.html#0e765c475fe1363b9ef4facf16b2f694">getBlockType</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return the type of block that should be drawn at the given grid loc.  <a href="#0e765c475fe1363b9ef4facf16b2f694"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmap_1_1_map.html#f2d7f67c962a5ae5311b608719a7b26a">removeIslands</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Do a connectivity check on the map.  <a href="#f2d7f67c962a5ae5311b608719a7b26a"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmap_1_1_map.html#01f1f483a55da4d6b20491bb18940dfd">instantiateBlocks</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">This is called right after setBlocks, which puts block terrain info tuples into self.blocks.  <a href="#01f1f483a55da4d6b20491bb18940dfd"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmap_1_1_map.html#e3f7639ae1201c7f7701b6427ed63559">plantSeed</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Plant a seed for hollowing out part of the map at the desired location.  <a href="#e3f7639ae1201c7f7701b6427ed63559"></a><br></td></tr>
@@ -125,9 +122,12 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="d795890586d18cb8d7fb75b4fa135c71"></a><!-- doxytag: member="map::Map::getStartLoc" ref="d795890586d18cb8d7fb75b4fa135c71" args="" -->
 def&nbsp;</td><td class="memItemRight" valign="bottom"><b>getStartLoc</b></td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmap_1_1_map.html#09568d826a804d733c1b7493600d5bad">collidePolygon</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmap_1_1_map.html#c8f04504ef2196bf26afcb616ec684f5">collideObject</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Collide the provided polygon against terrain tiles.  <a href="#09568d826a804d733c1b7493600d5bad"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Collide the given object against our terrain.  <a href="#c8f04504ef2196bf26afcb616ec684f5"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmap_1_1_map.html#23a1cb8a9aaccd0596c5ed35f6689600">fixEjectionVector</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Determine if there is a block adjacent to the given block along the provided vector.  <a href="#23a1cb8a9aaccd0596c5ed35f6689600"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmap_1_1_map.html#263a7fedc82cdafa1807be418be319f9">loadMap</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Load map information from disk.  <a href="#263a7fedc82cdafa1807be418be319f9"></a><br></td></tr>
@@ -149,6 +149,9 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>getBlockAtGridLoc</b><
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmap_1_1_map.html#66418f800f2ede9b7ae4d4cfca9bfe6b">getRegionInfo</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return the data in the specified field for the given terrain type.  <a href="#66418f800f2ede9b7ae4d4cfca9bfe6b"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmap_1_1_map.html#7b2663bd05ce0955be02227dbe5f996f">getBounds</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return the size of the <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> map as a PyGame Rect.  <a href="#7b2663bd05ce0955be02227dbe5f996f"></a><br></td></tr>
 <tr><td colspan="2"><br><h2>Public Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="fe579e2668bfd396b1f51b6f8701445d"></a><!-- doxytag: member="map::Map::statusIter" ref="fe579e2668bfd396b1f51b6f8701445d" args="" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmap_1_1_map.html#fe579e2668bfd396b1f51b6f8701445d">statusIter</a></td></tr>
@@ -213,10 +216,10 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>getBlockAtGridLoc</b><
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-The <a class="el" href="classmap_1_1_map.html" title="The Map class handles creating, updating, and displaying the game map.">Map</a> class handles creating, updating, and displaying the game map. 
+The <a class="el" href="classmap_1_1_map.html" title="The Map class handles creating, updating, and displaying the game map.">Map</a> class handles creating, updating, and displaying the <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> map. 
 <p>
 This includes the following structures:<ul>
-<li>The root TreeNode for the tree that describes the high-level structure of the map tunnels.</li><li>A grid of terrain tiles.</li><li>Another grid for environmental effects.</li><li>A quadtree containing all background props. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>Several dicts in this class don't match the style guideline. </dd></dl>
+<li>The root TreeNode for the tree that describes the high-level structure of the map tunnels.</li><li>A grid of terrain tiles.</li><li>Another grid for environmental effects.</li><li>A quadtree containing all background props. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>Several dicts in this class don't match the style guideline. </dd></dl>
 </li></ul>
 <hr><h2>Member Function Documentation</h2>
 <a class="anchor" name="c4547ef6e6d9a6b9e450694c3b7cc48e"></a><!-- doxytag: member="map::Map::__init__" ref="c4547ef6e6d9a6b9e450694c3b7cc48e" args="" -->
@@ -467,12 +470,12 @@ Create a set of blocks for each location in self.platforms.
 
 </div>
 </div><p>
-<a class="anchor" name="09568d826a804d733c1b7493600d5bad"></a><!-- doxytag: member="map::Map::collidePolygon" ref="09568d826a804d733c1b7493600d5bad" args="" -->
+<a class="anchor" name="c8f04504ef2196bf26afcb616ec684f5"></a><!-- doxytag: member="map::Map::collideObject" ref="c8f04504ef2196bf26afcb616ec684f5" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">def map.Map.collidePolygon           </td>
+          <td class="memname">def map.Map.collideObject           </td>
           <td>(</td>
           <td class="paramtype">&nbsp;</td>
           <td class="paramname"> <em>self</em>, </td>
@@ -481,13 +484,7 @@ Create a set of blocks for each location in self.platforms.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>poly</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>loc</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>object</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -499,9 +496,9 @@ Create a set of blocks for each location in self.platforms.
 <div class="memdoc">
 
 <p>
-Collide the provided polygon against terrain tiles. 
+Collide the given object against our terrain. 
 <p>
-Return the tile with the largest ejection vector (as that is the tile that the polygon probably hit first). 
+Iterate over all blocks near the object's polygon, run SAT on them, and inform the object of the results. 
 </div>
 </div><p>
 <a class="anchor" name="17f7ab15ed10b2d196d07dd5a7b266ef"></a><!-- doxytag: member="map::Map::createJunctions" ref="17f7ab15ed10b2d196d07dd5a7b266ef" args="" -->
@@ -820,6 +817,43 @@ Call treenode.fixAccessibility() to create platforms to ensure map accessibility
 
 </div>
 </div><p>
+<a class="anchor" name="23a1cb8a9aaccd0596c5ed35f6689600"></a><!-- doxytag: member="map::Map::fixEjectionVector" ref="23a1cb8a9aaccd0596c5ed35f6689600" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def map.Map.fixEjectionVector           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>vector</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>centerBlock</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Determine if there is a block adjacent to the given block along the provided vector. 
+<p>
+If there is, find an alternate direction that isn't obstructed. 
+</div>
+</div><p>
 <a class="anchor" name="80f0fe75b8a76faccb4be5c690dc5cf5"></a><!-- doxytag: member="map::Map::fixSeedOwnership" ref="80f0fe75b8a76faccb4be5c690dc5cf5" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -898,6 +932,28 @@ It is possible to get islands of dead seeds that are in the "wrong" sector (i.e.
 Return the type of block that should be drawn at the given grid loc. 
 <p>
 Determine this by the locations of neighbors of the block -- its "adjacency signature". 
+</div>
+</div><p>
+<a class="anchor" name="7b2663bd05ce0955be02227dbe5f996f"></a><!-- doxytag: member="map::Map::getBounds" ref="7b2663bd05ce0955be02227dbe5f996f" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def map.Map.getBounds           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Return the size of the <a class="el" href="namespacegame.html" title="This package centralizes access to singletons.">game</a> map as a PyGame Rect. 
+<p>
+
 </div>
 </div><p>
 <a class="anchor" name="34b66e06e1d18dcc38d10f02fe8d7406"></a><!-- doxytag: member="map::Map::getDistanceToWall" ref="34b66e06e1d18dcc38d10f02fe8d7406" args="" -->
@@ -1171,9 +1227,10 @@ Either create or load a map.
 <div class="memdoc">
 
 <p>
-This is called right after setBlocks, which puts block terrain info tuples into self.blocks. 
+Replace the values in self.blocks with block type info. 
 <p>
-For each block in self.blocks that contains a tuple, create a Block instance. At this time, also instantiate any props that are attached to the blocks. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>Replace block info tuples with some container class. </dd></dl>
+At this point self.blocks consists of the following:<ul>
+<li>0: empty space</li><li>1: filled space surrounded by other filled space</li><li>2: filled space next to empty space</li><li>Tuple of block typestring (e.g. 'upleft') and adjacency signature </li></ul>
 
 </div>
 </div><p>
@@ -1196,7 +1253,7 @@ For each block in self.blocks that contains a tuple, create a Block instance. At
 <p>
 Load map information from disk. 
 <p>
-The filename is equal to the name of the map. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>This parser is very brittle, and while the map file format is not meant to be directly user-editable, there's no reason we couldn't be more flexible here. </dd></dl>
+The filename is equal to the name of the map. <dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd>This parser is very brittle, and while the map file format is not meant to be directly user-editable, there's no reason we couldn't be more flexible here. </dd></dl>
 
 </div>
 </div><p>
@@ -1328,30 +1385,6 @@ Plant a seed for hollowing out part of the map at the desired location.
 Do a connectivity check on the map. 
 <p>
 Remove all areas whose size is less than minimumIslandSize. This is very similar to the logic in <a class="el" href="classmap_1_1_map.html#80f0fe75b8a76faccb4be5c690dc5cf5" title="Finds islands of dead seeds and reassigns their ownership.">fixSeedOwnership()</a>, but operates on walls (and unallocated space) instead of seeds and removes islands entirely instead of merging them with neighbors. 
-</div>
-</div><p>
-<a class="anchor" name="f2bab2ed39f7d23db66ec2d589a0d0e5"></a><!-- doxytag: member="map::Map::setBlocks" ref="f2bab2ed39f7d23db66ec2d589a0d0e5" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def map.Map.setBlocks           </td>
-          <td>(</td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>self</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Replace the values in self.blocks with block type info. 
-<p>
-At this point self.blocks consists of the following:<ul>
-<li>0: empty space</li><li>1: filled space surrounded by other filled space</li><li>2: filled space next to empty space</li><li>Tuple of block typestring (e.g. 'upleft') and adjacency signature </li></ul>
-
 </div>
 </div><p>
 <a class="anchor" name="70c15338d039e86e3f116997493c6a35"></a><!-- doxytag: member="map::Map::tryMergeDeadSeed" ref="70c15338d039e86e3f116997493c6a35" args="" -->
@@ -1609,7 +1642,7 @@ This quadtree holds lines; we use it to make certain that limbs of the tree do n
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>map.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Jul 18 20:28:21 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:33 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
