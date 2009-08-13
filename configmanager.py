@@ -1,4 +1,3 @@
-import util
 import logger
 import constants
 

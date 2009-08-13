@@ -45,7 +45,7 @@ class ImageManager:
 
 
     ## Load a single surface. 
-    def loadSurface(self, name, has_alpha = 1):
+    def loadSurface(self, name, has_alpha = True):
         if name in self.surfaces:
             return self.surfaces[name]
         path = constants.spritePath + '/' + name + '.png'

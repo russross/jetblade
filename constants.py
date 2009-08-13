@@ -41,6 +41,8 @@ spritePath = 'data/sprites'
 soundPath = 'data/sound'
 ## Path to fonts
 fontPath = 'data/fonts'
+## Path to miscellaneous resources
+otherPath = 'data/other'
 ## Name of the module used to configure animation data
 spriteFilename = 'spriteConfig'
 ## Name of the module used to configure fonts
