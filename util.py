@@ -61,19 +61,13 @@ def fadeAlpha(surface, alpha):
         except Exception, e:
             return
 
-## Adjust the passed-in location so that it is relative to the upper-left
-# corner of the passed-in rect.
-def adjustLocForRect(loc, rect):
-    result = Vector2D(loc.x - rect.topleft[0], loc.y - rect.topleft[1])
-    return result
 
-
-## As adjustLocForRect, but move the rect so it is centered at the given
-# location first.
+## Move the given location so that it is adjusted to be relative to the rect
+# at the given center.
 def adjustLocForCenter(loc, center, rect):
     rect.centerx = center.x
     rect.centery = center.y
-    return adjustLocForRect(loc, rect)
+    return Vector2D(loc.x - rect.topleft[0], loc.y - rect.topleft[1])
 
 
 ## Limit angles to the range [0, 2pi].
