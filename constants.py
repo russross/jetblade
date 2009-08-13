@@ -1,7 +1,3 @@
-import math
-import pygame
-from pygame.locals import *
-
 ## @package constants This package contains a bunch of "constants" 
 # (read: global variables that shouldn't be modified during execution) that 
 # are used to configure the program in various ways.
