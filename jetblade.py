@@ -32,7 +32,7 @@ def run():
 
     # Compile any Cython modules
     import pyximport; pyximport.install()
-    from vector2d import Vector2D
+    import vector2d
     import polygon
     import range1d
 

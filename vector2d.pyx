@@ -205,7 +205,7 @@ cdef class Vector2D:
 
 
     ## Determine if any of the given points are close to us
-    cpdef public bool fuzzyMatchList(Vector2D self, list alts):
+    cpdef public bint fuzzyMatchList(Vector2D self, list alts):
         for alt in alts:
             if self.distance(alt) < constants.DELTA:
                 return True

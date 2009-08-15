@@ -29,6 +29,6 @@ cdef class Vector2D:
     cpdef public Vector2D toGridspace(Vector2D self)
     cpdef public Vector2D toRealspace(Vector2D self)
     cpdef public tuple tuple(Vector2D self)
-    cpdef public bool fuzzyMatchList(Vector2D self, list alts)
+    cpdef public bint fuzzyMatchList(Vector2D self, list alts)
     cpdef public list perimeter(Vector2D self)
     cpdef public list NEWSPerimeter(Vector2D self)
