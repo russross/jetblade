@@ -8,11 +8,6 @@ from vector2d import Vector2D
 ## Magnitude of the horizontal portion of a normalized vector, past which we 
 # consider the vector to be the normal of a wall.
 wallHorizontalVectorComponent = .8
-## Maximum attempts to disentangle an object from a wall before we give up 
-# and start zipping it.
-maxCollisionRetries = 15
-## Distance to zip if we fail to pull an object out of the terrain.
-zipAmount = Vector2D(0, -constants.blockSize)
 
 ## Default acceleration due to gravity, in X and Y directions
 defaultGravity = Vector2D(0, 0)

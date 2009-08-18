@@ -132,13 +132,14 @@ adjacencyKernelToBlockTypeMap = {
      (0, 0, 0)) : 'allway'
 }
 
-# Block type enums
-## Indicates empty space
-BLOCK_EMPTY = 0
-## Indicates unallocated space
-BLOCK_UNALLOCATED = 1
-## Indicates a wall
-BLOCK_WALL = 2
+## Block type enums: empty space, unallocated space, and wall.
+(BLOCK_EMPTY, BLOCK_UNALLOCATED, BLOCK_WALL) = range(3)
+
+## Maximum attempts to disentangle an object from a wall before we give up 
+# and start zipping it.
+maxCollisionRetries = 15
+## Distance to zip if we fail to pull an object out of the terrain.
+zipAmount = Vector2D(0, -constants.blockSize)
 
 ## The Map class handles creating, updating, and displaying the game map. This
 # includes the following structures:
@@ -1059,13 +1060,14 @@ class Map:
     ## Collide the given object against our terrain. Iterate over all blocks
     # near the object's polygon, run SAT on them, and inform the object of 
     # the results.
+    # If the object gets stuck (too many terrain collisions), then we zip it
+    # upwards.
     def collideObject(self, object):
         resultVector = None
         resultBlock = None
-        isFirstPass = True
         numAttempts = 0
-        while isFirstPass or resultVector is not None:
-            isFirstPass = False
+        while (numAttempts < maxCollisionRetries and 
+                (numAttempts == 0 or resultVector is not None)):
             resultVector = None
             numAttempts += 1
 
@@ -1106,6 +1108,9 @@ class Map:
                 collision =  collisiondata.CollisionData(resultVector, 
                                     longestOverlap, 'solid', resultBlock)
                 object.processCollision(collision)
+        if numAttempts == maxCollisionRetries:
+            # Terrain collision detection failed; zip.
+            object.loc = object.loc.add(zipAmount)
 
 
     ## Determine if there is a block adjacent to the given block along the
