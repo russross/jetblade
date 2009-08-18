@@ -1,5 +1,6 @@
 import game
 import constants
+import splashscreen
 
 import pygame
 import sys
@@ -40,6 +41,8 @@ class Logger:
             for entry in entries:
                 string += str(entry) + ' '
             print logStrings[level] + ':',string
+            if not splashscreen.getIsDoneLoading():
+                splashscreen.updateMessage(string)
             return string
         return None
 

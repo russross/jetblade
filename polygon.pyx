@@ -2,9 +2,7 @@ import constants
 import util
 import range1d
 from vector2d cimport Vector2D
-from vector2d import Vector2D
 from range1d cimport Range1D
-from range1d import Range1D
 import logger
 import pygame
 

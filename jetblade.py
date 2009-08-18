@@ -1,6 +1,6 @@
 #!/usr/local/bin/python2.5
 
-import constants
+import splashscreen
 
 import sys
 import time
@@ -21,29 +21,23 @@ import optparse
 def run():
     options = getOptions()
 
-    # Display a splash screen while we wait
-    pygame.init()
-    splashSurface = pygame.image.load(constants.otherPath + '/splashscreen.png')
-    screen = pygame.display.set_mode((constants.sw, constants.sh))
-    splashRect = splashSurface.get_rect()
-    splashRect.topleft = (0, 0)
-    screen.blit(splashSurface, splashRect)
-    pygame.display.update()
-
     # Compile any Cython modules
+    splashscreen.updateMessage("Compiling Cython modules")
     import pyximport; pyximport.install()
     import vector2d
     import polygon
     import range1d
 
     # Prepare game singletons
+    splashscreen.updateMessage("Loading resources and singletons")
     import game
-    game.screen = screen
+    game.screen = splashscreen.getScreen()
     init(game, options)
 
     # Start gameplay
     import mainloop
     mainloop.startGame()
+    splashscreen.completeLoading()
     mainloop.gameLoop()
 
 
