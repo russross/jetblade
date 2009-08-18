@@ -252,7 +252,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         # Recognize this situation because we're on the ground, getting
         # ejected straight horizontally by a block at foot level that has no
         # block above it.
-        if collision.type == 'terrain':
+        if collision.type == 'solid':
             block = collision.altObject
             if (not game.map.getBlockAtGridLoc(block.gridLoc.addY(-1)) and 
                     self.wasGrounded and 
