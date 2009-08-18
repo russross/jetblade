@@ -437,7 +437,7 @@ class TerrestrialObject(physicsobject.PhysicsObject):
             self.isGrounded = True
             self.isGravityOn = True
             self.sprite.setAnimation('crawl')
-            game.soundManager.playSound('menutone.ogg')
+            game.soundManager.playSound('player')
         elif action == 'crawlturn':
             self.facing *= -1
             self.sprite.setAnimation('crawl')

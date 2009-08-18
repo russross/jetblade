@@ -1,3 +1,4 @@
+import splashscreen
 import constants
 
 import pygame
@@ -26,20 +27,20 @@ class SplashScreen:
         pygame.display.update()
 
 ## Module-global singleton
-splashScreen = SplashScreen()
+splashscreen.splashScreen = SplashScreen()
 
 ## Passthrough to SplashScreen.updateMessage
 def updateMessage(message):
-    splashScreen.updateMessage(message)
+    splashscreen.splashScreen.updateMessage(message)
 
 ## Since SplashScreen has the main PyGame screen surface, we need to be able 
 # to retrieve it.
 def getScreen():
-    return splashScreen.screen
+    return splashscreen.splashScreen.screen
 
 ## Unset the singleton so that we can stop sending log messages to it.
 def completeLoading():
-    splashScreen = None
+    splashscreen.splashScreen = None
 
 def getIsDoneLoading():
-    return splashScreen == None
+    return splashscreen.splashScreen == None
