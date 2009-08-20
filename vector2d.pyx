@@ -238,7 +238,9 @@ cdef class Vector2D:
 
     ## Comparison test. Does not order vectors; just tests for equality.
     def __richcmp__(self, alt, int op):
-        if self.x == alt.x and self.y == alt.y and op == 2:
+        if (abs(self.x - alt.x) < constants.EPSILON and 
+            abs(self.y == alt.y) < constants.EPSILON and
+            op == 2):
             return 0
         return -1
 
