@@ -428,7 +428,6 @@ class TerrestrialObject(physicsobject.PhysicsObject):
 
     ## Wrap up after finishing a climb.
     def completeAnimation(self, animation):
-        logger.debug("Finishing animation",animation)
         action = animation.name[:-2]
         if action == 'climb':
             self.isHanging = False

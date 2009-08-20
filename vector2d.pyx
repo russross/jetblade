@@ -236,9 +236,11 @@ cdef class Vector2D:
         return hash(int(self.x) << 20) ^ hash(int(self.y))
     
 
-    ## Comparison test (fuzzy)
+    ## Comparison test. Does not order vectors; just tests for equality.
     def __richcmp__(self, alt, int op):
-        return self.x == alt.x and self.y == alt.y and op == 2
+        if self.x == alt.x and self.y == alt.y and op == 2:
+            return 0
+        return -1
 
 
     ## Convert to string
