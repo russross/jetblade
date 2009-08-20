@@ -396,6 +396,9 @@ blocks:
 49,47,left,jungle,grass
 49,48,left,jungle,grass
 49,49,center,jungle,grass
+28,43,updown,hotzone,techpipe
+27,43,leftend,hotzone,techpipe
+29,43,rightend,hotzone,techpipe
 enveffects:
 1,48:water
 2,48:water
