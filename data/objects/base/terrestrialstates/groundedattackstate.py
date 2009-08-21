@@ -1,4 +1,4 @@
-import objectstate
+from .. import objectstate
 from vector2d import Vector2D
 
 import groundedstate

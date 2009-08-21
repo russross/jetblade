@@ -1,5 +1,5 @@
 import constants
-import objectstate
+from .. import objectstate
 from vector2d import Vector2D
 
 import fallingstate

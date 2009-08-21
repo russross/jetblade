@@ -1,4 +1,4 @@
-import objectstate
+from .. import objectstate
 import game
 from vector2d import Vector2D
 

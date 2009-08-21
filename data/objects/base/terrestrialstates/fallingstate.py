@@ -1,5 +1,5 @@
 import constants
-import objectstate
+from .. import objectstate
 
 import hangingstate
 import groundedstate
