@@ -1,4 +1,4 @@
-import terrestrialobject
+from ...base import terrestrialobject
 import game
 
 def getClassName():
@@ -22,7 +22,7 @@ class DarkClone(terrestrialobject.TerrestrialObject):
 
     def AIUpdate(self):
         self.runDirection = cmp(0, self.loc.sub(game.player.loc).x)
-        if self.isHanging:
+        if self.state.name == 'hang':
             self.justStartedClimbing = True
         self.prevVel = self.vel
 

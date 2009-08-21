@@ -5,6 +5,8 @@ import game
 import collisiondata
 from vector2d import Vector2D
 
+import objectstate
+
 ## Magnitude of the horizontal portion of a normalized vector, past which we 
 # consider the vector to be the normal of a wall.
 wallHorizontalVectorComponent = .8
@@ -53,11 +55,19 @@ class PhysicsObject:
         self.touchDamage = 0
         ## Damage that can be sustained before discorporating
         self.health = constants.BIGNUM
+        ## Current state for movement logic
+        self.state = objectstate.ObjectState(self)
+
+
+    ## Set a new state for our movement logic.
+    def setState(self, state):
+        logger.debug("Setting new state on",self.name,":",state.name)
+        self.state = state
 
 
     ## Make whatever state changes the AI/player control calls for.
     def AIUpdate(self):
-        pass
+        self.state.AIUpdate()
 
 
     ## Apply gravity to velocity and velocity to location.
@@ -71,12 +81,12 @@ class PhysicsObject:
 
     ## Called right before self.handleCollisions(), to prepare.
     def preCollisionUpdate(self):
-        pass
+        self.state.preCollisionUpdate()
 
 
     ## Called after self.handleCollisions(), to do any necessary cleanup.
     def postCollisionUpdate(self):
-        pass
+        self.state.postCollisionUpdate()
 
 
     ## Return if we are alive. Returning false here causes the object to be 
@@ -135,33 +145,33 @@ class PhysicsObject:
 
     ## Perform any necessary tweaks to the collision vector or distance.
     def adjustCollision(self, collision):
-        return collision
+        return self.state.adjustCollision(collision)
 
 
     ## React to hitting any terrain.
     def hitTerrain(self, collision):
-        return True
+        return self.state.hitTerrain(collision)
 
 
     ## React to hitting a wall.
     def hitWall(self, collision):
         logger.debug("Object",self.id,"with velocity",self.vel,"hit a wall")
         self.vel = self.vel.setX(0)
-        return True
+        return self.state.hitWall(collision)
 
 
     ## React to hitting the ceiling
     def hitCeiling(self, collision):
         logger.debug("Object",self.id,"with velocity",self.vel,"hit a ceiling")
         self.vel = self.vel.setY(0)
-        return True
+        return self.state.hitCeiling(collision)
 
 
     ## React to hitting the floor.
     def hitFloor(self, collision):
         logger.debug("Object",self.id,"with velocity",self.vel,"hit a floor")
         self.vel = self.vel.setY(0)
-        return True
+        return self.state.hitFloor(collision)
 
 
     ## Passthrough to Sprite.draw()
@@ -181,7 +191,12 @@ class PhysicsObject:
 
     ## Passthrough to Sprite.getPolygon()
     def getPolygon(self):
-        return self.sprite.getPolygon(self.loc)
+        return self.sprite.getPolygon()
+
+
+    ## Passthrough to Sprite.getPolygonForAnimation()
+    def getPolygonForAnimation(self, animationName):
+        return self.sprite.getPolygonForAnimation(animationName)
 
 
     ## Return a string representing the facing of the object
@@ -193,5 +208,6 @@ class PhysicsObject:
     ## Handle completion of animations.
     def completeAnimation(self, animation):
         self.loc = self.loc.add(animation.getMoveOffset())
+        self.state.completeAnimation(animation)
         return self.loc
 

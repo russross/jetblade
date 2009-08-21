@@ -1,19 +1,15 @@
-import terrestrialobject
+from ...base import terrestrialobject
 import game
 import logger
 import font
 import constants
 from vector2d import Vector2D
 
+from ...base.terrestrialstates import groundedattackstate
+from ...base.terrestrialstates import flinchstate
+
 def getClassName():
     return 'Player'
-
-## Number of frames of invincibility to get after getting hit
-mercyInvincibilityFrames = 45
-## Default starting health
-defaultHealth = 100
-## Velocity to impart when hit (when facing right)
-flinchVel = Vector2D(-40, -10)
 
 energyDisplayLoc = Vector2D(20, 20)
 energyDisplayColor = (250, 250, 100, 150)
@@ -27,21 +23,27 @@ class Player(terrestrialobject.TerrestrialObject):
         self.canHang = True
         self.faction = 'player'
         ## Amount of health remaining before dying
-        self.health = defaultHealth
+        self.health = 100
         ## Invincibility time after getting hit
         self.invincibilityTimer = 0
+        ## Velocity to impart when hit (when facing right)
+        self.flinchVel = Vector2D(-40, -10)
+        ## Number of frames of invincibility to get after getting hit
+        self.mercyInvincibilityFrames = 45
+        ## Number of frames to flinch.
+        self.flinchFrames = 5
 
 
     ## Set appropriate flags according to the current input.
     def AIUpdate(self):
-        if self.sprite.getCurrentAnimation() == 'flinch':
+        if self.state.name == 'flinch':
             # No updates to state when flinching.
             self.invincibilityTimer -= 1
             return
         shouldCrawl = False 
-        isJumping = False 
+        shouldJump = False 
         runDirection = 0
-        isClimbing = False
+        shouldClimb = False
         isAttacking = False
         for event in game.eventManager.getCurrentActions():
             if event.action == 'left':
@@ -49,39 +51,34 @@ class Player(terrestrialobject.TerrestrialObject):
             elif event.action == 'right': 
                 runDirection = 1
             elif event.action == 'jump':
-                isJumping = True
+                shouldJump = True
             elif event.action == 'climb':
-                isClimbing = True
+                shouldClimb = True
             elif event.action == 'crouch':
                 shouldCrawl = True
             elif event.action == 'attack':
                 isAttacking = True
 
-        if self.isGrounded and isAttacking:
-            self.sprite.setAnimation('kick1')
-            self.vel = Vector2D(0, 0)
+        if self.state.name == 'grounded' and isAttacking:
+            self.setState(groundedattackstate.GroundedAttackState(self, 'kick1'))
 
-        if shouldCrawl and self.isGrounded:
+        if shouldCrawl and self.state.name == 'grounded':
             logger.debug("Input: crawling")
             self.shouldCrawl = True
         elif not shouldCrawl:
             self.shouldCrawl = False
         # Pressed down while hanging, so let go
-        if shouldCrawl and self.isHanging:
+        if shouldCrawl and self.state.name == 'hang':
             logger.debug("Input: Releasing hang")
-            self.justStoppedHanging = True
+            self.shouldReleaseHang = True
 
-        if isClimbing and self.isHanging:
-            self.justStartedClimbing = True
+        if shouldClimb and self.state.name == 'hang':
+            self.shouldClimb = True
 
-        if isJumping:
+        if shouldJump:
             # Start a jump
             logger.debug("Input: Jumping")
-            self.justJumped = True
-
-        if isClimbing and self.isHanging:
-            logger.debug("Input: Climbing")
-            self.isClimbing = True
+            self.shouldJump = True
 
         self.runDirection = runDirection
 
@@ -107,19 +104,5 @@ class Player(terrestrialobject.TerrestrialObject):
     def processCollision(self, collision):
         terrestrialobject.TerrestrialObject.processCollision(self, collision)
         if collision.type == 'enemy' and self.invincibilityTimer == 0:
-            self.invincibilityTimer = mercyInvincibilityFrames
-            self.health -= collision.altObject.touchDamage
-            if self.sprite.setAnimation('flinch'):
-                self.vel = Vector2D(flinchVel.x * cmp(collision.altObject.loc.x, self.loc.x), flinchVel.y)
-                self.isGrounded = False
-                self.isGravityOn = False
-                self.shouldApplyVelocityCap = False
+            self.setState(flinchstate.FlinchState(self, collision.altObject))
 
-
-    def completeAnimation(self, animation):
-        action = animation.name[:-2]
-        if action == 'flinch':
-            # Restore control after finishing the flinch.
-            self.isGravityOn = True
-            self.shouldApplyVelocityCap = True
-        return terrestrialobject.TerrestrialObject.completeAnimation(self, animation)
