@@ -50,6 +50,8 @@ class Sprite:
                      shouldResetAnimation = True):
         curAnim = self.animations[self.currentAnimation]
         if (not curAnim.isInterruptible and not curAnim.isComplete):
+            logger.debug("Unable to set animation",action,
+                         "because current animation is uninterruptible")
             return False
         if shouldUseFacing:
             if self.owner.facing < 0:
@@ -146,6 +148,11 @@ class Sprite:
         if shouldUsePrevAnimation:
             action = self.prevAnimation
         return self.animations[action].getPolygon()
+
+
+    ## Retrieve the polygon for the named animation.
+    def getPolygonForAnimation(self, animationName):
+        return self.animations[animationName + '-' + self.owner.getFacingString()].getPolygon()
 
 
     ## Return the current animation, defaulting to not including the facing
