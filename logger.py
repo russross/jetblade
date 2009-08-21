@@ -4,6 +4,7 @@ import splashscreen
 
 import pygame
 import sys
+import traceback
 
 ## @package logger This package contains logging logic (including the Logger
 # class), and related constants.
@@ -41,7 +42,7 @@ class Logger:
             for entry in entries:
                 string += str(entry) + ' '
             print logStrings[level] + ':',string
-            if not splashscreen.getIsDoneLoading():
+            if level < LOG_DEBUG and not splashscreen.getIsDoneLoading():
                 splashscreen.updateMessage(string)
             return string
         return None
@@ -82,6 +83,7 @@ def error(*entries):
 # function when unrecoverable errors have occurred. 
 def fatal(*entries):
     message = logger.log(LOG_FATAL, *entries)
+    traceback.print_exc()
     errorStrings = ["Sorry, an error occurred: "]
     for i in xrange(0, len(message), fatalMessageLineLength):
         errorStrings.append(message[i*fatalMessageLineLength:(i+1)*fatalMessageLineLength])
