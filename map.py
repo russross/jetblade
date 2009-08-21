@@ -1065,13 +1065,16 @@ class Map:
         while numAttempts < maxCollisionRetries:
             numAttempts += 1
 
+            logger.debug("Trying polygon",object.getPolygon().printAdjusted(object.loc))
             collision = self.collidePolygon(object.getPolygon(), object.loc)
+            logger.debug("Received collision information",collision)
             if collision is not None:
                 object.processCollision(collision)
             else:
                 # No collision, so we're done here.
                 break
         if numAttempts == maxCollisionRetries:
+            logger.debug("Forced to zip object",object.name,"at",object.loc)
             # Terrain collision detection failed; zip.
             object.loc = object.loc.add(zipAmount)
 
