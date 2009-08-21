@@ -5,6 +5,9 @@ import font
 import constants
 from vector2d import Vector2D
 
+def getClassName():
+    return 'Player'
+
 ## Number of frames of invincibility to get after getting hit
 mercyInvincibilityFrames = 45
 ## Default starting health

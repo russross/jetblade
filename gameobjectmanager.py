@@ -54,4 +54,5 @@ class GameObjectManager:
         objectFunc = game.dynamicClassManager.loadDynamicClass(objectPath)
         newObject = objectFunc(*args)
         self.objectTree.addObject(newObject)
+        return newObject
 

@@ -143,10 +143,9 @@ class TerrestrialObject(physicsobject.PhysicsObject):
 
 
         if self.justJumped and self.jumpFrames <= self.maxJumpRiseFrames and not self.isCrawling:
-#            logger.debug("JustJumped")
             if self.isGrounded or self.isHanging:
                 # Commence a jump
-#                logger.debug("Commencing jump")
+                logger.debug("Commencing jump")
                 self.isGrounded = False
                 self.isHanging = False
                 self.vel = self.vel.setY(self.jumpSpeed)

@@ -3,7 +3,6 @@
 import game
 import font
 import map
-import player
 import camera
 import constants
 import logger
@@ -86,9 +85,8 @@ def startGame():
         if game.shouldExitAfterMapgen:
             sys.exit()
     game.gameObjectManager.setup()
-    game.player = player.Player()
-    game.gameObjectManager.addObject(game.player)
-    game.gameObjectManager.addNewObject('creatures/darkclone',
+    game.player = game.gameObjectManager.addNewObject('creatures/player/player')
+    game.gameObjectManager.addNewObject('creatures/darkclone/darkclone',
             game.player.loc.add(Vector2D(300, 0)))
 
 
