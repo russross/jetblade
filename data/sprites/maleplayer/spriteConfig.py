@@ -110,13 +110,13 @@ sprites = {
     'climb-l' : {
         'polygon' : standingPolygon,
         'loop' : False,
-        'drawOffset' : (-75, -75),
+        'drawOffset' : (-75, -65),
         'moveOffset' : (-50, -131),
     },
     'climb-r' : {
         'polygon' : standingPolygon,
         'loop' : False,
-        'drawOffset' : (-75, -75),
+        'drawOffset' : (-75, -65),
         'moveOffset' : (50, -131),
     },
     'run-l' : {
