@@ -63,6 +63,9 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#6da62ee84c4cf1fdb21b99c7378f7266">getPolygon</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Retrieve the current animation's polygon, or the previous animation's polygon if needed.  <a href="#6da62ee84c4cf1fdb21b99c7378f7266"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#c96d16b1100de2444fc68238f0b20816">getPolygonForAnimation</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Retrieve the polygon for the named animation.  <a href="#c96d16b1100de2444fc68238f0b20816"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#f2cd9496b59a564a34f04bde16a33d40">getCurrentAnimation</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return the current animation, defaulting to not including the facing if any.  <a href="#f2cd9496b59a564a34f04bde16a33d40"></a><br></td></tr>
@@ -145,7 +148,7 @@ Instantiate a <a class="el" href="classsprite_1_1_sprite.html" title="Sprites ar
     <tr><td valign="top"></td><td valign="top"><em>shouldCreateCopy</em>&nbsp;</td><td>Passthrough argument for AnimationManager.loadAnimations. </td></tr>
   </table>
 </dl>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000011">Todo:</a></b></dt><dd>Find a better way to handle this so the passthrough isn't needed. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000014">Todo:</a></b></dt><dd>Find a better way to handle this so the passthrough isn't needed. </dd></dl>
 
 </div>
 </div><p>
@@ -268,7 +271,7 @@ Return a PyGame Rect describing our bounding box.
 <p>
 Return the current animation, defaulting to not including the facing if any. 
 <p>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000013">Todo:</a></b></dt><dd>Assumes that the facing is the last two characters of the string. Probably a better way to handle this. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000016">Todo:</a></b></dt><dd>Assumes that the facing is the last two characters of the string. Probably a better way to handle this. </dd></dl>
 
 </div>
 </div><p>
@@ -330,6 +333,37 @@ Round drawing locations to the nearest hundred-thousandth to prevent visual jitt
 
 <p>
 Retrieve the current animation's polygon, or the previous animation's polygon if needed. 
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="c96d16b1100de2444fc68238f0b20816"></a><!-- doxytag: member="sprite::Sprite::getPolygonForAnimation" ref="c96d16b1100de2444fc68238f0b20816" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def sprite.Sprite.getPolygonForAnimation           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>animationName</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Retrieve the polygon for the named animation. 
 <p>
 
 </div>
@@ -433,7 +467,7 @@ Set the current animation for the sprite.
     <tr><td valign="top"></td><td valign="top"><em>shouldResetAnimation</em>&nbsp;</td><td>If true, the frame of the animation is reset; otherwise it is preserved. Return True if we succeed in changing the animation; false otherwise. </td></tr>
   </table>
 </dl>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000012">Todo:</a></b></dt><dd>shouldResetAnimation should be handled better. Currently we need it so we can "try out" different polygons for collision detection (c.f. TerrestrialObject crawl logic) without interfering with smooth animation. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000015">Todo:</a></b></dt><dd>shouldResetAnimation should be handled better. Currently we need it so we can "try out" different polygons for collision detection (c.f. TerrestrialObject crawl logic) without interfering with smooth animation. </dd></dl>
 
 </div>
 </div><p>
@@ -610,7 +644,7 @@ Drawing location as of previous physics update, for location interpolation.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>sprite.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:33 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:54 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

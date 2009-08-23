@@ -21,69 +21,79 @@
 <dd>Attacks can get pushed around by terrain. This shouldn't happen. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000003"></a> <dl>
-<dt>Member <a class="el" href="classdata_1_1objects_1_1creatures_1_1darkclone_1_1_dark_clone.html#9b772812cd7d66c7f158b032c27ae12a">data::objects::creatures::darkclone::DarkClone.prevAttackId</a>  </dt>
+<a class="anchor" name="_todo000004"></a> <dl>
+<dt>Member <a class="el" href="classdata_1_1objects_1_1base_1_1terrestrialstates_1_1crawlingstate_1_1_crawling_state.html#2e98f716be91dd05fca208e05fc2e10c">data::objects::base::terrestrialstates::crawlingstate::CrawlingState.postCollisionUpdate</a>  </dt>
+<dd>This is duplicated code (compare GroundedState's version). </dd>
+</dl>
+<p>
+<a class="anchor" name="_todo000005"></a> <dl>
+<dt>Member <a class="el" href="classdata_1_1objects_1_1creatures_1_1darkclone_1_1darkclone_1_1_dark_clone.html#c5026759a136c390dc1be6ae59915e5e">data::objects::creatures::darkclone::darkclone::DarkClone.prevAttackId</a>  </dt>
 <dd>This allows two simultaneous attacks to rapidly deal damage. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000004"></a> <dl>
+<a class="anchor" name="_todo000007"></a> <dl>
 <dt>Member <a class="el" href="classdynamicclassmanager_1_1_dynamic_class_manager.html#63ac0d9d8077aa4172c09338efe1368f">dynamicclassmanager::DynamicClassManager.__init__</a>  </dt>
 <dd>Load all dynamic classes at this time instead of waiting for them to be needed. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000005"></a> <dl>
+<a class="anchor" name="_todo000008"></a> <dl>
 <dt>Class <a class="el" href="classmap_1_1_map.html">map.Map</a>  </dt>
 <dd>Several dicts in this class don't match the style guideline. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000006"></a> <dl>
+<a class="anchor" name="_todo000010"></a> <dl>
+<dt>Member <a class="el" href="classmap_1_1_map.html#4fe9c69302d1ca2b0cd522e59614a111">map::Map.addBlock</a>  </dt>
+<dd>Handle expanding the map to place blocks outside of its current boundaries. </dd>
+</dl>
+<p>
+<a class="anchor" name="_todo000009"></a> <dl>
 <dt>Member <a class="el" href="classmap_1_1_map.html#263a7fedc82cdafa1807be418be319f9">map::Map.loadMap</a>  </dt>
 <dd>This parser is very brittle, and while the map file format is not meant to be directly user-editable, there's no reason we couldn't be more flexible here. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000007"></a> <dl>
-<dt>Member <a class="el" href="classplayer_1_1_player.html#0d24e16944b6174affb80c7da8528c41">player::Player.__init__</a>  </dt>
+<a class="anchor" name="_todo000006"></a> <dl>
+<dt>Member <a class="el" href="classdata_1_1objects_1_1creatures_1_1player_1_1player_1_1_player.html#72e2ed18cd98f56e70bc1ac433246fd1">data::objects::creatures::player::player::Player.__init__</a>  </dt>
 <dd>(Long-term) Add support for the female version </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000008"></a> <dl>
+<a class="anchor" name="_todo000011"></a> <dl>
 <dt>Member <a class="el" href="classpropmanager_1_1_prop_manager.html#6a1cf2c957c5f9e4ad7281b789bf837b">propmanager::PropManager.propConfigCache</a>  </dt>
 <dd>This dict is a huge mess (just check out selectProp()). </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000009"></a> <dl>
+<a class="anchor" name="_todo000012"></a> <dl>
 <dt>Member <a class="el" href="classquadtree_1_1_quad_tree.html#9492e0df53b7d7eb53c6a347f4169b60">quadtree::QuadTree.prepObjects</a>  </dt>
 <dd>Reshuffle objects around after applying physics. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000010"></a> <dl>
+<a class="anchor" name="_todo000013"></a> <dl>
 <dt>Member <a class="el" href="classsoundmanager_1_1_sound_manager.html#6132bb331ea3a0ad99462a55506a0bbf">soundmanager::SoundManager.__init__</a>  </dt>
 <dd>: Make this configurable. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000011"></a> <dl>
+<a class="anchor" name="_todo000014"></a> <dl>
 <dt>Member <a class="el" href="classsprite_1_1_sprite.html#5eb42df4c5f6debeeab3cc4791ad29c2">sprite::Sprite.__init__</a>  </dt>
 <dd>Find a better way to handle this so the passthrough isn't needed. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000013"></a> <dl>
+<a class="anchor" name="_todo000016"></a> <dl>
 <dt>Member <a class="el" href="classsprite_1_1_sprite.html#f2cd9496b59a564a34f04bde16a33d40">sprite::Sprite.getCurrentAnimation</a>  </dt>
 <dd>Assumes that the facing is the last two characters of the string. Probably a better way to handle this. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000012"></a> <dl>
+<a class="anchor" name="_todo000015"></a> <dl>
 <dt>Member <a class="el" href="classsprite_1_1_sprite.html#cb352d77ede40055daf6c516bd54964b">sprite::Sprite.setAnimation</a>  </dt>
 <dd>shouldResetAnimation should be handled better. Currently we need it so we can "try out" different polygons for collision detection (c.f. TerrestrialObject crawl logic) without interfering with smooth animation. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000014"></a> <dl>
-<dt>Class <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html">terrestrialobject.TerrestrialObject</a>  </dt>
+<a class="anchor" name="_todo000003"></a> <dl>
+<dt>Class <a class="el" href="classdata_1_1objects_1_1base_1_1terrestrialobject_1_1_terrestrial_object.html">data.objects.base.terrestrialobject.TerrestrialObject</a>  </dt>
 <dd>The logic dealing with crawling (and, in particular, forcing crawls when there's no headroom) is rather convoluted and should be improved. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000015"></a> <dl>
-<dt>Member <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#2a406225cbdf00802aacecf46baa022d">terrestrialobject::TerrestrialObject.haveChangedAction</a>  </dt>
-<dd>Seems like there should be a better way to handle this. </dd>
+<a class="anchor" name="_todo000017"></a> <dl>
+<dt>Member <a class="el" href="classuielement_1_1_u_i_element.html#0ff537c56ad75308b29c3652e8e05246">uielement::UIElement.mouseDown</a>  </dt>
+<dd>Handle different mouse buttons. For now, use pygame.mouses.get_pressed(). </dd>
 </dl>
 <p>
 <a class="anchor" name="_todo000001"></a> <dl>
@@ -91,7 +101,7 @@
 <dd>Make water pools affect physics. </dd>
 </dl>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:32 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:53 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

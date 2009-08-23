@@ -43,9 +43,12 @@
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Play an individual sound by its name.  <a href="#cee8c2a15358c7c0de761a1c7874c40f"></a><br></td></tr>
 <tr><td colspan="2"><br><h2>Public Attributes</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8ddd69840116c87c375abefc425c4cfe"></a><!-- doxytag: member="soundmanager::SoundManager::soundNameToSoundMap" ref="8ddd69840116c87c375abefc425c4cfe" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>soundNameToSoundMap</b></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsoundmanager_1_1_sound_manager.html#1c2b129be62f2d13ee4c1d17e39574f0">nameToSoundMap</a></td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Maps individual sound names (i.e.  <a href="#1c2b129be62f2d13ee4c1d17e39574f0"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsoundmanager_1_1_sound_manager.html#ecc7beaa51e79e4900bc2554534452d8">nameToSoundListMap</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Maps names of sound directories to lists of the PyGame Sound instances found in those directories.  <a href="#ecc7beaa51e79e4900bc2554534452d8"></a><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 This class handles loading and playing of sound effects. 
@@ -70,7 +73,7 @@ This class handles loading and playing of sound effects.
 <p>
 Load all sounds. 
 <p>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000010">Todo:</a></b></dt><dd>: Make this configurable. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000013">Todo:</a></b></dt><dd>: Make this configurable. </dd></dl>
 
 </div>
 </div><p>
@@ -136,10 +139,45 @@ Play an individual sound by its name.
 
 </div>
 </div><p>
+<hr><h2>Member Data Documentation</h2>
+<a class="anchor" name="ecc7beaa51e79e4900bc2554534452d8"></a><!-- doxytag: member="soundmanager::SoundManager::nameToSoundListMap" ref="ecc7beaa51e79e4900bc2554534452d8" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsoundmanager_1_1_sound_manager.html#ecc7beaa51e79e4900bc2554534452d8">soundmanager.SoundManager.nameToSoundListMap</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Maps names of sound directories to lists of the PyGame Sound instances found in those directories. 
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="1c2b129be62f2d13ee4c1d17e39574f0"></a><!-- doxytag: member="soundmanager::SoundManager::nameToSoundMap" ref="1c2b129be62f2d13ee4c1d17e39574f0" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsoundmanager_1_1_sound_manager.html#1c2b129be62f2d13ee4c1d17e39574f0">soundmanager.SoundManager.nameToSoundMap</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Maps individual sound names (i.e. 
+<p>
+their paths) to PyGame Sound instances. 
+</div>
+</div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>soundmanager.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:33 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:54 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

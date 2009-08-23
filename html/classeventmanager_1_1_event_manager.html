@@ -39,9 +39,23 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>__init__</b></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventmanager_1_1_event_manager.html#983887975a56530d7aee97be681d8863">getCurrentActions</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return a list of current input actions (generally, keys that are pressed).  <a href="#983887975a56530d7aee97be681d8863"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventmanager_1_1_event_manager.html#14a1ee17bb4904b12dbf62c432ce6731">processNewEvents</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get all actions from the event queue.  <a href="#14a1ee17bb4904b12dbf62c432ce6731"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventmanager_1_1_event_manager.html#35058ff55037ce35c17e2ca11c87ab08">processCurrentEvents</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">As getNewEvents, but works with the cached set of events so we don't trample the event queue.  <a href="#35058ff55037ce35c17e2ca11c87ab08"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventmanager_1_1_event_manager.html#b5f83e684c06874dcec36d13f20fe9f1">processEvents</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Consume input, and return a list of <a class="el" href="classeventmanager_1_1_event.html" title="This class represents a single input event.">Event</a> instances.  <a href="#b5f83e684c06874dcec36d13f20fe9f1"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Consume input, and hand it off to UIElement instances.  <a href="#b5f83e684c06874dcec36d13f20fe9f1"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="9deb4236b6fe61954a496941ced1923c"></a><!-- doxytag: member="eventmanager::EventManager::getEvents" ref="9deb4236b6fe61954a496941ced1923c" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventmanager_1_1_event_manager.html#9deb4236b6fe61954a496941ced1923c">getEvents</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get our current events since the last time we checked the queue. <br></td></tr>
+<tr><td colspan="2"><br><h2>Public Attributes</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="661baa14f234d653b58616bc27cac2fc"></a><!-- doxytag: member="eventmanager::EventManager::events" ref="661baa14f234d653b58616bc27cac2fc" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><b>events</b></td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 This class handles user input and other events. 
@@ -69,12 +83,12 @@ Return a list of current input actions (generally, keys that are pressed).
 
 </div>
 </div><p>
-<a class="anchor" name="b5f83e684c06874dcec36d13f20fe9f1"></a><!-- doxytag: member="eventmanager::EventManager::processEvents" ref="b5f83e684c06874dcec36d13f20fe9f1" args="" -->
+<a class="anchor" name="35058ff55037ce35c17e2ca11c87ab08"></a><!-- doxytag: member="eventmanager::EventManager::processCurrentEvents" ref="35058ff55037ce35c17e2ca11c87ab08" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">def eventmanager.EventManager.processEvents           </td>
+          <td class="memname">def eventmanager.EventManager.processCurrentEvents           </td>
           <td>(</td>
           <td class="paramtype">&nbsp;</td>
           <td class="paramname"> <em>self</em>, </td>
@@ -101,7 +115,87 @@ Return a list of current input actions (generally, keys that are pressed).
 <div class="memdoc">
 
 <p>
-Consume input, and return a list of <a class="el" href="classeventmanager_1_1_event.html" title="This class represents a single input event.">Event</a> instances. 
+As getNewEvents, but works with the cached set of events so we don't trample the event queue. 
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="b5f83e684c06874dcec36d13f20fe9f1"></a><!-- doxytag: member="eventmanager::EventManager::processEvents" ref="b5f83e684c06874dcec36d13f20fe9f1" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def eventmanager.EventManager.processEvents           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>events</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>UIElements</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>context</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Consume input, and hand it off to UIElement instances. 
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="14a1ee17bb4904b12dbf62c432ce6731"></a><!-- doxytag: member="eventmanager::EventManager::processNewEvents" ref="14a1ee17bb4904b12dbf62c432ce6731" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def eventmanager.EventManager.processNewEvents           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>UIElements</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>context</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Get all actions from the event queue. 
 <p>
 
 </div>
@@ -109,7 +203,7 @@ Consume input, and return a list of <a class="el" href="classeventmanager_1_1_ev
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>eventmanager.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:32 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:54 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
