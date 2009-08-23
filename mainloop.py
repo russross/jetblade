@@ -6,7 +6,10 @@ import map
 import camera
 import constants
 import logger
+import uielement
 from vector2d import Vector2D
+
+import pyconsole
 
 import sys
 import random
@@ -86,8 +89,20 @@ def startGame():
             sys.exit()
     game.gameObjectManager.setup()
     game.player = game.gameObjectManager.addNewObject('creatures/player/player')
-    game.gameObjectManager.addNewObject('creatures/darkclone/darkclone',
-            game.player.loc.add(Vector2D(300, 0)))
+#    game.gameObjectManager.addNewObject('creatures/darkclone/darkclone',
+#            game.player.loc.add(Vector2D(300, 0)))
+    game.mapEditor.init()
+    consoleFunctions = {
+        'saveMap' : game.map.writeMap,
+        'editor' : game.mapEditor.toggleActive,
+        'editorControls' : game.mapEditor.toggleDisplay,
+        'setTerrain' : game.mapEditor.setTerrain,
+        'setLogLevel' : logger.setLogLevel,
+    }
+    game.console = pyconsole.Console(game.screen, 
+            pygame.rect.Rect(0, 0, constants.sw, constants.sh),
+            consoleFunctions)
+    game.console.set_active(False)
 
 
 ## The main game loop. Performs a target of physicsUpdatesPerSecond
@@ -106,8 +121,21 @@ def gameLoop():
     framesSincePrevSec = 0
     game.curFPS = 0
 
-    cam = camera.Camera()
+    game.camera = camera.Camera()
     zoomLevel = 1
+
+    def toggleIsRecording():
+        game.isRecording = not game.isRecording
+    toggleRecordAction = uielement.SimpleUIElement('keyUp',
+            lambda key : game.configManager.getActionForKey(key, constants.CONTEXT_GAME) == 'startRecording',
+            toggleIsRecording)
+    toggleDebugAction = uielement.SimpleUIElement('keyUp',
+            lambda key : game.configManager.getActionForKey(key, constants.CONTEXT_GAME) == 'toggleDebug',
+            logger.toggleDebug)
+    quitAction = uielement.SimpleUIElement('keyUp',
+            lambda key : game.configManager.getActionForKey(key, constants.CONTEXT_GAME) == 'quit',
+            lambda: sys.exit())
+    UIElements = [toggleRecordAction, toggleDebugAction, quitAction]
 
     while 1:
 #        if pygame.time.get_ticks() > 10000:
@@ -116,36 +144,30 @@ def gameLoop():
 #                          game.frameNum*1000/pygame.time.get_ticks())
 #            sys.exit()
         logger.debug("Frame %d Physics %d Time %d" % (game.frameNum, physicsNum, pygame.time.get_ticks()))
-        events = game.eventManager.processEvents([], constants.CONTEXT_GAME)
-        # Check for a couple of events.
-        for event in events:
-            if event.type in (KEYDOWN, KEYUP):
-                if event.action == 'startRecording' and event.type == KEYUP:
-                    game.isRecording = not game.isRecording
-                elif event.action == 'toggleDebug' and event.type == KEYUP:
-                    if logger.getLogLevel() != logger.LOG_DEBUG:
-                        logger.setLogLevel(logger.LOG_DEBUG)
-                    else:
-                        logger.setLogLevel(logger.LOG_INFORM)
+        # Don't pass UI elements along if the console is intercepting input.
+        UIElementsToUse = []
+        if not game.console.active:
+            UIElementsToUse = UIElements
+        game.eventManager.processNewEvents(UIElementsToUse, constants.CONTEXT_GAME)
+        game.console.process_input(game.eventManager.getEvents())
 
-        newTs = pygame.time.get_ticks()
-        dt = newTs - curTs
-        curTs = newTs
-        timeAccum += dt
+        if not game.console.active:
+            game.mapEditor.update()
 
-        count = 0
-        if timeAccum > physicsUpdateRate:
-            # Only do at most one physics update between drawings, even if more
-            # time has passed.
-            count += 1
-            physicsNum += 1
-            game.gameObjectManager.update()
-            cam.update()
-            timeAccum -= int(timeAccum / physicsUpdateRate) * physicsUpdateRate
+            newTs = pygame.time.get_ticks()
+            dt = newTs - curTs
+            curTs = newTs
+            timeAccum += dt
 
-        logger.debug("Did",count,"physics updates, have",timeAccum,"in the accumulator towards next physics update (step",physicsUpdateRate,")")
+            if timeAccum > physicsUpdateRate:
+                # Only do at most one physics update between drawings, even if more
+                # time has passed.
+                physicsNum += 1
+                game.gameObjectManager.update()
+                game.camera.update()
+                timeAccum -= int(timeAccum / physicsUpdateRate) * physicsUpdateRate
 
-        draw(zoomLevel, cam, timeAccum / physicsUpdateRate)
+        draw(zoomLevel, timeAccum / physicsUpdateRate)
  
         game.frameNum += 1
         framesSincePrevSec += 1
@@ -158,8 +180,8 @@ def gameLoop():
 
 
 ## Draw the game. 
-def draw(zoomLevel, cam, progress):
-    drawLoc = cam.getDrawLoc(progress)
+def draw(zoomLevel, progress):
+    drawLoc = game.camera.getDrawLoc(progress)
 
     if zoomLevel != 1:
         drawSurface = pygame.Surface((constants.sw / zoomLevel, constants.sh / zoomLevel))
@@ -176,6 +198,8 @@ def draw(zoomLevel, cam, progress):
             ["FPS: " + str(game.curFPS),
              'Frame: ' + str(game.frameNum)], fpsDisplayLoc, 18, 
             font.TEXT_ALIGN_RIGHT)
+    game.mapEditor.draw(game.screen, drawLoc, progress)
+    game.console.draw()
     pygame.display.update()
 
     if game.isRecording:

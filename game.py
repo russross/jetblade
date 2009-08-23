@@ -11,7 +11,8 @@ import gameobjectmanager
 import imagemanager
 import propmanager
 import soundmanager
-    
+import mapeditor
+
 animationManager = animationmanager.AnimationManager()
 configManager = configmanager.ConfigManager()
 dynamicClassManager = dynamicclassmanager.DynamicClassManager()
@@ -23,4 +24,5 @@ gameObjectManager = gameobjectmanager.GameObjectManager()
 imageManager = imagemanager.ImageManager()
 propManager = propmanager.PropManager()
 soundManager = soundmanager.SoundManager()
+mapEditor = mapeditor.MapEditor()
 

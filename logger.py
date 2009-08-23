@@ -34,6 +34,7 @@ fatalMessageLineLength = 140
 class Logger:
     def __init__(self):
         self.logLevel = defaultLogLevel
+        self.prevLogLevel = self.logLevel
 
     ## Log the provided text at the given log level
     def log(self, level, *entries):
@@ -101,3 +102,14 @@ def fatal(*entries):
     pygame.time.delay(errorMessageDelayTime)
     sys.exit()
 
+
+## Switch between the current log level and debug mode
+def toggleDebug():
+    if logger.logLevel == LOG_DEBUG:
+        logger.logLevel = logger.prevLogLevel
+        if logger.logLevel == LOG_DEBUG:
+            # Previous log level was already debug; default to inform.
+            logger.logLevel = LOG_INFORM
+    else:
+        logger.prevLogLevel = logger.logLevel
+        logger.logLevel = LOG_DEBUG

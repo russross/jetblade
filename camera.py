@@ -32,6 +32,11 @@ class Camera:
         return self.prevLoc.interpolate(self.curLoc, progress)
 
 
+    ## Just return our current location, un-interpolated.
+    def getLoc(self):
+        return self.curLoc
+
+
     def __str__(self):
         return "[Camera at " + str(self.prevLoc) + " moving to " + str(self.curLoc) + "]"
 

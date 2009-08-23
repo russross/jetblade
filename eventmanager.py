@@ -8,7 +8,7 @@ from pygame import *
 ## This class handles user input and other events.
 class EventManager:
     def __init__(self):
-        pass
+        self.events = []
 
     ## Return a list of current input actions (generally, keys that are 
     # pressed).
@@ -18,27 +18,47 @@ class EventManager:
             result.append(Event(action, KEYDOWN))
         return result
 
+
+    ## Get all actions from the event queue.
+    def processNewEvents(self, UIElements, context):
+        self.events = pygame.event.get()
+        self.processEvents(self.events, UIElements, context)
+
+
+    ## As getNewEvents, but works with the cached set of events so we don't
+    # trample the event queue.
+    def processCurrentEvents(self, UIElements, context):
+        self.processEvents(self.events, UIElements, context)
+
     
-    ## Consume input, and return a list of Event instances.
-    def processEvents(self, UIElements, context):
-        actions = []
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                actions.append(Event(constants.ACTION_QUIT))
-            elif event.type in (KEYDOWN, KEYUP):
-                action = game.configManager.getActionForKey(event.key, context)
-                if action is not None:
-                    actions.append(Event(action, event.type))
+    ## Consume input, and hand it off to UIElement instances.
+    def processEvents(self, events, UIElements, context):
+        for event in events:
+            if event.type == KEYDOWN:
+                for element in UIElements:
+                    element.keyDown(event.key)
+            elif event.type == KEYUP:
+                for element in UIElements:
+                    element.keyUp(event.key)
             elif event.type == MOUSEMOTION:
                 mouseLoc = Vector2D(pygame.mouse.get_pos())
                 for element in UIElements:
-                    element.mouseMove(mouseLoc)
-            elif event.type == MOUSEBUTTONUP:
-                mouseLoc = pygame.mouse.get_pos()
+                    element.mouseMotion(mouseLoc)
+            elif event.type == MOUSEBUTTONDOWN:
+                mouseLoc = Vector2D(pygame.mouse.get_pos())
                 for element in UIElements:
-                    if element.mouseUp(mouseLoc):
-                        actions.append(element.getAction())
-        return actions
+                    element.mouseDown(mouseLoc)
+            elif event.type == MOUSEBUTTONUP:
+                mouseLoc = Vector2D(pygame.mouse.get_pos())
+                for element in UIElements:
+                    element.mouseUp(mouseLoc)
+        for element in UIElements:
+            element.processEvents(events)
+
+
+    ## Get our current events since the last time we checked the queue
+    def getEvents(self):
+        return self.events
 
 
 ## This class represents a single input event.

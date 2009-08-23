@@ -1,4 +1,6 @@
+import constants
 
+import os
 
 ## TerrainInfo is a container class that describes the local terrain, which 
 # determines the graphics used for terrain blocks, the available background 
@@ -11,6 +13,12 @@ class TerrainInfo:
     def __init__(self, zone, region):
         self.zone = zone
         self.region = region
+
+
+    ## Return true if there is a directory for this terrain.
+    def getIsValid(self):
+        path = os.path.join(constants.spritePath, 'terrain', self.zone, self.region)
+        return os.path.exists(path)
 
 
     ## Equality check

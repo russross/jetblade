@@ -1222,8 +1222,26 @@ class Map:
         logger.inform("Done loading map at",pygame.time.get_ticks())
 
 
+    ## Add a block to the map.
+    # \todo Handle expanding the map to place blocks outside of its current
+    # boundaries.
+    def addBlock(self, newBlock):
+        if self.getIsInBounds(newBlock.gridLoc):
+            self.blocks[newBlock.gridLoc.ix][newBlock.gridLoc.iy] = newBlock
+            self.writeMap()
+
+
+    ## Remove a block from the map
+    def deleteBlock(self, blockLoc):
+        if self.getIsInBounds(blockLoc):
+            self.blocks[blockLoc.ix][blockLoc.iy] = BLOCK_EMPTY
+            self.writeMap()
+
+
     ## Write our map to disk so it can be read by loadMap().
-    def writeMap(self, name):
+    def writeMap(self, name = None):
+        if name is None:
+            name = self.mapName.replace('.map', '') + '-tmp'
         fh = open(name + '.map', 'w')
         fh.write("%d,%d\n" % (self.numCols, self.numRows))
         fh.write("%d,%d\n" % (self.startLoc.x, self.startLoc.y))
