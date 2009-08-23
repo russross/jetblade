@@ -101,9 +101,9 @@ class MapEditor:
 Click on the map to place blocks. Right-click to delete blocks instead.
 Click on the blocks at the top of the screen to switch which block you are
 placing. Or use the number keys in conjunction with the left-side modifier keys:
-first row: shift, second row: control, third row: alt/option, 
-fourth row: shift + control, fifth row: shift + alt/option, 
-sixth row: control + alt.
+second row: shift, third row: control, fourth row: alt/option, 
+fifth row: shift + control, sixth row: shift + alt/option, 
+seventh row: control + alt.
 Use the console command setTerrain to change terrain types: specify
 the terrain group (e.g. jungle, hotzone) and the region (e.g. grass, lava).
 Use the console command editorControls to hide/show the block picker."""
