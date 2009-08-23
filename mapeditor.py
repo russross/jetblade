@@ -184,6 +184,13 @@ class MapUIElement(uielement.UIElement):
         self.editor = editor
 
 
+    ## Passthrough to mouseMotion
+    def mouseDown(self, mouseLoc):
+        self.mouseMotion(mouseLoc)
+
+
+    ## Track the mouse's position, and either create or remove blocks from the
+    # map.
     def mouseMotion(self, mouseLoc):
         pressedButtons = pygame.mouse.get_pressed()
         if pressedButtons[0] or pressedButtons[2]:
