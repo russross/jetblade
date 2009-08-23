@@ -2,6 +2,8 @@ import font
 import logger
 import constants
 
+import os
+
 ## Default ratio of line height in pixels to font size
 defaultLineHeightMultiplier = .85
 
@@ -12,8 +14,8 @@ class FontManager:
     def __init__(self):
         ## Maps names of fonts to Font instances
         self.fontNameToFontMap = dict()
-        configPath = constants.fontPath + '/' + constants.fontFilename
-        configPath = configPath.replace('/', '.')
+        configPath = os.path.join(constants.fontPath, constants.fontFilename)
+        configPath = configPath.replace(os.sep, '.')
         fontModule = __import__(configPath, globals(), locals(), ['fonts'])
         for fontName, fontConfig in fontModule.fonts.iteritems():
             fontSizes = []

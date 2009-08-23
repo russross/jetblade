@@ -5,6 +5,7 @@ import constants
 from vector2d import Vector2D
 
 import sys
+import os
 
 ## The PropManager class handles loading prop configuration and selection of
 # props depending on terrain.
@@ -22,8 +23,9 @@ class PropManager:
             self.propConfigCache[terrain.zone] = dict()
         if terrain.region not in self.propConfigCache[terrain.zone]:
             # Load the prop config into the config cache first
-            filename = constants.spritePath + '/terrain/' + terrain.zone + '/' + terrain.region + '/props/propConfig'
-            filename = filename.replace('/', '.')
+            filename = os.path.join(constants.spritePath, 'terrain', 
+                    terrain.zone, terrain.region, 'props', 'propConfig')
+            filename = filename.replace(os.sep, '.')
             module = None
             try:
                 module = __import__(filename, globals(), locals(), ['props'])

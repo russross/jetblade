@@ -1,6 +1,8 @@
 import game
 import constants
 
+import os
+
 ## This class manages the different map feature modules in data/mapgen/features.
 class FeatureManager:
     ## Instantiate the manager
@@ -13,8 +15,8 @@ class FeatureManager:
     def loadFeature(self, name, sector):
         if name in self.featureCache:
             return self.featureCache[name](game.map, sector)
-        modulePath = constants.mapPath + '/features/' + name
-        modulePath = modulePath.replace('/', '.')
+        modulePath = os.path.join(constants.mapPath, 'features', name)
+        modulePath = modulePath.replace(os.sep, '.')
         self.featureCache[name] = game.dynamicClassManager.loadDynamicClass(modulePath)
         return self.featureCache[name](game.map, sector)
 

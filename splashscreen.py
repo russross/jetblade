@@ -2,6 +2,7 @@ import splashscreen
 import constants
 
 import pygame
+import os
 
 ## This class handles the splash screen display at the start of the game. As
 # such, it has very few dependencies (and in fact, duplicates some code found
@@ -10,8 +11,8 @@ import pygame
 class SplashScreen:
     def __init__(self):
         pygame.init()
-        self.splashSurface = pygame.image.load(constants.otherPath + '/splashscreen.png')
-        self.font = pygame.font.Font(constants.fontPath + '/MODENINE.TTF', 18)
+        self.splashSurface = pygame.image.load(os.path.join(constants.otherPath, 'splashscreen.png'))
+        self.font = pygame.font.Font(os.path.join(constants.fontPath, 'MODENINE.TTF'), 18)
         self.screen = pygame.display.set_mode((constants.sw, constants.sh))
         self.splashRect = self.splashSurface.get_rect()
         self.splashRect.topleft = (0, 0)

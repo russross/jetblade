@@ -2,6 +2,7 @@ import constants
 import game
 
 import sys
+import os
 
 ## This class handles loading and caching information on enviromental effects.
 class EnvEffectManager:
@@ -14,8 +15,8 @@ class EnvEffectManager:
     def loadEnvEffect(self, name):
         if name in self.envMap:
             return self.envMap[name]
-        modulePath = constants.mapPath + '/environments/' + name
-        modulePath = modulePath.replace('/', '.')
+        modulePath = os.path.join(constants.mapPath, 'environments', name)
+        modulePath = modulePath.replace(os.sep, '.')
         initFunc = game.dynamicClassManager.loadDynamicClass(modulePath)
         classInstance = initFunc(name)
         self.envMap[name] = classInstance

@@ -24,9 +24,9 @@ class ImageManager:
         if name in self.animationSets:
             return self.animationSets[name]
         result = dict()
-        for entry in os.listdir(constants.spritePath + '/' + name):
+        for entry in os.listdir(os.path.join(constants.spritePath, name)):
             if entry.find(constants.spriteFilename) == -1:
-                result[entry] = self.loadAnimation(name + '/' + entry)
+                result[entry] = self.loadAnimation(os.path.join(name, entry))
         self.animationSets[name] = result
         return result        
 
@@ -36,10 +36,10 @@ class ImageManager:
         if name in self.animations:
             return self.animations[name]
         result = []
-        files = os.listdir(constants.spritePath + '/' + name)
+        files = os.listdir(os.path.join(constants.spritePath, name))
         for file in files:
             filename, extension = file.split('.')
-            result.append(self.loadSurface(name + '/' + filename))
+            result.append(self.loadSurface(os.path.join(name, filename)))
         self.animations[name] = result
         return result
 
@@ -48,8 +48,8 @@ class ImageManager:
     def loadSurface(self, name, has_alpha = True):
         if name in self.surfaces:
             return self.surfaces[name]
-        path = constants.spritePath + '/' + name + '.png'
-        logger.debug("Loading file",path)
+        path = os.path.join(constants.spritePath, name + '.png')
+        logger.debug("Loading image file",path)
         surface = pygame.image.load(path)
         if has_alpha:
             surface = surface.convert_alpha()

@@ -1,6 +1,8 @@
 import logger
 import sprite
 
+import os
+
 ## Blocks are solid, nonmoving bits of terrain. 
 class Block:
 
@@ -20,7 +22,8 @@ class Block:
         ## TerrainInfo instance to let the block know what it looks like.
         self.terrain = terrain
 
-        imagePath = 'terrain/' + self.terrain.zone + '/' + self.terrain.region + '/blocks'
+        imagePath = os.path.join('terrain', self.terrain.zone, 
+                                 self.terrain.region, 'blocks')
         ## To allow blocks to be animated, we use Sprites for drawing them.
         self.sprite = sprite.Sprite(imagePath, self, self.loc, False)
         self.sprite.setAnimation(self.orientation, False)

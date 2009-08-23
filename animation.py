@@ -3,6 +3,8 @@ import game
 import constants
 import logger
 
+import os
+
 ## Animations are sequences of images and the logic needed to know when, where, 
 # and how to display them. Every animation is tied to a single polygon for 
 # collision detection. Animations may loop, may change the location of the 
@@ -56,7 +58,9 @@ class Animation:
         self.frameActions = frameActions
 
         ## Individual frames of the animation.
-        self.frames = game.imageManager.loadAnimation(self.group + '/' + self.name)
+        self.frames = game.imageManager.loadAnimation(
+                os.path.join(self.group, self.name)
+        )
         ## Current frame of animation; an index into self.frames.
         self.frame = 0
 

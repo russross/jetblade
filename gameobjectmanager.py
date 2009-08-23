@@ -3,6 +3,8 @@ import quadtree
 import constants
 import logger
 
+import os
+
 ## This class handles all dynamic (i.e. not part of the map grid) objects during
 # gameplay.
 class GameObjectManager:
@@ -49,8 +51,8 @@ class GameObjectManager:
         if logger.getLogLevel() >= logger.LOG_INFORM:
             numObjects = len(self.objectTree.getObjects()) + 1
             logger.inform("Adding",numObjects,"th object named",objectName,"with args",*args)
-        objectPath = constants.objectsPath + '/' + objectName
-        objectPath = objectPath.replace('/', '.')
+        objectPath = os.path.join(constants.objectsPath, objectName)
+        objectPath = objectPath.replace(os.sep, '.')
         objectFunc = game.dynamicClassManager.loadDynamicClass(objectPath)
         newObject = objectFunc(*args)
         self.objectTree.addObject(newObject)

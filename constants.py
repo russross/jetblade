@@ -1,3 +1,4 @@
+import os
 ## @package constants This package contains a bunch of "constants" 
 # (read: global variables that shouldn't be modified during execution) that 
 # are used to configure the program in various ways.
@@ -28,17 +29,17 @@ DELTA = .1
 BIGNUM = 999988887777666655554444333322221111
 
 ## Path to the custom map generation modules
-mapPath = 'data/mapgen'
+mapPath = os.path.join('data', 'mapgen')
 ## Path to custom game object modules
-objectsPath = 'data/objects'
+objectsPath = os.path.join('data', 'objects')
 ## Path to image files and their configuration
-spritePath = 'data/sprites'
+spritePath = os.path.join('data', 'sprites')
 ## Path to soundeffects
-soundPath = 'data/sound'
+soundPath = os.path.join('data', 'sound')
 ## Path to fonts
-fontPath = 'data/fonts'
+fontPath = os.path.join('data', 'fonts')
 ## Path to miscellaneous resources
-otherPath = 'data/other'
+otherPath = os.path.join('data', 'other')
 ## Name of the module used to configure animation data
 spriteFilename = 'spriteConfig'
 ## Name of the module used to configure fonts

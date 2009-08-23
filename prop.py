@@ -1,6 +1,8 @@
 import sprite
 import logger
 
+import os
+
 ## Props are background objects that have no influence on gameplay aside from
 # simply looking pretty. 
 class Prop:
@@ -13,7 +15,8 @@ class Prop:
         self.group = group
         ## Specific item in the group of props.
         self.item = item
-        imagePath = 'terrain/' + self.terrain.zone + '/' + self.terrain.region + '/props/' + self.group
+        imagePath = os.path.join('terrain', self.terrain.zone, 
+                self.terrain.region, 'props', self.group)
         self.sprite = sprite.Sprite(imagePath, self, self.loc)
         self.sprite.setAnimation(self.item, False)
 

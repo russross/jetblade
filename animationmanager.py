@@ -34,15 +34,15 @@ class AnimationManager:
         # Search for a file named 'spriteConfig.py' through the path specified 
         # in spriteName. Use the deepest one we find. This lets us share 
         # spriteConfigs for similar sprites.
-        directories = spriteName.split('/')
+        directories = spriteName.split(os.sep)
         modulePath = ''
         path = constants.spritePath
         for directory in directories:
-            path += '/' + directory
-            if os.path.exists(path + '/' + constants.spriteFilename + '.py'):
+            path += os.sep + directory
+            if os.path.exists(os.path.join(path, constants.spriteFilename + '.py')):
                 modulePath = path
 
-        modulePath = modulePath.replace('/', '.') + '.' + constants.spriteFilename
+        modulePath = modulePath.replace(os.sep, '.') + '.' + constants.spriteFilename
         spriteModule = __import__(modulePath, globals(), locals(), ['sprites'])
 
         animations = {}

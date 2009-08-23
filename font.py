@@ -3,6 +3,7 @@ import constants
 import logger
 
 import pygame
+import os
 
 ## Identifiers for text alignment
 (TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, TEXT_ALIGN_RIGHT) = range(1, 4)
@@ -17,7 +18,8 @@ class Font:
         self.lineHeightMultiplier = lineHeightMultiplier
         self.fonts = dict()
         for size in sizes:
-            self.fonts[size] = pygame.font.Font(constants.fontPath + '/' + self.name, size)
+            self.fonts[size] = pygame.font.Font(
+                    os.path.join(constants.fontPath, self.name), size)
 
 
     ## Draw some text to the screen at the specified location.
@@ -29,7 +31,8 @@ class Font:
     def drawText(self, screen, texts, loc, fontSize, 
                  align = TEXT_ALIGN_LEFT, color = (255, 255, 255, 255)):
         if fontSize not in self.fonts:
-            self.fonts[fontSize] = pygame.font.Font(constants.fontPath + '/' + self.name, fontSize)
+            self.fonts[fontSize] = pygame.font.Font(
+                    os.path.join(constants.fontPath, self.name), fontSize)
         drawColor = (color[0], color[1], color[2])
         alpha = color[3]
         yOffset = 0

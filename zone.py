@@ -4,6 +4,7 @@ import range1d
 from vector2d import Vector2D
 
 import sys
+import os
 import random
 
 zonePlacementIterations = 100
@@ -34,8 +35,8 @@ class Region:
 ## Load all Zone and Region data from the zones.py file. 
 def loadZoneData():
     try:
-        path = constants.mapPath + '/zones'
-        path = path.replace('/', '.')
+        path = os.path.join(constants.mapPath, 'zones')
+        path = path.replace(os.sep, '.')
         zoneConfigModule = __import__(path, globals(), locals(), ['zones'])
         zoneConfigData = zoneConfigModule.zones
         # Pull out the frequency information to a separate dict

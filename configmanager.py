@@ -102,7 +102,7 @@ class ConfigManager:
         return result
 
     def getConfigPath(self):
-        return self.getHomePath() + '/.jetbladeconfig.txt'
+        return os.path.join(self.getHomePath(), '.jetbladeconfig.txt')
 
     ## Retrieves the location of the user's home directory, depending on OS.
     def getHomePath(self):
@@ -110,8 +110,6 @@ class ConfigManager:
             return os.environ.get('APPDATA')
         else: # Assume OSX/Linux; both should work
             return os.environ.get('HOME')
-
-
 
        
     def getControls(self):
