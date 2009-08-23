@@ -193,7 +193,8 @@ class MapUIElement(uielement.UIElement):
     # map.
     def mouseMotion(self, mouseLoc):
         pressedButtons = pygame.mouse.get_pressed()
-        if pressedButtons[0] or pressedButtons[2]:
+        if (self.rect.collidepoint(mouseLoc.tuple()) and 
+                (pressedButtons[0] or pressedButtons[2])):
             # Clicked on the map; figure out where and set a block.
             topLeftCorner = game.camera.getLoc().add(
                     Vector2D(-constants.sw / 2.0, 
