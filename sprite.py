@@ -24,9 +24,6 @@ class Sprite:
         self.animations = game.animationManager.loadAnimations(name, shouldCreateCopy)
         ## Current active animation. 
         self.currentAnimation = self.animations.keys()[0]
-        ## Previous animation. Sometimes we need to know what we were just
-        # doing. 
-        self.prevAnimation = self.currentAnimation
         ## Object this is a sprite for. 
         self.owner = owner
         ## Drawing location as of previous physics update, for location
@@ -40,19 +37,9 @@ class Sprite:
     ## Set the current animation for the sprite.
     # \param shouldUseFacing If true, the actual animation name used has
     # -l or -r appended, depending on self.owner.facing
-    # \param shouldResetAnimation If true, the frame of the animation is 
-    # reset; otherwise it is preserved. 
     # Return True if we succeed in changing the animation; false otherwise.
-    # \todo shouldResetAnimation should be handled better. Currently we need
-    # it so we can "try out" different polygons for collision detection (c.f.
-    # TerrestrialObject crawl logic) without interfering with smooth animation.
-    def setAnimation(self, action, shouldUseFacing = True, 
-                     shouldResetAnimation = True):
+    def setAnimation(self, action, shouldUseFacing = True):
         curAnim = self.animations[self.currentAnimation]
-        if (not curAnim.isInterruptible and not curAnim.isComplete):
-            logger.debug("Unable to set animation",action,
-                         "because current animation is uninterruptible")
-            return False
         if shouldUseFacing:
             if self.owner.facing < 0:
                 action += '-l'
@@ -60,17 +47,9 @@ class Sprite:
                 action += '-r'
         if action != self.currentAnimation:
             logger.debug("Sprite",self.name,"setting animation",action)
-            if shouldResetAnimation:
-                curAnim.reset()
-            self.prevAnimation = self.currentAnimation
+            curAnim.reset()
             self.currentAnimation = action
         return True
-
-
-    ## Set the current animation to what the previous one was.
-    def setPreviousAnimation(self, shouldResetAnimation = True):
-        logger.debug("Returning to previous animation",self.prevAnimation)
-        return self.setAnimation(self.prevAnimation, False, shouldResetAnimation)
 
 
     ## Reset the currently-running animation.
@@ -143,11 +122,8 @@ class Sprite:
 
     ## Retrieve the current animation's polygon, or the previous animation's
     # polygon if needed.
-    def getPolygon(self, shouldUsePrevAnimation = False):
-        action = self.currentAnimation
-        if shouldUsePrevAnimation:
-            action = self.prevAnimation
-        return self.animations[action].getPolygon()
+    def getPolygon(self):
+        return self.animations[self.currentAnimation].getPolygon()
 
 
     ## Retrieve the polygon for the named animation.

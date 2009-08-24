@@ -51,9 +51,6 @@ class AnimationManager:
             shouldLoop = True
             if 'loop' in data:
                 shouldLoop = data['loop']
-            isInterruptible = True
-            if 'interruptible' in data:
-                isInterruptible = data['interruptible']
             updateRate = 1
             if 'updateRate' in data:
                 updateRate = data['updateRate']
@@ -71,7 +68,7 @@ class AnimationManager:
                 frameActions = data['frameActions']
             animations[animationName] = animation.Animation(
                         spriteName, animationName, 
-                        animPolygon, shouldLoop, isInterruptible, updateRate, 
+                        animPolygon, shouldLoop, updateRate, 
                         updateFunc, drawOffset, moveOffset, frameActions
             )
 

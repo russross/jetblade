@@ -147,13 +147,11 @@ sprites = {
         'polygon' : crawlingPolygon,
         'loop' : False,
         'updateFunc' : crawlTurnUpdate,
-        'interruptible' : False,
     },
     'crawlturn-r' : {
         'polygon' : crawlingPolygon,
         'loop' : False,
         'updateFunc' : crawlTurnUpdate,
-        'interruptible' : False,
     },
     'flinch-l' : {
         'polygon' : standingPolygon,

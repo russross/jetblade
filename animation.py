@@ -12,7 +12,7 @@ import os
 # when to change animation frames.
 class Animation:
     ## Create a new Animation instance.
-    def __init__(self, group, name, polygon, shouldLoop, isInterruptible,
+    def __init__(self, group, name, polygon, shouldLoop,
                  updateRate, updateFunc, drawOffset, moveOffset, frameActions):
         
         ## The collection of animations that this one is a part of. For example,
@@ -29,12 +29,7 @@ class Animation:
         # frames, and will therefore never complete.
         # If false, then once the final frame is reached, the animation will
         # stay on that frame indefinitely.
-        # Uninterruptible animations cannot loop.
-        self.shouldLoop = shouldLoop and isInterruptible
-
-        ## If true, then the animation is not interruptible by transitioning to
-        # other animations.
-        self.isInterruptible = isInterruptible
+        self.shouldLoop = shouldLoop
 
         ## If this is not None, then it specifies how rapidly animation frames
         # update in terms of physics updates (1 => 1 frame advanced per 
@@ -74,7 +69,7 @@ class Animation:
     ## Create a blank copy of this animation set.
     def copy(self):
         return Animation(self.group, self.name, self.polygon, self.shouldLoop,
-                         self.isInterruptible, self.updateRate, self.updateFunc,
+                         self.updateRate, self.updateFunc,
                          self.drawOffset, self.moveOffset, self.frameActions)
 
 
