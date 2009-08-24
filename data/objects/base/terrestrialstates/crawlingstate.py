@@ -30,7 +30,8 @@ class CrawlingState(objectstate.ObjectState):
                 return
             else:
                 logger.debug("No room to stand")
-        if self.owner.facing == self.owner.runDirection:
+        if (self.owner.facing == self.owner.runDirection and 
+                self.owner.sprite.getCurrentAnimation() != 'crawlturn'):
             self.owner.sprite.setAnimation('crawl')
             self.owner.vel = self.owner.vel.setX(self.owner.crawlSpeed * self.owner.runDirection)
         else:
@@ -88,6 +89,7 @@ class CrawlingState(objectstate.ObjectState):
     def completeAnimation(self, animation):
         action = animation.name[:-2]
         if action == 'crawlturn':
-            self.owner.facing *= -1
+            if animation.getCompletedSuccessfully():
+                self.owner.facing *= -1
             self.owner.sprite.setAnimation('crawl')
 

@@ -87,7 +87,8 @@ class Animation:
                 int(self.frame) in self.frameActions):
             self.frameActions[int(self.frame)](owner, game)
         if (not self.shouldLoop and not self.isComplete and 
-                self.frame >= len(self.frames)):
+                (self.frame >= len(self.frames) or
+                 self.frame < 0)):
             # Animation done
             self.isComplete = True
             return True
@@ -134,6 +135,12 @@ class Animation:
 
     def getMoveOffset(self):
         return self.moveOffset
+
+
+    ## Return True if the animation completed by running through all its frames,
+    # or False if it completed by running backwards.
+    def getCompletedSuccessfully(self):
+        return self.frame > self.prevFrame
 
 
     def __str__(self):

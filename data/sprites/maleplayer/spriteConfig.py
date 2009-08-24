@@ -24,10 +24,11 @@ def crawlUpdate(obj):
 
 ## Turn around
 def crawlTurnUpdate(obj):
-    if obj.runDirection != obj.facing:
-        return 1
-    elif obj.runDirection:
-        return -1
+    if obj.runDirection:
+        if obj.runDirection != obj.facing:
+            return 1
+        else:
+            return -1
     return 0
 
 
