@@ -4,9 +4,6 @@ import constants
 
 import os
 
-## Default ratio of line height in pixels to font size
-defaultLineHeightMultiplier = .85
-
 ## This class handles loading fonts and making them available for rendering.
 class FontManager:
 
@@ -21,10 +18,7 @@ class FontManager:
             fontSizes = []
             if 'sizes' in fontConfig:
                 fontSizes = fontConfig['sizes']
-            lineHeightMultiplier = defaultLineHeightMultiplier
-            if 'lineHeightMultiplier' in fontConfig:
-                lineHeightMultiplier = fontConfig['lineHeightMultiplier']
-            self.fontNameToFontMap[fontName] = font.Font(fontName, fontSizes, lineHeightMultiplier)
+            self.fontNameToFontMap[fontName] = font.Font(fontName, fontSizes)
     
 
     ## Tell a font to draw some text

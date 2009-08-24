@@ -13,9 +13,8 @@ import os
 class Font:
 
     ## Instantiate a Font instance
-    def __init__(self, name, sizes, lineHeightMultiplier):
+    def __init__(self, name, sizes):
         self.name = name + '.TTF'
-        self.lineHeightMultiplier = lineHeightMultiplier
         self.fonts = dict()
         for size in sizes:
             self.fonts[size] = pygame.font.Font(
@@ -46,7 +45,7 @@ class Font:
             elif align == TEXT_ALIGN_RIGHT:
                 textRect.right = loc.x
             textRect.centery = loc.y + yOffset
-            yOffset += self.lineHeightMultiplier * fontSize
+            yOffset += self.fonts[fontSize].get_linesize()
             if alpha != 255:
                 util.fadeAlpha(textSurface, alpha)
             screen.blit(textSurface, textRect)
