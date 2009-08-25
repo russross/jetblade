@@ -64,9 +64,11 @@ class GroundedState(objectstate.ObjectState):
         return True
 
 
-    ## Hit a ceiling. Transition to a crawling animation.
-    def hitCeiling(self, collision):
-        self.owner.setState(crawlingstate.CrawlingState(self.owner))
+    ## Hit terrain. Check for a downward-pointing ejection vector; start 
+    # crawling if we find it.
+    def hitTerrain(self, collision):
+        if collision.vector.y > 0:
+            self.owner.setState(crawlingstate.CrawlingState(self.owner))
         return True
 
 

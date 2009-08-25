@@ -126,10 +126,10 @@ class PhysicsObject:
             self.collisions.append(collision)
 
             shouldReactToCollision = self.hitTerrain(collision)
-            if collision.vector.y > constants.EPSILON:
+            if collision.vector.y > constants.EPSILON and self.vel.y < 0:
                 if not self.hitCeiling(collision):
                     shouldReactToCollision = False
-            elif collision.vector.y < -constants.EPSILON:
+            elif collision.vector.y < -constants.EPSILON and self.vel.y > 0:
                 if not self.hitFloor(collision):
                     shouldReactToCollision = False
 
