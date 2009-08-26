@@ -24,14 +24,14 @@ zones = {
         'elevationRange' : [.5, 1],
         'regions' : {
             'lava' : {
-                'frequency' : 1,
+                'frequency' : 2,
                 'color' : (255, 0, 0),
                 'tunnelTypes' : {
                     'wave' : 8,
                     'bumpy' : 8,
                     'room' : 2,
                     'straight' : 2,
-                    'maze' : 1,
+#                    'maze' : 1,
                 },
                 'tunnelWidths' : range(8, 13),
                 'tunnelLengths' : range(20, 41),
@@ -42,7 +42,7 @@ zones = {
                 'aligned' : 1,
                 'tunnelTypes' : {
                     'straight' : 4,
-                    'maze' : 1,
+#                    'maze' : 1,
                     'room' : 2,
                     'pit' : 4,
                 },

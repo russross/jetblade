@@ -72,6 +72,7 @@ class Maze(straight.StraightTunnel):
                         Vector2D(cell.x, offY) not in self.sector.spaces):
                     break
                 verticalClearance += 1
+
             for i in range(1, mazeMaximumColumnHeight):
                 offY = cell.iy - i
                 if (offY < 0 or 
@@ -100,8 +101,9 @@ class Maze(straight.StraightTunnel):
             seenCells.add(neighbor)
             cellStack.append(neighbor)
             # Get the offset to reach the wall.
-            delta = neighbor.sub(cell).divide(2).toInt()
-            self.map.blocks[delta.ix][delta.iy] = map.BLOCK_EMPTY
+            wallLoc = cell.add(neighbor.sub(cell).divide(2))
+            self.map.blocks[wallLoc.ix][wallLoc.iy] = map.BLOCK_EMPTY
+            seenCells.add(wallLoc)
 
         # Step five: because of our limit on vertical expansion, it's possible 
         # to get incomplete mazes. Check for blocks that aren't in seenCells 
@@ -109,11 +111,14 @@ class Maze(straight.StraightTunnel):
         # bits of it be blocked off.
         shouldRevert = False
         for loc in self.sector.spaces:
-            if loc not in seenCells:
+            if (self.map.getBlockAtGridLoc(loc) == map.BLOCK_EMPTY and 
+                    loc not in seenCells):
+                logger.debug("Cell",loc,"not reachable")
                 shouldRevert = True
                 break
 
         if shouldRevert:
+            logger.debug("Unable to make maze for",self.sector.id,"from",self.sector.loc,"to",self.sector.parent.loc)
             for block in changedBlocks:
                 self.map.blocks[block.ix][block.iy] = map.BLOCK_EMPTY
         else:
