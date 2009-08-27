@@ -32,7 +32,7 @@ class Block:
         self.subType = subType
         if self.subType is None:
             anim = self.sprite.getCurrentAnimationObject()
-            self.subType = random.choice(0, len(anim.frames) + 1)
+            self.subType = random.choice(range(0, len(anim.frames) + 1))
 
         ## Bounding rect
         self.rect = self.sprite.getBounds(self.loc)
