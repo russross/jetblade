@@ -92,7 +92,7 @@ def pickWeightedOption(options):
         index -= weight
         if index <= 0:
             return type
-    print "Failed to select an option from",options
+    logger.warn("Failed to select an option from",options)
     return None
 
 
