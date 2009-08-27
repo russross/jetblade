@@ -45,7 +45,7 @@ class MapEditor:
         count = 0
         for blockName in blockNames:
             count += 1
-            newBlock = block.Block(offset, blockName, self.terrain)
+            newBlock = block.Block(offset, self.terrain, blockName)
             self.blocks.append(newBlock)
             self.UIElements.append(BlockUIElement(self, newBlock, count))
             offset = offset.add(Vector2D(constants.blockSize + 20, 0))
@@ -203,7 +203,7 @@ class MapUIElement(uielement.UIElement):
                     add(topLeftCorner).toGridspace())
             if pressedButtons[0]:
                 newBlock = block.Block(blockGridLoc.toRealspace(), 
-                        self.editor.blockType, self.editor.terrain)
+                        self.editor.terrain, self.editor.blockType)
                 game.map.addBlock(newBlock)
                 self.editor.message = "Added a new block at " + str(newBlock.gridLoc)
             else:
