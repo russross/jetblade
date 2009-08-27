@@ -478,10 +478,10 @@ class Map:
                 blockLoc = loc.toRealspace()
 
                 if self.blocks[i][j] == BLOCK_UNALLOCATED:
-                    self.blocks[i][j] = block.Block(blockLoc, 'center', terrain)
+                    self.blocks[i][j] = block.Block(blockLoc, terrain, 'center')
                 elif self.blocks[i][j] == BLOCK_WALL:
                     (type, signature) = self.getBlockType(i, j)
-                    self.blocks[i][j] = block.Block(blockLoc, type, terrain)
+                    self.blocks[i][j] = block.Block(blockLoc, terrain, type)
                     # Choose a prop to attach to the block.
                     newProp = game.propManager.selectProp(terrain, signature)
                     if newProp is not None:
@@ -1185,15 +1185,16 @@ class Map:
                     logger.inform("Loading environmental effects at",pygame.time.get_ticks())
                     mode = 'enveffects'
                     continue
-                (x, y, orientation, zone, region) = line.split(',')
+                (x, y, zone, region, orientation, subType) = line.split(',')
                 x = int(x)
                 y = int(y)
+                subType = int(subType)
                 region = region.rstrip()
                 if (zone, region) not in terrainInfoCache:
                     terrainInfoCache[(zone, region)] = terraininfo.TerrainInfo(zone, region)
                 self.blocks[x][y] = block.Block(Vector2D(x, y).toRealspace(),
-                                            orientation, 
-                                            terrainInfoCache[(zone, region)])
+                                            terrainInfoCache[(zone, region)], 
+                                            orientation, subType)
             elif mode == 'enveffects':
                 if line == 'bgprops:':
                     logger.inform("Loading background props at",pygame.time.get_ticks())
@@ -1250,8 +1251,9 @@ class Map:
             for y in xrange(0, self.numRows):
                 if self.blocks[x][y] not in (BLOCK_EMPTY, None):
                     block = self.blocks[x][y]
-                    fh.write("%d,%d,%s,%s,%s\n" % (x, y, block.orientation,
-                        block.terrain.zone, block.terrain.region))
+                    fh.write("%d,%d,%s,%s,%s,%d\n" % (x, y, 
+                        block.terrain.zone, block.terrain.region,
+                        block.orientation, block.subType))
         fh.write("enveffects:\n")
         for x in xrange(0, self.numCols):
             for y in xrange(0, self.numRows):

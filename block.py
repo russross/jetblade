@@ -2,12 +2,13 @@ import logger
 import sprite
 
 import os
+import random
 
 ## Blocks are solid, nonmoving bits of terrain. 
 class Block:
 
     ## Create a new Block instance.
-    def __init__(self, loc, orientation, terrain):
+    def __init__(self, loc, terrain, orientation, subType = None):
 
         ## Location in realspace
         self.loc = loc
@@ -27,6 +28,11 @@ class Block:
         ## To allow blocks to be animated, we use Sprites for drawing them.
         self.sprite = sprite.Sprite(imagePath, self, self.loc, False)
         self.sprite.setAnimation(self.orientation, False)
+        ## Purely graphical variation on the block.
+        self.subType = subType
+        if self.subType is None:
+            anim = self.sprite.getCurrentAnimationObject()
+            self.subType = random.choice(0, len(anim.frames) + 1)
 
         ## Bounding rect
         self.rect = self.sprite.getBounds(self.loc)
@@ -42,9 +48,14 @@ class Block:
         return self.loc.add(poly.getPointAtX(targetX, direction.y))
 
 
-    ## Draw the block.
+    ## Draw the block. Ignore the "progress" parameter because we use 
+    # animation frames for block variants.
     def draw(self, screen, camera, progress, scale = 1):
-        self.sprite.draw(screen, camera, progress, self.loc, scale)
+        # \todo This is a hacky way to force display of the proper frame.
+        anim = self.sprite.getCurrentAnimationObject()
+        anim.frame = self.subType
+        anim.prevFrame = self.subType
+        self.sprite.draw(screen, camera, 0, self.loc, scale)
 
 
     ## Perform collision detection against an incoming polygon.
