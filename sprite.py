@@ -133,7 +133,7 @@ class Sprite:
 
     ## Return a string representing the facing of the object
     def getFacingString(self):
-        if self.facing < 0:
+        if self.owner.facing < 0:
             return 'l'
         return 'r'
 
