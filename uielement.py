@@ -10,6 +10,12 @@ class UIElement:
         pass
 
 
+    ## Many UI elements will need to be drawn, but not all. So to simplify use,
+    # we provide a dummied-out draw function here.
+    def draw(self, *args):
+        pass
+
+
     ## React to a key being pressed
     def keyDown(self, key):
         pass
@@ -93,7 +99,7 @@ class SimpleUIElement(UIElement):
 ## This class represents an object that can be clicked on. It includes support
 # for loading a sprite and drawing it onscreen.
 class ButtonUIElement(UIElement):
-    def __init__(self, spriteName, animationName, loc, action):
+    def __init__(self, loc, action, spriteName, animationName, frameNum = 0):
         ## Draw location on the screen
         self.loc = loc
         ## Action to perfom if clicked
@@ -103,6 +109,9 @@ class ButtonUIElement(UIElement):
         ## Sprite for drawing and mouse picking.
         self.sprite = sprite.Sprite(spriteName, self)
         self.sprite.setAnimation(animationName, False)
+        animation = self.sprite.getCurrentAnimationObject()
+        animation.frame = frameNum
+        animation.prevFrame = frameNum
 
 
     ## Draw the UI element, at a fixed location onscreen.

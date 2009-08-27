@@ -16,8 +16,6 @@ class MapEditor:
         self.terrain = terraininfo.TerrainInfo('jungle', 'grass')
         ## Current status message
         self.message = ''
-        ## Current selection of blocks to pick from
-        self.blocks = []
         ## UIElements associated with the editor.
         self.UIElements = []
         ## Current block type for placement
@@ -35,15 +33,15 @@ class MapEditor:
         self.fixedUIElements = None
 
     def init(self):
-        self.drawnUIElements = [
-            uielement.ButtonUIElement('mapeditor/arrows', 'up', 
-                    Vector2D((constants.blockSize + 10) * 13, 10),
-                    lambda: self.incrementSubtype(-1)),
-            uielement.ButtonUIElement('mapeditor/arrows', 'down', 
-                    Vector2D((constants.blockSize + 10) * 13, 100),
-                    lambda: self.incrementSubtype(1)),
-        ]
         self.fixedUIElements = [
+            uielement.ButtonUIElement(
+                    Vector2D((constants.blockSize + 10) * 12 + 30, 30),
+                    lambda: self.incrementSubtype(-1),
+                    'mapeditor/arrows', 'up'),
+            uielement.ButtonUIElement(
+                    Vector2D((constants.blockSize + 10) * 12 + 30, 110),
+                    lambda: self.incrementSubtype(1), 
+                    'mapeditor/arrows', 'down'),
             # Mouse wheel scrolls up
             uielement.SimpleUIElement('mouseDown', 
                     lambda loc, button: button == 4,
@@ -53,7 +51,6 @@ class MapEditor:
                     lambda loc, button: button == 5,
                     lambda: self.incrementSubtype(-1)),
         ]
-        self.fixedUIElements.extend(self.drawnUIElements)
         self.getBlockTypes()
 
 
@@ -62,28 +59,27 @@ class MapEditor:
         path = os.path.join(constants.spritePath, 'terrain',self.terrain.zone, 
                             self.terrain.region, 'blocks')
         blockNames = os.listdir(path)
-        self.blocks = []
         self.UIElements = []
         offset = Vector2D(20, 20)
         lowerRight = Vector2D(20, 20)
         count = 0
         for blockName in blockNames:
             count += 1
-            newBlock = block.Block(offset, self.terrain, blockName, 
-                                   self.blockSubtype)
-            self.blocks.append(newBlock)
-            self.UIElements.append(BlockUIElement(self, newBlock, count))
+            self.UIElements.append(BlockUIElement(self, 
+                    block.Block(offset, self.terrain, blockName, 
+                    self.blockSubtype),
+                    count)
+            )
             offset = offset.add(Vector2D(constants.blockSize + 20, 0))
             lowerRight = lowerRight.setX(max(lowerRight.x, offset.x))
             if count % 10 == 0:
                 offset = Vector2D(20, offset.y + constants.blockSize + 20)
-        lowerRight = lowerRight.setY(self.blocks[-1].loc.y)
-        lowerRight = lowerRight.add(Vector2D(20, constants.blockSize + 40))
+        lowerRight = lowerRight.setY(offset.y)
         self.blocksRect = pygame.rect.Rect(20, 20, 
-                lowerRight.x - 20, lowerRight.y - 20)
+                lowerRight.x, lowerRight.y)
         self.UIElements.append(MapUIElement(self, lowerRight.y))
         self.UIElements.extend(self.fixedUIElements)
-        self.blockType = self.blocks[0].orientation
+        self.blockType = blockNames[0]
         self.message = "Loaded blocks for " + str(self.terrain)
 
 
@@ -101,14 +97,7 @@ class MapEditor:
         pygame.draw.rect(screen, (0, 0, 0), self.blocksRect)
         pygame.draw.rect(screen, (255, 255, 255), self.blocksRect, 3)
         fakeCameraLoc = Vector2D(constants.sw / 2.0, constants.sh / 2.0)
-        count = 0
-        for block in self.blocks:
-            count += 1
-            block.draw(screen, fakeCameraLoc, *args)
-            game.fontManager.drawText('MODENINE', game.screen, 
-                    [str(count % 10)], 
-                    block.loc.addScalar(constants.blockSize / 2.0), 18)
-        for element in self.drawnUIElements:
+        for element in self.UIElements:
             element.draw(screen)
         game.fontManager.drawText('MODENINE', game.screen, [self.message], 
                                   Vector2D(20, constants.sh - 20), 18)
@@ -173,7 +162,7 @@ modKeyCombos = [[pygame.K_LSHIFT], [pygame.K_LCTRL], [pygame.K_LALT],
 ## This is a simple UI element for handling clicking on the blocks in the map
 # editor.
 class BlockUIElement(uielement.UIElement):
-    def __init__(self, editor, parentBlock, count):
+    def __init__(self, editor, parentBlock, index):
         ## Link to the map editor.
         self.editor = editor
         ## Block type that we select.
@@ -181,14 +170,24 @@ class BlockUIElement(uielement.UIElement):
         ## Bounding rect for mouse picking
         self.rect = parentBlock.getBounds()
         ## Number key that triggers us.
-        self.keyTrigger = ord(str(count % 10))
+        self.keyTrigger = ord(str(index % 10))
         ## List of modifier keys that must be pressed to trigger us.
         self.modTriggers = []
-        if count > 10:
+        ## Place in the list of block UI elements
+        self.index = index
+        if self.index > 10:
             # We need a mod key to trigger this one.
-            self.modTriggers = modKeyCombos[int((count - 1) / 10 - 1)]
+            self.modTriggers = modKeyCombos[int((self.index - 1) / 10 - 1)]
 
-    
+
+    def draw(self, screen):
+        fakeCameraLoc = Vector2D(constants.sw / 2.0, constants.sh / 2.0)
+        self.parentBlock.draw(screen, fakeCameraLoc, 0)
+        game.fontManager.drawText('MODENINE', screen, 
+                [str(self.index % 10)], 
+                self.parentBlock.loc.addScalar(constants.blockSize / 2.0), 18)
+
+
     def mouseMove(self, mouseLoc):
         pass
 
