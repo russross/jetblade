@@ -1,3 +1,6 @@
+import sprite
+from vector2d import Vector2D
+import constants
 
 ## This class handles user interface objects that can interact with the
 # EventManager that processes the event queue.
@@ -23,14 +26,12 @@ class UIElement:
 
 
     ## React to a mouse button being pressed.
-    # \todo Handle different mouse buttons. For now, use 
-    # pygame.mouses.get_pressed().
-    def mouseDown(self, mouseLoc):
+    def mouseDown(self, mouseLoc, mouseButton):
         pass
 
 
     ## React to a mouse button being released.
-    def mouseUp(self, mouseLoc):
+    def mouseUp(self, mouseLoc, mouseButton):
         pass
 
 
@@ -64,19 +65,19 @@ class SimpleUIElement(UIElement):
             self.act(key)
 
 
-    def mouseMove(self, mouseLoc):
+    def mouseMotion(self, mouseLoc):
         if self.eventType == 'mouseMove':
-            self.act(mouseLoc)
+            self.act(mouseLoc, mouseButton)
 
 
-    def mouseDown(self, mouseLoc):
+    def mouseDown(self, mouseLoc, mouseButton):
         if self.eventType == 'mouseDown':
-            self.act(mouseLoc)
+            self.act(mouseLoc, mouseButton)
 
 
-    def mouseUp(self, mouseLoc):
+    def mouseUp(self, mouseLoc, mouseButton):
         if self.eventType == 'mouseUp':
-            self.act(mouseLoc)
+            self.act(mouseLoc, mouseButton)
 
 
     def processEvents(self, events):
@@ -87,3 +88,30 @@ class SimpleUIElement(UIElement):
     def act(self, *args):
         if self.eventCondition(*args):
             self.eventAction()
+
+
+## This class represents an object that can be clicked on. It includes support
+# for loading a sprite and drawing it onscreen.
+class ButtonUIElement(UIElement):
+    def __init__(self, spriteName, animationName, loc, action):
+        ## Draw location on the screen
+        self.loc = loc
+        ## Action to perfom if clicked
+        self.action = action
+        ## Required to use sprites
+        self.facing = 1
+        ## Sprite for drawing and mouse picking.
+        self.sprite = sprite.Sprite(spriteName, self)
+        self.sprite.setAnimation(animationName, False)
+
+
+    ## Draw the UI element, at a fixed location onscreen.
+    def draw(self, screen):
+        fakeCameraLoc = Vector2D(constants.sw / 2.0, constants.sh / 2.0)
+        self.sprite.draw(screen, fakeCameraLoc, 0, self.loc)
+
+
+    def mouseUp(self, mouseLoc, mouseButton):
+        poly = self.sprite.getPolygon()
+        if poly.containsPoint(self.loc, mouseLoc):
+            self.action()

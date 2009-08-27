@@ -22,14 +22,38 @@ class MapEditor:
         self.UIElements = []
         ## Current block type for placement
         self.blockType = ''
+        ## Current block subtype
+        self.blockSubtype = 0
         ## Whether or not to enable map editing
         self.isActive = False
         ## Whether or not the editor controls are displayed when the editor is
         # active.
         self.isDisplayed = True
-
+        ## Any UIElements that we need to draw.
+        self.drawnUIElements = []
+        ## These UI elements don't change over time, so we can precalculate them
+        self.fixedUIElements = None
 
     def init(self):
+        self.drawnUIElements = [
+            uielement.ButtonUIElement('mapeditor/arrows', 'up', 
+                    Vector2D((constants.blockSize + 10) * 13, 10),
+                    lambda: self.incrementSubtype(-1)),
+            uielement.ButtonUIElement('mapeditor/arrows', 'down', 
+                    Vector2D((constants.blockSize + 10) * 13, 100),
+                    lambda: self.incrementSubtype(1)),
+        ]
+        self.fixedUIElements = [
+            # Mouse wheel scrolls up
+            uielement.SimpleUIElement('mouseDown', 
+                    lambda loc, button: button == 4,
+                    lambda: self.incrementSubtype(-1)),
+            # Mouse wheel scrolls down
+            uielement.SimpleUIElement('mouseDown', 
+                    lambda loc, button: button == 5,
+                    lambda: self.incrementSubtype(-1)),
+        ]
+        self.fixedUIElements.extend(self.drawnUIElements)
         self.getBlockTypes()
 
 
@@ -45,7 +69,8 @@ class MapEditor:
         count = 0
         for blockName in blockNames:
             count += 1
-            newBlock = block.Block(offset, self.terrain, blockName)
+            newBlock = block.Block(offset, self.terrain, blockName, 
+                                   self.blockSubtype)
             self.blocks.append(newBlock)
             self.UIElements.append(BlockUIElement(self, newBlock, count))
             offset = offset.add(Vector2D(constants.blockSize + 20, 0))
@@ -57,6 +82,7 @@ class MapEditor:
         self.blocksRect = pygame.rect.Rect(20, 20, 
                 lowerRight.x - 20, lowerRight.y - 20)
         self.UIElements.append(MapUIElement(self, lowerRight.y))
+        self.UIElements.extend(self.fixedUIElements)
         self.blockType = self.blocks[0].orientation
         self.message = "Loaded blocks for " + str(self.terrain)
 
@@ -82,6 +108,8 @@ class MapEditor:
             game.fontManager.drawText('MODENINE', game.screen, 
                     [str(count % 10)], 
                     block.loc.addScalar(constants.blockSize / 2.0), 18)
+        for element in self.drawnUIElements:
+            element.draw(screen)
         game.fontManager.drawText('MODENINE', game.screen, [self.message], 
                                   Vector2D(20, constants.sh - 20), 18)
 
@@ -104,6 +132,7 @@ placing. Or use the number keys in conjunction with the left-side modifier keys:
 second row: shift, third row: control, fourth row: alt/option, 
 fifth row: shift + control, sixth row: shift + alt/option, 
 seventh row: control + alt.
+Click the arrows (or use the mouse wheel) to change the block subtypes.
 Use the console command setTerrain to change terrain types: specify
 the terrain group (e.g. jungle, hotzone) and the region (e.g. grass, lava).
 Use the console command editorControls to hide/show the block picker."""
@@ -122,6 +151,15 @@ Use the console command editorControls to hide/show the block picker."""
             self.getBlockTypes()
         else:
             return "Invalid terrain type " + zone + ", " + region
+
+
+    ## Change the current block subtype
+    def incrementSubtype(self, amount):
+        self.blockSubtype += amount
+        curType = self.blockType
+        self.getBlockTypes()
+        self.blockType = curType
+        self.message = "Changed block subtype"
 
        
 ## List of modifiers
@@ -155,7 +193,7 @@ class BlockUIElement(uielement.UIElement):
         pass
 
 
-    def mouseUp(self, mouseLoc):
+    def mouseUp(self, mouseLoc, button):
         if self.rect.collidepoint(mouseLoc.tuple()):
             self.doAction()
 
@@ -185,7 +223,7 @@ class MapUIElement(uielement.UIElement):
 
 
     ## Passthrough to mouseMotion
-    def mouseDown(self, mouseLoc):
+    def mouseDown(self, mouseLoc, button):
         self.mouseMotion(mouseLoc)
 
 
@@ -203,7 +241,8 @@ class MapUIElement(uielement.UIElement):
                     add(topLeftCorner).toGridspace())
             if pressedButtons[0]:
                 newBlock = block.Block(blockGridLoc.toRealspace(), 
-                        self.editor.terrain, self.editor.blockType)
+                        self.editor.terrain, self.editor.blockType, 
+                        self.editor.blockSubtype)
                 game.map.addBlock(newBlock)
                 self.editor.message = "Added a new block at " + str(newBlock.gridLoc)
             else:

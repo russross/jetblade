@@ -164,6 +164,25 @@ cdef class Polygon:
         logger.debug("Overlap along",vector,"is",distance,"from ranges",myProj,altProj)
         return distance
 
+
+    ## Return true if the given point is contained within our polygon
+    def containsPoint(self, polyLoc, point):
+        curDirection = None
+        for i in xrange(0, len(self.points)):
+            p1 = self.points[(i-1) % len(self.points)].add(polyLoc)
+            p2 = self.points[i].add(polyLoc)
+            
+            polyEdge = p2.sub(p1)
+            pointEdge = point.sub(p1)
+            angleDirection = cmp(polyEdge.x * pointEdge.y - polyEdge.y * pointEdge.x, 0)
+            if curDirection is None:
+                curDirection = angleDirection
+            if angleDirection != curDirection:
+                # This angle has the wrong sign.
+                return False
+        return True
+
+
     ## Draw the polygon, for debugging purposes only. Polygons that have been
     # hit turn red for 1 frame.
     def draw(self, screen, loc, camera):

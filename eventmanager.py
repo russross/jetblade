@@ -47,11 +47,11 @@ class EventManager:
             elif event.type == MOUSEBUTTONDOWN:
                 mouseLoc = Vector2D(pygame.mouse.get_pos())
                 for element in UIElements:
-                    element.mouseDown(mouseLoc)
+                    element.mouseDown(mouseLoc, event.button)
             elif event.type == MOUSEBUTTONUP:
                 mouseLoc = Vector2D(pygame.mouse.get_pos())
                 for element in UIElements:
-                    element.mouseUp(mouseLoc)
+                    element.mouseUp(mouseLoc, event.button)
         for element in UIElements:
             element.processEvents(events)
 
