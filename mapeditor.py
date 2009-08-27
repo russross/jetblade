@@ -215,7 +215,7 @@ class BlockUIElement(uielement.UIElement):
 # terrain tile is offset from (0, 0) by a fixed amount.
 # \todo Not certain how to fix this, but it's a hardcoded number that we
 # shouldn't need.
-blockOffset = -14
+blockOffset = -25
 ## This UI element handles creating and destroying blocks.
 class MapUIElement(uielement.UIElement):
     def __init__(self, editor, topY):

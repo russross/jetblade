@@ -100,24 +100,24 @@ sprites = {
     },
     'hang-l' : {
         'polygon' : standingPolygon,
-        'drawOffset' : (0, 6),
+        'drawOffset' : (0, 17),
         'updateRate' : .2,
     },
     'hang-r' : {
         'polygon' : standingPolygon,
-        'drawOffset' : (0, 6),
+        'drawOffset' : (0, 17),
         'updateRate' : .2,
     },
     'climb-l' : {
         'polygon' : standingPolygon,
         'loop' : False,
-        'drawOffset' : (-75, -65),
+        'drawOffset' : (-75, -54),
         'moveOffset' : (-50, -131),
     },
     'climb-r' : {
         'polygon' : standingPolygon,
         'loop' : False,
-        'drawOffset' : (-75, -65),
+        'drawOffset' : (-75, -54),
         'moveOffset' : (50, -131),
     },
     'run-l' : {

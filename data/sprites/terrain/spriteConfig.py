@@ -1,62 +1,63 @@
+squarePolygon = [(25,25), (75,25), (75,75), (25,75)]
 sprites = {
     'downleft' : {
-        'polygon' : [(14,14), (64,14), (64,64)],
+        'polygon' : [(25,25), (75,25), (75,75)],
     },
     'downright' : {
-        'polygon' : [(14,14), (64,14), (14,64)],
+        'polygon' : [(25,25), (75,25), (25,75)],
     },
     'upleft' : {
-        'polygon' : [(14,64), (64,64), (64,14)],
+        'polygon' : [(25,75), (75,75), (75,25)],
     },
     'upright' : {
-        'polygon' : [(14,14), (64,64), (14,64)],
+        'polygon' : [(25,25), (75,75), (25,75)],
     },
     'allway' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'center' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'down' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'downend' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'downleftsquare' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'downrightsquare' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'left' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'leftend' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'leftright' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'right' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'rightend' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'up' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'updown' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'upend' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'upleftsquare' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
     'uprightsquare' : {
-        'polygon' : [(14,14), (64,14), (64,64), (14,64)],
+        'polygon' : squarePolygon,
     },
 }
