@@ -199,12 +199,6 @@ class PhysicsObject:
         return self.sprite.getPolygonForAnimation(animationName)
 
 
-    ## Return a string representing the facing of the object
-    def getFacingString(self):
-        if self.facing < 0:
-            return 'l'
-        return 'r'
-
     ## Handle completion of animations.
     def completeAnimation(self, animation):
         self.loc = self.loc.add(animation.getMoveOffset())

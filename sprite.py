@@ -128,10 +128,17 @@ class Sprite:
 
     ## Retrieve the polygon for the named animation.
     def getPolygonForAnimation(self, animationName):
-        return self.animations[animationName + '-' + self.owner.getFacingString()].getPolygon()
+        return self.animations[animationName + '-' + self.getFacingString()].getPolygon()
 
 
-    ## Return the current animation, defaulting to not including the facing
+    ## Return a string representing the facing of the object
+    def getFacingString(self):
+        if self.facing < 0:
+            return 'l'
+        return 'r'
+
+
+    ## Return the current animation name, defaulting to not including the facing
     # if any.
     # \todo Assumes that the facing is the last two characters of the string.
     #       Probably a better way to handle this.
@@ -140,4 +147,9 @@ class Sprite:
             return self.currentAnimation
         else:
             return self.currentAnimation[:-2]
+
+
+    ## Return the current Animation object
+    def getCurrentAnimationObject(self):
+        return self.animations[self.currentAnimation]
 
