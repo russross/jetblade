@@ -211,7 +211,11 @@ class BlockUIElement(uielement.UIElement):
     def doAction(self):
         self.editor.setBlockType(self.parentBlock.orientation)
 
-
+## Amount to adjust screen coordinates by to get to the block grid, since each
+# terrain tile is offset from (0, 0) by a fixed amount.
+# \todo Not certain how to fix this, but it's a hardcoded number that we
+# shouldn't need.
+blockOffset = -14
 ## This UI element handles creating and destroying blocks.
 class MapUIElement(uielement.UIElement):
     def __init__(self, editor, topY):
@@ -236,8 +240,7 @@ class MapUIElement(uielement.UIElement):
             topLeftCorner = game.camera.getLoc().add(
                     Vector2D(-constants.sw / 2.0, 
                              -constants.sh / 2.0))
-            blockGridLoc = (mouseLoc.addScalar(-constants.blockSize / 2.0).
-                    add(topLeftCorner).toGridspace())
+            blockGridLoc = mouseLoc.add(topLeftCorner).addScalar(blockOffset).toGridspace()
             if pressedButtons[0]:
                 newBlock = block.Block(blockGridLoc.toRealspace(), 
                         self.editor.terrain, self.editor.blockType, 
