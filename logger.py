@@ -84,7 +84,11 @@ def error(*entries):
 # function when unrecoverable errors have occurred. 
 def fatal(*entries):
     message = logger.log(LOG_FATAL, *entries)
-    traceback.print_exc()
+    try:
+        traceback.print_exc()
+    except Exception, e:
+        # No traceback to print
+        pass
     errorStrings = ["Sorry, an error occurred: "]
     for i in xrange(0, len(message), fatalMessageLineLength):
         errorStrings.append(message[i*fatalMessageLineLength:(i+1)*fatalMessageLineLength])
