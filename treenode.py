@@ -7,6 +7,7 @@ import util
 import logger
 import font
 from vector2d import Vector2D
+from range1d import Range1D
 
 import math
 import random
@@ -79,10 +80,10 @@ marchingSquares = [Vector2D(1, 0), Vector2D(1, 0), Vector2D(0, 1),
 
 slopePlatformRequirement = math.pi / 8.0
 ## Threshholds for considering a given segment of terrain to be a wall.
-wallAngles = [(-math.pi/2.0 -slopePlatformRequirement,
-               -math.pi/2.0 + slopePlatformRequirement),
-              (math.pi/2.0 - slopePlatformRequirement,
-               math.pi/2.0 + slopePlatformRequirement)]
+wallAngles = [Range1D(-math.pi/2.0 -slopePlatformRequirement,
+                      -math.pi/2.0 + slopePlatformRequirement),
+              Range1D(math.pi/2.0 - slopePlatformRequirement,
+                      math.pi/2.0 + slopePlatformRequirement)]
 
 ## TreeNodes are branches of a planar tree graph that are used to describe the 
 # high-level structure of the game map. Generally speaking, each node describes
@@ -396,7 +397,7 @@ class TreeNode:
         distFunc = Vector2D.distance
         if game.map.getRegionInfo(self.terrainInfo, 'aligned'):
             # Make a square junction instead of a circular one.
-            distFunc = Vector2D.distanceSquare
+            distFunc = Vector2D.gridDistance
 
         # Iterate over points in the accepted area, converting them to 
         # open space surrounded by walls if they are related to us.
@@ -573,6 +574,43 @@ class TreeNode:
     # placing platforms wherever the walls are too steep or the ceiling is 
     # too far away. 
     def fixAccessibilityWallwalk(self):
+        localSlope = 0
+        recentSpaces = []
+        spacesSinceLastPlatform = 0
+        for currentSpace in self.walkWalls():
+            # Find the average slope over every slopeAveragingBracketSize 
+            # blocks. If the slope is too extreme, then create a platform 
+            # nearby.
+            startSpace = None
+            if len(recentSpaces) >= slopeAveragingBracketSize:
+                startSpace = recentSpaces.pop(0)
+            if startSpace is not None and spacesSinceLastPlatform > platformInterval:
+                delta = currentSpace.sub(startSpace)
+                angle = delta.angle()
+                angleBrackets = []
+                
+                isWallOrCeiling = False
+                for bracket in wallAngles:
+                    if bracket.contains(angle):
+                        isWallOrCeiling = True
+                        break
+                # Default to checking for platforms above the floor
+                lineDelta = Vector2D(0, -1)
+                buildDistance = map.minDistForFloorPlatform
+                if isWallOrCeiling:
+                    # Draw the line perpendicular to the local surface instead.
+                    lineDelta = delta.copy().invert().normalize()
+                    buildDistance = map.minDistForPlatform
+                distance = game.map.getDistanceToWall(currentSpace, lineDelta, self)
+                if distance > buildDistance:
+                    game.map.markPlatform(currentSpace, lineDelta, distance)
+                    spacesSinceLastPlatform = 0
+            recentSpaces.append(currentSpace)
+            spacesSinceLastPlatform += 1
+            
+
+    ## Yield a series of spaces along the perimeter of our territory.
+    def walkWalls(self):
         # Find a point in the grid that's part of our sector, by walking
         # our line in gridspace.
         # This breaks down for the junction nodes (whose start and end
@@ -591,69 +629,33 @@ class TreeNode:
         # If we can't find our sector, then probably all of it
         # got absorbed by other sectors or pushed into walls, so don't 
         # do the wallwalker. Otherwise, carry on.
-        if self.getIsOurSpace(originalSpace):
-            localSlope = 0
-            first = 1
-            currentSpace = originalSpace.copy()
-            recentSpaces = []
-            spacesSinceLastPlatform = 0
-            numSteps = 0
-            while first or currentSpace.distance(originalSpace) > constants.EPSILON:
-                numSteps += 1
-                if numSteps > maxWallwalkerSteps:
-                    logger.debug("Hit maximum steps for node",self.id)
-                    break
-                first = 0
-                # Walk around the perimeter of the region, finding the average 
-                # slope over every slopeAveragingBracketSize blocks. If the 
-                # slope is too extreme, then create a platform nearby.
-                startSpace = None
-                if len(recentSpaces) >= slopeAveragingBracketSize:
-                    startSpace = recentSpaces.pop(0)
-                if startSpace is not None and spacesSinceLastPlatform > platformInterval:
-                    delta = currentSpace.sub(startSpace)
-                    angle = delta.angle()
-                    angleBrackets = []
-                    
-                    isWallOrCeiling = 0
-                    for bracket in wallAngles:
-                        if angle > bracket[0] and angle < bracket[1]:
-                            isWallOrCeiling = 1
-                            break
-                    # Default to checking for platforms above the floor
-                    lineDelta = Vector2D(0, -1)
-                    buildDistance = map.minDistForFloorPlatform
-                    if isWallOrCeiling:
-                        # Draw the line perpendicular to the local surface instead.
-                        lineDelta = delta.copy().invert().normalize()
-                        buildDistance = map.minDistForPlatform
-                    distance = game.map.getDistanceToWall(currentSpace, lineDelta, self)
-                    if distance > buildDistance:
-                        game.map.markPlatform(currentSpace, lineDelta, distance)
-                        spacesSinceLastPlatform = 0
-                recentSpaces.append(currentSpace)
-                spacesSinceLastPlatform += 1
-
-                # Get the space adjacent to our own that continues the walk, 
-                # by using the Marching Squares algorithm
-                # (http://en.wikipedia.org/wiki/Marching_squares)
-                x = currentSpace.x
-                y = currentSpace.y
-                marchIndex = 0
-                if not self.getIsOurSpace(Vector2D(x, y)):
-                    marchIndex += 1
-                if not self.getIsOurSpace(Vector2D(x, y+1)):
-                    marchIndex += 2
-                if not self.getIsOurSpace(Vector2D(x-1, y+1)):
-                    marchIndex += 4
-                if not self.getIsOurSpace(Vector2D(x-1, y)):
-                    marchIndex += 8
-                currentSpace = currentSpace.add(marchingSquares[marchIndex])
-        else: # Couldn't find a good space to start from
-            pass
-#                print "Unable to find a good starting place for",self.id
-#            game.map.drawStatus() 
-
+        if not self.getIsOurSpace(originalSpace):
+            return
+        first = True
+        numSteps = 0
+        currentSpace = originalSpace.copy()
+        while first or currentSpace.distanceSquared(originalSpace) > constants.EPSILON:
+            first = False
+            yield currentSpace
+            numSteps += 1
+            if numSteps > maxWallwalkerSteps:
+                logger.debug("Hit maximum steps for node",self.id)
+                break
+            # Get the space adjacent to our own that continues the walk, 
+            # by using the Marching Squares algorithm
+            # (http://en.wikipedia.org/wiki/Marching_squares)
+            x = currentSpace.x
+            y = currentSpace.y
+            marchIndex = 0
+            if not self.getIsOurSpace(Vector2D(x, y)):
+                marchIndex += 1
+            if not self.getIsOurSpace(Vector2D(x, y+1)):
+                marchIndex += 2
+            if not self.getIsOurSpace(Vector2D(x-1, y+1)):
+                marchIndex += 4
+            if not self.getIsOurSpace(Vector2D(x-1, y)):
+                marchIndex += 8
+            currentSpace = currentSpace.add(marchingSquares[marchIndex])
 
     ## Mark the given gridspace location as being part of our sector.
     def assignSpace(self, loc):

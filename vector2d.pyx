@@ -109,9 +109,14 @@ cdef class Vector2D:
         return math.sqrt((self.x - alt.x)**2 + (self.y - alt.y)**2)
 
 
+    ## Return the distance from us to alt, squared.
+    cpdef public double distanceSquared(Vector2D self, Vector2D alt):
+        return (self.x - alt.x)**2 + (self.y - alt.y)**2
+
+
     ## Return the distance if moving diagonally counts the same as moving
     # horizontally (generates square "circles").
-    cpdef public double distanceSquare(Vector2D self, Vector2D alt):
+    cpdef public double gridDistance(Vector2D self, Vector2D alt):
         return max(abs(self.x - alt.x), abs(self.y - alt.y))
 
 
