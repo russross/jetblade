@@ -4,7 +4,7 @@ import treenode
 import zone
 import block
 import enveffect
-import prop
+import scenery
 import game
 import util
 import logger
@@ -147,7 +147,7 @@ zipAmount = Vector2D(0, -constants.blockSize)
 #   the map tunnels.
 # - A grid of terrain tiles.
 # - Another grid for environmental effects.
-# - A quadtree containing all background props.
+# - A quadtree containing all background scenery.
 # \todo Several dicts in this class don't match the style guideline.
 class Map:
 
@@ -166,7 +166,7 @@ class Map:
         # scale as blocks.
         self.envGrid = None
 
-        ## Holds background props.
+        ## Holds background scenery.
         self.backgroundQuadTree = None
 
         ## Marks high-level structure of the map.
@@ -482,11 +482,11 @@ class Map:
                 elif self.blocks[i][j] == BLOCK_WALL:
                     (type, signature) = self.getBlockType(i, j)
                     self.blocks[i][j] = block.Block(blockLoc, terrain, type)
-                    # Choose a prop to attach to the block.
-                    newProp = game.propManager.selectProp(terrain, signature)
-                    if newProp is not None:
-                        newProp.loc = newProp.loc.add(blockLoc)
-                        self.addBackgroundObject(newProp)
+                    # Choose a scenery item to attach to the block.
+                    newItem = game.sceneryManager.selectScenery(terrain, signature)
+                    if newItem is not None:
+                        newItem.loc = newItem.loc.add(blockLoc)
+                        self.addBackgroundObject(newItem)
                 # else self.blocks[i][j] == BLOCK_EMPTY, do nothing
 
 
@@ -915,7 +915,6 @@ class Map:
         size = constants.blockSize * scale
         
         screen = pygame.Surface((int(self.width * scale), int(self.height * scale)))
-        
         self.backgroundQuadTree.draw(screen, center, 0, scale)
                 
         for x in xrange(0, self.numCols):
@@ -937,7 +936,7 @@ class Map:
         pygame.image.save(screen, filename)
 
 
-    ## Draw the background props and any environmental effects at the given
+    ## Draw the background scenery and any environmental effects at the given
     # location.
     def drawBackground(self, screen, cameraLoc, progress):
         self.backgroundQuadTree.draw(screen, cameraLoc, progress)
@@ -1041,7 +1040,7 @@ class Map:
             self.platformsQuadTree.addObject(newPlatform)
 
 
-    ## Add a background object (a prop) to the map.
+    ## Add a background object (a Scenery instance) to the map.
     def addBackgroundObject(self, obj):
         self.backgroundQuadTree.addObject(obj)
 
@@ -1196,9 +1195,9 @@ class Map:
                                             terrainInfoCache[(zone, region)], 
                                             orientation, subType)
             elif mode == 'enveffects':
-                if line == 'bgprops:':
-                    logger.inform("Loading background props at",pygame.time.get_ticks())
-                    mode = 'bgprops'
+                if line == 'scenery:':
+                    logger.inform("Loading scenery at",pygame.time.get_ticks())
+                    mode = 'scenery'
                     continue
                 (location, effects) = line.split(':')
                 (x, y) = location.split(',')
@@ -1210,14 +1209,14 @@ class Map:
                         envEffectCache[name] = enveffect.EnvEffect(name)
                     envEffectCache[name].addSpace(Vector2D(x, y), self)
 
-            elif mode == 'bgprops':
+            elif mode == 'scenery':
                 (x, y, zone, region, group, item) = line.split(',')
                 x = int(x)
                 y = int(y)
                 if (zone, region) not in terrainInfoCache:
                     terrainInfoCache[(zone, region)] = terraininfo.TerrainInfo(zone, region)
                 self.backgroundQuadTree.addObject(
-                        prop.Prop(Vector2D(x, y), 
+                        scenery.Scenery(Vector2D(x, y), 
                                   terrainInfoCache[(zone, region)], 
                                   group, item))
         logger.inform("Done loading map at",pygame.time.get_ticks())
@@ -1261,11 +1260,11 @@ class Map:
                     string = ",".join(effect.name for effect in self.envGrid[x][y])
                     fh.write("%d,%d:%s\n" % (x, y, string))
         
-        fh.write("bgprops:\n")
-        for prop in self.backgroundQuadTree.getObjects():
+        fh.write("scenery:\n")
+        for item in self.backgroundQuadTree.getObjects():
             fh.write("%d,%d,%s,%s,%s,%s\n" % 
-                     (prop.loc.x, prop.loc.y, prop.terrain.zone, 
-                      prop.terrain.region, prop.group, prop.item))
+                     (item.loc.x, item.loc.y, item.terrain.zone, 
+                      item.terrain.region, item.group, item.item))
 
 
     ## Simple boundary check for the blocks grid.

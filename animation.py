@@ -105,7 +105,7 @@ class Animation:
             frame = len(self.frames) - 1
         surface = self.frames[int(frame) % len(self.frames)]
         game.imageManager.drawGameObjectAt(screen, surface, drawLoc, camera, scale)
-        if logger.getLogLevel() == logger.LOG_DEBUG:
+        if logger.getLogLevel() == logger.LOG_DEBUG and scale == 1:
             # Draw the bounding polygon and location information
             self.polygon.draw(screen, loc, camera)
             gridLoc = loc.toGridspace()

@@ -31,6 +31,11 @@ class TerrainInfo:
         return not self.__eq__(alt)
 
 
+    ## Hash function
+    def __hash__(self):
+        return hash(self.zone) + hash(self.region)
+
+
     ## Convert to string
     def __str__(self):
         return "[Terrain: zone " + self.zone + ", region " + self.region + "]"

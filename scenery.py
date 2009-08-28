@@ -3,31 +3,31 @@ import logger
 
 import os
 
-## Props are background objects that have no influence on gameplay aside from
+## Scenery are background objects that have no influence on gameplay aside from
 # simply looking pretty. 
-class Prop:
+class Scenery:
     def __init__(self, loc, terrain, group, item):
-        ## Location of the prop in realspace.
+        ## Location of the item in realspace.
         self.loc = loc
         ## TerrainInfo instance describing the local terrain
         self.terrain = terrain
-        ## Group of props, e.g. "trees"
+        ## Group of items, e.g. "trees"
         self.group = group
-        ## Specific item in the group of props.
+        ## Specific item in the group of items.
         self.item = item
         imagePath = os.path.join('terrain', self.terrain.zone, 
-                self.terrain.region, 'props', self.group)
+                self.terrain.region, 'scenery', self.group)
         self.sprite = sprite.Sprite(imagePath, self, self.loc)
         self.sprite.setAnimation(self.item, False)
 
 
-    ## Draw the prop. This is called by the game's Map instance before any 
-    # other objects are drawn. 
+    ## Draw the piece of scenery. This is called by the game's Map instance 
+    # before any other objects are drawn. 
     def draw(self, screen, camera, progress, scale = 1):
-        self.sprite.draw(screen, camera, progress, None, scale)
+        self.sprite.draw(screen, camera, progress, self.loc, scale)
 
 
-    ## Return the bounding box for the prop. Required for props to be insertable
+    ## Return the bounding box for the item. Required for items to be insertable
     # into QuadTree instances.
     def getBounds(self):
         return self.sprite.getBounds(self.loc)

@@ -72,7 +72,7 @@ def startGame():
     else:
         for i in xrange(0, game.numMaps):
             game.envEffectManager.reset()
-            game.propManager.reset()
+            game.sceneryManager.reset()
             logger.inform("Making map %d of %d" % (i + 1, game.numMaps))
             if game.numMaps == 1:
                 logger.inform("Using seed",game.seed)

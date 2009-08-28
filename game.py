@@ -9,9 +9,9 @@ import featuremanager
 import fontmanager
 import gameobjectmanager
 import imagemanager
-import propmanager
-import soundmanager
 import mapeditor
+import scenerymanager
+import soundmanager
 
 animationManager = animationmanager.AnimationManager()
 configManager = configmanager.ConfigManager()
@@ -22,7 +22,7 @@ featureManager = featuremanager.FeatureManager()
 fontManager = fontmanager.FontManager()
 gameObjectManager = gameobjectmanager.GameObjectManager()
 imageManager = imagemanager.ImageManager()
-propManager = propmanager.PropManager()
-soundManager = soundmanager.SoundManager()
 mapEditor = mapeditor.MapEditor()
+sceneryManager = scenerymanager.SceneryManager()
+soundManager = soundmanager.SoundManager()
 

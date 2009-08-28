@@ -404,5 +404,5 @@ enveffects:
 2,48:water
 3,48:water
 4,48:water
-bgprops:
+scenery:
 1000,1900,jungle,grass,trees,1
