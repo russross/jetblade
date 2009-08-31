@@ -56,11 +56,11 @@ class QuadTree:
 
     ## Add an object to the node. Rebalance the tree afterwards if needed.
     def addObject(self, object, shouldRebalance = True):
-        if self.parent is None and len(self.objects) == 11:
-            logger.debug("Before rebalancing, tree is:")
-            self.printTree()
+#        if self.parent is None and len(self.objects) == 11:
+#            logger.debug("Before rebalancing, tree is:")
+#            self.printTree()
         if len(self.objects) < maxObjectsPerNode - 1:
-            logger.debug("Adding object",object,"with bounds",object.getBounds(),"to quadtree at depth",self.depth)
+#            logger.debug("Adding object",object,"with bounds",object.getBounds(),"to quadtree at depth",self.depth)
             self.objects.append(object)
         else:
             # Adding the object here would put us at the limit per node, so 
@@ -68,15 +68,15 @@ class QuadTree:
             
             if not self.tryAddObjectToChildren(object):
                 self.objects.append(object)
-                logger.debug("Unable to push object", object, 
-                             "deeper into tree, so it must stay at depth",
-                             self.depth, "where we have", 
-                             len(self.objects), "objects")
+#                logger.debug("Unable to push object", object, 
+#                             "deeper into tree, so it must stay at depth",
+#                             self.depth, "where we have", 
+#                             len(self.objects), "objects")
                 if shouldRebalance:
                     self.rebalanceTree()
-        if self.parent is None:
-            logger.debug("After rebalancing, tree is:")
-            self.printTree()
+#        if self.parent is None:
+#            logger.debug("After rebalancing, tree is:")
+#            self.printTree()
 
 
     ## Add many objects by iteratively calling self.addObject().
@@ -245,6 +245,9 @@ class QuadTree:
     def draw(self, screen, camera, progress, scale = 1):
         screenRect = screen.get_rect()
         screenRect.center = camera.tuple()
+        size = Vector2D(screenRect.bottomright).sub(Vector2D(screenRect.topleft))
+        screenRect.width = size.x / scale
+        screenRect.height = size.y / scale
         for object in self.objects:
             objectRect = object.getBounds()
             objectRect.width *= scale
@@ -307,4 +310,4 @@ class QuadTree:
                 str(Vector2D(self.rect.topleft)) + ' to ' + 
                 str(Vector2D(self.rect.bottomright)) +
                 ' with ' + str(len(self.objects)) + ' objects here and ' + 
-                str(len(self.getObjects())) + ' objects overall')
+                str(len(self.getObjects())) + ' objects overall]')
