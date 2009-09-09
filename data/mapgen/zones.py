@@ -17,6 +17,7 @@ zones = {
                 },
                 'tunnelWidths' : range(8, 14),
                 'tunnelLengths' : range(25, 56),
+                'furnitureFrequency' : 4,
             },
         },
     },
@@ -35,6 +36,7 @@ zones = {
                 },
                 'tunnelWidths' : range(8, 13),
                 'tunnelLengths' : range(20, 41),
+                'furnitureFrequency' : 8,
             },
             'techpipe' : {
                 'frequency' : 1,
@@ -48,6 +50,7 @@ zones = {
                 },
                 'tunnelWidths' : [8],
                 'tunnelLengths' : range(20, 51, 5),
+                'furnitureFrequency' : 8,
             },
         },
     },

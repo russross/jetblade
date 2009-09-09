@@ -3,6 +3,7 @@ import line
 import treenode
 import zone
 import block
+import furniture
 import enveffect
 import scenery
 import game
@@ -161,7 +162,10 @@ class Map:
         ## 2D array of blocks (or None to indicate empty space)
         # During map construction, we use BLOCK_* values instead
         self.blocks = None
-        
+       
+        ## Holds Furniture instances
+        self.furnitureQuadTree = None
+       
         ## Marks spaces as belonging to different environments. Built to same
         # scale as blocks.
         self.envGrid = None
@@ -226,6 +230,7 @@ class Map:
     def createMap(self):
         self.width = int(minUniverseWidth + random.uniform(0, universeDimensionVariance))
         self.height = int(minUniverseHeight + random.uniform(0, universeDimensionVariance))
+        self.furnitureQuadTree = quadtree.QuadTree(self.getBounds())
         self.backgroundQuadTree = quadtree.QuadTree(self.getBounds())
 
         ## This quadtree holds lines; we use it to make certain that limbs of
@@ -243,7 +248,9 @@ class Map:
         self.numCols = self.width / constants.blockSize
         self.numRows = self.height / constants.blockSize
         
-        logger.inform("Making a",self.numCols,"x",self.numRows,"map")
+        logger.inform("Making a",self.numCols,"x",self.numRows,"map","; that's",
+                      self.numCols * constants.blockSize,"x",
+                      self.numRows * constants.blockSize,"pixels")
         logger.inform("Started making map at",pygame.time.get_ticks())
 
         # First we need to figure out which parts of the map belong to which
@@ -311,7 +318,11 @@ class Map:
         (self.blocks, self.deadSeeds) = self.fixSeedOwnership(self.blocks, self.deadSeeds)
 #        self.drawStatus()
 
-        # Walk the walls of sectors of the tree and add platforms where needed.
+        # Walk the walls and put down furniture objects
+        logger.inform("Placing furniture at",pygame.time.get_ticks())
+        self.placeFurniture()
+
+        # Place platforms down to make inaccessible areas accessible.
         logger.inform("Fixing accessibility at",pygame.time.get_ticks())
         self.fixAccessibility()
 #        self.drawStatus()
@@ -755,6 +766,12 @@ class Map:
         return (blocks, seeds)
 
 
+    ## Call treenode.placeFurniture to add interesting solid features to the
+    # map.
+    def placeFurniture(self):
+        self.tree.placeFurniture()
+
+
     ## Call treenode.fixAccessibility() to create platforms to ensure map 
     # accessibility.
     def fixAccessibility(self):
@@ -916,7 +933,8 @@ class Map:
         
         screen = pygame.Surface((int(self.width * scale), int(self.height * scale)))
         self.backgroundQuadTree.draw(screen, center, 0, scale)
-                
+        self.furnitureQuadTree.draw(screen, center, 0, scale)
+
         for x in xrange(0, self.numCols):
             for y in xrange(0, self.numRows):
                 for effect in self.envGrid[x][y]:
@@ -955,8 +973,9 @@ class Map:
                                 cameraLoc, progress)
 
 
-    ## Draw the terrain tiles.
+    ## Draw the furniture and terrain tiles.
     def drawMidground(self, screen, cameraLoc, progress):
+        self.furnitureQuadTree.draw(screen, cameraLoc, progress)
         rect = screen.get_rect()
         rect.center = cameraLoc.tuple()
         min = Vector2D(rect.topleft).toGridspace().sub(Vector2D(1, 1))
@@ -1082,6 +1101,17 @@ class Map:
     def collidePolygon(self, poly, loc):
         result = collisiondata.CollisionData(None, -constants.BIGNUM, 'solid', None)
         polyRect = poly.getBounds(loc)
+        # First, check for furniture hits. 
+        # \todo We don't correct ejection vectiors for furniture, even though
+        # we could still get improper ejection directions
+        for item in self.furnitureQuadTree.getObjectsIntersectingRect(polyRect):
+            (overlap, vector) = item.collidePolygon(poly, loc)
+            if vector is not None and overlap > result.distance:
+                logger.debug("Hit furniture",item,"with data",overlap,vector)
+                result.distance = overlap
+                result.vector = vector
+                result.altObject = item
+                return result
         excludedColumns = dict()
         excludedRows = dict()
         upperLeft = poly.upperLeft.add(loc).toGridspace().add(Vector2D(-1, -1))
@@ -1168,6 +1198,7 @@ class Map:
                         self.blocks[i].append(BLOCK_EMPTY)
                         self.envGrid[i].append([])
 
+                self.furnitureQuadTree = quadtree.QuadTree(self.getBounds())
                 self.backgroundQuadTree = quadtree.QuadTree(self.getBounds())
                 
                 mode = 'start'
@@ -1180,9 +1211,9 @@ class Map:
                 (x, y) = line.split(',')
                 self.startLoc = Vector2D(int(x), int(y))
             elif mode == 'blocks':
-                if line == 'enveffects:':
-                    logger.inform("Loading environmental effects at",pygame.time.get_ticks())
-                    mode = 'enveffects'
+                if line == 'furniture:':
+                    logger.inform("Loading furniture at",pygame.time.get_ticks())
+                    mode = 'furniture'
                     continue
                 (x, y, zone, region, orientation, subType) = line.split(',')
                 x = int(x)
@@ -1194,6 +1225,19 @@ class Map:
                 self.blocks[x][y] = block.Block(Vector2D(x, y).toRealspace(),
                                             terrainInfoCache[(zone, region)], 
                                             orientation, subType)
+            elif mode == 'furniture':
+                if line == 'enveffects:':
+                    logger.inform("Loading environmental effects at",pygame.time.get_ticks())
+                    mode = 'enveffects'
+                    continue
+                (x, y, zone, region, group, subGroup) = line.split(',')
+                x = int(x)
+                y = int(y)
+                if (zone, region) not in terrainInfoCache:
+                    terrainInfoCache[(zone, region)] = terraininfo.TerrainInfo(zone, region)
+                newFurniture = furniture.Furniture(Vector2D(x, y), 
+                        terrainInfoCache[(zone, region)], group, subGroup)
+                self.furnitureQuadTree.addObject(newFurniture)
             elif mode == 'enveffects':
                 if line == 'scenery:':
                     logger.inform("Loading scenery at",pygame.time.get_ticks())
@@ -1215,7 +1259,7 @@ class Map:
                 y = int(y)
                 if (zone, region) not in terrainInfoCache:
                     terrainInfoCache[(zone, region)] = terraininfo.TerrainInfo(zone, region)
-                self.backgroundQuadTree.addObject(
+                self.addBackgroundObject(
                         scenery.Scenery(Vector2D(x, y), 
                                   terrainInfoCache[(zone, region)], 
                                   group, item))
@@ -1238,7 +1282,23 @@ class Map:
             self.writeMap()
 
 
+    ## Add furniture at the given location. 
+    def addFurniture(self, furniture):
+        rect = furniture.getBounds()
+        topLeft = Vector2D(rect.topleft).toGridspace()
+        bottomRight = Vector2D(rect.bottomright).toGridspace()
+        logger.debug("Placing furniture",furniture,"with bounds from",topLeft,"to",bottomRight)
+        for x in xrange(max(0, topLeft.ix), min(self.numCols, bottomRight.ix)):
+            for y in xrange(max(0, topLeft.iy), min(self.numRows, bottomRight.iy)):
+                if self.blocks[x][y] != BLOCK_EMPTY:
+                    logger.debug("Removed block at",(x,y))
+                self.blocks[x][y] = BLOCK_EMPTY
+        self.furnitureQuadTree.addObject(furniture)
+
+
     ## Write our map to disk so it can be read by loadMap().
+    # \todo Make saveable objects handle their own read/write logic. This is
+    # getting pretty ugly.
     def writeMap(self, name = None):
         if name is None:
             name = self.mapName.replace('.map', '') + '-tmp'
@@ -1253,6 +1313,12 @@ class Map:
                     fh.write("%d,%d,%s,%s,%s,%d\n" % (x, y, 
                         block.terrain.zone, block.terrain.region,
                         block.orientation, block.subType))
+        fh.write("furniture:\n")
+        for item in self.furnitureQuadTree.getObjects():
+            fh.write("%d,%d,%s,%s,%s,%s\n" % (item.loc.x, item.loc.y,
+                                            item.terrain.zone, 
+                                            item.terrain.region,
+                                            item.group, item.subGroup))
         fh.write("enveffects:\n")
         for x in xrange(0, self.numCols):
             for y in xrange(0, self.numRows):

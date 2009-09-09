@@ -7,19 +7,23 @@ import enveffectmanager
 import eventmanager
 import featuremanager
 import fontmanager
+import furnituremanager
 import gameobjectmanager
 import imagemanager
 import mapeditor
 import scenerymanager
 import soundmanager
 
+# Load this ahead of time because other modules need it ready so they can
+# load their configuration.
+dynamicClassManager = dynamicclassmanager.DynamicClassManager()
 animationManager = animationmanager.AnimationManager()
 configManager = configmanager.ConfigManager()
-dynamicClassManager = dynamicclassmanager.DynamicClassManager()
 envEffectManager = enveffectmanager.EnvEffectManager()
 eventManager = eventmanager.EventManager()
 featureManager = featuremanager.FeatureManager()
 fontManager = fontmanager.FontManager()
+furnitureManager = furnituremanager.FurnitureManager()
 gameObjectManager = gameobjectmanager.GameObjectManager()
 imageManager = imagemanager.ImageManager()
 mapEditor = mapeditor.MapEditor()

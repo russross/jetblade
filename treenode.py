@@ -26,12 +26,13 @@ numRetriesNearRoot = 50
 ## Number of retry attempts for leaf nodes at depth greater than mustRetryDepth.
 numRetriesFarFromRoot = 5
 
+## How often to try placing platforms.
+platformInterval = 7
+
 # Wallwalker parameters
 ## How many steps in the wallwalker algorithm to aggregate to determine the 
 # local slope of the tunnel wall.
 slopeAveragingBracketSize = 5
-## How often to try placing platforms.
-platformInterval = 7
 ## If a wallwalker takes longer than this, give up. 
 maxWallwalkerSteps = 500
 
@@ -79,11 +80,11 @@ marchingSquares = [Vector2D(1, 0), Vector2D(1, 0), Vector2D(0, 1),
                    None]
 
 slopePlatformRequirement = math.pi / 8.0
-## Threshholds for considering a given segment of terrain to be a wall.
-wallAngles = [Range1D(-math.pi/2.0 -slopePlatformRequirement,
-                      -math.pi/2.0 + slopePlatformRequirement),
-              Range1D(math.pi/2.0 - slopePlatformRequirement,
-                      math.pi/2.0 + slopePlatformRequirement)]
+## Surface normal ranges that indicate walls.
+wallAngles = [Range1D(-slopePlatformRequirement,
+                      slopePlatformRequirement),
+              Range1D(math.pi - slopePlatformRequirement,
+                      math.pi + slopePlatformRequirement)]
 
 ## TreeNodes are branches of a planar tree graph that are used to describe the 
 # high-level structure of the game map. Generally speaking, each node describes
@@ -137,26 +138,26 @@ class TreeNode:
                 self.connections.append(child)
 
         ## Information about the terrain we are in.
-        self.terrainInfo = None
+        self.terrain = None
         
         if self.parent is None:
             # Map our location to the region map to get our terrain info.
-            self.terrainInfo = game.map.getTerrainInfoAtGridLoc(self.loc.toGridspace())
+            self.terrain = game.map.getTerrainInfoAtGridLoc(self.loc.toGridspace())
         elif self.parent.getRegionTransitionDistance() < minRegionTransitionDistance:
             # Too close to the parent to switch terrain, so use theirs.
-            self.terrainInfo = self.parent.getTerrainInfo()
+            self.terrain = self.parent.getTerrainInfo()
             self.regionTransitionDistance = self.parent.getRegionTransitionDistance() + 1
         else:
             # Try to transition to a different terrain.
-            self.terrainInfo = game.map.getTerrainInfoAtGridLoc(self.parent.loc.toGridspace())
-            if self.terrainInfo != self.parent.terrainInfo:
+            self.terrain = game.map.getTerrainInfoAtGridLoc(self.parent.loc.toGridspace())
+            if self.terrain != self.parent.getTerrainInfo():
                 self.regionTransitionDistance = 0
             else:
                 self.regionTransitionDistance = self.parent.getRegionTransitionDistance() + 1
 
         # Select tunnel type and load the relevant module.
         ## The tunnel feature type, e.g. straight, bumpy, staircase.
-        self.tunnelType = util.pickWeightedOption(game.map.getRegionInfo(self.terrainInfo, 'tunnelTypes'))
+        self.tunnelType = util.pickWeightedOption(game.map.getRegionInfo(self.terrain, 'tunnelTypes'))
 
         ## The module that contains the information needed to create our tunnel
         # feature type.
@@ -183,7 +184,7 @@ class TreeNode:
                           direction + math.pi / 2.0, 
                           direction + math.pi,
                           direction + 3 * math.pi / 2.0)
-            if game.map.getRegionInfo(self.terrainInfo, 'aligned'):
+            if game.map.getRegionInfo(self.terrain, 'aligned'):
                 # Must align to the grid.
                 directions = (0, math.pi / 2.0, math.pi, 3 * math.pi / 2.0)
 
@@ -207,7 +208,7 @@ class TreeNode:
                     directions = [direction - math.pi/6.0, 
                                   direction + math.pi/6.0]
                     # Check for alignment with the grid.
-                    if game.map.getRegionInfo(self.terrainInfo, 'aligned'):
+                    if game.map.getRegionInfo(self.terrain, 'aligned'):
                         # Round rootDirection to a cardinal direction.
                         newBaseDirection = math.floor((rootDirection + math.pi / 4.0) / (math.pi / 2.0)) * math.pi / 2.0
                         directions = [newBaseDirection, 
@@ -319,7 +320,7 @@ class TreeNode:
         if self.parent is not None:
             self.featureModule.createFeature()
 
-            environment = util.pickWeightedOption(game.map.getRegionInfo(self.terrainInfo, 'environments'))
+            environment = util.pickWeightedOption(game.map.getRegionInfo(self.terrain, 'environments'))
             if environment is not None:
                 effect = game.envEffectManager.loadEnvEffect(environment)
                 effect.createRegion(game.map, self)
@@ -373,15 +374,15 @@ class TreeNode:
 
 
     def getTunnelWidth(self):
-        return random.choice(game.map.getRegionInfo(self.terrainInfo, 'tunnelWidths')) * constants.blockSize
+        return random.choice(game.map.getRegionInfo(self.terrain, 'tunnelWidths')) * constants.blockSize
 
 
     def getTunnelLength(self):
-        return random.choice(game.map.getRegionInfo(self.terrainInfo, 'tunnelLengths')) * constants.blockSize
+        return random.choice(game.map.getRegionInfo(self.terrain, 'tunnelLengths')) * constants.blockSize
 
 
     def getJunctionRadius(self):
-        widths = game.map.getRegionInfo(self.terrainInfo, 'tunnelWidths')
+        widths = game.map.getRegionInfo(self.terrain, 'tunnelWidths')
         return widths[0] * constants.blockSize
 
 
@@ -395,7 +396,7 @@ class TreeNode:
         center = self.loc.toGridspace()
         radius = int(self.getJunctionRadius() / constants.blockSize)
         distFunc = Vector2D.distance
-        if game.map.getRegionInfo(self.terrainInfo, 'aligned'):
+        if game.map.getRegionInfo(self.terrain, 'aligned'):
             # Make a square junction instead of a circular one.
             distFunc = Vector2D.gridDistance
 
@@ -513,6 +514,22 @@ class TreeNode:
                 child.addConnection(node, False)
 
 
+    ## Walk the walls of our node, trying to add Furniture instances where
+    # appropriate.
+    def placeFurniture(self):
+        if (self.parent is not None and 
+                self.featureModule.shouldCheckAccessibility()):
+            furnitureFrequency = game.map.getRegionInfo(self.terrain, 'furnitureFrequency')
+            for (space, angle) in self.walkWalls(3, furnitureFrequency, True):
+                normal = Vector2D(math.cos(angle), math.sin(angle))
+                furniture = game.furnitureManager.pickFurniture(self.terrain, space, normal)
+                if furniture is not None:
+                    game.map.addFurniture(furniture)
+        for child in self.children:
+            child.placeFurniture()
+
+
+
     ## Place platforms in our space to help make the map accessible to the
     # player.
     def fixAccessibility(self):
@@ -574,43 +591,43 @@ class TreeNode:
     # placing platforms wherever the walls are too steep or the ceiling is 
     # too far away. 
     def fixAccessibilityWallwalk(self):
-        localSlope = 0
-        recentSpaces = []
-        spacesSinceLastPlatform = 0
-        for currentSpace in self.walkWalls():
-            # Find the average slope over every slopeAveragingBracketSize 
-            # blocks. If the slope is too extreme, then create a platform 
-            # nearby.
-            startSpace = None
-            if len(recentSpaces) >= slopeAveragingBracketSize:
-                startSpace = recentSpaces.pop(0)
-            if startSpace is not None and spacesSinceLastPlatform > platformInterval:
-                delta = currentSpace.sub(startSpace)
-                angle = delta.angle()
-                angleBrackets = []
-                
-                isWallOrCeiling = False
-                for bracket in wallAngles:
-                    if bracket.contains(angle):
-                        isWallOrCeiling = True
-                        break
-                # Default to checking for platforms above the floor
-                lineDelta = Vector2D(0, -1)
-                buildDistance = map.minDistForFloorPlatform
-                if isWallOrCeiling:
-                    # Draw the line perpendicular to the local surface instead.
-                    lineDelta = delta.copy().invert().normalize()
-                    buildDistance = map.minDistForPlatform
-                distance = game.map.getDistanceToWall(currentSpace, lineDelta, self)
-                if distance > buildDistance:
-                    game.map.markPlatform(currentSpace, lineDelta, distance)
-                    spacesSinceLastPlatform = 0
-            recentSpaces.append(currentSpace)
+        spacesSinceLastPlatform = platformInterval
+        for (currentSpace, angle) in self.walkWalls(slopeAveragingBracketSize):
             spacesSinceLastPlatform += 1
+            if spacesSinceLastPlatform < platformInterval:
+                # Still too recent since the last platform
+                continue
+            # If the slope is too extreme, then create a platform nearby.
+            isWallOrCeiling = False
+            for bracket in wallAngles:
+                if bracket.contains(angle):
+                    isWallOrCeiling = True
+                    break
+            # Default to checking for platforms above the floor
+            lineDelta = Vector2D(0, -1)
+            buildDistance = map.minDistForFloorPlatform
+            if isWallOrCeiling:
+                # Draw the line perpendicular to the local surface instead.
+                lineDelta = Vector2D(math.cos(angle), math.sin(angle))
+                buildDistance = map.minDistForPlatform
+            distance = game.map.getDistanceToWall(currentSpace, lineDelta, self)
+            if distance > buildDistance:
+                game.map.markPlatform(currentSpace, lineDelta, distance)
+                spacesSinceLastPlatform = 0
             
 
-    ## Yield a series of spaces along the perimeter of our territory.
-    def walkWalls(self):
+    ## Yield a series of spaces, and the local surface normal angle at those
+    # spaces, along the perimeter of our territory.
+    # \param slopeAveragingDistance The number of blocks to use when calculating
+    # local slope.
+    # \param skipRate How often to yield a block (1 => always; 2 => every other
+    # block, etc.).
+    # \param shouldUseOnlyRealWalls By default, this algorithm walks the 
+    # boundary of this node's region, regardless of the presence of nearby 
+    # blocks. If this parameter is True, then only spaces that are adjacent to 
+    # walls will be returned.
+    def walkWalls(self, slopeAveragingDistance, skipRate = 1, 
+                  shouldUseOnlyRealWalls = False):
         # Find a point in the grid that's part of our sector, by walking
         # our line in gridspace.
         # This breaks down for the junction nodes (whose start and end
@@ -622,21 +639,43 @@ class TreeNode:
             while (not self.getIsOurSpace(originalSpace) and 
                     originalSpace.distance(parentSpace) > 2):
                 originalSpace = originalSpace.add(delta)
+                
         # Find a wall from that point
         while (self.getIsOurSpace(originalSpace)):
             originalSpace = originalSpace.addY(1)
         originalSpace = originalSpace.addY(-1).toInt()
+        
         # If we can't find our sector, then probably all of it
         # got absorbed by other sectors or pushed into walls, so don't 
         # do the wallwalker. Otherwise, carry on.
         if not self.getIsOurSpace(originalSpace):
             return
+        
         first = True
         numSteps = 0
         currentSpace = originalSpace.copy()
+        recentSpaces = []
         while first or currentSpace.distanceSquared(originalSpace) > constants.EPSILON:
             first = False
-            yield currentSpace
+            recentSpaces.append(currentSpace)
+            startSpace = None
+            if len(recentSpaces) >= slopeAveragingDistance:
+                startSpace = recentSpaces.pop(0)
+            if startSpace is not None:
+                shouldReturnSpace = (numSteps % skipRate) == 0
+                if shouldReturnSpace and shouldUseOnlyRealWalls:
+                    # Check neighboring spaces for walls
+                    shouldReturnSpace = False
+                    for space in currentSpace.perimeter():
+                        if game.map.getBlockAtGridLoc(space) != map.BLOCK_EMPTY:
+                            shouldReturnSpace = True
+                            break
+                if shouldReturnSpace:
+                    delta = currentSpace.sub(startSpace)
+                    # We know the wallwalker travels clockwise; thus, the 
+                    # surface normal is always to our right.
+                    angle = delta.angle() - math.pi / 2.0
+                    yield (currentSpace, angle)
             numSteps += 1
             if numSteps > maxWallwalkerSteps:
                 logger.debug("Hit maximum steps for node",self.id)
@@ -681,7 +720,7 @@ class TreeNode:
 
     ## Return our terrain info.
     def getTerrainInfo(self):
-        return self.terrainInfo
+        return self.terrain
 
 
     ## Get the angle from our parent to ourselves, in radians.
