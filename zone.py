@@ -1,3 +1,4 @@
+import game
 import constants
 import logger
 import range1d
@@ -36,8 +37,7 @@ class Region:
 def loadZoneData():
     try:
         path = os.path.join(constants.mapPath, 'zones')
-        path = path.replace(os.sep, '.')
-        zoneConfigModule = __import__(path, globals(), locals(), ['zones'])
+        zoneConfigModule = game.dynamicClassManager.loadModuleItems(path, ['zones'])
         zoneConfigData = zoneConfigModule.zones
         # Pull out the frequency information to a separate dict
         for zoneName, zoneData in zoneConfigData.iteritems():

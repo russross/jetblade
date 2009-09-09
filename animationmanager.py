@@ -1,3 +1,4 @@
+import game
 import polygon
 import animation
 import constants
@@ -46,11 +47,12 @@ class AnimationManager:
             logger.fatal("Unable to find a spriteConfig.py file anywhere in the path",spriteName)
 
 
-        modulePath = modulePath.replace(os.sep, '.') + '.' + constants.spriteFilename
-        spriteModule = __import__(modulePath, globals(), locals(), ['sprites'])
-
+        modulePath = os.path.join(modulePath, constants.spriteFilename)
+        spriteModule = game.dynamicClassManager.loadModuleItems(modulePath, ['sprites'])
         animations = {}
         for animationName, data in spriteModule.sprites.iteritems():
+            # Load the bounding polygon, and all optional flags, with sane 
+            # defaults.
             animPolygon = polygon.Polygon([Vector2D(point) for point in data['polygon']])
             shouldLoop = True
             if 'loop' in data:

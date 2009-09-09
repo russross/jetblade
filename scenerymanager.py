@@ -1,3 +1,4 @@
+import game
 import scenery
 import util
 import logger
@@ -23,12 +24,7 @@ class SceneryManager:
             # Load the scenery config into the config cache first
             filename = os.path.join(constants.spritePath, 'terrain', 
                     terrain.zone, terrain.region, 'scenery', 'sceneryConfig')
-            filename = filename.replace(os.sep, '.')
-            module = None
-            try:
-                module = __import__(filename, globals(), locals(), ['scenery'])
-            except Exception, e:
-                logger.fatal("Unable to load",filename,":",e.message)
+            module = game.dynamicClassManager.loadModuleItems(filename, ['scenery'])
             
             sceneryMap = module.scenery
             self.sceneryConfigCache[terrain] = dict()

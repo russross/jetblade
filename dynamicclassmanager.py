@@ -1,4 +1,5 @@
 import logger
+import os
 
 ## This class handles loading dynamic classes out of the data directory.
 class DynamicClassManager:
@@ -30,4 +31,15 @@ class DynamicClassManager:
             return initFunc
         except Exception, e:
             logger.fatal("Failed to load module",path,":",e)
+
+
+    ## Load the specified list of items from the module at the specified path.
+    def loadModuleItems(self, path, items):
+        path = path.replace(os.sep, '.')
+        module = None
+        try:
+            module = __import__(path, globals(), locals(), items)
+        except Exception, e:
+            logger.fatal('Unable to load', items," from ", path, ':', e.message)
+        return module
 

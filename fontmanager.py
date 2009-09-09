@@ -1,6 +1,7 @@
 import font
 import logger
 import constants
+import game
 
 import os
 
@@ -12,8 +13,7 @@ class FontManager:
         ## Maps names of fonts to Font instances
         self.fontNameToFontMap = dict()
         configPath = os.path.join(constants.fontPath, constants.fontFilename)
-        configPath = configPath.replace(os.sep, '.')
-        fontModule = __import__(configPath, globals(), locals(), ['fonts'])
+        fontModule = game.dynamicClassManager.loadModuleItems(configPath, ['fonts'])
         for fontName, fontConfig in fontModule.fonts.iteritems():
             fontSizes = []
             if 'sizes' in fontConfig:
