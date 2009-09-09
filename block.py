@@ -68,13 +68,15 @@ class Block:
         return self.sprite.getPolygon()
 
 
-    ## Get our bounding polygon. We assume that blocks don't move once created,
-    # so their bounding rectangles are fixed.
+    ## Get our bounding rectangle. We assume that blocks don't move once 
+    # created, so their bounding rectangles are fixed.
     def getBounds(self):
         return self.rect
 
 
     ## Convert to string for output
     def __str__(self):
-        return "Block at " + str(self.gridLoc) + " realspace " + str(self.loc) + " orientation " + str(self.orientation) + " type " + str(self.terrain)
+        return ("[Block at " + str(self.gridLoc) + " realspace " + 
+                str(self.loc) + " orientation " + str(self.orientation) + 
+                " type " + str(self.terrain) + "]")
 
