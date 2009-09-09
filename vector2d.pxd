@@ -14,6 +14,7 @@ cdef class Vector2D:
     cpdef public Vector2D average(Vector2D self, Vector2D alt)
     cpdef public Vector2D round(Vector2D self)
     cpdef public Vector2D toInt(Vector2D self)
+    cpdef public Vector2D rotate(Vector2D self, double angle)
     cpdef public double distance(Vector2D self, Vector2D alt)
     cpdef public double distanceSquared(Vector2D self, Vector2D alt)
     cpdef public double gridDistance(Vector2D self, Vector2D alt)

@@ -104,6 +104,14 @@ cdef class Vector2D:
         return Vector2D(int(self.x), int(self.y))
 
 
+    ## Rotate by the specified angle, about the origin
+    cpdef public Vector2D rotate(Vector2D self, double angle):
+        cpdef double curAngle = self.angle()
+        cpdef double magnitude = self.magnitude()
+        return Vector2D(magnitude * math.cos(angle + curAngle),
+                        magnitude * math.sin(angle + curAngle))
+
+
     ## Return the distance from us to alt.
     cpdef public double distance(Vector2D self, Vector2D alt):
         return math.sqrt((self.x - alt.x)**2 + (self.y - alt.y)**2)
