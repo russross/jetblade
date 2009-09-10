@@ -1,4 +1,4 @@
-from .. import objectstate
+import objectstate
 import game
 import logger
 

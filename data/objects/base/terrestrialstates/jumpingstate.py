@@ -1,5 +1,5 @@
 import constants
-from .. import objectstate
+import objectstate
 
 import fallingstate
 
