@@ -39,9 +39,6 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#cb352d77ede40055daf6c516bd54964b">setAnimation</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set the current animation for the sprite.  <a href="#cb352d77ede40055daf6c516bd54964b"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#b55550870e0c3dcb8a3a5e985a34db33">setPreviousAnimation</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set the current animation to what the previous one was.  <a href="#b55550870e0c3dcb8a3a5e985a34db33"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#a39a45fb880f6aaf693ec19dbc80520c">resetAnimation</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Reset the currently-running animation.  <a href="#a39a45fb880f6aaf693ec19dbc80520c"></a><br></td></tr>
@@ -66,9 +63,17 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#c96d16b1100de2444fc68238f0b20816">getPolygonForAnimation</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Retrieve the polygon for the named animation.  <a href="#c96d16b1100de2444fc68238f0b20816"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="def5959d0ba337b956c38a20b91b5091"></a><!-- doxytag: member="sprite::Sprite::getFacingString" ref="def5959d0ba337b956c38a20b91b5091" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#def5959d0ba337b956c38a20b91b5091">getFacingString</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return a string representing the facing of the object. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#f2cd9496b59a564a34f04bde16a33d40">getCurrentAnimation</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return the current animation, defaulting to not including the facing if any.  <a href="#f2cd9496b59a564a34f04bde16a33d40"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return the current animation name, defaulting to not including the facing if any.  <a href="#f2cd9496b59a564a34f04bde16a33d40"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="ca46ae8969017e0b2895cdd42c984a6c"></a><!-- doxytag: member="sprite::Sprite::getCurrentAnimationObject" ref="ca46ae8969017e0b2895cdd42c984a6c" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#ca46ae8969017e0b2895cdd42c984a6c">getCurrentAnimationObject</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return the current Animation object. <br></td></tr>
 <tr><td colspan="2"><br><h2>Public Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#edc49d7c8aa4dc02b31b2d916c112744">name</a></td></tr>
 
@@ -79,9 +84,6 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#b0191764f3ea94ce3495df2079111b22">currentAnimation</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Current active animation.  <a href="#b0191764f3ea94ce3495df2079111b22"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#de389ee6747577ac01a4c1c9c66b7746">prevAnimation</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Previous animation.  <a href="#de389ee6747577ac01a4c1c9c66b7746"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsprite_1_1_sprite.html#1e59abb952e13b8ee1665b8005be3b74">owner</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Object this is a sprite for.  <a href="#1e59abb952e13b8ee1665b8005be3b74"></a><br></td></tr>
@@ -148,7 +150,7 @@ Instantiate a <a class="el" href="classsprite_1_1_sprite.html" title="Sprites ar
     <tr><td valign="top"></td><td valign="top"><em>shouldCreateCopy</em>&nbsp;</td><td>Passthrough argument for AnimationManager.loadAnimations. </td></tr>
   </table>
 </dl>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000014">Todo:</a></b></dt><dd>Find a better way to handle this so the passthrough isn't needed. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000017">Todo:</a></b></dt><dd>Find a better way to handle this so the passthrough isn't needed. </dd></dl>
 
 </div>
 </div><p>
@@ -269,9 +271,9 @@ Return a PyGame Rect describing our bounding box.
 <div class="memdoc">
 
 <p>
-Return the current animation, defaulting to not including the facing if any. 
+Return the current animation name, defaulting to not including the facing if any. 
 <p>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000016">Todo:</a></b></dt><dd>Assumes that the facing is the last two characters of the string. Probably a better way to handle this. </dd></dl>
+<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000018">Todo:</a></b></dt><dd>Assumes that the facing is the last two characters of the string. Probably a better way to handle this. </dd></dl>
 
 </div>
 </div><p>
@@ -314,18 +316,9 @@ Round drawing locations to the nearest hundred-thousandth to prevent visual jitt
           <td class="memname">def sprite.Sprite.getPolygon           </td>
           <td>(</td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"> <em>self</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
           <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>shouldUsePrevAnimation</em> = <code>False</code></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
         </tr>
       </table>
 </div>
@@ -441,13 +434,7 @@ Reset the currently-running animation.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>shouldUseFacing</em> = <code>True</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>shouldResetAnimation</em> = <code>True</code></td><td>&nbsp;</td>
+          <td class="paramname"> <em>shouldUseFacing</em> = <code>True</code></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -463,42 +450,9 @@ Set the current animation for the sprite.
 <p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>shouldUseFacing</em>&nbsp;</td><td>If true, the actual animation name used has -l or -r appended, depending on self.owner.facing </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>shouldResetAnimation</em>&nbsp;</td><td>If true, the frame of the animation is reset; otherwise it is preserved. Return True if we succeed in changing the animation; false otherwise. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>shouldUseFacing</em>&nbsp;</td><td>If true, the actual animation name used has -l or -r appended, depending on self.owner.facing Return True if we succeed in changing the animation; false otherwise. </td></tr>
   </table>
 </dl>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000015">Todo:</a></b></dt><dd>shouldResetAnimation should be handled better. Currently we need it so we can "try out" different polygons for collision detection (c.f. TerrestrialObject crawl logic) without interfering with smooth animation. </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="b55550870e0c3dcb8a3a5e985a34db33"></a><!-- doxytag: member="sprite::Sprite::setPreviousAnimation" ref="b55550870e0c3dcb8a3a5e985a34db33" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def sprite.Sprite.setPreviousAnimation           </td>
-          <td>(</td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>shouldResetAnimation</em> = <code>True</code></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Set the current animation to what the previous one was. 
-<p>
 
 </div>
 </div><p>
@@ -607,23 +561,6 @@ Object this is a sprite for.
 
 </div>
 </div><p>
-<a class="anchor" name="de389ee6747577ac01a4c1c9c66b7746"></a><!-- doxytag: member="sprite::Sprite::prevAnimation" ref="de389ee6747577ac01a4c1c9c66b7746" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classsprite_1_1_sprite.html#de389ee6747577ac01a4c1c9c66b7746">sprite.Sprite.prevAnimation</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Previous animation. 
-<p>
-Sometimes we need to know what we were just doing. 
-</div>
-</div><p>
 <a class="anchor" name="d56cd741eb94a3ca5cd3e419a901f888"></a><!-- doxytag: member="sprite::Sprite::prevLoc" ref="d56cd741eb94a3ca5cd3e419a901f888" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -644,7 +581,7 @@ Drawing location as of previous physics update, for location interpolation.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>sprite.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:54 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Sep 9 19:19:02 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

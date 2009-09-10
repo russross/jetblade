@@ -36,7 +36,8 @@ Inheritance diagram for uielement.UIElement:</div>
 <map name="uielement.UIElement_map">
 <area href="classmapeditor_1_1_block_u_i_element.html" alt="mapeditor.BlockUIElement" shape="rect" coords="0,56,161,80">
 <area href="classmapeditor_1_1_map_u_i_element.html" alt="mapeditor.MapUIElement" shape="rect" coords="171,56,332,80">
-<area href="classuielement_1_1_simple_u_i_element.html" alt="uielement.SimpleUIElement" shape="rect" coords="342,56,503,80">
+<area href="classuielement_1_1_button_u_i_element.html" alt="uielement.ButtonUIElement" shape="rect" coords="342,56,503,80">
+<area href="classuielement_1_1_simple_u_i_element.html" alt="uielement.SimpleUIElement" shape="rect" coords="513,56,674,80">
 </map>
 </div>
 
@@ -48,6 +49,9 @@ Inheritance diagram for uielement.UIElement:</div>
 def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuielement_1_1_u_i_element.html#8f3b762de52b245a3a67eac13ed107c1">__init__</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Instantiate. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuielement_1_1_u_i_element.html#96bf673ff0e547bac3620a6cc6d395c5">draw</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Many UI elements will need to be drawn, but not all.  <a href="#96bf673ff0e547bac3620a6cc6d395c5"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="1a14ef96222d5610ad692caac5b3f567"></a><!-- doxytag: member="uielement::UIElement::keyDown" ref="1a14ef96222d5610ad692caac5b3f567" args="" -->
 def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuielement_1_1_u_i_element.html#1a14ef96222d5610ad692caac5b3f567">keyDown</a></td></tr>
 
@@ -73,6 +77,39 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 This class handles user interface objects that can interact with the EventManager that processes the event queue. 
 <p>
 <hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="96bf673ff0e547bac3620a6cc6d395c5"></a><!-- doxytag: member="uielement::UIElement::draw" ref="96bf673ff0e547bac3620a6cc6d395c5" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def uielement.UIElement.draw           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>args</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Many UI elements will need to be drawn, but not all. 
+<p>
+So to simplify use, we provide a dummied-out draw function here. 
+<p>Reimplemented in <a class="el" href="classmapeditor_1_1_block_u_i_element.html#5d744bf7512e1ded10b36191256c19e9">mapeditor.BlockUIElement</a>, and <a class="el" href="classuielement_1_1_button_u_i_element.html#5b05929c6f852962c2a81cc892006aa9">uielement.ButtonUIElement</a>.</p>
+
+</div>
+</div><p>
 <a class="anchor" name="dbd4be818de506571548cfd4c953622a"></a><!-- doxytag: member="uielement::UIElement::keyUp" ref="dbd4be818de506571548cfd4c953622a" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -120,7 +157,13 @@ React to a key being released.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>mouseLoc</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>mouseLoc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>mouseButton</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -134,7 +177,6 @@ React to a key being released.
 <p>
 React to a mouse button being pressed. 
 <p>
-<dl class="todo" compact><dt><b><a class="el" href="todo.html#_todo000017">Todo:</a></b></dt><dd>Handle different mouse buttons. For now, use pygame.mouses.get_pressed(). </dd></dl>
 
 <p>Reimplemented in <a class="el" href="classmapeditor_1_1_map_u_i_element.html#53ea9e28c53b3fd5790d85c7eb10fc4e">mapeditor.MapUIElement</a>, and <a class="el" href="classuielement_1_1_simple_u_i_element.html#b15e5170837499e4f65490c29d1af788">uielement.SimpleUIElement</a>.</p>
 
@@ -154,7 +196,13 @@ React to a mouse button being pressed.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>mouseLoc</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>mouseLoc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>mouseButton</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -169,7 +217,7 @@ React to a mouse button being pressed.
 React to a mouse button being released. 
 <p>
 
-<p>Reimplemented in <a class="el" href="classmapeditor_1_1_block_u_i_element.html#5e251a1acadad942eb45e3011c93336c">mapeditor.BlockUIElement</a>, and <a class="el" href="classuielement_1_1_simple_u_i_element.html#ee126b31a30586d344410da1d0a51bf2">uielement.SimpleUIElement</a>.</p>
+<p>Reimplemented in <a class="el" href="classmapeditor_1_1_block_u_i_element.html#5e251a1acadad942eb45e3011c93336c">mapeditor.BlockUIElement</a>, <a class="el" href="classuielement_1_1_simple_u_i_element.html#ee126b31a30586d344410da1d0a51bf2">uielement.SimpleUIElement</a>, and <a class="el" href="classuielement_1_1_button_u_i_element.html#ddfa1e77c53d12c14f513bfa16db28df">uielement.ButtonUIElement</a>.</p>
 
 </div>
 </div><p>
@@ -209,7 +257,7 @@ Examine the event queue and do what you need.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>uielement.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:54 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Sep 9 19:19:02 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

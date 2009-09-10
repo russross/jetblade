@@ -64,6 +64,10 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_map_editor.html#98b621a491f72810655a6918d3ef3ed7">setTerrain</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set the current terrain type. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="26b75d9b25e09437f34f44d8c1eaa6dd"></a><!-- doxytag: member="mapeditor::MapEditor::incrementSubtype" ref="26b75d9b25e09437f34f44d8c1eaa6dd" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_map_editor.html#26b75d9b25e09437f34f44d8c1eaa6dd">incrementSubtype</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Change the current block subtype. <br></td></tr>
 <tr><td colspan="2"><br><h2>Public Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_map_editor.html#73c5179587cfaa48186b543ba99f8e4f">terrain</a></td></tr>
 
@@ -72,10 +76,6 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_map_editor.html#4b3171c38461072039199bb8b027f058">message</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Current status message. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="221a40d139f65ef216056b62223c64f0"></a><!-- doxytag: member="mapeditor::MapEditor::blocks" ref="221a40d139f65ef216056b62223c64f0" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_map_editor.html#221a40d139f65ef216056b62223c64f0">blocks</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Current selection of blocks to pick from. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_map_editor.html#1ffe0d00f1c39bb0788945299585bbeb">UIElements</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">UIElements associated with the editor.  <a href="#1ffe0d00f1c39bb0788945299585bbeb"></a><br></td></tr>
@@ -83,6 +83,10 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_map_editor.html#a15e9ae6674e4b0b6a5c48943a7d67b9">blockType</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Current block type for placement. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="2680181d5ea980facca4a547042a0078"></a><!-- doxytag: member="mapeditor::MapEditor::blockSubtype" ref="2680181d5ea980facca4a547042a0078" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_map_editor.html#2680181d5ea980facca4a547042a0078">blockSubtype</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Current block subtype. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="14e0c78e8884b1a9f87e73e628466d8c"></a><!-- doxytag: member="mapeditor::MapEditor::isActive" ref="14e0c78e8884b1a9f87e73e628466d8c" args="" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_map_editor.html#14e0c78e8884b1a9f87e73e628466d8c">isActive</a></td></tr>
 
@@ -90,6 +94,13 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_map_editor.html#3f20863fd1e8bbbb9c072f11c68f2977">isDisplayed</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Whether or not the editor controls are displayed when the editor is active.  <a href="#3f20863fd1e8bbbb9c072f11c68f2977"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_map_editor.html#0d57841141f84f142330464db0b7bfdb">drawnUIElements</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Any UIElements that we need to draw.  <a href="#0d57841141f84f142330464db0b7bfdb"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="0c4583036d7284eaa4f66e871b20eb02"></a><!-- doxytag: member="mapeditor::MapEditor::fixedUIElements" ref="0c4583036d7284eaa4f66e871b20eb02" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_map_editor.html#0c4583036d7284eaa4f66e871b20eb02">fixedUIElements</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">These UI elements don't change over time, so we can precalculate them. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="3f61332dc34a66dce7902590c47a23aa"></a><!-- doxytag: member="mapeditor::MapEditor::blocksRect" ref="3f61332dc34a66dce7902590c47a23aa" args="" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>blocksRect</b></td></tr>
 
@@ -165,6 +176,23 @@ Check for inputs from the user.
 </div>
 </div><p>
 <hr><h2>Member Data Documentation</h2>
+<a class="anchor" name="0d57841141f84f142330464db0b7bfdb"></a><!-- doxytag: member="mapeditor::MapEditor::drawnUIElements" ref="0d57841141f84f142330464db0b7bfdb" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmapeditor_1_1_map_editor.html#0d57841141f84f142330464db0b7bfdb">mapeditor.MapEditor.drawnUIElements</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Any UIElements that we need to draw. 
+<p>
+
+</div>
+</div><p>
 <a class="anchor" name="3f20863fd1e8bbbb9c072f11c68f2977"></a><!-- doxytag: member="mapeditor::MapEditor::isDisplayed" ref="3f20863fd1e8bbbb9c072f11c68f2977" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -219,7 +247,7 @@ UIElements associated with the editor.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>mapeditor.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:54 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Sep 9 19:19:02 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

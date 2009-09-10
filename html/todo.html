@@ -37,18 +37,28 @@
 </dl>
 <p>
 <a class="anchor" name="_todo000008"></a> <dl>
+<dt>Member <a class="el" href="classfurniture_1_1_furniture.html#a4998462e4fec026cadee03f65976d3b">furniture::Furniture.gridLoc</a>  </dt>
+<dd>This is needed for some routines in TerrestrialObject because it assumes that all 'solid' collision types are with terrain blocks. </dd>
+</dl>
+<p>
+<a class="anchor" name="_todo000009"></a> <dl>
 <dt>Class <a class="el" href="classmap_1_1_map.html">map.Map</a>  </dt>
 <dd>Several dicts in this class don't match the style guideline. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000010"></a> <dl>
+<a class="anchor" name="_todo000011"></a> <dl>
 <dt>Member <a class="el" href="classmap_1_1_map.html#4fe9c69302d1ca2b0cd522e59614a111">map::Map.addBlock</a>  </dt>
 <dd>Handle expanding the map to place blocks outside of its current boundaries. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000009"></a> <dl>
+<a class="anchor" name="_todo000010"></a> <dl>
 <dt>Member <a class="el" href="classmap_1_1_map.html#263a7fedc82cdafa1807be418be319f9">map::Map.loadMap</a>  </dt>
 <dd>This parser is very brittle, and while the map file format is not meant to be directly user-editable, there's no reason we couldn't be more flexible here. </dd>
+</dl>
+<p>
+<a class="anchor" name="_todo000012"></a> <dl>
+<dt>Member <a class="el" href="classmap_1_1_map.html#e9ba25c593e57c3c97164eec5382eac9">map::Map.writeMap</a>  </dt>
+<dd>Make saveable objects handle their own read/write logic. This is getting pretty ugly. </dd>
 </dl>
 <p>
 <a class="anchor" name="_todo000006"></a> <dl>
@@ -56,34 +66,29 @@
 <dd>(Long-term) Add support for the female version </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000011"></a> <dl>
-<dt>Member <a class="el" href="classpropmanager_1_1_prop_manager.html#6a1cf2c957c5f9e4ad7281b789bf837b">propmanager::PropManager.propConfigCache</a>  </dt>
-<dd>This dict is a huge mess (just check out selectProp()). </dd>
-</dl>
-<p>
-<a class="anchor" name="_todo000012"></a> <dl>
+<a class="anchor" name="_todo000014"></a> <dl>
 <dt>Member <a class="el" href="classquadtree_1_1_quad_tree.html#9492e0df53b7d7eb53c6a347f4169b60">quadtree::QuadTree.prepObjects</a>  </dt>
 <dd>Reshuffle objects around after applying physics. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000013"></a> <dl>
+<a class="anchor" name="_todo000015"></a> <dl>
+<dt>Member <a class="el" href="classscenerymanager_1_1_scenery_manager.html#d7f7e3945e0f0d5cbf691f7f2e6af1fc">scenerymanager::SceneryManager.sceneryConfigCache</a>  </dt>
+<dd>This dict is a huge mess (just check out selectScenery()). </dd>
+</dl>
+<p>
+<a class="anchor" name="_todo000016"></a> <dl>
 <dt>Member <a class="el" href="classsoundmanager_1_1_sound_manager.html#6132bb331ea3a0ad99462a55506a0bbf">soundmanager::SoundManager.__init__</a>  </dt>
 <dd>: Make this configurable. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000014"></a> <dl>
+<a class="anchor" name="_todo000017"></a> <dl>
 <dt>Member <a class="el" href="classsprite_1_1_sprite.html#5eb42df4c5f6debeeab3cc4791ad29c2">sprite::Sprite.__init__</a>  </dt>
 <dd>Find a better way to handle this so the passthrough isn't needed. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000016"></a> <dl>
+<a class="anchor" name="_todo000018"></a> <dl>
 <dt>Member <a class="el" href="classsprite_1_1_sprite.html#f2cd9496b59a564a34f04bde16a33d40">sprite::Sprite.getCurrentAnimation</a>  </dt>
 <dd>Assumes that the facing is the last two characters of the string. Probably a better way to handle this. </dd>
-</dl>
-<p>
-<a class="anchor" name="_todo000015"></a> <dl>
-<dt>Member <a class="el" href="classsprite_1_1_sprite.html#cb352d77ede40055daf6c516bd54964b">sprite::Sprite.setAnimation</a>  </dt>
-<dd>shouldResetAnimation should be handled better. Currently we need it so we can "try out" different polygons for collision detection (c.f. TerrestrialObject crawl logic) without interfering with smooth animation. </dd>
 </dl>
 <p>
 <a class="anchor" name="_todo000003"></a> <dl>
@@ -91,17 +96,12 @@
 <dd>The logic dealing with crawling (and, in particular, forcing crawls when there's no headroom) is rather convoluted and should be improved. </dd>
 </dl>
 <p>
-<a class="anchor" name="_todo000017"></a> <dl>
-<dt>Member <a class="el" href="classuielement_1_1_u_i_element.html#0ff537c56ad75308b29c3652e8e05246">uielement::UIElement.mouseDown</a>  </dt>
-<dd>Handle different mouse buttons. For now, use pygame.mouses.get_pressed(). </dd>
-</dl>
-<p>
 <a class="anchor" name="_todo000001"></a> <dl>
 <dt>Class <a class="el" href="classdata_1_1mapgen_1_1environments_1_1water_1_1_water.html">data.mapgen.environments.water.Water</a>  </dt>
 <dd>Make water pools affect physics. </dd>
 </dl>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:53 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Sep 9 19:19:01 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

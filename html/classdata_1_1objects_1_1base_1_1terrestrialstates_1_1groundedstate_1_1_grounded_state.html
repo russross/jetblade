@@ -25,7 +25,7 @@
   </div>
 </div>
 <div class="contents">
-<h1>data.objects.base.terrestrialstates.groundedstate.GroundedState Class Reference</h1><!-- doxytag: class="data::objects::base::terrestrialstates::groundedstate::GroundedState" --><!-- doxytag: inherits="data::objects::base::objectstate::ObjectState" -->This class handles objects that are standing on the ground.  
+<h1>data.objects.base.terrestrialstates.groundedstate.GroundedState Class Reference</h1><!-- doxytag: class="data::objects::base::terrestrialstates::groundedstate::GroundedState" --><!-- doxytag: inherits="objectstate::ObjectState" -->This class handles objects that are standing on the ground.  
 <a href="#_details">More...</a>
 <p>
 <div class="dynheader">
@@ -34,7 +34,7 @@ Inheritance diagram for data.objects.base.terrestrialstates.groundedstate.Ground
 
 <p><center><img src="classdata_1_1objects_1_1base_1_1terrestrialstates_1_1groundedstate_1_1_grounded_state.png" usemap="#data.objects.base.terrestrialstates.groundedstate.GroundedState_map" border="0" alt=""></center>
 <map name="data.objects.base.terrestrialstates.groundedstate.GroundedState_map">
-<area href="classdata_1_1objects_1_1base_1_1objectstate_1_1_object_state.html" alt="data.objects.base.objectstate.ObjectState" shape="rect" coords="0,0,373,24">
+<area href="classobjectstate_1_1_object_state.html" alt="objectstate.ObjectState" shape="rect" coords="0,0,373,24">
 </map>
 </div>
 
@@ -54,9 +54,9 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>__init__</b></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdata_1_1objects_1_1base_1_1terrestrialstates_1_1groundedstate_1_1_grounded_state.html#48c3d52fcb572161f091cc73f667b44e">hitFloor</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Hit a floor.  <a href="#48c3d52fcb572161f091cc73f667b44e"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdata_1_1objects_1_1base_1_1terrestrialstates_1_1groundedstate_1_1_grounded_state.html#2b6904a997b20c2bf33e1ae944e67eb8">hitCeiling</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdata_1_1objects_1_1base_1_1terrestrialstates_1_1groundedstate_1_1_grounded_state.html#98aa7b46d73636384c8547e992d76e30">hitTerrain</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Hit a ceiling.  <a href="#2b6904a997b20c2bf33e1ae944e67eb8"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Hit terrain.  <a href="#98aa7b46d73636384c8547e992d76e30"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdata_1_1objects_1_1base_1_1terrestrialstates_1_1groundedstate_1_1_grounded_state.html#7fb37fc427ef8d084402356cf56f2525">postCollisionUpdate</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Update state after all collisions are done.  <a href="#7fb37fc427ef8d084402356cf56f2525"></a><br></td></tr>
@@ -104,40 +104,7 @@ Possible transitions: Jump -&gt; JumpingState Crawl -&gt; CrawlingState Fall off
 Adjust collisions. 
 <p>
 Since we're on the ground, we need to fix the toe-stubbing problem. 
-<p>Reimplemented from <a class="el" href="classdata_1_1objects_1_1base_1_1objectstate_1_1_object_state.html">data.objects.base.objectstate.ObjectState</a>.</p>
-
-</div>
-</div><p>
-<a class="anchor" name="2b6904a997b20c2bf33e1ae944e67eb8"></a><!-- doxytag: member="data::objects::base::terrestrialstates::groundedstate::GroundedState::hitCeiling" ref="2b6904a997b20c2bf33e1ae944e67eb8" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def data.objects.base.terrestrialstates.groundedstate.GroundedState.hitCeiling           </td>
-          <td>(</td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>collision</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Hit a ceiling. 
-<p>
-Transition to a crawling animation. 
-<p>Reimplemented from <a class="el" href="classdata_1_1objects_1_1base_1_1objectstate_1_1_object_state.html">data.objects.base.objectstate.ObjectState</a>.</p>
+<p>Reimplemented from <a class="el" href="classobjectstate_1_1_object_state.html">objectstate.ObjectState</a>.</p>
 
 </div>
 </div><p>
@@ -170,7 +137,40 @@ Transition to a crawling animation.
 Hit a floor. 
 <p>
 Reset self.isGrounded. 
-<p>Reimplemented from <a class="el" href="classdata_1_1objects_1_1base_1_1objectstate_1_1_object_state.html">data.objects.base.objectstate.ObjectState</a>.</p>
+<p>Reimplemented from <a class="el" href="classobjectstate_1_1_object_state.html">objectstate.ObjectState</a>.</p>
+
+</div>
+</div><p>
+<a class="anchor" name="98aa7b46d73636384c8547e992d76e30"></a><!-- doxytag: member="data::objects::base::terrestrialstates::groundedstate::GroundedState::hitTerrain" ref="98aa7b46d73636384c8547e992d76e30" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def data.objects.base.terrestrialstates.groundedstate.GroundedState.hitTerrain           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>collision</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Hit terrain. 
+<p>
+Check for a downward-pointing ejection vector; start crawling if we find it. 
+<p>Reimplemented from <a class="el" href="classobjectstate_1_1_object_state.html">objectstate.ObjectState</a>.</p>
 
 </div>
 </div><p>
@@ -194,7 +194,7 @@ Reset self.isGrounded.
 Update state after all collisions are done. 
 <p>
 Check to see if we ran out of ground. 
-<p>Reimplemented from <a class="el" href="classdata_1_1objects_1_1base_1_1objectstate_1_1_object_state.html">data.objects.base.objectstate.ObjectState</a>.</p>
+<p>Reimplemented from <a class="el" href="classobjectstate_1_1_object_state.html">objectstate.ObjectState</a>.</p>
 
 </div>
 </div><p>
@@ -218,14 +218,14 @@ Check to see if we ran out of ground.
 Check input for state transitions; perform them if the terrain allows. 
 <p>
 
-<p>Reimplemented from <a class="el" href="classdata_1_1objects_1_1base_1_1objectstate_1_1_object_state.html">data.objects.base.objectstate.ObjectState</a>.</p>
+<p>Reimplemented from <a class="el" href="classobjectstate_1_1_object_state.html">objectstate.ObjectState</a>.</p>
 
 </div>
 </div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>data/objects/base/terrestrialstates/groundedstate.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:54 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Sep 9 19:19:01 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

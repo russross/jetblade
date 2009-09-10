@@ -28,6 +28,15 @@
 <h1>block.Block Class Reference</h1><!-- doxytag: class="block::Block" -->Blocks are solid, nonmoving bits of terrain.  
 <a href="#_details">More...</a>
 <p>
+<div class="dynheader">
+Inheritance diagram for block.Block:</div>
+<div class="dynsection">
+
+<p><center><img src="classblock_1_1_block.png" usemap="#block.Block_map" border="0" alt=""></center>
+<map name="block.Block_map">
+<area href="classfurniture_1_1_furniture.html" alt="furniture.Furniture" shape="rect" coords="0,56,116,80">
+</map>
+</div>
 
 <p>
 <a href="classblock_1_1_block-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
@@ -51,7 +60,7 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return the bounding polygon. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classblock_1_1_block.html#6562462e6d21e4d4660fe482d4d8075b">getBounds</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get our bounding polygon.  <a href="#6562462e6d21e4d4660fe482d4d8075b"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get our bounding rectangle.  <a href="#6562462e6d21e4d4660fe482d4d8075b"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="f9255f5871ac693ccbd02b7b54caf6e8"></a><!-- doxytag: member="block::Block::__str__" ref="f9255f5871ac693ccbd02b7b54caf6e8" args="" -->
 def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classblock_1_1_block.html#f9255f5871ac693ccbd02b7b54caf6e8">__str__</a></td></tr>
 
@@ -74,6 +83,9 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classblock_1_1_block.html#a05a8739ac36e0c4f46e3463a4ecfaf2">sprite</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">To allow blocks to be animated, we use Sprites for drawing them.  <a href="#a05a8739ac36e0c4f46e3463a4ecfaf2"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classblock_1_1_block.html#faa4ca8c5128c60c8752bf6a1304565e">subType</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Purely graphical variation on the block.  <a href="#faa4ca8c5128c60c8752bf6a1304565e"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="95ba15be40abe56adcd995d4b5a2cff4"></a><!-- doxytag: member="block::Block::rect" ref="95ba15be40abe56adcd995d4b5a2cff4" args="" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classblock_1_1_block.html#95ba15be40abe56adcd995d4b5a2cff4">rect</a></td></tr>
 
@@ -103,13 +115,19 @@ Blocks are solid, nonmoving bits of terrain.
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>terrain</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
           <td class="paramname"> <em>orientation</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>terrain</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>subType</em> = <code>None</code></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -123,6 +141,8 @@ Blocks are solid, nonmoving bits of terrain.
 <p>
 Create a new <a class="el" href="classblock_1_1_block.html" title="Blocks are solid, nonmoving bits of terrain.">Block</a> instance. 
 <p>
+
+<p>Reimplemented in <a class="el" href="classfurniture_1_1_furniture.html#ee70b69cdbe0a7ed09fb99dc5370b5d0">furniture.Furniture</a>.</p>
 
 </div>
 </div><p>
@@ -209,6 +229,8 @@ Perform collision detection against an incoming polygon.
 <p>
 Draw the block. 
 <p>
+Ignore the "progress" parameter because we use animation frames for block variants. 
+<p>Reimplemented in <a class="el" href="classfurniture_1_1_furniture.html#a6cf476faf2a6be0cb6d946a3612fbf4">furniture.Furniture</a>.</p>
 
 </div>
 </div><p>
@@ -260,7 +282,7 @@ Return the location of the vertex in the block's polygon that is furthest in the
 <div class="memdoc">
 
 <p>
-Get our bounding polygon. 
+Get our bounding rectangle. 
 <p>
 We assume that blocks don't move once created, so their bounding rectangles are fixed. 
 </div>
@@ -298,6 +320,25 @@ There are currently 20 different block orientations, most of which have a square
 To allow blocks to be animated, we use Sprites for drawing them. 
 <p>
 
+<p>Reimplemented in <a class="el" href="classfurniture_1_1_furniture.html#c6be789c2489a592eb200dc8c14c3eca">furniture.Furniture</a>.</p>
+
+</div>
+</div><p>
+<a class="anchor" name="faa4ca8c5128c60c8752bf6a1304565e"></a><!-- doxytag: member="block::Block::subType" ref="faa4ca8c5128c60c8752bf6a1304565e" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classblock_1_1_block.html#faa4ca8c5128c60c8752bf6a1304565e">block.Block.subType</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Purely graphical variation on the block. 
+<p>
+
 </div>
 </div><p>
 <a class="anchor" name="9ba534b0144c8dbd5e2acab5010cb8d7"></a><!-- doxytag: member="block::Block::terrain" ref="9ba534b0144c8dbd5e2acab5010cb8d7" args="" -->
@@ -315,12 +356,14 @@ To allow blocks to be animated, we use Sprites for drawing them.
 TerrainInfo instance to let the block know what it looks like. 
 <p>
 
+<p>Reimplemented in <a class="el" href="classfurniture_1_1_furniture.html#1790de6a4a53a7c35ded3eb6e25fc132">furniture.Furniture</a>.</p>
+
 </div>
 </div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>block.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:53 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Sep 9 19:19:01 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

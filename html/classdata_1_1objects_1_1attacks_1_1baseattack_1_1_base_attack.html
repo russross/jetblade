@@ -25,9 +25,18 @@
   </div>
 </div>
 <div class="contents">
-<h1>data.objects.attacks.baseattack.BaseAttack Class Reference</h1><!-- doxytag: class="data::objects::attacks::baseattack::BaseAttack" -->This class represents a simple melee attack, with a bounding polygon, a duration, a positional offset from another object, and a damage rating.  
+<h1>data.objects.attacks.baseattack.BaseAttack Class Reference</h1><!-- doxytag: class="data::objects::attacks::baseattack::BaseAttack" --><!-- doxytag: inherits="physicsobject::PhysicsObject" -->This class represents a simple melee attack, with a bounding polygon, a duration, a positional offset from another object, and a damage rating.  
 <a href="#_details">More...</a>
 <p>
+<div class="dynheader">
+Inheritance diagram for data.objects.attacks.baseattack.BaseAttack:</div>
+<div class="dynsection">
+
+<p><center><img src="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.png" usemap="#data.objects.attacks.baseattack.BaseAttack_map" border="0" alt=""></center>
+<map name="data.objects.attacks.baseattack.BaseAttack_map">
+<area href="classphysicsobject_1_1_physics_object.html" alt="physicsobject.PhysicsObject" shape="rect" coords="0,0,254,24">
+</map>
+</div>
 
 <p>
 <a href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
@@ -59,18 +68,20 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#d99b5534f9e6d2b7471768e059954a1f">owner</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Owner of the attack. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="4b64f1845cc50f1a7ccc4d256a549b7b"></a><!-- doxytag: member="data::objects::attacks::baseattack::BaseAttack::touchDamage" ref="4b64f1845cc50f1a7ccc4d256a549b7b" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>touchDamage</b></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#4b64f1845cc50f1a7ccc4d256a549b7b">touchDamage</a></td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="0edd018a9df18c205f2fcd0240d9c15d"></a><!-- doxytag: member="data::objects::attacks::baseattack::BaseAttack::gravity" ref="0edd018a9df18c205f2fcd0240d9c15d" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>gravity</b></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Damage to do to other objects on contact.  <a href="#4b64f1845cc50f1a7ccc4d256a549b7b"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#0edd018a9df18c205f2fcd0240d9c15d">gravity</a></td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Acceleration due to gravity, added to self.vel each update cycle.  <a href="#0edd018a9df18c205f2fcd0240d9c15d"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="818b361296cd06535aebd1ed4222fc84"></a><!-- doxytag: member="data::objects::attacks::baseattack::BaseAttack::faction" ref="818b361296cd06535aebd1ed4222fc84" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>faction</b></td></tr>
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#818b361296cd06535aebd1ed4222fc84">faction</a></td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Faction of object, for use in reacting to collisions. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="ed2ba218fd521307d77686aaf8e528c9"></a><!-- doxytag: member="data::objects::attacks::baseattack::BaseAttack::loc" ref="ed2ba218fd521307d77686aaf8e528c9" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>loc</b></td></tr>
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#ed2ba218fd521307d77686aaf8e528c9">loc</a></td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Location of the object. <br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 This class represents a simple melee attack, with a bounding polygon, a duration, a positional offset from another object, and a damage rating. 
@@ -97,6 +108,8 @@ Note that this attack does not have any associated graphics (hence why we're wor
 Update. 
 <p>
 Keep our location up to date and check our counter 
+<p>Reimplemented from <a class="el" href="classphysicsobject_1_1_physics_object.html#141e285bef42e80e826bc3396fe8e684">physicsobject.PhysicsObject</a>.</p>
+
 </div>
 </div><p>
 <a class="anchor" name="69966326784d7fdca210ad08594123a7"></a><!-- doxytag: member="data::objects::attacks::baseattack::BaseAttack::getIsAlive" ref="69966326784d7fdca210ad08594123a7" args="" -->
@@ -118,6 +131,8 @@ Keep our location up to date and check our counter
 <p>
 Kill us off if the attack is over. 
 <p>
+
+<p>Reimplemented from <a class="el" href="classphysicsobject_1_1_physics_object.html#766fd03a47fe18b8bef9d42079f0917e">physicsobject.PhysicsObject</a>.</p>
 
 </div>
 </div><p>
@@ -150,12 +165,53 @@ Kill us off if the attack is over.
 We don't care about collisions with terrain ('solid') type. 
 <p>
 
+<p>Reimplemented from <a class="el" href="classphysicsobject_1_1_physics_object.html#d9952528886516a960a21df1df2382db">physicsobject.PhysicsObject</a>.</p>
+
+</div>
+</div><p>
+<hr><h2>Member Data Documentation</h2>
+<a class="anchor" name="0edd018a9df18c205f2fcd0240d9c15d"></a><!-- doxytag: member="data::objects::attacks::baseattack::BaseAttack::gravity" ref="0edd018a9df18c205f2fcd0240d9c15d" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#0edd018a9df18c205f2fcd0240d9c15d">data.objects.attacks.baseattack.BaseAttack.gravity</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Acceleration due to gravity, added to self.vel each update cycle. 
+<p>
+
+<p>Reimplemented from <a class="el" href="classphysicsobject_1_1_physics_object.html#483246f2501765b14ba090451bcc90cc">physicsobject.PhysicsObject</a>.</p>
+
+</div>
+</div><p>
+<a class="anchor" name="4b64f1845cc50f1a7ccc4d256a549b7b"></a><!-- doxytag: member="data::objects::attacks::baseattack::BaseAttack::touchDamage" ref="4b64f1845cc50f1a7ccc4d256a549b7b" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#4b64f1845cc50f1a7ccc4d256a549b7b">data.objects.attacks.baseattack.BaseAttack.touchDamage</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Damage to do to other objects on contact. 
+<p>
+
+<p>Reimplemented from <a class="el" href="classphysicsobject_1_1_physics_object.html#e9704180413089660a75ccd9a03cef7b">physicsobject.PhysicsObject</a>.</p>
+
 </div>
 </div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>data/objects/attacks/baseattack.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:54 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Sep 9 19:19:01 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

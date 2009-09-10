@@ -39,6 +39,9 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdynamicclassmanager_1_1_dynamic_class_manager.html#012e933aa2ab7c69292a035d297d837b">loadDynamicClass</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Load a class from the named module.  <a href="#012e933aa2ab7c69292a035d297d837b"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdynamicclassmanager_1_1_dynamic_class_manager.html#12c77cd021dadd4d86a17f1ba68ceeef">loadModuleItems</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Load the specified list of items from the module at the specified path.  <a href="#12c77cd021dadd4d86a17f1ba68ceeef"></a><br></td></tr>
 <tr><td colspan="2"><br><h2>Public Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdynamicclassmanager_1_1_dynamic_class_manager.html#6ea380343094377c25e47d51182b3b5c">classPathToClassMap</a></td></tr>
 
@@ -102,6 +105,43 @@ Load a class from the named module.
 Assumes that the module includes a function getClassName() that indicates the name of the class to load. 
 </div>
 </div><p>
+<a class="anchor" name="12c77cd021dadd4d86a17f1ba68ceeef"></a><!-- doxytag: member="dynamicclassmanager::DynamicClassManager::loadModuleItems" ref="12c77cd021dadd4d86a17f1ba68ceeef" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def dynamicclassmanager.DynamicClassManager.loadModuleItems           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>items</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Load the specified list of items from the module at the specified path. 
+<p>
+
+</div>
+</div><p>
 <hr><h2>Member Data Documentation</h2>
 <a class="anchor" name="6ea380343094377c25e47d51182b3b5c"></a><!-- doxytag: member="dynamicclassmanager::DynamicClassManager::classPathToClassMap" ref="6ea380343094377c25e47d51182b3b5c" args="" -->
 <div class="memitem">
@@ -123,7 +163,7 @@ Maps class names to their creation functions so we don't have to call __import__
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>dynamicclassmanager.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:54 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Sep 9 19:19:01 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

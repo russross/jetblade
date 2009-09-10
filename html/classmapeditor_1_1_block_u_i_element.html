@@ -45,6 +45,9 @@ Inheritance diagram for mapeditor.BlockUIElement:</div>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="a49d8b28c95320e4f8436f73875f467d"></a><!-- doxytag: member="mapeditor::BlockUIElement::__init__" ref="a49d8b28c95320e4f8436f73875f467d" args="" -->
 def&nbsp;</td><td class="memItemRight" valign="bottom"><b>__init__</b></td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_block_u_i_element.html#5d744bf7512e1ded10b36191256c19e9">draw</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Many UI elements will need to be drawn, but not all.  <a href="#5d744bf7512e1ded10b36191256c19e9"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="81f5780cbb8a1a46b735b60ec90bc132"></a><!-- doxytag: member="mapeditor::BlockUIElement::mouseMove" ref="81f5780cbb8a1a46b735b60ec90bc132" args="" -->
 def&nbsp;</td><td class="memItemRight" valign="bottom"><b>mouseMove</b></td></tr>
 
@@ -74,11 +77,48 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>doAction</b></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_block_u_i_element.html#1071f7641752c6a6cb1e674c70d05e6d">modTriggers</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">List of modifier keys that must be pressed to trigger us.  <a href="#1071f7641752c6a6cb1e674c70d05e6d"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="58314196ba75e9101be1b68f21b2a93a"></a><!-- doxytag: member="mapeditor::BlockUIElement::index" ref="58314196ba75e9101be1b68f21b2a93a" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmapeditor_1_1_block_u_i_element.html#58314196ba75e9101be1b68f21b2a93a">index</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Place in the list of block UI elements. <br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 This is a simple UI element for handling clicking on the blocks in the map editor. 
 <p>
 <hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="5d744bf7512e1ded10b36191256c19e9"></a><!-- doxytag: member="mapeditor::BlockUIElement::draw" ref="5d744bf7512e1ded10b36191256c19e9" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def mapeditor.BlockUIElement.draw           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>args</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Many UI elements will need to be drawn, but not all. 
+<p>
+So to simplify use, we provide a dummied-out draw function here. 
+<p>Reimplemented from <a class="el" href="classuielement_1_1_u_i_element.html#96bf673ff0e547bac3620a6cc6d395c5">uielement.UIElement</a>.</p>
+
+</div>
+</div><p>
 <a class="anchor" name="5e251a1acadad942eb45e3011c93336c"></a><!-- doxytag: member="mapeditor::BlockUIElement::mouseUp" ref="5e251a1acadad942eb45e3011c93336c" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -93,7 +133,13 @@ This is a simple UI element for handling clicking on the blocks in the map edito
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>mouseLoc</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>mouseLoc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>mouseButton</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -217,7 +263,7 @@ Block type that we select.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>mapeditor.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:54 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Sep 9 19:19:02 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

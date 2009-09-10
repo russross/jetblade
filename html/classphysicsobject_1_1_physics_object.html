@@ -34,10 +34,8 @@ Inheritance diagram for physicsobject.PhysicsObject:</div>
 
 <p><center><img src="classphysicsobject_1_1_physics_object.png" usemap="#physicsobject.PhysicsObject_map" border="0" alt=""></center>
 <map name="physicsobject.PhysicsObject_map">
-<area href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html" alt="data.objects.attacks.baseattack.BaseAttack" shape="rect" coords="0,56,262,80">
-<area href="classterrestrialobject_1_1_terrestrial_object.html" alt="terrestrialobject.TerrestrialObject" shape="rect" coords="272,56,534,80">
-<area href="classdata_1_1objects_1_1creatures_1_1darkclone_1_1_dark_clone.html" alt="data.objects.creatures.darkclone.DarkClone" shape="rect" coords="136,112,398,136">
-<area href="classplayer_1_1_player.html" alt="player.Player" shape="rect" coords="408,112,670,136">
+<area href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html" alt="data.objects.attacks.baseattack.BaseAttack" shape="rect" coords="0,56,302,80">
+<area href="classdata_1_1objects_1_1base_1_1terrestrialobject_1_1_terrestrial_object.html" alt="data.objects.base.terrestrialobject.TerrestrialObject" shape="rect" coords="312,56,614,80">
 </map>
 </div>
 
@@ -48,6 +46,9 @@ Inheritance diagram for physicsobject.PhysicsObject:</div>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#098e570f59a5d31b88e7a48635e784ca">__init__</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Instantiate a new object.  <a href="#098e570f59a5d31b88e7a48635e784ca"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#55e3ef3aab58e298a309d001a56c696d">setState</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set a new state for our movement logic.  <a href="#55e3ef3aab58e298a309d001a56c696d"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#141e285bef42e80e826bc3396fe8e684">AIUpdate</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Make whatever state changes the AI/player control calls for.  <a href="#141e285bef42e80e826bc3396fe8e684"></a><br></td></tr>
@@ -107,10 +108,10 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#56077a2b128186e8a052d10224e38c64">getPolygon</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Passthrough to Sprite.getPolygon(). <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="baaffdd2eb5595057414db668bcfd376"></a><!-- doxytag: member="physicsobject::PhysicsObject::getFacingString" ref="baaffdd2eb5595057414db668bcfd376" args="" -->
-def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#baaffdd2eb5595057414db668bcfd376">getFacingString</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8df46f2080ea3148f968d04f7ad1920d"></a><!-- doxytag: member="physicsobject::PhysicsObject::getPolygonForAnimation" ref="8df46f2080ea3148f968d04f7ad1920d" args="" -->
+def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#8df46f2080ea3148f968d04f7ad1920d">getPolygonForAnimation</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return a string representing the facing of the object. <br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Passthrough to Sprite.getPolygonForAnimation(). <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#495450bcc3b001146055886b312182ea">completeAnimation</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Handle completion of animations.  <a href="#495450bcc3b001146055886b312182ea"></a><br></td></tr>
@@ -166,6 +167,10 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#ebb4e37cc7dab165242f6dad83af8bc1">health</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Damage that can be sustained before discorporating. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="af410f54811dcd177fa2728133aefdbc"></a><!-- doxytag: member="physicsobject::PhysicsObject::state" ref="af410f54811dcd177fa2728133aefdbc" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classphysicsobject_1_1_physics_object.html#af410f54811dcd177fa2728133aefdbc">state</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Current state for movement logic. <br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 <a class="el" href="classphysicsobject_1_1_physics_object.html" title="PhysicsObject is the base class for objects that need to interact with other objects...">PhysicsObject</a> is the base class for objects that need to interact with other objects, like creatures, mechanisms, etc. 
@@ -212,7 +217,7 @@ Instantiate a new object.
   </table>
 </dl>
 
-<p>Reimplemented in <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#a4a0c1d66ce65c833ea3c68d7f7f977d">terrestrialobject.TerrestrialObject</a>.</p>
+<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1base_1_1terrestrialobject_1_1_terrestrial_object.html#176bb16b272c4f2b7ddea45e2110abad">data.objects.base.terrestrialobject.TerrestrialObject</a>.</p>
 
 </div>
 </div><p>
@@ -245,8 +250,6 @@ Instantiate a new object.
 Perform any necessary tweaks to the collision vector or distance. 
 <p>
 
-<p>Reimplemented in <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#3df5bc89bcad1bfafb218d3aa0cbf6f5">terrestrialobject.TerrestrialObject</a>.</p>
-
 </div>
 </div><p>
 <a class="anchor" name="141e285bef42e80e826bc3396fe8e684"></a><!-- doxytag: member="physicsobject::PhysicsObject::AIUpdate" ref="141e285bef42e80e826bc3396fe8e684" args="" -->
@@ -269,7 +272,7 @@ Perform any necessary tweaks to the collision vector or distance.
 Make whatever state changes the AI/player control calls for. 
 <p>
 
-<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#96ba1b3f6476bc9d6c27e31a796851ae">data.objects.attacks.baseattack.BaseAttack</a>, <a class="el" href="classdata_1_1objects_1_1creatures_1_1darkclone_1_1_dark_clone.html#0bb4ad2664802fe369fc12778e92ec29">data.objects.creatures.darkclone.DarkClone</a>, and <a class="el" href="classplayer_1_1_player.html#24240fe9df8b2bceebc901ef9c95f85b">player.Player</a>.</p>
+<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#96ba1b3f6476bc9d6c27e31a796851ae">data.objects.attacks.baseattack.BaseAttack</a>.</p>
 
 </div>
 </div><p>
@@ -323,8 +326,6 @@ Apply gravity to velocity and velocity to location.
 <p>
 Handle completion of animations. 
 <p>
-
-<p>Reimplemented in <a class="el" href="classplayer_1_1_player.html#ead79687ed002d985af045ce9f892d76">player.Player</a>, and <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#77f930d031db44bcc85a8f395151cee8">terrestrialobject.TerrestrialObject</a>.</p>
 
 </div>
 </div><p>
@@ -403,8 +404,6 @@ Returning false here causes the object to be removed from the <a class="el" href
 React to hitting the floor. 
 <p>
 
-<p>Reimplemented in <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#0e03c9b722c3448d4d784ecc5e758bb8">terrestrialobject.TerrestrialObject</a>.</p>
-
 </div>
 </div><p>
 <a class="anchor" name="e0949492647f6585485e7b99ccf1e830"></a><!-- doxytag: member="physicsobject::PhysicsObject::hitObject" ref="e0949492647f6585485e7b99ccf1e830" args="" -->
@@ -467,8 +466,6 @@ Hit a non-terrain object.
 React to hitting any terrain. 
 <p>
 
-<p>Reimplemented in <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#d4cc6a0f80e78b9b17fc7cabfdcc882e">terrestrialobject.TerrestrialObject</a>.</p>
-
 </div>
 </div><p>
 <a class="anchor" name="6135f178a82923d87aa0404d264355c1"></a><!-- doxytag: member="physicsobject::PhysicsObject::hitWall" ref="6135f178a82923d87aa0404d264355c1" args="" -->
@@ -500,8 +497,6 @@ React to hitting any terrain.
 React to hitting a wall. 
 <p>
 
-<p>Reimplemented in <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#8f51251dd75b1dd15bc7d302dd228031">terrestrialobject.TerrestrialObject</a>.</p>
-
 </div>
 </div><p>
 <a class="anchor" name="6e7f6593859e660fc14718743118ae43"></a><!-- doxytag: member="physicsobject::PhysicsObject::postCollisionUpdate" ref="6e7f6593859e660fc14718743118ae43" args="" -->
@@ -523,8 +518,6 @@ React to hitting a wall.
 <p>
 Called after self.handleCollisions(), to do any necessary cleanup. 
 <p>
-
-<p>Reimplemented in <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#b2c5e6d1b50b588e060056d006612737">terrestrialobject.TerrestrialObject</a>.</p>
 
 </div>
 </div><p>
@@ -548,7 +541,7 @@ Called after self.handleCollisions(), to do any necessary cleanup.
 Called right before self.handleCollisions(), to prepare. 
 <p>
 
-<p>Reimplemented in <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#86055b3e121d58f5ee7364b8243f43af">terrestrialobject.TerrestrialObject</a>.</p>
+<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1base_1_1terrestrialobject_1_1_terrestrial_object.html#c069868f6ff6e9933576152e92c528e3">data.objects.base.terrestrialobject.TerrestrialObject</a>.</p>
 
 </div>
 </div><p>
@@ -581,7 +574,36 @@ Called right before self.handleCollisions(), to prepare.
 Handle running into something. 
 <p>
 Use self.adjustCollision() to modify ejection vectors and distances; use self.hit[Floor|Wall|Ceiling] to react to running into terrain of those types. 
-<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1creatures_1_1darkclone_1_1_dark_clone.html#75312b91633bc5cfea7f387b374c2a15">data.objects.creatures.darkclone.DarkClone</a>, and <a class="el" href="classplayer_1_1_player.html#246bbda15fe96e16dde28b9a990f5ee4">player.Player</a>.</p>
+</div>
+</div><p>
+<a class="anchor" name="55e3ef3aab58e298a309d001a56c696d"></a><!-- doxytag: member="physicsobject::PhysicsObject::setState" ref="55e3ef3aab58e298a309d001a56c696d" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def physicsobject.PhysicsObject.setState           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>state</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Set a new state for our movement logic. 
+<p>
 
 </div>
 </div><p>
@@ -651,7 +673,7 @@ List of collisions received since the last update cycle.
 Acceleration due to gravity, added to self.vel each update cycle. 
 <p>
 
-<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#0edd018a9df18c205f2fcd0240d9c15d">data.objects.attacks.baseattack.BaseAttack</a>, and <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#af96d64c732a550d7d1e1c1f7423f9ab">terrestrialobject.TerrestrialObject</a>.</p>
+<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#0edd018a9df18c205f2fcd0240d9c15d">data.objects.attacks.baseattack.BaseAttack</a>, and <a class="el" href="classdata_1_1objects_1_1base_1_1terrestrialobject_1_1_terrestrial_object.html#8e2287150b4bfc751181661286d6c736">data.objects.base.terrestrialobject.TerrestrialObject</a>.</p>
 
 </div>
 </div><p>
@@ -669,8 +691,6 @@ Acceleration due to gravity, added to self.vel each update cycle.
 <p>
 True if gravity should be applied during the update cycle. 
 <p>
-
-<p>Reimplemented in <a class="el" href="classplayer_1_1_player.html#eeea352666bd70d5f2e355a98ff1027f">player.Player</a>, and <a class="el" href="classterrestrialobject_1_1_terrestrial_object.html#05f78ffe984735f44769d004dffd8030">terrestrialobject.TerrestrialObject</a>.</p>
 
 </div>
 </div><p>
@@ -706,14 +726,14 @@ Name of object, used to look up the sprite.
 Damage to do to other objects on contact. 
 <p>
 
-<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#4b64f1845cc50f1a7ccc4d256a549b7b">data.objects.attacks.baseattack.BaseAttack</a>, and <a class="el" href="classdata_1_1objects_1_1creatures_1_1darkclone_1_1_dark_clone.html#ebbe887d818deb63e4935a45dfd6154a">data.objects.creatures.darkclone.DarkClone</a>.</p>
+<p>Reimplemented in <a class="el" href="classdata_1_1objects_1_1attacks_1_1baseattack_1_1_base_attack.html#4b64f1845cc50f1a7ccc4d256a549b7b">data.objects.attacks.baseattack.BaseAttack</a>.</p>
 
 </div>
 </div><p>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>physicsobject.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 12 12:50:33 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Sep 9 19:19:02 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

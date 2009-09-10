@@ -57,6 +57,9 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>getPolygon</b></td></t
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="909b08d1a5896a1aec16198d4ad1b839"></a><!-- doxytag: member="animation::Animation::getMoveOffset" ref="909b08d1a5896a1aec16198d4ad1b839" args="" -->
 def&nbsp;</td><td class="memItemRight" valign="bottom"><b>getMoveOffset</b></td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classanimation_1_1_animation.html#3a21330404830bd13c3be443587ca4dc">getCompletedSuccessfully</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Return True if the animation completed by running through all its frames, or False if it completed by running backwards.  <a href="#3a21330404830bd13c3be443587ca4dc"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="a58050710c8a2d004f4fc0aeea44bfbe"></a><!-- doxytag: member="animation::Animation::__str__" ref="a58050710c8a2d004f4fc0aeea44bfbe" args="" -->
 def&nbsp;</td><td class="memItemRight" valign="bottom"><b>__str__</b></td></tr>
 
@@ -73,9 +76,6 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>__str__</b></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classanimation_1_1_animation.html#dc0e1a0d409af44b51bff89af863864d">shouldLoop</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">If true, the animation will automatically loop when it runs out of frames, and will therefore never complete.  <a href="#dc0e1a0d409af44b51bff89af863864d"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classanimation_1_1_animation.html#117a984f0eef96647348ade6c2545ab9">isInterruptible</a></td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">If true, then the animation is not interruptible by transitioning to other animations.  <a href="#117a984f0eef96647348ade6c2545ab9"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classanimation_1_1_animation.html#ef37e1363ff9c9ceefc7bef8f09c4c85">updateRate</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">If this is not None, then it specifies how rapidly animation frames update in terms of physics updates (1 =&gt; 1 frame advanced per physics update).  <a href="#ef37e1363ff9c9ceefc7bef8f09c4c85"></a><br></td></tr>
@@ -143,12 +143,6 @@ Every animation is tied to a single polygon for collision detection. Animations 
           <td></td>
           <td class="paramtype">&nbsp;</td>
           <td class="paramname"> <em>shouldLoop</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&nbsp;</td>
-          <td class="paramname"> <em>isInterruptible</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -268,6 +262,28 @@ Create a blank copy of this animation set.
 
 <p>
 Draw the animation to screen, taking self.drawOffset into account. 
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="3a21330404830bd13c3be443587ca4dc"></a><!-- doxytag: member="animation::Animation::getCompletedSuccessfully" ref="3a21330404830bd13c3be443587ca4dc" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def animation.Animation.getCompletedSuccessfully           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Return True if the animation completed by running through all its frames, or False if it completed by running backwards. 
 <p>
 
 </div>
@@ -411,23 +427,6 @@ Tracks if we've reached the end of the animation.
 
 </div>
 </div><p>
-<a class="anchor" name="117a984f0eef96647348ade6c2545ab9"></a><!-- doxytag: member="animation::Animation::isInterruptible" ref="117a984f0eef96647348ade6c2545ab9" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classanimation_1_1_animation.html#117a984f0eef96647348ade6c2545ab9">animation.Animation.isInterruptible</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-If true, then the animation is not interruptible by transitioning to other animations. 
-<p>
-
-</div>
-</div><p>
 <a class="anchor" name="6684a392bbc8a6dad3b06a1eff183cd5"></a><!-- doxytag: member="animation::Animation::moveOffset" ref="6684a392bbc8a6dad3b06a1eff183cd5" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -493,7 +492,7 @@ The polygon that is used for all frames of the animation.
 <p>
 If true, the animation will automatically loop when it runs out of frames, and will therefore never complete. 
 <p>
-If false, then once the final frame is reached, the animation will stay on that frame indefinitely. Uninterruptible animations cannot loop. 
+If false, then once the final frame is reached, the animation will stay on that frame indefinitely. 
 </div>
 </div><p>
 <a class="anchor" name="2de9526c7b7598468795fb51e8557625"></a><!-- doxytag: member="animation::Animation::updateFunc" ref="2de9526c7b7598468795fb51e8557625" args="" -->
@@ -533,7 +532,7 @@ If this is not None, then it specifies how rapidly animation frames update in te
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>animation.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:53 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Sep 9 19:19:01 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>

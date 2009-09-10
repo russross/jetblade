@@ -88,6 +88,9 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>getConnections</b></td
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtreenode_1_1_tree_node.html#3458856ac30a8eae9ac2fb5fcb4fb159">addConnection</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Break the tree concept by creating a connection to a node in a different part of the tree.  <a href="#3458856ac30a8eae9ac2fb5fcb4fb159"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtreenode_1_1_tree_node.html#a8081db03dba459eeac08e2efa1333c6">placeFurniture</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Walk the walls of our node, trying to add Furniture instances where appropriate.  <a href="#a8081db03dba459eeac08e2efa1333c6"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtreenode_1_1_tree_node.html#65efc8904c32acb8c3c4c078ea9c0a52">fixAccessibility</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Place platforms in our space to help make the map accessible to the player.  <a href="#65efc8904c32acb8c3c4c078ea9c0a52"></a><br></td></tr>
@@ -97,6 +100,9 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>getConnections</b></td
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtreenode_1_1_tree_node.html#d15db2c3ba1a083dff110a81eec6df94">fixAccessibilityWallwalk</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Fix accessibility for generic tunnels by walking along walls and placing platforms wherever the walls are too steep or the ceiling is too far away.  <a href="#d15db2c3ba1a083dff110a81eec6df94"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtreenode_1_1_tree_node.html#a3459f95dd875a3941c7cfac1155b222">walkWalls</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Yield a series of spaces, and the local surface normal angle at those spaces, along the perimeter of our territory.  <a href="#a3459f95dd875a3941c7cfac1155b222"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">def&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtreenode_1_1_tree_node.html#44285a771028bd02fafbb3c164c27d37">assignSpace</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Mark the given gridspace location as being part of our sector.  <a href="#44285a771028bd02fafbb3c164c27d37"></a><br></td></tr>
@@ -176,9 +182,9 @@ def&nbsp;</td><td class="memItemRight" valign="bottom"><b>getConnections</b></td
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtreenode_1_1_tree_node.html#3f032e6c7f0e460a53c5e959b98ef192">loopNode</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">If this node is part of a loop, this is the node that forms the loop.  <a href="#3f032e6c7f0e460a53c5e959b98ef192"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtreenode_1_1_tree_node.html#dd64f8114eb613df21e84a102c2ebfd3">terrainInfo</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtreenode_1_1_tree_node.html#fd2b09a27291a35fcb1403daad0300e4">terrain</a></td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Information about the terrain we are in.  <a href="#dd64f8114eb613df21e84a102c2ebfd3"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Information about the terrain we are in.  <a href="#fd2b09a27291a35fcb1403daad0300e4"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtreenode_1_1_tree_node.html#6df663cb7cd0ecac30980dd69713f22c">tunnelType</a></td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The tunnel feature type, e.g.  <a href="#6df663cb7cd0ecac30980dd69713f22c"></a><br></td></tr>
@@ -874,6 +880,28 @@ Return our terrain info.
 
 </div>
 </div><p>
+<a class="anchor" name="a8081db03dba459eeac08e2efa1333c6"></a><!-- doxytag: member="treenode::TreeNode::placeFurniture" ref="a8081db03dba459eeac08e2efa1333c6" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def treenode.TreeNode.placeFurniture           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Walk the walls of our node, trying to add Furniture instances where appropriate. 
+<p>
+
+</div>
+</div><p>
 <a class="anchor" name="a40d8bba5e467928a7f6f89dc527b9a6"></a><!-- doxytag: member="treenode::TreeNode::printTree" ref="a40d8bba5e467928a7f6f89dc527b9a6" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -924,6 +952,56 @@ Recursively print the tree.
 <p>
 Remove a space from our sector. 
 <p>
+
+</div>
+</div><p>
+<a class="anchor" name="a3459f95dd875a3941c7cfac1155b222"></a><!-- doxytag: member="treenode::TreeNode::walkWalls" ref="a3459f95dd875a3941c7cfac1155b222" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def treenode.TreeNode.walkWalls           </td>
+          <td>(</td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>slopeAveragingDistance</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>skipRate</em> = <code>1</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>shouldUseOnlyRealWalls</em> = <code>False</code></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Yield a series of spaces, and the local surface normal angle at those spaces, along the perimeter of our territory. 
+<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>slopeAveragingDistance</em>&nbsp;</td><td>The number of blocks to use when calculating local slope. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>skipRate</em>&nbsp;</td><td>How often to yield a block (1 =&gt; always; 2 =&gt; every other block, etc.). </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>shouldUseOnlyRealWalls</em>&nbsp;</td><td>By default, this algorithm walks the boundary of this node's region, regardless of the presence of nearby blocks. If this parameter is True, then only spaces that are adjacent to walls will be returned. </td></tr>
+  </table>
+</dl>
 
 </div>
 </div><p>
@@ -1064,12 +1142,12 @@ Distance since the last time this limb of the tree changed region types.
 
 </div>
 </div><p>
-<a class="anchor" name="dd64f8114eb613df21e84a102c2ebfd3"></a><!-- doxytag: member="treenode::TreeNode::terrainInfo" ref="dd64f8114eb613df21e84a102c2ebfd3" args="" -->
+<a class="anchor" name="fd2b09a27291a35fcb1403daad0300e4"></a><!-- doxytag: member="treenode::TreeNode::terrain" ref="fd2b09a27291a35fcb1403daad0300e4" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtreenode_1_1_tree_node.html#dd64f8114eb613df21e84a102c2ebfd3">treenode.TreeNode.terrainInfo</a>          </td>
+          <td class="memname"><a class="el" href="classtreenode_1_1_tree_node.html#fd2b09a27291a35fcb1403daad0300e4">treenode.TreeNode.terrain</a>          </td>
         </tr>
       </table>
 </div>
@@ -1101,7 +1179,7 @@ straight, bumpy, staircase.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>treenode.py</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 22 20:16:54 2009 for JBRL by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Sep 9 19:19:02 2009 for JBRL by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.9 </small></address>
 </body>
