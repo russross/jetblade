@@ -1,4 +1,6 @@
 import sprite
+
+import os
 import sys
 
 ## Environmental effects are localized changes in physics or display. For
@@ -16,7 +18,7 @@ class EnvEffect:
     # make one of these, but all subclasses need to remember to call this 
     # after setting themselves up.
     def __init__(self, name):
-        self.sprite = sprite.Sprite('effects/environments/' + name, self)
+        self.sprite = sprite.Sprite(os.path.join('effects', 'environments', name), self)
 
         ## All spaces that have the effect.
         self.spaces = set()

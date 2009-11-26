@@ -11,6 +11,7 @@ from vector2d import Vector2D
 
 import pyconsole
 
+import os
 import sys
 import random
 import pygame
@@ -88,7 +89,9 @@ def startGame():
         if game.shouldExitAfterMapgen:
             sys.exit()
     game.gameObjectManager.setup()
-    game.player = game.gameObjectManager.addNewObject('creatures/player/player')
+    game.player = game.gameObjectManager.addNewObject(
+            os.path.join('creatures', 'player', 'player')
+    )
 #    game.gameObjectManager.addNewObject('creatures/darkclone/darkclone',
 #            game.player.loc.add(Vector2D(300, 0)))
     game.mapEditor.init()

@@ -37,11 +37,11 @@ class MapEditor:
             uielement.ButtonUIElement(
                     Vector2D((constants.blockSize + 10) * 12 + 30, 30),
                     lambda: self.incrementSubtype(-1),
-                    'mapeditor/arrows', 'up'),
+                    os.path.join('mapeditor', 'arrows'), 'up'),
             uielement.ButtonUIElement(
                     Vector2D((constants.blockSize + 10) * 12 + 30, 110),
                     lambda: self.incrementSubtype(1), 
-                    'mapeditor/arrows', 'down'),
+                    os.path.join('mapeditor', 'arrows'), 'down'),
             # Mouse wheel scrolls up
             uielement.SimpleUIElement('mouseDown', 
                     lambda loc, button: button == 4,
