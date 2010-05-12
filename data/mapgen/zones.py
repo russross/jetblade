@@ -19,6 +19,14 @@ zones = {
                 'tunnelLengths' : range(25, 56),
                 'furnitureFrequency' : 4,
             },
+            'cave' : {
+                'base': 'grass',
+                'color': (0, 0, 128),
+            },
+            'mossycave': {
+                'base': 'grass',
+                'color': (64, 128, 64),
+            },
         },
     },
     'hotzone' : {

@@ -45,6 +45,17 @@ def loadZoneData():
             weights = dict()
             maxWeight = 0
             biggestRegion = None
+            # Find regions that inherit from other regions and copy data over.
+            # \todo This only allows one-step inheritance. Implement arbitrary
+            # inheritance depths.
+            for regionName, regionData in regions.iteritems():
+                if 'base' in regionData:
+                    ancestor = regionData['base']
+                    for key, value in regions[ancestor].iteritems():
+                        if key not in regionData:
+                            regionData[key] = value
+            # Aggregate frequency and weighting information, and set default
+            # values as needed.
             for regionName, regionData in regions.iteritems():
                 weight = regionData['frequency']
                 weights[regionName] = weight
