@@ -249,4 +249,5 @@ class MapUIElement(uielement.UIElement):
                 self.editor.message = "Added a new block at " + str(newBlock.gridLoc)
             else:
                 game.map.deleteBlock(blockGridLoc)
+                self.editor.message = "Deleted a block at " + str(blockGridLoc)
 
