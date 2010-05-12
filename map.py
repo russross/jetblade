@@ -205,7 +205,11 @@ class Map:
     ## Either create or load a map.
     def init(self):
         if self.mapName is not None:
-            self.loadMap()
+            try:
+                image = pygame.image.load(self.mapName)
+                self.loadImageAsMap(image)
+            except Exception, e: # File is text, not an image
+                self.loadMap()
         else:
             self.createMap()
 
@@ -1265,6 +1269,78 @@ class Map:
                                   group, item))
         logger.inform("Done loading map at",pygame.time.get_ticks())
 
+    
+    ## Load an image file as if it were a map. Each pixel is one tile; 
+    # black pixels are filled, others are not.
+    # Uses a dummy start location of (0, 0), since this isn't meant to be 
+    # used for actual gameplay; just for converting images to normal maps.
+    # \todo Base the terrain used on the color of the pixel.
+    def loadImageAsMap(self, image):
+        self.startLoc = Vector2D(0, 0)
+        (self.numCols, self.numRows) = image.get_size()
+        self.width = self.numCols * constants.blockSize
+        self.height = self.numRows * constants.blockSize
+        logger.inform("Loading a",self.numCols,"by",self.numRows,"map from an image")
+        self.blocks = []
+        self.envGrid = []
+        for i in xrange(0, self.numCols):
+            self.blocks.append([])
+            self.envGrid.append([])
+            for j in xrange(0, self.numRows):
+                self.blocks[i].append(BLOCK_EMPTY)
+                self.envGrid[i].append([])
+
+        self.furnitureQuadTree = quadtree.QuadTree(self.getBounds())
+        self.backgroundQuadTree = quadtree.QuadTree(self.getBounds())
+                
+        self.zoneData = zone.loadZoneData()
+        colorToTerrainMap = {}
+
+        for i in xrange(self.numCols):
+            if i % 10 == 0:
+                logger.inform("Creating column", i)
+            for j in xrange(self.numRows):
+                color = image.get_at((i, j))
+                (r, g, b, a) = color
+                if a != 0: # Nonzero opacity
+                    self.blocks[i][j] = BLOCK_WALL
+                else:
+                    self.blocks[i][j] = BLOCK_EMPTY
+                if color not in colorToTerrainMap:
+                    # Find the color of an existing terrain that best-matches
+                    # the color in the image, and use that terrain.
+                    bestDistance = None
+                    bestZone = None
+                    bestRegion = None
+                    for zoneName, zoneInfo in self.zoneData.iteritems():
+                        for regionName, regionData in zoneInfo['regions'].iteritems():
+                            (ra, rg, rb) = regionData['color']
+                            distance = math.sqrt((r - ra) ** 2 + 
+                                                 (g - rg) ** 2 + 
+                                                 (b - rb) ** 2)
+                            if bestDistance is None or distance < bestDistance:
+                                bestDistance = distance
+                                bestZone = zoneName
+                                bestRegion = regionName
+                    colorToTerrainMap[color] = terraininfo.TerrainInfo(
+                            bestZone, bestRegion
+                    )
+
+        # We could do this in the original pass if we modified getBlockType,
+        # but this way keeps the image manipulation work to one place and 
+        # shouldn't have too bad a hit to our performance.
+        logger.inform("Instantiating blocks")
+        for i in xrange(self.numCols):
+            for j in xrange(self.numRows):
+                if self.blocks[i][j] == BLOCK_WALL:
+                    blockLoc = Vector2D(i, j).toRealspace()
+                    terrain = colorToTerrainMap[image.get_at((i, j))]
+                    (type, signature) = self.getBlockType(i, j)
+                    self.blocks[i][j] = block.Block(blockLoc, terrain, type)
+                # else self.blocks[i][j] == BLOCK_EMPTY, do nothing
+
+        logger.inform("Map load complete")
+
 
     ## Add a block to the map.
     # \todo Handle expanding the map to place blocks outside of its current
@@ -1272,14 +1348,12 @@ class Map:
     def addBlock(self, newBlock):
         if self.getIsInBounds(newBlock.gridLoc):
             self.blocks[newBlock.gridLoc.ix][newBlock.gridLoc.iy] = newBlock
-            self.writeMap()
 
 
     ## Remove a block from the map
     def deleteBlock(self, blockLoc):
         if self.getIsInBounds(blockLoc):
             self.blocks[blockLoc.ix][blockLoc.iy] = BLOCK_EMPTY
-            self.writeMap()
 
 
     ## Add furniture at the given location. 
