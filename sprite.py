@@ -38,6 +38,8 @@ class Sprite:
     # \param shouldUseFacing If true, the actual animation name used has
     # -l or -r appended, depending on self.owner.facing
     # Return True if we succeed in changing the animation; false otherwise.
+    # Currently animation setting always succeeds (no checks for e.g. 
+    # terrain intersection problems with the new animation are performed). 
     def setAnimation(self, action, shouldUseFacing = True):
         curAnim = self.animations[self.currentAnimation]
         if shouldUseFacing:
