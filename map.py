@@ -485,22 +485,19 @@ class Map:
     def instantiateBlocks(self):
         for i in xrange(0, self.numCols):
             for j in xrange(0, self.numRows):
-                loc = Vector2D(i, j)
+                gridLoc = Vector2D(i, j)
                 terrain = self.getTerrainInfoAtGridLoc(loc)
                 sector = self.getSectorAtGridLoc(loc)
                 if sector is not None:
                     terrain = sector.getTerrainInfo()
-                blockLoc = loc.toRealspace()
-
                 if self.blocks[i][j] == BLOCK_UNALLOCATED:
-                    self.blocks[i][j] = block.Block(blockLoc, terrain, 'center')
+                    self.blocks[i][j] = block.Block(gridLoc, terrain, 'center')
                 elif self.blocks[i][j] == BLOCK_WALL:
                     (type, signature) = self.getBlockType(i, j)
-                    self.blocks[i][j] = block.Block(blockLoc, terrain, type)
+                    self.blocks[i][j] = block.Block(gridLoc, terrain, type)
                     # Choose a scenery item to attach to the block.
-                    newItem = game.sceneryManager.selectScenery(terrain, signature)
+                    newItem = game.sceneryManager.selectScenery(gridLoc, terrain, signature)
                     if newItem is not None:
-                        newItem.loc = newItem.loc.add(blockLoc)
                         self.addBackgroundObject(newItem)
                 # else self.blocks[i][j] == BLOCK_EMPTY, do nothing
 
@@ -1068,6 +1065,17 @@ class Map:
         self.backgroundQuadTree.addObject(obj)
 
 
+    ## Remove all background objects found that are attached to the 
+    # specified grid location.
+    def removeBackgroundObject(self, gridLoc):
+        didDelete =  False
+        for object in self.backgroundQuadTree.getObjects():
+            if object.gridLoc == gridLoc:
+                self.backgroundQuadTree.removeObject(object)
+                didDelete = True
+        return didDelete
+
+
     ## Mark the given tile as containing the selected environmental effect.
     def addEnvEffect(self, loc, effect):
         loc = loc.toInt()
@@ -1087,7 +1095,6 @@ class Map:
         while numAttempts < maxCollisionRetries:
             numAttempts += 1
 
-            logger.debug("Trying polygon",object.getPolygon().printAdjusted(object.loc))
             collision = self.collidePolygon(object.getPolygon(), object.loc)
             logger.debug("Received collision information",collision)
             if collision is not None:
@@ -1105,6 +1112,7 @@ class Map:
     def collidePolygon(self, poly, loc):
         result = collisiondata.CollisionData(None, -constants.BIGNUM, 'solid', None)
         polyRect = poly.getBounds(loc)
+        logger.debug("Trying",poly.printAdjusted(loc))
         # First, check for furniture hits. 
         # \todo We don't correct ejection vectiors for furniture, even though
         # we could still get improper ejection directions
@@ -1226,7 +1234,7 @@ class Map:
                 region = region.rstrip()
                 if (zone, region) not in terrainInfoCache:
                     terrainInfoCache[(zone, region)] = terraininfo.TerrainInfo(zone, region)
-                self.blocks[x][y] = block.Block(Vector2D(x, y).toRealspace(),
+                self.blocks[x][y] = block.Block(Vector2D(x, y),
                                             terrainInfoCache[(zone, region)], 
                                             orientation, subType)
             elif mode == 'furniture':
@@ -1333,7 +1341,7 @@ class Map:
         for i in xrange(self.numCols):
             for j in xrange(self.numRows):
                 if self.blocks[i][j] == BLOCK_WALL:
-                    blockLoc = Vector2D(i, j).toRealspace()
+                    blockLoc = Vector2D(i, j)
                     terrain = colorToTerrainMap[image.get_at((i, j))]
                     (type, signature) = self.getBlockType(i, j)
                     self.blocks[i][j] = block.Block(blockLoc, terrain, type)
@@ -1348,12 +1356,17 @@ class Map:
     def addBlock(self, newBlock):
         if self.getIsInBounds(newBlock.gridLoc):
             self.blocks[newBlock.gridLoc.ix][newBlock.gridLoc.iy] = newBlock
+        else:
+            logger.warn("Block location", newBlock.gridLoc, "is out of bounds")
 
 
     ## Remove a block from the map
     def deleteBlock(self, blockLoc):
         if self.getIsInBounds(blockLoc):
             self.blocks[blockLoc.ix][blockLoc.iy] = BLOCK_EMPTY
+        else:
+            logger.warn("Tried to delete block at", blockLoc, 
+                        "which is out of bounds")
 
 
     ## Add furniture at the given location. 

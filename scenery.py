@@ -1,14 +1,19 @@
+import game
 import sprite
 import logger
 
 import os
 
 ## Scenery are background objects that have no influence on gameplay aside from
-# simply looking pretty. 
+# simply looking pretty. Each one is attached to a specific block in the map.
 class Scenery:
-    def __init__(self, loc, terrain, group, item):
-        ## Location of the item in realspace.
-        self.loc = loc
+    def __init__(self, gridLoc, terrain, group, item):
+        ## Tile we are attached to
+        self.gridLoc = gridLoc    
+        ## Offset from our top-left corner to the tile we're attached to.
+        self.anchor = game.sceneryManager.getAnchorForScenery(terrain, group, item)
+        ## Location in realspace.
+        self.loc = self.gridLoc.toRealspace().add(self.anchor)
         ## TerrainInfo instance describing the local terrain
         self.terrain = terrain
         ## Group of items, e.g. "trees"
@@ -22,11 +27,15 @@ class Scenery:
 
 
     ## Make an identical instance of us.
-    def copy(self):
-        return Scenery(self.loc, self.terrain, self.group, self.item)
+    def copy(self, gridLoc = None):
+        if gridLoc is None:
+            gridLoc = self.gridLoc
+        return Scenery(gridLoc, self.terrain, self.group, self.item)
 
 
-    ## Update our positional information.
+    ## Update our positional information. Generally only used by the map 
+    # editor, which needs to show objects that aren't actually attached to 
+    # terrain.
     def moveTo(self, newRealspaceLoc):
         self.loc = newRealspaceLoc
 

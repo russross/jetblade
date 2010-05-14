@@ -399,10 +399,11 @@ blocks:
 28,43,hotzone,techpipe,updown,0
 27,43,hotzone,techpipe,leftend,0
 29,43,hotzone,techpipe,rightend,0
+furniture:
 enveffects:
 1,48:water
 2,48:water
 3,48:water
 4,48:water
 scenery:
-1000,1900,jungle,grass,trees,1
+25,49,jungle,grass,trees,1

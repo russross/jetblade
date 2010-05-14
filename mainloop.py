@@ -97,8 +97,10 @@ def startGame():
     game.mapEditor.init()
     consoleFunctions = {
         'saveMap' : game.map.writeMap,
-        'editor' : game.mapEditor.toggleActive,
-        'editorControls' : game.mapEditor.toggleDisplay,
+        'edit' : game.mapEditor.toggleActive,
+        'editCon' : game.mapEditor.toggleControlDisplay,
+        'editGrid' : game.mapEditor.toggleGridDisplay,
+        'editType' : game.mapEditor.setEditMode,
         'setTerrain' : game.mapEditor.setTerrain,
         'setLogLevel' : logger.setLogLevel,
     }

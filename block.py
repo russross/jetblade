@@ -8,13 +8,13 @@ import random
 class Block:
 
     ## Create a new Block instance.
-    def __init__(self, loc, terrain, orientation, subType = None):
-
-        ## Location in realspace
-        self.loc = loc
+    def __init__(self, gridLoc, terrain, orientation, subType = None):
 
         ## Location in gridspace
-        self.gridLoc = self.loc.toGridspace()
+        self.gridLoc = gridLoc
+
+        ## Location in realspace
+        self.loc = gridLoc.toRealspace()
 
         ## There are currently 20 different block orientations, most of which
         # have a square collision polygon.
@@ -39,8 +39,10 @@ class Block:
 
 
     ## Return an identical copy of us.
-    def copy(self):
-        return Block(self.loc, self.terrain, self.orientation, self.subType)
+    def copy(self, gridLoc = None):
+        if gridLoc is None:
+            gridLoc = self.gridLoc
+        return Block(gridLoc, self.terrain, self.orientation, self.subType)
 
 
     ## Update our positional information.
