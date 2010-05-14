@@ -21,6 +21,16 @@ class Scenery:
         self.sprite.setAnimation(self.item, False)
 
 
+    ## Make an identical instance of us.
+    def copy(self):
+        return Scenery(self.loc, self.terrain, self.group, self.item)
+
+
+    ## Update our positional information.
+    def moveTo(self, newRealspaceLoc):
+        self.loc = newRealspaceLoc
+
+
     ## Draw the piece of scenery. This is called by the game's Map instance 
     # before any other objects are drawn. 
     def draw(self, screen, camera, progress, scale = 1):
@@ -31,4 +41,10 @@ class Scenery:
     # into QuadTree instances.
     def getBounds(self):
         return self.sprite.getBounds(self.loc)
+
+
+    ## Convert to string
+    def __str__(self):
+        return "[Scenery (%s, %s) for terrain %s at %s]" % (
+                self.group, self.item, str(self.terrain), str(self.loc))
 

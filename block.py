@@ -38,6 +38,18 @@ class Block:
         self.rect = self.sprite.getBounds(self.loc)
 
 
+    ## Return an identical copy of us.
+    def copy(self):
+        return Block(self.loc, self.terrain, self.orientation, self.subType)
+
+
+    ## Update our positional information.
+    def moveTo(self, newRealspaceLoc):
+        self.loc = newRealspaceLoc
+        self.gridLoc = newRealspaceLoc.toGridspace()
+        self.rect = self.sprite.getBounds(self.loc)
+
+
     ## Return the location of the vertex in the block's polygon that is 
     # furthest in the given direction.
     def getBlockCorner(self, direction):
