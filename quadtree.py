@@ -239,7 +239,6 @@ class QuadTree:
             return displacedObjects
 
 
-
     ## Draw the objects in this node and all children, that intersect with the 
     # current view.
     def draw(self, screen, camera, progress, scale = 1):
@@ -269,6 +268,18 @@ class QuadTree:
                     camera, screen.get_rect()).tuple()
             pygame.draw.rect(screen, (0, 0, 255), drawRect, 1)
             
+
+    ## Remove the specified object from the tree. Return True if we deleted it;
+    # False otherwise.
+    def removeObject(self, object):
+        if object in self.objects:
+            del self.objects[self.objects.index(object)]
+            return True
+        else:
+            for child in self.children:
+                if child.removeObject(object):
+                    return True
+        return False
 
 
     ## Return all objects in this node and any child nodes.
