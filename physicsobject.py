@@ -12,7 +12,7 @@ import objectstate
 wallHorizontalVectorComponent = .8
 
 ## Default acceleration due to gravity, in X and Y directions
-defaultGravity = Vector2D(0, 0)
+defaultGravity = Vector2D(0, 1.32)
 ## Default maximum velocity, in X and Y directions
 defaultMaxVel = Vector2D(20, 30)
 

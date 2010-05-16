@@ -33,6 +33,16 @@ class Player(terrestrialobject.TerrestrialObject):
         ## Number of frames to flinch.
         self.flinchFrames = 5
 
+        self.runAcceleration = .8
+        self.runDeceleration = 2.4
+        self.airAcceleration = 4.8
+        self.airDeceleration = 4.8
+        self.crawlSpeed = 11.1
+        self.jumpSpeed = -15.2
+        self.maxJumpRiseFrames = 10
+        self.maxGroundVel = Vector2D(17.2, 20)
+        self.maxAirVel = Vector2D(8.6, 30.4)
+
 
     ## Set appropriate flags according to the current input.
     def AIUpdate(self):

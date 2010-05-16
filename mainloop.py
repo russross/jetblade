@@ -56,6 +56,9 @@ fpsDisplayLoc = Vector2D(constants.sw - 20, constants.sh - 40)
 
 ## Number of physics updates to try to make each second. Tweaking this directly
 # determines the speed of gameplay, to the limits of the computer's hardware.
+# \todo Introduce a cap on display updates per second. Normally Pygame will
+# block display updates until vsync, but apparently this doesn't always work
+# properly.
 physicsUpdatesPerSecond = 30
 
 
