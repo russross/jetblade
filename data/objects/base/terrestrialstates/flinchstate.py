@@ -15,6 +15,7 @@ class FlinchState(objectstate.ObjectState):
         self.name = 'flinch'
         self.owner = owner
         self.owner.isGravityOn = False
+        self.owner.maxVel = self.owner.maxAirVel
         self.owner.shouldApplyVelocityCap = False
         self.owner.invincibilityTimer = self.owner.mercyInvincibilityFrames
         self.owner.health -= altObject.touchDamage

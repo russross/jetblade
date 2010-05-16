@@ -17,6 +17,7 @@ class JumpingState(objectstate.ObjectState):
             self.owner.sprite.setAnimation('jump')
         self.owner.vel = self.owner.vel.setY(self.owner.jumpSpeed)
         self.owner.isGravityOn = False
+        self.owner.maxVel = self.owner.maxAirVel
 
 
     ## Check input for state transitions; perform them if the terrain allows.

@@ -25,6 +25,8 @@ class HangingState(objectstate.ObjectState):
                ) * constants.blockSize
         )
         self.owner.sprite.setAnimation('hang')
+        self.owner.maxVel = self.owner.maxGroundVel
+
 
     ## Check for climbing
     def preCollisionUpdate(self):

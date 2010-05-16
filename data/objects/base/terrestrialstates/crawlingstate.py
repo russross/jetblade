@@ -17,6 +17,7 @@ class CrawlingState(objectstate.ObjectState):
         self.owner = owner
         self.isGrounded = True
         self.owner.sprite.setAnimation('crawl')
+        self.owner.maxVel = self.owner.maxGroundVel
 
 
     ## Check input for state transitions; perform them if the terrain allows.

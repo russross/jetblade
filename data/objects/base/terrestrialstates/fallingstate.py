@@ -13,6 +13,7 @@ class FallingState(objectstate.ObjectState):
         self.name = 'fall'
         self.owner = owner
         self.owner.isGravityOn = True
+        self.owner.maxVel = self.owner.maxAirVel
         oldTop = self.owner.getHeadLoc()
         oldAnim = self.owner.sprite.getCurrentAnimation()
         if abs(self.owner.vel.x) < constants.EPSILON or oldAnim == 'standjump':

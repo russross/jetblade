@@ -13,6 +13,7 @@ class GroundedAttackState(objectstate.ObjectState):
         self.owner.sprite.setAnimation(self.name)
         self.owner.vel = Vector2D(0, 0)
         self.owner.isGravityOn = False
+        self.owner.maxVel = self.owner.maxAirVel
 
 
     def completeAnimation(self, animation):

@@ -11,6 +11,7 @@ class ClimbingState(objectstate.ObjectState):
         self.name = 'climb'
         self.owner = owner
         self.owner.sprite.setAnimation('climb')
+        self.owner.maxVel = self.owner.maxGroundVel
 
 
     ## Finish the climbing animation.
