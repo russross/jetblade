@@ -18,8 +18,6 @@ defaultAirDeceleration = 1
 defaultCrawlSpeed = 3
 ## Default speed at the start of a jump
 defaultJumpSpeed = -20
-## Default gravity
-defaultGravity = Vector2D(0, 2)
 ## Default number of frames that creature can ignore gravity by "holding the 
 # jump button" to adjust jump height.
 defaultMaxJumpRiseFrames = 10
@@ -34,7 +32,6 @@ class TerrestrialObject(physicsobject.PhysicsObject):
     ## Instantiate a TerrestrialObject
     def __init__(self, loc, name):
         physicsobject.PhysicsObject.__init__(self, loc, name)
-        self.gravity = defaultGravity
         ## Rate at which running (moving while grounded) adds to velocity.
         self.runAcceleration = defaultRunAcceleration
         ## Rate at which slowing to a stop on the ground detracts from velocity.
@@ -47,6 +44,10 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         self.crawlSpeed = defaultCrawlSpeed
         ## Vertical speed at the start of a jump.
         self.jumpSpeed = defaultJumpSpeed
+        ## Speed cap to apply when on the ground
+        self.maxGroundVel = self.maxVel.copy()
+        ## Speed cap to apply when in the air
+        self.maxAirVel = self.maxVel.copy()
         ## Maximum number of frames that gravity can be negated by holding the
         # jump action.
         self.maxJumpRiseFrames = defaultMaxJumpRiseFrames
@@ -75,8 +76,8 @@ class TerrestrialObject(physicsobject.PhysicsObject):
         self.shouldJump = False
         self.shouldClimb = False
         self.shouldReleaseHang = False
-        
-    
+       
+
     ## Fix the "toe-stubbing" problem (of running horizontally 
     # into a block at foot level) by reversing gravity.
     # Recognize this situation because we're on the ground, getting
