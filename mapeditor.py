@@ -348,14 +348,12 @@ class MapPickerUIElement(uielement.UIElement):
     def __init__(self, editor, rect):
         ## Any clicks within this box are ignored.
         self.rect = rect
-        logger.inform("Picker rect is",self.rect)
         ## Link to the map editor instance
         self.editor = editor
 
 
     ## Passthrough to mouseMotion
     def mouseDown(self, mouseLoc, button):
-        logger.inform("Mouse down at",mouseLoc)
         self.mouseMotion(mouseLoc)
 
 
