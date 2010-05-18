@@ -106,11 +106,17 @@ def startGame():
         'editType' : game.mapEditor.setEditMode,
         'setTerrain' : game.mapEditor.setTerrain,
         'setLogLevel' : logger.setLogLevel,
+        'setScale' : setScale,
     }
     game.console = pyconsole.Console(game.screen, 
             pygame.rect.Rect(0, 0, constants.sw, constants.sh),
             consoleFunctions)
     game.console.set_active(False)
+
+
+## Change the global scale
+def setScale(newScale):
+    game.scale = float(newScale)
 
 
 ## The main game loop. Performs a target of physicsUpdatesPerSecond
@@ -130,7 +136,7 @@ def gameLoop():
     game.curFPS = 0
 
     game.camera = camera.Camera()
-    zoomLevel = 1
+    game.scale = 1
 
     def toggleIsRecording():
         game.isRecording = not game.isRecording
@@ -175,7 +181,7 @@ def gameLoop():
                 game.camera.update()
                 timeAccum -= int(timeAccum / physicsUpdateRate) * physicsUpdateRate
 
-        draw(zoomLevel, timeAccum / physicsUpdateRate)
+        draw(game.scale, timeAccum / physicsUpdateRate)
  
         game.frameNum += 1
         framesSincePrevSec += 1
@@ -190,17 +196,19 @@ def gameLoop():
 ## Draw the game. 
 def draw(zoomLevel, progress):
     drawLoc = game.camera.getDrawLoc(progress)
-
+    
+    drawSurface = game.screen
     if zoomLevel != 1:
         drawSurface = pygame.Surface((constants.sw / zoomLevel, constants.sh / zoomLevel))
-        game.map.draw(drawSurface, drawLoc, progress)
-        drawSurface = pygame.transform.rotozoom(drawSurface, 0, zoomLevel)
+        factor = 1 - zoomLevel
+        drawLoc = drawLoc.multiply(zoomLevel).add(Vector2D(constants.sw * factor, constants.sh * factor))
+
+    drawSurface.fill((0, 0, 0))
+    game.map.drawBackground(drawSurface, drawLoc, progress, zoomLevel)
+    game.gameObjectManager.draw(drawSurface, drawLoc, progress, zoomLevel)
+    game.map.drawMidground(drawSurface, drawLoc, progress, zoomLevel)
+    if zoomLevel != 1:
         game.screen.blit(drawSurface, (0, 0))
-    else:
-        game.screen.fill((0, 0, 0))
-        game.map.drawBackground(game.screen, drawLoc, progress)
-        game.gameObjectManager.draw(game.screen, drawLoc, progress)
-        game.map.drawMidground(game.screen, drawLoc, progress)
     if game.shouldDisplayFPS:
         game.fontManager.drawText('MODENINE', game.screen, 
             ["FPS: " + str(game.curFPS),

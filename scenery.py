@@ -42,8 +42,8 @@ class Scenery:
 
     ## Draw the piece of scenery. This is called by the game's Map instance 
     # before any other objects are drawn. 
-    def draw(self, screen, camera, progress, scale = 1):
-        self.sprite.draw(screen, camera, progress, self.loc, scale)
+    def draw(self, screen, camera, progress, globalScale = 1):
+        self.sprite.draw(screen, camera, progress, self.loc, globalScale)
 
 
     ## Return the bounding box for the item. Required for items to be insertable

@@ -47,8 +47,8 @@ class EnvEffect:
     ## Draw a single space in the grid. This is the default draw behavior that
     # just does the effect's image; if you have anything else you want to draw
     # (e.g. particle effects) you should override this function. 
-    def draw(self, screen, loc, camera, progress, scale = 1):
-        self.sprite.draw(screen, camera, progress, loc, scale)
+    def draw(self, screen, loc, camera, progress, globalScale = 1):
+        self.sprite.draw(screen, camera, progress, loc, globalScale)
 
 
     ## Handle general updates. Specifically, find objects that have left our

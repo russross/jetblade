@@ -6,6 +6,8 @@ import os
 import pygame
 
 ## This class handles loading and display of images. 
+# \todo Switch this over from creating and using SDL Surfaces to OpenGL 
+# textured quads.
 class ImageManager:
     ## Load fonts, and prepare the image caches. 
     def __init__(self):

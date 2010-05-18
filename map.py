@@ -957,8 +957,8 @@ class Map:
 
     ## Draw the background scenery and any environmental effects at the given
     # location.
-    def drawBackground(self, screen, cameraLoc, progress):
-        self.backgroundQuadTree.draw(screen, cameraLoc, progress)
+    def drawBackground(self, screen, cameraLoc, progress, globalScale):
+        self.backgroundQuadTree.draw(screen, cameraLoc, progress, globalScale)
         rect = screen.get_rect()
         rect.center = cameraLoc.tuple()
         min = Vector2D(rect.topleft).toGridspace().sub(Vector2D(1, 1))
@@ -971,23 +971,23 @@ class Map:
                     continue
                 for effect in self.envGrid[x][y]:
                     effect.draw(screen, Vector2D(x, y).toRealspace(), 
-                                cameraLoc, progress)
+                                cameraLoc, progress, globalScale)
 
 
     ## Draw the furniture and terrain tiles.
-    def drawMidground(self, screen, cameraLoc, progress):
-        self.furnitureQuadTree.draw(screen, cameraLoc, progress)
+    def drawMidground(self, screen, cameraLoc, progress, globalScale):
+        self.furnitureQuadTree.draw(screen, cameraLoc, progress, globalScale)
         rect = screen.get_rect()
         rect.center = cameraLoc.tuple()
-        min = Vector2D(rect.topleft).toGridspace().sub(Vector2D(1, 1))
-        max = Vector2D(rect.bottomright).toGridspace().add(Vector2D(2, 2))
+        min = Vector2D(rect.topleft).toGridspace().sub(Vector2D(1, 1)).multiply(globalScale)
+        max = Vector2D(rect.bottomright).toGridspace().add(Vector2D(2, 2)).divide(globalScale)
         for x in xrange(min.ix, max.ix):
             if x < 0 or x >= self.numCols:
                 continue
             for y in xrange(min.iy, max.iy):
                 if y < 0 or y >= self.numRows or not self.blocks[x][y]:
                     continue
-                self.blocks[x][y].draw(screen, cameraLoc, progress)
+                self.blocks[x][y].draw(screen, cameraLoc, progress, globalScale)
 
 
     ## Determine if the given line is allowed to be added to our set. Invalid

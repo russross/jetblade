@@ -175,8 +175,8 @@ class PhysicsObject:
 
 
     ## Passthrough to Sprite.draw()
-    def draw(self, screen, camera, progress, scale = 1):
-        self.sprite.draw(screen, camera, progress, None, scale)
+    def draw(self, screen, camera, progress, globalScale = 1):
+        self.sprite.draw(screen, camera, progress, None, globalScale)
 
 
     ## Passthrough to Sprite.getDrawLoc()

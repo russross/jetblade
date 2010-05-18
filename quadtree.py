@@ -241,22 +241,22 @@ class QuadTree:
 
     ## Draw the objects in this node and all children, that intersect with the 
     # current view.
-    def draw(self, screen, camera, progress, scale = 1):
+    def draw(self, screen, camera, progress, globalScale = 1):
         screenRect = screen.get_rect()
         screenRect.center = camera.tuple()
         size = Vector2D(screenRect.bottomright).sub(Vector2D(screenRect.topleft))
-        screenRect.width = size.x / scale
-        screenRect.height = size.y / scale
+        screenRect.width = size.x / globalScale
+        screenRect.height = size.y / globalScale
         for object in self.objects:
             objectRect = object.getBounds()
-            objectRect.width *= scale
-            objectRect.height *= scale
-            objectRect.topleft = (objectRect.topleft[0] * scale, objectRect.topleft[1] * scale)
+            objectRect.width *= globalScale
+            objectRect.height *= globalScale
+            objectRect.topleft = (objectRect.topleft[0] * globalScale, objectRect.topleft[1] * globalScale)
             if objectRect.colliderect(screenRect):
-                object.draw(screen, camera, progress, scale)
+                object.draw(screen, camera, progress, globalScale)
         for child in self.children:
             if child.rect.colliderect(screenRect):
-                child.draw(screen, camera, progress, scale)
+                child.draw(screen, camera, progress, globalScale)
 
         if logger.getLogLevel() == logger.LOG_DEBUG:
             # Draw our bounding rect, inset by a pixel for each level of depth.

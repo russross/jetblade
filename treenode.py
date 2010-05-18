@@ -743,14 +743,14 @@ class TreeNode:
     
 
     ## Draw the tree. This is strictly for debugging purposes.
-    def draw(self, screen, scale):
-        p1 = self.loc.multiply(scale)
+    def draw(self, screen, globalScale):
+        p1 = self.loc.multiply(globalScale)
         if self.parent is not None:
-            p2 = self.parent.loc.multiply(scale)
+            p2 = self.parent.loc.multiply(globalScale)
             pygame.draw.line(screen, self.color, p1.tuple(), p2.tuple(), 4)
         for child in self.children:
             # Note this does not include junction nodes
-            child.draw(screen, scale)
+            child.draw(screen, globalScale)
 
         parentId = -1
         if self.parent is not None:

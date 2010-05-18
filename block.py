@@ -64,12 +64,12 @@ class Block:
 
     ## Draw the block. Ignore the "progress" parameter because we use 
     # animation frames for block variants.
-    def draw(self, screen, camera, progress, scale = 1):
+    def draw(self, screen, camera, progress, globalScale = 1):
         # \todo This is a hacky way to force display of the proper frame.
         anim = self.sprite.getCurrentAnimationObject()
         anim.frame = self.subType
         anim.prevFrame = self.subType
-        self.sprite.draw(screen, camera, 0, self.loc, scale)
+        self.sprite.draw(screen, camera, 0, self.loc, globalScale)
 
 
     ## Perform collision detection against an incoming polygon.

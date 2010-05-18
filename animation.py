@@ -96,16 +96,16 @@ class Animation:
 
 
     ## Draw the animation to screen, taking self.drawOffset into account.
-    def draw(self, screen, camera, loc, progress, scale = 1):
+    def draw(self, screen, camera, loc, progress, globalScale = 1):
         drawLoc = loc
-        if self.drawOffset.magnitudeSquared() > constants.EPSILON or scale != 1:
-            drawLoc = loc.add(self.drawOffset).multiply(scale).round()
+        if self.drawOffset.magnitudeSquared() > constants.EPSILON or globalScale != 1:
+            drawLoc = loc.add(self.drawOffset).multiply(globalScale).round()
         frame = int(self.prevFrame + (self.frame - self.prevFrame) * progress)
         if self.isComplete:
             frame = len(self.frames) - 1
         surface = self.frames[int(frame) % len(self.frames)]
-        game.imageManager.drawGameObjectAt(screen, surface, drawLoc, camera, scale)
-        if logger.getLogLevel() == logger.LOG_DEBUG and scale == 1:
+        game.imageManager.drawGameObjectAt(screen, surface, drawLoc, camera, globalScale)
+        if logger.getLogLevel() == logger.LOG_DEBUG and globalScale == 1:
             # Draw the bounding polygon and location information
             self.polygon.draw(screen, loc, camera)
             gridLoc = loc.toGridspace()
