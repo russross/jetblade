@@ -54,7 +54,9 @@ class Font:
         # Calculate widths of each line, needed for alignment
         textWidths = [self.maxDims[0] * len(t) for t in texts]
         maxWidth = max(textWidths)
-            
+
+        GL.glColor4fv([i / 255.0 for i in color])
+
         GL.glDisable(GL.GL_DEPTH_TEST)
         GL.glPushMatrix()
         GL.glMatrixMode(GL.GL_PROJECTION)
@@ -123,4 +125,5 @@ class Font:
         GL.glMatrixMode(GL.GL_MODELVIEW)
         GL.glPopMatrix()
         GL.glEnable(GL.GL_DEPTH_TEST)
+        GL.glColor4f(1, 1, 1, 1)
 
