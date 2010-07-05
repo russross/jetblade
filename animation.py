@@ -109,13 +109,14 @@ class Animation:
             # Draw the bounding polygon and location information
             self.polygon.draw(screen, loc, camera)
             gridLoc = loc.toGridspace()
-            game.fontManager.drawText('MODENINE', screen,
+            game.fontManager.drawText('MODENINE', 12,
                     ['%d' % gridLoc.x,
                      '%d' % gridLoc.y,
                      '%d' % loc.x,
                      '%d' % loc.y],
-                    util.adjustLocForCenter(drawLoc.addScalar(25), camera, screen.get_rect()),
-                    12)
+                    loc = drawLoc.addScalar(25),
+                    isPositioningAbsolute = False
+            )
 
     ## Reset internal state so the animation can be cleanly re-run.
     def reset(self):
@@ -135,6 +136,12 @@ class Animation:
 
     def getMoveOffset(self):
         return self.moveOffset
+
+
+    def getFrame(self, index = None):
+        if index is None:
+            index = self.frame
+        return self.frames[index]
 
 
     ## Return True if the animation completed by running through all its frames,

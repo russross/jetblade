@@ -15,6 +15,8 @@ globalId = 0
 sw = 900
 ## Screen height
 sh = 650
+## Default camera distance
+DEFAULT_ZOOM = -800
 
 ## The size of a single block of terrain in the map
 blockSize = 50

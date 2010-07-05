@@ -1,4 +1,3 @@
-import game
 import constants
 import splashscreen
 
@@ -82,6 +81,7 @@ def error(*entries):
 
 ## Print an error to the screen, wait a bit, then exit the program. Call this
 # function when unrecoverable errors have occurred. 
+# \todo Update this to work with OpenGL instead of PyGame rendering.
 def fatal(*entries):
     message = logger.log(LOG_FATAL, *entries)
     try:
@@ -93,17 +93,7 @@ def fatal(*entries):
     for i in xrange(0, len(message), fatalMessageLineLength):
         errorStrings.append(message[i*fatalMessageLineLength:(i+1)*fatalMessageLineLength])
     errorStrings.append("The program will now shut down.")
-    errorFont = pygame.font.Font(None, 24)
-    game.screen.fill((0, 0, 0))
-    for i in xrange(0, len(errorStrings)):
-        line = errorStrings[i]
-        textSurface = errorFont.render(line, True, (255, 255, 255))
-        rect = textSurface.get_rect()
-        rect.centerx = constants.sw / 2.0
-        rect.centery = constants.sh / 2.0 + 20 * i
-        game.screen.blit(textSurface, rect)
-    pygame.display.update()
-    pygame.time.delay(errorMessageDelayTime)
+    # Draw the strings to the screen...
     sys.exit()
 
 

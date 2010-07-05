@@ -88,6 +88,11 @@ class Block:
         return self.rect
 
 
+    ## Get our specific frame of "animation"
+    def getFrame(self):
+        return self.sprite.getCurrentAnimationObject().getFrame()
+
+
     ## Convert to string for output
     def __str__(self):
         return ("[Block at " + str(self.gridLoc) + " realspace " + 

@@ -763,8 +763,9 @@ class TreeNode:
         if self.loopNode is None:
             strings.append(self.tunnelType)
 
-        game.fontManager.drawText('MODENINE', screen, strings,
-                drawLoc, 18, font.TEXT_ALIGN_CENTER, (255, 0, 0, 255))
+        game.fontManager.drawText('MODENINE', 18, strings,
+                drawLoc, align = font.TEXT_ALIGN_CENTER, 
+                color = (255, 0, 0, 255))
 
     
     ## Recursively print the tree.

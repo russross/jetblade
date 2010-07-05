@@ -18,6 +18,10 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+## This was modified for use in Jetblade.
+
+import game
+from vector2d import Vector2D
 
 import pygame, os, sys 
 from pygame.locals import *
@@ -131,7 +135,7 @@ class Console:
         self.txt_layer.set_colorkey(self.bg_color)
         
         try:
-            self.font = pygame.font.Font(os.path.join(font_path,"MODENINE.TTF"), 14)
+            self.font = pygame.font.Font(os.path.join(font_path,"MODENINE"), 14)
         except IOError:
             self.font = pygame.font.SysFont("monospace", 14)
         
@@ -265,35 +269,18 @@ class Console:
         vis_range = self.c_draw_pos, self.c_draw_pos + n_max
         return self.c_ps + text[vis_range[0]:vis_range[1]]
     
-    def draw(self):
+    def draw(self, cameraLoc):
         '''\
         Draw the console to the parent screen
         '''
         if not self.active:
             return;
         
-        if self.changed:
-            self.changed = False
-            # Draw Output
-            self.txt_layer.fill(self.bg_color)
-            lines = self.c_out[-(self.max_lines+self.c_scroll):len(self.c_out)-self.c_scroll]
-            y_pos = self.size[HEIGHT]-(self.font_height*(len(lines)+1))
-            
-            for line in lines:
-                tmp_surf = self.font.render(line, True, self.txt_color_o)
-                self.txt_layer.blit(tmp_surf, (1, y_pos, 0, 0))
-                y_pos += self.font_height
-            # Draw Input
-            tmp_surf = self.font.render(self.format_input_line(), True, self.txt_color_i)
-            self.txt_layer.blit(tmp_surf, (1,self.size[HEIGHT]-self.font_height,0,0))
-            # Clear background and blit text to it
-            self.bg_layer.fill(self.bg_color)
-            self.bg_layer.blit(self.txt_layer,(0,0,0,0))
-        
-        # Draw console to parent screen
-        # self.parent_screen.fill(self.txt_color_i, (self.rect.x-1, self.rect.y-1, self.size[WIDTH]+2, self.size[HEIGHT]+2))
-        pygame.draw.rect(self.parent_screen, self.txt_color_i, (self.rect.x-1, self.rect.y-1, self.size[WIDTH]+2, self.size[HEIGHT]+2), 1)
-        self.parent_screen.blit(self.bg_layer,self.rect)
+        lines = self.c_out[-(self.max_lines+self.c_scroll):len(self.c_out)-self.c_scroll]
+        lines += [self.format_input_line()]
+        game.fontManager.drawText('MODENINE', 14, texts = lines, 
+                loc = Vector2D(0, 0))
+
 
     #######################################################################
     # Functions to communicate with the console and the python interpreter#

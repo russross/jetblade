@@ -171,9 +171,9 @@ class MapEditor:
             fakeCameraLoc = Vector2D(constants.sw / 2.0, constants.sh / 2.0)
             for element in self.UIElements:
                 element.draw(screen)
-            game.fontManager.drawText('MODENINE', game.screen, 
+            game.fontManager.drawText('MODENINE', 18,
                                       [self.messageString], 
-                                      Vector2D(20, constants.sh - 20), 18)
+                                      Vector2D(20, constants.sh - 20))
 
 
     ## Set a new object type for placement
@@ -313,9 +313,10 @@ class EditorChooserUIElement(uielement.UIElement):
         fakeCameraLoc = Vector2D(constants.sw / 2.0, constants.sh / 2.0)
         self.parentObject.draw(screen, fakeCameraLoc, 
                 progress = 0, scale = self.scale)
-        game.fontManager.drawText('MODENINE', screen, 
+        game.fontManager.drawText('MODENINE', 18,  
                 [str((self.index + 1) % 10)], 
-                self.position.add(Vector2D(tileSize / 2.0 + 3, tileSize / 2.0 + 10)), 18)
+                self.position.add(Vector2D(tileSize / 2.0 + 3, tileSize / 2.0 + 10))
+        )
         pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
 
 

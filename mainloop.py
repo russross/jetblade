@@ -15,6 +15,7 @@ import os
 import sys
 import random
 import pygame
+import OpenGL.GL as GL
 import cProfile
 import time
 import optparse
@@ -106,7 +107,7 @@ def startGame():
         'editType' : game.mapEditor.setEditMode,
         'setTerrain' : game.mapEditor.setTerrain,
         'setLogLevel' : logger.setLogLevel,
-        'setScale' : setScale,
+        'setZoom' : setZoom,
     }
     game.console = pyconsole.Console(game.screen, 
             pygame.rect.Rect(0, 0, constants.sw, constants.sh),
@@ -114,9 +115,11 @@ def startGame():
     game.console.set_active(False)
 
 
-## Change the global scale
-def setScale(newScale):
-    game.scale = float(newScale)
+## Change the zoom level
+def setZoom(newZoom = None):
+    if newZoom is None:
+        newZoom = constants.DEFAULT_ZOOM
+    game.zoom = float(newZoom)
 
 
 ## The main game loop. Performs a target of physicsUpdatesPerSecond
@@ -136,7 +139,7 @@ def gameLoop():
     game.curFPS = 0
 
     game.camera = camera.Camera()
-    game.scale = 1
+    game.zoom = constants.DEFAULT_ZOOM
 
     def toggleIsRecording():
         game.isRecording = not game.isRecording
@@ -181,7 +184,7 @@ def gameLoop():
                 game.camera.update()
                 timeAccum -= int(timeAccum / physicsUpdateRate) * physicsUpdateRate
 
-        draw(game.scale, timeAccum / physicsUpdateRate)
+        draw(game.zoom, timeAccum / physicsUpdateRate)
  
         game.frameNum += 1
         framesSincePrevSec += 1
@@ -196,27 +199,21 @@ def gameLoop():
 ## Draw the game. 
 def draw(zoomLevel, progress):
     drawLoc = game.camera.getDrawLoc(progress)
-    
     drawSurface = game.screen
-    if zoomLevel != 1:
-        drawSurface = pygame.Surface((constants.sw / zoomLevel, constants.sh / zoomLevel))
-        factor = 1 - zoomLevel
-        drawLoc = drawLoc.multiply(zoomLevel).add(Vector2D(constants.sw * factor, constants.sh * factor))
-
-    drawSurface.fill((0, 0, 0))
-    game.map.drawBackground(drawSurface, drawLoc, progress, zoomLevel)
-    game.gameObjectManager.draw(drawSurface, drawLoc, progress, zoomLevel)
-    game.map.drawMidground(drawSurface, drawLoc, progress, zoomLevel)
-    if zoomLevel != 1:
-        game.screen.blit(drawSurface, (0, 0))
+    GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+    GL.glLoadIdentity()
+    GL.glTranslatef(-drawLoc.x, drawLoc.y, game.zoom)
+    game.map.drawBackground(drawSurface, drawLoc, progress, 1)
+    game.gameObjectManager.draw(drawSurface, drawLoc, progress, 1)
+    game.map.drawMidground(drawSurface, drawLoc, progress, 1)
     if game.shouldDisplayFPS:
-        game.fontManager.drawText('MODENINE', game.screen, 
+        game.fontManager.drawText('MODENINE', 18, 
             ["FPS: " + str(game.curFPS),
-             'Frame: ' + str(game.frameNum)], fpsDisplayLoc, 18, 
-            font.TEXT_ALIGN_RIGHT)
+             'Frame: ' + str(game.frameNum)], fpsDisplayLoc, 
+            align = font.TEXT_ALIGN_RIGHT)
     game.mapEditor.draw(game.screen, drawLoc, progress)
-    game.console.draw()
-    pygame.display.update()
+    game.console.draw(drawLoc)
+    pygame.display.flip()
 
     if game.isRecording:
         pygame.image.save(game.screen, 'screenshot-%04d' % (game.frameNum) + '.png')

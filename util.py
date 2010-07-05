@@ -1,6 +1,4 @@
-import game
 import constants
-import line
 import logger
 from vector2d import Vector2D
 
@@ -33,18 +31,6 @@ def getClipboardText():
         retcode = p.wait()
         data = p.stdout.read()
         return data
-
-
-## Create the display surface. 
-def setupScreen():
-    mode = 0
-    if game.configManager.getConfigValue('fullscreen'):
-        mode = pygame.FULLSCREEN
-    screen = pygame.display.set_mode((constants.sw, constants.sh), mode)
-    if screen is None:
-        # Give up on fullscreen mode
-        screen = pygame.display.set_mode((constants.sw, constants.sh))
-    return screen
 
 
 ## Fade the given surface by the given alpha amount.

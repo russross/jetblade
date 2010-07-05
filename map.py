@@ -212,6 +212,14 @@ class Map:
                 self.loadMap()
         else:
             self.createMap()
+        frameLocs = []
+        for i in xrange(0, self.numCols):
+            for j in xrange(0, self.numRows):
+                if self.blocks[i][j]:
+                    frameLocs.append((self.blocks[i][j].getFrame(), 
+                                      self.blocks[i][j].loc)) 
+
+        self.blockDisplayList = game.imageManager.createDisplayList(frameLocs)
 
 
     ## Create a map, by the following steps:
@@ -977,17 +985,7 @@ class Map:
     ## Draw the furniture and terrain tiles.
     def drawMidground(self, screen, cameraLoc, progress, globalScale):
         self.furnitureQuadTree.draw(screen, cameraLoc, progress, globalScale)
-        rect = screen.get_rect()
-        rect.center = cameraLoc.tuple()
-        min = Vector2D(rect.topleft).toGridspace().sub(Vector2D(1, 1)).multiply(globalScale)
-        max = Vector2D(rect.bottomright).toGridspace().add(Vector2D(2, 2)).divide(globalScale)
-        for x in xrange(min.ix, max.ix):
-            if x < 0 or x >= self.numCols:
-                continue
-            for y in xrange(min.iy, max.iy):
-                if y < 0 or y >= self.numRows or not self.blocks[x][y]:
-                    continue
-                self.blocks[x][y].draw(screen, cameraLoc, progress, globalScale)
+        game.imageManager.drawList(self.blockDisplayList)
 
 
     ## Determine if the given line is allowed to be added to our set. Invalid

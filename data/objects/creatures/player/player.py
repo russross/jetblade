@@ -104,10 +104,10 @@ class Player(terrestrialobject.TerrestrialObject):
         # \todo This draws on the same layer the player does (so e.g. behind
         # terrain). 
         game.fontManager.drawText(
-                    'MODENINE', screen, 
+                    'MODENINE', 18, 
                     ["Energy: %d" % self.health], 
-                    energyDisplayLoc, 18, font.TEXT_ALIGN_LEFT,
-                    energyDisplayColor)
+                    loc = energyDisplayLoc, 
+                    color = energyDisplayColor)
 
 
     ## Process a collision. Take damage from enemies if we're vulnerable
