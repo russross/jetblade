@@ -1,7 +1,6 @@
 from ...base import terrestrialobject
 import game
 import logger
-import font
 import constants
 from vector2d import Vector2D
 
@@ -58,7 +57,7 @@ class Player(terrestrialobject.TerrestrialObject):
         for event in game.eventManager.getCurrentActions():
             if event.action == 'left':
                 runDirection = -1
-            elif event.action == 'right': 
+            elif event.action == 'right':
                 runDirection = 1
             elif event.action == 'jump':
                 shouldJump = True

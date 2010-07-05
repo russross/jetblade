@@ -25,14 +25,13 @@ class Font:
             self.font = pygame.font.Font(os.path.join(constants.fontPath, self.name), size)
         except Exception, e:
             logger.fatal("Unable to load font named %s: [%s]" % (self.name, e))
-        ## Maximal width and height
-        self.maxDims = [0, 0]
         ## Mapping of characters to textures of those characters
         self.charTextures = dict()
+        self.charSizes = dict()
+        self.maxWidth = 0
         for char in string.printable:
-            width, height = self.font.size(char)
-            self.maxDims[0] = max(self.maxDims[0], width)
-            self.maxDims[1] = max(self.maxDims[1], height)
+            self.charSizes[char] = self.font.size(char)
+            self.maxWidth = max(self.maxWidth, self.charSizes[char][0])
             charSurface = self.font.render(char, True, (255, 255, 255))
             self.charTextures[char] = game.imageManager.createTextureFromSurface(charSurface)
         ## Cache of recently-rendered strings; maps text of string to 
@@ -42,7 +41,10 @@ class Font:
 
     ## Draw some white text to the screen at the specified location.
     # \param texts A list of strings. Each string is drawn on a separate line.
-    # \param loc Vector2D location to draw the text.
+    # \param loc Vector2D location to draw the text. If using left-alignment,
+    #        this is the upper-left corner of the text. If using
+    #        center-alignment, it's the upper-middle. If using right-alignment,
+    #        it's the upper-right corner. 
     # \param isPositioningAbsolute If true, loc is an offset from the top-left
     #        corner of the screen; otherwise, it is a location in realspace.
     # \todo Most of these parameters are not used at the moment.
@@ -52,7 +54,7 @@ class Font:
         if not isPositioningAbsolute:
             loc = util.adjustLocForCenter(loc, game.camera.getDrawLoc(), game.screen.get_rect())
         # Calculate widths of each line, needed for alignment
-        textWidths = [self.maxDims[0] * len(t) for t in texts]
+        textWidths = [self.maxWidth * len(t) for t in texts]
         maxWidth = max(textWidths)
 
         GL.glColor4fv([i / 255.0 for i in color])
@@ -68,10 +70,11 @@ class Font:
                 GL.glNewList(newList, GL.GL_COMPILE)
                 xOffset = 0
                 for char in text:
-                    left = xOffset
+                    width, height = self.charSizes[char]
+                    left = int(xOffset)
                     top = 0
-                    right = left + self.maxDims[0]
-                    bottom = self.maxDims[1]
+                    right = int(left + width)
+                    bottom = int(height)
                     GL.glBindTexture(GL.GL_TEXTURE_2D, self.charTextures[char])
                     GL.glBegin(GL.GL_QUADS)
                     GL.glTexCoord2f(0, 0)
@@ -83,7 +86,8 @@ class Font:
                     GL.glTexCoord2f(0, 1)
                     GL.glVertex3f(left, bottom, 0)
                     GL.glEnd()
-                    xOffset += self.maxDims[0]
+                    # Enforce "fixed-width" offsets
+                    xOffset += int(self.maxWidth)
                 GL.glEndList()
                 self.renderCache[text] = [time.time(), newList]
                 if len(self.renderCache) > TEXT_CACHE_SIZE:
@@ -100,18 +104,22 @@ class Font:
             # Translate to where the text should be drawn, and draw it
             xAdjustment = 0
             if align == TEXT_ALIGN_RIGHT:
-                xAdjustment = maxWidth - textWidths[index]
+                xAdjustment = -textWidths[index]
             elif align == TEXT_ALIGN_CENTER:
                 xAdjustment = (maxWidth - textWidths[index]) / 2.0
             GL.glPushMatrix()
             GL.glLoadIdentity()
-            GL.glTranslatef(loc.x + xAdjustment, loc.y + yOffset, 0)
+            # \todo Either come up with an explanation for why we need to add
+            # .5 to keep the text from going fuzzy, or rework things so we
+            # don't.
+            GL.glTranslatef(int(loc.x + xAdjustment) + .5, 
+                            int(loc.y + yOffset) + .5, 0)
             GL.glCallList(self.renderCache[text][1])
             GL.glPopMatrix()
             
             # Update last-used time
             self.renderCache[text][0] = time.time()            
-            yOffset += self.maxDims[1]
+            yOffset += self.font.get_height()
 
         # Clean up the stack
         util.clearOrtho()

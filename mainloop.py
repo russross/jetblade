@@ -22,7 +22,7 @@ import optparse
 from pygame.locals import *
 
 ## Location to display the FPS string onscreen.
-fpsDisplayLoc = Vector2D(constants.sw - 140, constants.sh - 90)
+fpsDisplayLoc = Vector2D(constants.sw - 40, constants.sh - 40)
 
 ## \mainpage Jetblade
 # This is the documentation for the Jetblade project. Jetblade is a 
