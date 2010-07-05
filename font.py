@@ -8,10 +8,9 @@ import os
 import time
 import string
 import OpenGL.GL as GL
-import OpenGL.GLU as GLU
 
 ## Number of strings to keep cached.
-TEXT_CACHE_SIZE = 32
+TEXT_CACHE_SIZE = 64
 
 ## Alignment strings
 [TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, TEXT_ALIGN_RIGHT] = range(3)
@@ -50,43 +49,70 @@ class Font:
     def drawText(self, texts, loc, isPositioningAbsolute = True, 
                  align = TEXT_ALIGN_LEFT, 
                  color = (255, 255, 255, 255)):
-        logger.debug("Drawing texts", texts, "at", loc)
+        if not isPositioningAbsolute:
+            loc = util.adjustLocForCenter(loc, game.camera.getDrawLoc(), game.screen.get_rect())
+            
+        GL.glDisable(GL.GL_DEPTH_TEST)
+        GL.glPushMatrix()
+        GL.glMatrixMode(GL.GL_PROJECTION)
+        GL.glPushMatrix()
+        GL.glLoadIdentity()
+        GL.glOrtho(0, constants.sw, constants.sh, 0, 0, 1)
+        GL.glMatrixMode(GL.GL_MODELVIEW)
+        GL.glLoadIdentity()
+        
         yOffset = 0
-        if isPositioningAbsolute:
-            GL.glDisable(GL.GL_DEPTH_TEST)
-            GL.glPushMatrix()
-            GL.glMatrixMode(GL.GL_PROJECTION)
-            GL.glPushMatrix()
-            GL.glLoadIdentity()
-            GLU.gluOrtho2D(0, constants.sw, 0, constants.sh)
-            GL.glScalef(1, -1, 1)
-            GL.glTranslatef(0, -constants.sh, 0)
-            GL.glMatrixMode(GL.GL_MODELVIEW)
-            GL.glLoadIdentity()
         for text in texts:
-            xOffset = 0
-            for char in text:
-                left = loc.x + xOffset
-                top = loc.y + yOffset
-                right = left + self.maxDims[0]
-                bottom = top + self.maxDims[1]
-                GL.glBindTexture(GL.GL_TEXTURE_2D, self.charTextures[char])
-                GL.glBegin(GL.GL_QUADS)
-                GL.glTexCoord2f(0, 0)
-                GL.glVertex3f(left, top, 0)
-                GL.glTexCoord2f(1, 0)
-                GL.glVertex3f(right, top, 0)
-                GL.glTexCoord2f(1, 1)
-                GL.glVertex3f(right, bottom, 0)
-                GL.glTexCoord2f(0, 1)
-                GL.glVertex3f(left, bottom, 0)
-                GL.glEnd()
-                xOffset += self.maxDims[0]
+            if text not in self.renderCache:
+                # Generate a display list to render the text.
+                newList = GL.glGenLists(1)
+                GL.glNewList(newList, GL.GL_COMPILE)
+                xOffset = 0
+                for char in text:
+                    left = xOffset
+                    top = 0
+                    right = left + self.maxDims[0]
+                    bottom = self.maxDims[1]
+                    GL.glBindTexture(GL.GL_TEXTURE_2D, self.charTextures[char])
+                    GL.glBegin(GL.GL_QUADS)
+                    GL.glTexCoord2f(0, 0)
+                    GL.glVertex3f(left, top, 0)
+                    GL.glTexCoord2f(1, 0)
+                    GL.glVertex3f(right, top, 0)
+                    GL.glTexCoord2f(1, 1)
+                    GL.glVertex3f(right, bottom, 0)
+                    GL.glTexCoord2f(0, 1)
+                    GL.glVertex3f(left, bottom, 0)
+                    GL.glEnd()
+                    xOffset += self.maxDims[0]
+                GL.glEndList()
+                self.renderCache[text] = [time.time(), newList]
+                if len(self.renderCache) > TEXT_CACHE_SIZE:
+                    # Find the least recently-used string and delete it.
+                    oldestTime = None
+                    oldestText = None
+                    for itemText, (useTime, temp) in self.renderCache.iteritems():
+                        if oldestTime is None or useTime < oldestTime:
+                            oldestTime = useTime
+                            oldestText = itemText
+                    GL.glDeleteLists(self.renderCache[oldestText][1], 1)
+                    del self.renderCache[oldestText]
+                    
+            # Translate to where the text should be drawn, and draw it
+            GL.glPushMatrix()
+            GL.glLoadIdentity()
+            GL.glTranslatef(loc.x, loc.y + yOffset, 0)
+            GL.glCallList(self.renderCache[text][1])
+            GL.glPopMatrix()
+            
+            # Update last-used time
+            self.renderCache[text][0] = time.time()            
             yOffset += self.maxDims[1]
-        if isPositioningAbsolute:
-            GL.glMatrixMode(GL.GL_PROJECTION)
-            GL.glPopMatrix()
-            GL.glMatrixMode(GL.GL_MODELVIEW)
-            GL.glPopMatrix()
-            GL.glEnable(GL.GL_DEPTH_TEST)
+
+        # Clean up the stack
+        GL.glMatrixMode(GL.GL_PROJECTION)
+        GL.glPopMatrix()
+        GL.glMatrixMode(GL.GL_MODELVIEW)
+        GL.glPopMatrix()
+        GL.glEnable(GL.GL_DEPTH_TEST)
 
