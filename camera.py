@@ -14,6 +14,8 @@ class Camera:
         # smooth movement between physics updates.
         self.curLoc = game.player.getDrawLoc(1).copy()
         self.prevLoc = self.curLoc
+        ## Amount of progress between previous frame and current frame
+        self.progress = 0
 
     ## Update the camera's current and previous locations. 
     def update(self):
@@ -27,7 +29,9 @@ class Camera:
 
     ## Interpolate between self.prevLoc and self.curLoc to get the current
     # draw location.
-    def getDrawLoc(self, progress):
+    def getDrawLoc(self, progress = None):
+        if progress is None:
+            progress = self.progress
         # Round the vector off to prevent jitter.
         return self.prevLoc.interpolate(self.curLoc, progress)
 
