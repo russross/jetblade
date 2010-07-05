@@ -51,6 +51,9 @@ class Font:
                  color = (255, 255, 255, 255)):
         if not isPositioningAbsolute:
             loc = util.adjustLocForCenter(loc, game.camera.getDrawLoc(), game.screen.get_rect())
+        # Calculate widths of each line, needed for alignment
+        textWidths = [self.maxDims[0] * len(t) for t in texts]
+        maxWidth = max(textWidths)
             
         GL.glDisable(GL.GL_DEPTH_TEST)
         GL.glPushMatrix()
@@ -62,7 +65,7 @@ class Font:
         GL.glLoadIdentity()
         
         yOffset = 0
-        for text in texts:
+        for index, text in enumerate(texts):
             if text not in self.renderCache:
                 # Generate a display list to render the text.
                 newList = GL.glGenLists(1)
@@ -99,9 +102,14 @@ class Font:
                     del self.renderCache[oldestText]
                     
             # Translate to where the text should be drawn, and draw it
+            xAdjustment = 0
+            if align == TEXT_ALIGN_RIGHT:
+                xAdjustment = maxWidth - textWidths[index]
+            elif align == TEXT_ALIGN_CENTER:
+                xAdjustment = (maxWidth - textWidths[index]) / 2.0
             GL.glPushMatrix()
             GL.glLoadIdentity()
-            GL.glTranslatef(loc.x, loc.y + yOffset, 0)
+            GL.glTranslatef(loc.x + xAdjustment, loc.y + yOffset, 0)
             GL.glCallList(self.renderCache[text][1])
             GL.glPopMatrix()
             
