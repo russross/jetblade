@@ -22,7 +22,7 @@ import optparse
 from pygame.locals import *
 
 ## Location to display the FPS string onscreen.
-fpsDisplayLoc = Vector2D(constants.sw - 20, constants.sh - 40)
+fpsDisplayLoc = Vector2D(constants.sw - 140, constants.sh - 90)
 
 ## \mainpage Jetblade
 # This is the documentation for the Jetblade project. Jetblade is a 
@@ -184,7 +184,8 @@ def gameLoop():
                 game.camera.update()
                 timeAccum -= int(timeAccum / physicsUpdateRate) * physicsUpdateRate
 
-        draw(game.zoom, timeAccum / physicsUpdateRate)
+        game.camera.progress = timeAccum / physicsUpdateRate
+        draw()
  
         game.frameNum += 1
         framesSincePrevSec += 1
@@ -197,21 +198,21 @@ def gameLoop():
 
 
 ## Draw the game. 
-def draw(zoomLevel, progress):
-    drawLoc = game.camera.getDrawLoc(progress)
+def draw():
+    drawLoc = game.camera.getDrawLoc()
     drawSurface = game.screen
     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
     GL.glLoadIdentity()
     GL.glTranslatef(-drawLoc.x, drawLoc.y, game.zoom)
-    game.map.drawBackground(drawSurface, drawLoc, progress, 1)
-    game.gameObjectManager.draw(drawSurface, drawLoc, progress, 1)
-    game.map.drawMidground(drawSurface, drawLoc, progress, 1)
+    game.map.drawBackground(drawSurface, drawLoc, game.camera.progress, 1)
+    game.gameObjectManager.draw(drawSurface, drawLoc, game.camera.progress, 1)
+    game.map.drawMidground(drawSurface, drawLoc, game.camera.progress, 1)
     if game.shouldDisplayFPS:
         game.fontManager.drawText('MODENINE', 18, 
             ["FPS: " + str(game.curFPS),
              'Frame: ' + str(game.frameNum)], fpsDisplayLoc, 
             align = font.TEXT_ALIGN_RIGHT)
-    game.mapEditor.draw(game.screen, drawLoc, progress)
+    game.mapEditor.draw(game.screen, drawLoc, game.camera.progress)
     game.console.draw(drawLoc)
     pygame.display.flip()
 
