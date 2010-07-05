@@ -9,6 +9,8 @@ from pygame.locals import *
 import sys
 import random
 
+import OpenGL.GL as GL
+
 ## @package util
 # The functions in util are general utility functions that are not tied to any
 # specific class.
@@ -106,4 +108,23 @@ def adjacencyArrayToSignatures(kernel):
     # Uniquify list on our way out.
     return dict().fromkeys(result).keys()
 
+
+## Switch to orthographic drawing
+def setOrtho():
+    GL.glPushMatrix()
+    GL.glMatrixMode(GL.GL_PROJECTION)
+    GL.glPushMatrix()
+    GL.glLoadIdentity()
+    GL.glOrtho(0, constants.sw, constants.sh, 0, 0, 1)
+    GL.glMatrixMode(GL.GL_MODELVIEW)
+    GL.glLoadIdentity()
+
+
+
+## Switch away from orthographic drawing
+def clearOrtho():
+    GL.glMatrixMode(GL.GL_PROJECTION)
+    GL.glPopMatrix()
+    GL.glMatrixMode(GL.GL_MODELVIEW)
+    GL.glPopMatrix()
 

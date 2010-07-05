@@ -20,11 +20,15 @@
 
 ## This was modified for use in Jetblade.
 
+import constants
 import game
 from vector2d import Vector2D
+import util
 
 import pygame, os, sys 
 from pygame.locals import *
+
+import OpenGL.GL as GL
 
 import re         # Python's Regexp library. Used in pyconsole for parsing
 import textwrap # Used for proper word wrapping
@@ -275,6 +279,14 @@ class Console:
         '''
         if not self.active:
             return;
+
+        # Draw a rectangle over the display
+        util.setOrtho()
+        GL.glColor4f(.3, .3, 1, .6)
+        GL.glBindTexture(GL.GL_TEXTURE_2D, 0)
+        GL.glRectf(0, 0, constants.sw, constants.sh)
+        GL.glColor4f(1, 1, 1, 1)
+        util.clearOrtho()
         
         lines = self.c_out[-(self.max_lines+self.c_scroll):len(self.c_out)-self.c_scroll]
         lines += [self.format_input_line()]

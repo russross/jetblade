@@ -58,13 +58,7 @@ class Font:
         GL.glColor4fv([i / 255.0 for i in color])
 
         GL.glDisable(GL.GL_DEPTH_TEST)
-        GL.glPushMatrix()
-        GL.glMatrixMode(GL.GL_PROJECTION)
-        GL.glPushMatrix()
-        GL.glLoadIdentity()
-        GL.glOrtho(0, constants.sw, constants.sh, 0, 0, 1)
-        GL.glMatrixMode(GL.GL_MODELVIEW)
-        GL.glLoadIdentity()
+        util.setOrtho()
         
         yOffset = 0
         for index, text in enumerate(texts):
@@ -120,10 +114,7 @@ class Font:
             yOffset += self.maxDims[1]
 
         # Clean up the stack
-        GL.glMatrixMode(GL.GL_PROJECTION)
-        GL.glPopMatrix()
-        GL.glMatrixMode(GL.GL_MODELVIEW)
-        GL.glPopMatrix()
+        util.clearOrtho()
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glColor4f(1, 1, 1, 1)
 
