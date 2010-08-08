@@ -112,8 +112,8 @@ class Font:
             # \todo Either come up with an explanation for why we need to add
             # .5 to keep the text from going fuzzy, or rework things so we
             # don't.
-            GL.glTranslatef(int(loc.x + xAdjustment) + .5, 
-                            int(loc.y + yOffset) + .5, 0)
+            GL.glTranslatef(int(loc.x + xAdjustment) + .375, 
+                            int(loc.y + yOffset) + .375, 0)
             GL.glCallList(self.renderCache[text][1])
             GL.glPopMatrix()
             
