@@ -1,5 +1,5 @@
 import jetblade
-from ..base import physicsobject
+import physicsobject
 import polygon
 import logger
 from vector2d import Vector2D
