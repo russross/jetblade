@@ -743,14 +743,15 @@ class TreeNode:
     
 
     ## Draw the tree. This is strictly for debugging purposes.
-    def draw(self, screen, globalScale):
-        p1 = self.loc.multiply(globalScale)
+    # \todo Broken by the OpenGL transition.
+    def draw(self):
+        p1 = self.loc
         if self.parent is not None:
-            p2 = self.parent.loc.multiply(globalScale)
-            pygame.draw.line(screen, self.color, p1.tuple(), p2.tuple(), 4)
+            p2 = self.parent.loc
+#            pygame.draw.line(screen, self.color, p1.tuple(), p2.tuple(), 4)
         for child in self.children:
             # Note this does not include junction nodes
-            child.draw(screen, globalScale)
+            child.draw()
 
         parentId = -1
         if self.parent is not None:

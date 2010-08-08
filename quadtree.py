@@ -241,32 +241,20 @@ class QuadTree:
 
     ## Draw the objects in this node and all children, that intersect with the 
     # current view.
-    def draw(self, screen, camera, progress, globalScale = 1):
-        screenRect = screen.get_rect()
-        screenRect.center = camera.tuple()
+    # \todo The culling of what to draw doesn't take into account zoom factors.
+    def draw(self, progress):
+        screenRect = pygame.rect.Rect(0, 0, constants.sw, constants.sh)
+        screenRect.center = game.camera.getDrawLoc().tuple()
         size = Vector2D(screenRect.bottomright).sub(Vector2D(screenRect.topleft))
-        screenRect.width = size.x / globalScale
-        screenRect.height = size.y / globalScale
+        screenRect.width = size.x
+        screenRect.height = size.y
         for object in self.objects:
             objectRect = object.getBounds()
-            objectRect.width *= globalScale
-            objectRect.height *= globalScale
-            objectRect.topleft = (objectRect.topleft[0] * globalScale, objectRect.topleft[1] * globalScale)
             if objectRect.colliderect(screenRect):
-                object.draw(screen, camera, progress, globalScale)
+                object.draw(progress)
         for child in self.children:
             if child.rect.colliderect(screenRect):
-                child.draw(screen, camera, progress, globalScale)
-
-        if logger.getLogLevel() == logger.LOG_DEBUG:
-            # Draw our bounding rect, inset by a pixel for each level of depth.
-            topLeft = Vector2D(self.rect.topleft)
-            size = Vector2D(self.rect.size)
-            drawRect = pygame.Rect(Vector2D(1, 1).multiply(self.depth).add(topLeft).tuple(),
-                                   Vector2D(-2, -2).multiply(self.depth).add(size).tuple())
-            drawRect.center = util.adjustLocForCenter(Vector2D(self.rect.center), 
-                    camera, screen.get_rect()).tuple()
-            pygame.draw.rect(screen, (0, 0, 255), drawRect, 1)
+                child.draw(progress)
             
 
     ## Remove the specified object from the tree. Return True if we deleted it;

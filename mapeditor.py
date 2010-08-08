@@ -148,29 +148,30 @@ class MapEditor:
         game.eventManager.processCurrentEvents(self.UIElements, constants.CONTEXT_GAME)
 
 
-    ## Draw the available block set, the map grid, and our current message
-    def draw(self, screen, cameraLoc, *args):
+    ## Draw the available block set, the map grid, and our current message.
+    # \todo This has been broken by the OpenGL transition.
+    def draw(self, *args):
         if not self.isActive:
             return
-        if self.isMapGridDisplayed:
-            # Display a grid of lines every blockSize pixels across the map.
-            xOffset = constants.blockSize - (cameraLoc.x % constants.blockSize) + blockOffset
-            for i in xrange(0, constants.sw, constants.blockSize):
-                pygame.draw.line(
-                        screen, (255, 255, 255),
-                        (i + xOffset, 0), (i + xOffset, constants.sh))
-            yOffset = constants.blockSize - (cameraLoc.y % constants.blockSize)
-            for j in xrange(0, constants.sh, constants.blockSize):
-                pygame.draw.line(
-                        screen, (255, 255, 255),
-                        (0, j + yOffset), (constants.sw, j + yOffset))
+#        if self.isMapGridDisplayed:
+#            # Display a grid of lines every blockSize pixels across the map.
+#            xOffset = constants.blockSize - (cameraLoc.x % constants.blockSize) + blockOffset
+#            for i in xrange(0, constants.sw, constants.blockSize):
+#                pygame.draw.line(
+#                        screen, (255, 255, 255),
+#                        (i + xOffset, 0), (i + xOffset, constants.sh))
+#            yOffset = constants.blockSize - (cameraLoc.y % constants.blockSize)
+#            for j in xrange(0, constants.sh, constants.blockSize):
+#                pygame.draw.line(
+#                        screen, (255, 255, 255),
+#                        (0, j + yOffset), (constants.sw, j + yOffset))
                     
         if self.areControlsDisplayed:
-            pygame.draw.rect(screen, (0, 0, 0), self.chooserRect)
-            pygame.draw.rect(screen, (255, 255, 255), self.chooserRect, 3)
-            fakeCameraLoc = Vector2D(constants.sw / 2.0, constants.sh / 2.0)
-            for element in self.UIElements:
-                element.draw(screen)
+#            pygame.draw.rect(screen, (0, 0, 0), self.chooserRect)
+#            pygame.draw.rect(screen, (255, 255, 255), self.chooserRect, 3)
+#            fakeCameraLoc = Vector2D(constants.sw / 2.0, constants.sh / 2.0)
+#            for element in self.UIElements:
+#                element.draw(screen)
             game.fontManager.drawText('MODENINE', 18,
                                       [self.messageString], 
                                       Vector2D(20, constants.sh - 20))
@@ -309,15 +310,18 @@ class EditorChooserUIElement(uielement.UIElement):
             self.modTriggers = modKeyCombos[int((self.index - 1) / 10 - 1)]
 
 
-    def draw(self, screen):
-        fakeCameraLoc = Vector2D(constants.sw / 2.0, constants.sh / 2.0)
-        self.parentObject.draw(screen, fakeCameraLoc, 
-                progress = 0, scale = self.scale)
-        game.fontManager.drawText('MODENINE', 18,  
-                [str((self.index + 1) % 10)], 
-                self.position.add(Vector2D(tileSize / 2.0 + 3, tileSize / 2.0 + 10))
-        )
-        pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
+    ## Draw the UI element. 
+    # \todo Broken by the OpenGL transition.
+    def draw(self):
+        return
+#        fakeCameraLoc = Vector2D(constants.sw / 2.0, constants.sh / 2.0)
+#        self.parentObject.draw(screen, fakeCameraLoc, 
+#                progress = 0, scale = self.scale)
+#        game.fontManager.drawText('MODENINE', 18,  
+#                [str((self.index + 1) % 10)], 
+#                self.position.add(Vector2D(tileSize / 2.0 + 3, tileSize / 2.0 + 10))
+#        )
+#        pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
 
 
     def mouseMove(self, mouseLoc):

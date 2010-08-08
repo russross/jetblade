@@ -115,9 +115,9 @@ class ButtonUIElement(UIElement):
 
 
     ## Draw the UI element, at a fixed location onscreen.
-    def draw(self, screen):
-        fakeCameraLoc = Vector2D(constants.sw / 2.0, constants.sh / 2.0)
-        self.sprite.draw(screen, fakeCameraLoc, 0, self.loc)
+    # \todo Broken by the OpenGL transition
+    def draw(self):
+        self.sprite.draw(0, self.loc)
 
 
     def mouseUp(self, mouseLoc, mouseButton):

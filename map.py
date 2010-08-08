@@ -44,6 +44,8 @@ minimumIslandSize = 20
 ## How finely-grained the region grid is (lower numbers mean lower resolution
 # and thus faster map generation).
 regionOverlayResolutionMultiplier = .1
+## How many times to retry seeding a region.
+regionOverlayNumSeedingRetries = 10
 
 ## Amount to scale the map by when calling Map.drawStatus()
 drawStatusScaleFactor = .2
@@ -212,6 +214,10 @@ class Map:
                 self.loadMap()
         else:
             self.createMap()
+        # \todo This is slow for big maps. Either chunk it up into multiple
+        # smaller display lists and only draw relevant ones, or only draw
+        # tiles if they're in view (which is slow when we zoom out, but would
+        # allow for tiles to cycle display frames more readily).
         frameLocs = []
         for i in xrange(0, self.numCols):
             for j in xrange(0, self.numRows):
@@ -494,8 +500,8 @@ class Map:
         for i in xrange(0, self.numCols):
             for j in xrange(0, self.numRows):
                 gridLoc = Vector2D(i, j)
-                terrain = self.getTerrainInfoAtGridLoc(loc)
-                sector = self.getSectorAtGridLoc(loc)
+                terrain = self.getTerrainInfoAtGridLoc(gridLoc)
+                sector = self.getSectorAtGridLoc(gridLoc)
                 if sector is not None:
                     terrain = sector.getTerrainInfo()
                 if self.blocks[i][j] == BLOCK_UNALLOCATED:
@@ -924,17 +930,21 @@ class Map:
             self.tree.draw(screen, scale)
 
         pygame.image.save(screen, 'premap-%03d' % self.statusIter + '.png')
-        game.screen.fill((0, 0, 0))
+        game.imageManager.drawBackground()
         if self.markLoc is None:
             # Non-zoomed view, so scale it so it all fits.
             screen = pygame.transform.rotozoom(screen, 0, constants.sw / float(self.width * scale))
-        game.screen.blit(screen, (0, 0))
-        pygame.display.update()
+        game.imageManager.blitSurface(screen, 
+                pygame.rect.Rect(0, 0, constants.sw, constants.sh),
+                Vector2D(constants.sw / 2, constants.sh / 2))
+        pygame.display.flip()
         logger.debug("Status drawn")
 
 
     ## Draw a complete view of the map for purposes of looking pretty. Saves 
     # the result to disk under the provided filename.
+    # \todo This was broken by the OpenGL transition -- we no longer use Surface
+    # objects to draw to, instead drawing directly to the screen.
     def drawAll(self, filename):
         scale = drawAllScaleFactor
         center = Vector2D(self.width, self.height).multiply(scale / 2.0)
@@ -965,10 +975,13 @@ class Map:
 
     ## Draw the background scenery and any environmental effects at the given
     # location.
-    def drawBackground(self, screen, cameraLoc, progress, globalScale):
-        self.backgroundQuadTree.draw(screen, cameraLoc, progress, globalScale)
-        rect = screen.get_rect()
-        rect.center = cameraLoc.tuple()
+    def drawBackground(self, progress):
+        self.backgroundQuadTree.draw(progress)
+        # \todo This culls which environmental effects to draw based on the 
+        # camera position, but doesn't take into account zoom, so when we 
+        # zoom out, effects will not be drawn when they should be. 
+        rect = pygame.rect.Rect(0, 0, constants.sw, constants.sh)
+        rect.center = game.camera.getDrawLoc().tuple()
         min = Vector2D(rect.topleft).toGridspace().sub(Vector2D(1, 1))
         max = Vector2D(rect.bottomright).toGridspace().add(Vector2D(2, 2))
         for x in xrange(min.ix, max.ix):
@@ -978,13 +991,12 @@ class Map:
                 if y < 0 or y >= self.numRows:
                     continue
                 for effect in self.envGrid[x][y]:
-                    effect.draw(screen, Vector2D(x, y).toRealspace(), 
-                                cameraLoc, progress, globalScale)
+                    effect.draw(Vector2D(x, y).toRealspace(), progress)
 
 
     ## Draw the furniture and terrain tiles.
-    def drawMidground(self, screen, cameraLoc, progress, globalScale):
-        self.furnitureQuadTree.draw(screen, cameraLoc, progress, globalScale)
+    def drawMidground(self, progress):
+        self.furnitureQuadTree.draw(progress)
         game.imageManager.drawList(self.blockDisplayList)
 
 
@@ -1117,7 +1129,6 @@ class Map:
         for item in self.furnitureQuadTree.getObjectsIntersectingRect(polyRect):
             (overlap, vector) = item.collidePolygon(poly, loc)
             if vector is not None and overlap > result.distance:
-                logger.debug("Hit furniture",item,"with data",overlap,vector)
                 result.distance = overlap
                 result.vector = vector
                 result.altObject = item

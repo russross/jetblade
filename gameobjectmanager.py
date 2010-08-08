@@ -37,8 +37,8 @@ class GameObjectManager:
 
 
     ## Draw all objects
-    def draw(self, screen, camera, progress, globalScale = 1):
-        self.objectTree.draw(screen, camera, progress, globalScale)
+    def draw(self, progress):
+        self.objectTree.draw(progress)
 
 
     ## Add the given object to the tree.

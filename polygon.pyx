@@ -185,14 +185,15 @@ cdef class Polygon:
 
     ## Draw the polygon, for debugging purposes only. Polygons that have been
     # hit turn red for 1 frame.
-    def draw(self, screen, loc, camera):
-        drawColor = (0, 255, 0)
-        if self.hit:
-            drawColor = (255, 0, 0)
-        drawPoints = []
-        for point in self.points:
-            drawPoints.append(util.adjustLocForCenter(point.add(loc), camera, screen.get_rect()).tuple())
-        pygame.draw.lines(screen, drawColor, 1, drawPoints, 4)
+    # \todo Broken by the OpenGL transition.
+    def draw(self, loc):
+#        drawColor = (0, 255, 0)
+#        if self.hit:
+#            drawColor = (255, 0, 0)
+#        drawPoints = []
+#        for point in self.points:
+#            drawPoints.append(util.adjustLocForCenter(point.add(loc), camera, screen.get_rect()).tuple())
+#        pygame.draw.lines(screen, drawColor, 1, drawPoints, 4)
         self.hit = False
 
 

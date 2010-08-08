@@ -273,7 +273,7 @@ class Console:
         vis_range = self.c_draw_pos, self.c_draw_pos + n_max
         return self.c_ps + text[vis_range[0]:vis_range[1]]
     
-    def draw(self, cameraLoc):
+    def draw(self):
         '''\
         Draw the console to the parent screen
         '''

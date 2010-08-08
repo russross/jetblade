@@ -96,18 +96,18 @@ class Animation:
 
 
     ## Draw the animation to screen, taking self.drawOffset into account.
-    def draw(self, screen, camera, loc, progress, globalScale = 1):
+    def draw(self, loc, progress):
         drawLoc = loc
-        if self.drawOffset.magnitudeSquared() > constants.EPSILON or globalScale != 1:
-            drawLoc = loc.add(self.drawOffset).multiply(globalScale).round()
+        if self.drawOffset.magnitudeSquared() > constants.EPSILON:
+            drawLoc = loc.add(self.drawOffset).round()
         frame = int(self.prevFrame + (self.frame - self.prevFrame) * progress)
         if self.isComplete:
             frame = len(self.frames) - 1
         surface = self.frames[int(frame) % len(self.frames)]
-        game.imageManager.drawGameObjectAt(screen, surface, drawLoc, camera, globalScale)
-        if logger.getLogLevel() == logger.LOG_DEBUG and globalScale == 1:
+        game.imageManager.drawGameObjectAt(surface, drawLoc)
+        if logger.getLogLevel() == logger.LOG_DEBUG:
             # Draw the bounding polygon and location information
-            self.polygon.draw(screen, loc, camera)
+            self.polygon.draw(loc)
             gridLoc = loc.toGridspace()
             game.fontManager.drawText('MODENINE', 12,
                     ['%d' % gridLoc.x,
@@ -117,6 +117,7 @@ class Animation:
                     loc = drawLoc.addScalar(25),
                     isPositioningAbsolute = False
             )
+
 
     ## Reset internal state so the animation can be cleanly re-run.
     def reset(self):

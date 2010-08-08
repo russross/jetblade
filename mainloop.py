@@ -71,7 +71,10 @@ def startGame():
         game.map = map.Map(game.mapFilename)
         game.map.init()
         if game.shouldSaveImage:
-            game.map.drawAll('%d.png' % game.seed)
+            game.log.warn("Drawing the entire map was broken as part " + 
+                          "of the OpenGL transition. Sorry; I'll fix " + 
+                          "it when I can.")
+#            game.map.drawAll('%d.png' % game.seed)
         if game.shouldExitAfterMapgen:
             sys.exit()
     else:
@@ -199,21 +202,20 @@ def gameLoop():
 
 ## Draw the game. 
 def draw():
-    drawLoc = game.camera.getDrawLoc()
-    drawSurface = game.screen
     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
     GL.glLoadIdentity()
-    GL.glTranslatef(-drawLoc.x, drawLoc.y, game.zoom)
-    game.map.drawBackground(drawSurface, drawLoc, game.camera.progress, 1)
-    game.gameObjectManager.draw(drawSurface, drawLoc, game.camera.progress, 1)
-    game.map.drawMidground(drawSurface, drawLoc, game.camera.progress, 1)
+    cameraLoc = game.camera.getDrawLoc()
+    GL.glTranslatef(-cameraLoc.x, cameraLoc.y, game.zoom)
+    game.map.drawBackground(game.camera.progress)
+    game.gameObjectManager.draw(game.camera.progress)
+    game.map.drawMidground(game.camera.progress)
     if game.shouldDisplayFPS:
         game.fontManager.drawText('MODENINE', 18, 
             ["FPS: " + str(game.curFPS),
              'Frame: ' + str(game.frameNum)], fpsDisplayLoc, 
             align = font.TEXT_ALIGN_RIGHT)
-    game.mapEditor.draw(game.screen, drawLoc, game.camera.progress)
-    game.console.draw(drawLoc)
+    game.mapEditor.draw(game.camera.progress)
+    game.console.draw()
     pygame.display.flip()
 
     if game.isRecording:

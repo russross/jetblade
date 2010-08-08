@@ -94,10 +94,10 @@ class Sprite:
     # \param drawLoc The location to draw the sprite. This is optional; if it
     # is not provided, then the sprite will derive its own draw location based
     # on its locations at the previous two physics updates.
-    def draw(self, screen, camera, progress, drawLoc = None, globalScale = 1):
+    def draw(self, progress, drawLoc = None):
         if drawLoc is None:
             drawLoc = self.getDrawLoc(progress)
-        self.animations[self.currentAnimation].draw(screen, camera, drawLoc, progress, globalScale)
+        self.animations[self.currentAnimation].draw(drawLoc, progress)
 
 
     ## Interpolate between self.prevLoc and self.curLoc, using progress to 

@@ -35,8 +35,8 @@ class Furniture(block.Block):
 
 
     ## Draw the furniture. Just a passthrough to Sprite.draw.
-    def draw(self, screen, camera, progress, globalScale = 1):
-        self.sprite.draw(screen, camera, progress, self.loc, globalScale)
+    def draw(self, progress):
+        self.sprite.draw(progress, self.loc)
 
 
     ## Convert to a string
