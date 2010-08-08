@@ -97,12 +97,13 @@ class ImageManager:
 
 
     ## Clear the screen to black.
-    def drawBackground(self, screen):
-        screen.fill((0, 0, 0), None)
+    def drawBackground(self):
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 
 
     ## Draw an object relative to the camera. 
-    def drawGameObjectAt(self, screen, frame, loc, center, scale = 1):
+    # \todo This function is obsolete, just a passthrough now. Remove it.
+    def drawGameObjectAt(self, frame, loc):
         self.drawObjectAt(frame, loc)
 
 
@@ -140,7 +141,7 @@ class ImageManager:
 
     ## Convert an SDL-style surface into an OpenGL texture and blit it.
     def blitSurface(self, surface, rect, cameraLoc):
-        print "Pretending to blit surface",surface,"with rect",rect
+        game.log.debug("Pretending to blit surface", surface, "with rect", rect)
         texture = self.createTextureFromSurface(surface)
         size = Vector2D(rect.width, rect.height)
         topLeft = Vector2D(rect.left, rect.top).add(cameraLoc).sub(size.multiply(.5))
@@ -156,5 +157,6 @@ class ImageManager:
         GL.glTexCoord2f(0, 1)
         GL.glVertex3f(topLeft.x, -bottomRight.y, 0)
         GL.glEnd()
+        GL.glDeleteTextures(1, texture)
 
 
