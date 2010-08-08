@@ -29,6 +29,9 @@ class SplashScreen:
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
 
+        # Disable antialiasing -- our textures are already antialiased (blended
+        # with transparent) and GL's interpolation just makes things look bad.
+        GL.glDisable(GL.GL_LINE_SMOOTH)
         GL.glShadeModel(GL.GL_SMOOTH)
         GL.glClearColor(0, 0, 0, 0)
         GL.glClearDepth(1)
@@ -68,7 +71,7 @@ class SplashScreen:
         GL.glLoadIdentity()
         GLU.gluOrtho2D(0, constants.sw, 0, constants.sh)
         GL.glScalef(1, -1, 1)
-        GL.glTranslatef(0, -constants.sh, 0)
+        GL.glTranslatef(.375, -constants.sh - .375, 0)
         GL.glMatrixMode(GL.GL_MODELVIEW)
 
         # Draw the backdrop
