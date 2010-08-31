@@ -182,7 +182,8 @@ class Triangulator:
             interiorNodes.append(node)
             self.drawAll(self.nodes, interiorNodes)
 
-        self.drawAll(self.nodes, interiorNodes, shouldLabelNodes = True)
+        self.drawAll(self.nodes, interiorNodes, 
+                shouldForceSave = True, shouldLabelNodes = True)
 
 
     ## Given that we're done making a triangulation, make that triangulation
@@ -237,7 +238,7 @@ class Triangulator:
                         markedEdges.remove(tmp)
                     if tmp not in sortedHull:
                         edgeQueue.append(tmp)
-                self.drawAll(allNodes = self.nodes, edges = self.edges, dirtyEdges = edgeQueue, shouldLabelNodes = True)
+                self.drawAll(edges = self.edges, dirtyEdges = edgeQueue)
         self.drawAll(edges = self.edges, shouldForceSave = True)
   
 
@@ -250,30 +251,20 @@ class Triangulator:
         for neighbor in self.edges[v1]:
             if neighbor in self.edges[v2]:
                 neighborCandidates.append(neighbor)
-        projectionLine = Line(v1, v2)
-        neighborCandidates = [(v, projectionLine.pointDistance(v)) for v in neighborCandidates]
-        for i in xrange(len(neighborCandidates)):
-            # Flip sign for neighbors on the other side of the edge.
-            neighbor, distance = neighborCandidates[i]
-            a = v1.sub(v2)
-            b = v2.sub(neighbor)
-            direction = cmp(a.x * b.y - a.y * b.x, 0)
-            if direction > 0: 
-                distance *= -1
-            neighborCandidates[i] = (neighbor, distance)
-
-        leastNegative = None
-        leastPositive = None
+        perpendicular = v2.sub(v1).invert()
+        positives = []
+        negatives = []
         for neighbor in neighborCandidates:
-            if neighbor[1] > 0:
-                if leastPositive is None or neighbor[1] < leastPositive[1]:
-                    leastPositive = neighbor
+            distance = neighbor.dot(perpendicular) - perpendicular.dot(v1)
+            if distance < 0:
+                negatives.append((neighbor, distance))
             else:
-                if leastNegative is None or neighbor[1] > leastNegative[1]:
-                    leastNegative = neighbor
-        if leastNegative is None or leastPositive is None:
+                positives.append((neighbor, distance))
+        if not negatives or not positives:
             return None, None
-        return leastPositive[0], leastNegative[0]
+        negatives.sort(lambda a, b: int(b[1] - a[1]))
+        positives.sort(lambda a, b: int(a[1] - b[1]))
+        return negatives[0][0], positives[0][0]
 
 
     # Calculate the angles (v1, n1, v2) and (v1, n2, v2) and return True iff
