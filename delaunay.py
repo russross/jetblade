@@ -7,8 +7,8 @@ from line import Line
 INFINISLOPE = 10 ** 6
 LINELEN = 1000
 NUMNODES = 15
-NODESPACING = 15
-SHOULD_DRAW = False
+NODESPACING = 50
+SHOULD_DRAW = True
 SHOULD_SAVE = False
 
 import cProfile
@@ -182,7 +182,7 @@ class Triangulator:
             interiorNodes.append(node)
             self.drawAll(self.nodes, interiorNodes)
 
-        self.drawAll(self.nodes, interiorNodes)
+        self.drawAll(self.nodes, interiorNodes, shouldLabelNodes = True)
 
 
     ## Given that we're done making a triangulation, make that triangulation
@@ -190,7 +190,6 @@ class Triangulator:
     # adjacent triangles that are not Delaunay.
     # ( http://en.wikipedia.org/wiki/Delaunay_triangulation#Visual_Delaunay_definition:_Flipping )
     def makeDelaunay(self):
-        edgeQueue = []
         # These are the edges that we know will never need to be flipped, as
         # they are on the perimeter of the graph.
         hull = self.constructHullFrom(Vector2D(-1, -1), self.nodes)
@@ -202,6 +201,7 @@ class Triangulator:
             tmp.sort(sortVectors)
             sortedHull.append(tuple(tmp))
 
+        edgeQueue = []
         ## Add all non-exterior edges to the edge queue.
         for sourceNode, targetNodes in self.edges.iteritems():
             for targetNode in targetNodes:
@@ -216,65 +216,12 @@ class Triangulator:
 
         while edgeQueue:
             (v1, v2) = edgeQueue.pop(0)
-            if (v1, v2) in sortedHull:
-                continue
             markedEdges.add((v1, v2))
-            # Find the two triangles that share this edge, by sorting neighbors
-            # by how far they are from the edge, and getting the two on
-            # either side of the edge (i.e. closest positive and negative
-            # distances).
-            neighborCandidates = []
-            for neighbor in self.edges[v1]:
-                if neighbor in self.edges[v2]:
-                    neighborCandidates.append(neighbor)
-            projectionLine = Line(v1, v2)
-            neighborCandidates = [(v, projectionLine.pointDistance(v)) for v in neighborCandidates]
-            for i in xrange(len(neighborCandidates)):
-                # Flip sign for neighbors on the other side of the edge.
-                neighbor, distance = neighborCandidates[i]
-                a = v1.sub(v2)
-                b = v2.sub(neighbor)
-                direction = cmp(a.x * b.y - a.y * b.x, 0)
-                if direction > 0: 
-                    distance *= -1
-                neighborCandidates[i] = (neighbor, distance)
-
-            leastNegative = None
-            leastPositive = None
-            for neighbor in neighborCandidates:
-                if neighbor[1] > 0:
-                    if leastPositive is None or neighbor[1] < leastPositive[1]:
-                        leastPositive = neighbor
-                else:
-                    if leastNegative is None or neighbor[1] > leastNegative[1]:
-                        leastNegative = neighbor
-            if leastNegative is None or leastPositive is None:
-                # This should never happen.
-#                print "Error: edge",v1,v2,"has no valid neighbors"
-                self.drawAll(allNodes = self.nodes, edges = self.edges,
-                        dirtyEdges = edgeQueue, 
-                        shouldLabelNodes = True, shouldForceSave = True)
+            n1, n2 = self.getNearestNeighbors(v1, v2)
+            if n1 is None or n2 is None:
                 continue
-            n1, n2 = leastPositive[0], leastNegative[0]
-            
-            # Calculate the angles with the shared verts.
-            angleSum = 0
-            for i, vertex in enumerate([n1, n2]):
-                a1 = v1.sub(vertex).angle()
-                a2 = v2.sub(vertex).angle()
-                if a1 < 0:
-                    a1 += 2 * math.pi
-                if a2 < 0:
-                    a2 += 2 * math.pi
-                if i == 0:
-                    angle = a1 - a2
-                else:
-                    angle = a2 - a1
-                if angle < 0:
-                    angle += 2 * math.pi
-                angleSum += angle
-            
-            if angleSum > math.pi:
+
+            if not self.isDelaunay(v1, v2, n1, n2):
                 # Triangles are not Delaunay; flip them.
                 if v2 in self.edges[v1]:
                     self.edges[v1].remove(v2)
@@ -290,9 +237,65 @@ class Triangulator:
                         markedEdges.remove(tmp)
                     if tmp not in sortedHull:
                         edgeQueue.append(tmp)
-                self.drawAll(edges = self.edges, dirtyEdges = edgeQueue)
+                self.drawAll(allNodes = self.nodes, edges = self.edges, dirtyEdges = edgeQueue, shouldLabelNodes = True)
         self.drawAll(edges = self.edges, shouldForceSave = True)
-   
+  
+
+    ## Find the two triangles that share the specified edge, by sorting
+    # neighbors by how far they are from the edge, and getting the two on
+    # either side of the edge (i.e. closest positive and negative
+    # distances).
+    def getNearestNeighbors(self, v1, v2):
+        neighborCandidates = []
+        for neighbor in self.edges[v1]:
+            if neighbor in self.edges[v2]:
+                neighborCandidates.append(neighbor)
+        projectionLine = Line(v1, v2)
+        neighborCandidates = [(v, projectionLine.pointDistance(v)) for v in neighborCandidates]
+        for i in xrange(len(neighborCandidates)):
+            # Flip sign for neighbors on the other side of the edge.
+            neighbor, distance = neighborCandidates[i]
+            a = v1.sub(v2)
+            b = v2.sub(neighbor)
+            direction = cmp(a.x * b.y - a.y * b.x, 0)
+            if direction > 0: 
+                distance *= -1
+            neighborCandidates[i] = (neighbor, distance)
+
+        leastNegative = None
+        leastPositive = None
+        for neighbor in neighborCandidates:
+            if neighbor[1] > 0:
+                if leastPositive is None or neighbor[1] < leastPositive[1]:
+                    leastPositive = neighbor
+            else:
+                if leastNegative is None or neighbor[1] > leastNegative[1]:
+                    leastNegative = neighbor
+        if leastNegative is None or leastPositive is None:
+            return None, None
+        return leastPositive[0], leastNegative[0]
+
+
+    # Calculate the angles (v1, n1, v2) and (v1, n2, v2) and return True iff
+    # their sum is less than pi.
+    def isDelaunay(self, v1, v2, n1, n2):
+        angleSum = 0
+        for i, vertex in enumerate([n1, n2]):
+            a1 = v1.sub(vertex).angle()
+            a2 = v2.sub(vertex).angle()
+            if a1 < 0:
+                a1 += 2 * math.pi
+            if a2 < 0:
+                a2 += 2 * math.pi
+            if i == 0:
+                angle = a1 - a2
+            else:
+                angle = a2 - a1
+            if angle < 0:
+                angle += 2 * math.pi
+            angleSum += angle
+        return angleSum < math.pi
+
    
     ## Return true if an edge from node1 to node2 crosses any of the given edges
     def crossesEdge(self, node1, node2):
