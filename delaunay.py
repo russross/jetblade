@@ -4,11 +4,9 @@ from vector2d import Vector2D
 import line
 from line import Line
 
-INFINISLOPE = 10 ** 6
-LINELEN = 1000
 NUMNODES = 15
-NODESPACING = 50
-SHOULD_DRAW = True
+NODESPACING = 11
+SHOULD_DRAW = False
 SHOULD_SAVE = False
 
 import cProfile
@@ -85,6 +83,7 @@ class Triangulator:
         bestCenter = None
         for node in nodeSet:
             cPrime = node.sub(seed)
+            # \todo d is 0 in rare situations.
             d = 2 * (bPrime.x * cPrime.y - bPrime.y - cPrime.x)
             centerX = (cPrime.y * (bPrime.x ** 2 + bPrime.y ** 2) - \
                        bPrime.y * (cPrime.x ** 2 + cPrime.y ** 2)) / d
@@ -213,14 +212,13 @@ class Triangulator:
                     # Edge is interior edge.
                     edgeQueue.append(tmp)
 
-        markedEdges = set()
-
+        # Edges that are currently in the queue, so we can avoid adding
+        # redundant edges.
+        queueMap = set(edgeQueue)
         while edgeQueue:
             (v1, v2) = edgeQueue.pop(0)
-            markedEdges.add((v1, v2))
+            queueMap.remove((v1, v2))
             n1, n2 = self.getNearestNeighbors(v1, v2)
-            if n1 is None or n2 is None:
-                continue
 
             if not self.isDelaunay(v1, v2, n1, n2):
                 # Triangles are not Delaunay; flip them.
@@ -234,10 +232,9 @@ class Triangulator:
                     tmp = list(vertPair)
                     tmp.sort(sortVectors)
                     tmp = tuple(tmp)
-                    if tmp in markedEdges:
-                        markedEdges.remove(tmp)
-                    if tmp not in sortedHull:
+                    if tmp not in sortedHull and tmp not in queueMap:
                         edgeQueue.append(tmp)
+                        queueMap.add(tmp)
                 self.drawAll(edges = self.edges, dirtyEdges = edgeQueue)
         self.drawAll(edges = self.edges, shouldForceSave = True)
   
