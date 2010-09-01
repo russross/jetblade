@@ -200,24 +200,26 @@ class Triangulator:
             tmp = [vertex, hull[(i + 1) % len(hull)]]
             tmp.sort(sortVectors)
             sortedHull.append(tuple(tmp))
+        sortedHull = set(sortedHull)
 
         edgeQueue = []
+        # Edges that are currently in the queue, so we can avoid adding
+        # redundant edges.
+        queueSet = set()
         ## Add all non-exterior edges to the edge queue.
         for sourceNode, targetNodes in self.edges.iteritems():
             for targetNode in targetNodes:
                 tmp = [sourceNode, targetNode]
                 tmp.sort(sortVectors)
                 tmp = tuple(tmp)
-                if tmp not in sortedHull and tmp not in edgeQueue:
+                if tmp not in sortedHull and tmp not in queueSet:
                     # Edge is interior edge.
                     edgeQueue.append(tmp)
+                    queueSet.add(tmp)
 
-        # Edges that are currently in the queue, so we can avoid adding
-        # redundant edges.
-        queueMap = set(edgeQueue)
         while edgeQueue:
             (v1, v2) = edgeQueue.pop(0)
-            queueMap.remove((v1, v2))
+            queueSet.remove((v1, v2))
             n1, n2 = self.getNearestNeighbors(v1, v2)
 
             if not self.isDelaunay(v1, v2, n1, n2):
@@ -232,9 +234,9 @@ class Triangulator:
                     tmp = list(vertPair)
                     tmp.sort(sortVectors)
                     tmp = tuple(tmp)
-                    if tmp not in sortedHull and tmp not in queueMap:
+                    if tmp not in sortedHull and tmp not in queueSet:
                         edgeQueue.append(tmp)
-                        queueMap.add(tmp)
+                        queueSet.add(tmp)
                 self.drawAll(edges = self.edges, dirtyEdges = edgeQueue)
         self.drawAll(edges = self.edges, shouldForceSave = True)
   
