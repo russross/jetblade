@@ -84,7 +84,7 @@ class Triangulator:
         for node in nodeSet:
             cPrime = node.sub(seed)
             # \todo d is 0 in rare situations.
-            d = 2 * (bPrime.x * cPrime.y - bPrime.y - cPrime.x)
+            d = 2 * (bPrime.x * cPrime.y - bPrime.y * cPrime.x)
             centerX = (cPrime.y * (bPrime.x ** 2 + bPrime.y ** 2) - \
                        bPrime.y * (cPrime.x ** 2 + cPrime.y ** 2)) / d
             centerY = (bPrime.x * (cPrime.x ** 2 + cPrime.y ** 2) - \
@@ -111,8 +111,6 @@ class Triangulator:
 
         # List of all nodes contained by the hull.
         interiorNodes = list(hull)
-
-        self.drawAll(self.nodes, interiorNodes)
 
         # 6. Resort remaining nodes by distance to the center of the 
         # circumcircle; this is the order we will add the nodes to the 
