@@ -5,8 +5,8 @@ import line
 from line import Line
 
 NUMNODES = 15
-NODESPACING = 11
-SHOULD_DRAW = False
+NODESPACING = 33
+SHOULD_DRAW = True
 SHOULD_SAVE = False
 
 import cProfile
@@ -37,12 +37,12 @@ class Triangulator:
     def __init__(self):
         ## List of all nodes in the graph
         self.nodes = []
-        for x in range(0, 800, NODESPACING * 2):
-            for y in range(0, 600, NODESPACING * 2):
+        for x in range(0, 800 - NODESPACING, NODESPACING * 2):
+            for y in range(0, 600 - NODESPACING, NODESPACING * 2):
                 if x >= 300 and x <= 500 and y >= 100 and y <= 500:
                     # Lock the location to the grid
                     self.nodes.append(
-                            Vector2D(x + NODESPACING, y + NODESPACING))
+                            Vector2D(x + NODESPACING / 2, y + NODESPACING / 2))
                 else:
                     self.nodes.append(
                             Vector2D(random.randint(x, x + NODESPACING), 
@@ -181,8 +181,7 @@ class Triangulator:
             interiorNodes.append(node)
             self.drawAll(self.nodes, interiorNodes)
 
-        self.drawAll(self.nodes, interiorNodes, 
-                shouldForceSave = True, shouldLabelNodes = True)
+        self.drawAll(self.nodes, interiorNodes, shouldForceSave = True)
 
 
     ## Given that we're done making a triangulation, make that triangulation
@@ -193,33 +192,29 @@ class Triangulator:
         # These are the edges that we know will never need to be flipped, as
         # they are on the perimeter of the graph.
         hull = self.constructHullFrom(Vector2D(-1, -1), self.nodes)
-        sortedHull = []
+        sortedHull = set()
         for i, vertex in enumerate(hull):
             # Ensure vertices are in a consistent ordering so we can do 
             # lookups on the hull later.
             tmp = [vertex, hull[(i + 1) % len(hull)]]
             tmp.sort(sortVectors)
-            sortedHull.append(tuple(tmp))
-        sortedHull = set(sortedHull)
+            sortedHull.add(tuple(tmp))
 
-        edgeQueue = []
-        # Edges that are currently in the queue, so we can avoid adding
-        # redundant edges.
-        queueSet = set()
-        ## Add all non-exterior edges to the edge queue.
+        # Queue is technically a misnomer here, since it implies order but
+        # this is unordered (as it doesn't need to be ordered).
+        edgeQueue = set()
+        # Add all non-exterior edges to the edge queue.
         for sourceNode, targetNodes in self.edges.iteritems():
             for targetNode in targetNodes:
                 tmp = [sourceNode, targetNode]
                 tmp.sort(sortVectors)
                 tmp = tuple(tmp)
-                if tmp not in sortedHull and tmp not in queueSet:
+                if tmp not in sortedHull and tmp not in edgeQueue:
                     # Edge is interior edge.
-                    edgeQueue.append(tmp)
-                    queueSet.add(tmp)
+                    edgeQueue.add(tmp)
 
         while edgeQueue:
-            (v1, v2) = edgeQueue.pop(0)
-            queueSet.remove((v1, v2))
+            (v1, v2) = edgeQueue.pop()
             n1, n2 = self.getNearestNeighbors(v1, v2)
 
             if not self.isDelaunay(v1, v2, n1, n2):
@@ -234,9 +229,8 @@ class Triangulator:
                     tmp = list(vertPair)
                     tmp.sort(sortVectors)
                     tmp = tuple(tmp)
-                    if tmp not in sortedHull and tmp not in queueSet:
-                        edgeQueue.append(tmp)
-                        queueSet.add(tmp)
+                    if tmp not in sortedHull and tmp not in edgeQueue:
+                        edgeQueue.add(tmp)
                 self.drawAll(edges = self.edges, dirtyEdges = edgeQueue)
         self.drawAll(edges = self.edges, shouldForceSave = True)
   
