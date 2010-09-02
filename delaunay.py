@@ -5,9 +5,12 @@ import line
 from line import Line
 
 NUMNODES = 15
-NODESPACING = 33
+NODESPACING = 25
 SHOULD_DRAW = True
-SHOULD_SAVE = False
+SHOULD_SAVE = True
+SCREEN_WIDTH = 400
+SCREEN_HEIGHT = 300
+PAD = 10
 
 import cProfile
 import math
@@ -20,7 +23,7 @@ if len(sys.argv) > 1:
 import pygame
 import pygame.locals
 pygame.init()
-screen = pygame.display.set_mode((800, 600))
+screen = pygame.display.set_mode((SCREEN_WIDTH + PAD * 2, SCREEN_HEIGHT + PAD * 2))
 
 
 ## Sort vertices by their distance to the given vertex.
@@ -37,16 +40,17 @@ class Triangulator:
     def __init__(self):
         ## List of all nodes in the graph
         self.nodes = []
-        for x in range(0, 800 - NODESPACING, NODESPACING * 2):
-            for y in range(0, 600 - NODESPACING, NODESPACING * 2):
+        for x in range(0, SCREEN_WIDTH - NODESPACING, NODESPACING * 2):
+            for y in range(0, SCREEN_HEIGHT - NODESPACING, NODESPACING * 2):
                 if x >= 300 and x <= 500 and y >= 100 and y <= 500:
                     # Lock the location to the grid
                     self.nodes.append(
-                            Vector2D(x + NODESPACING / 2, y + NODESPACING / 2))
+                            Vector2D(x + NODESPACING / 2 + PAD, 
+                                     y + NODESPACING / 2 + PAD))
                 else:
                     self.nodes.append(
-                            Vector2D(random.randint(x, x + NODESPACING), 
-                                     random.randint(y, y + NODESPACING)))
+                            Vector2D(random.randint(x, x + NODESPACING + PAD), 
+                                     random.randint(y, y + NODESPACING + PAD)))
 
         ## Maps node to list of nodes it is connected to.
         self.edges = dict()
@@ -83,8 +87,11 @@ class Triangulator:
         bestCenter = None
         for node in nodeSet:
             cPrime = node.sub(seed)
-            # \todo d is 0 in rare situations.
             d = 2 * (bPrime.x * cPrime.y - bPrime.y * cPrime.x)
+            if d == 0:
+                # Three nodes are collinear; there's no such thing as an 
+                # inscribed circumcircle in this case.
+                continue
             centerX = (cPrime.y * (bPrime.x ** 2 + bPrime.y ** 2) - \
                        bPrime.y * (cPrime.x ** 2 + cPrime.y ** 2)) / d
             centerY = (bPrime.x * (cPrime.x ** 2 + cPrime.y ** 2) - \
@@ -231,7 +238,12 @@ class Triangulator:
                         edgeQueue.add(tmp)
                 self.drawAll(edges = self.edges, dirtyEdges = edgeQueue)
         self.drawAll(edges = self.edges, shouldForceSave = True)
-  
+        totalEdges = 0
+        for node, targetNodes in self.edges.iteritems():
+            totalEdges += len(targetNodes)
+        totalEdges /= 2
+        print "Final triangulation has",totalEdges,"edges"
+
 
     ## Find the two triangles that share the specified edge, by sorting
     # neighbors by how far they are from the edge, and getting the two on
@@ -340,14 +352,33 @@ class Triangulator:
         return hullNodes
 
 
+    ## Generate a spanning tree from our graph.
+    def span(self):
+        # Pick a random starting node.
+        seed = random.choice(self.edges.keys())
+        newEdges = dict([(node, set()) for node in self.edges.keys()])
+        seenNodes = set([seed])
+        queue = [seed]
+        while queue:
+            node = queue.pop(0)
+            for neighbor in self.edges[node]:
+                if neighbor not in seenNodes:
+                    seenNodes.add(neighbor)
+                    newEdges[node].add(neighbor)
+                    newEdges[neighbor].add(node)
+                    queue.append(neighbor)
+            self.drawAll(edges = newEdges)
+        self.drawAll(edges = newEdges, shouldForceSave = True)
+
+
     def drawNodes(self, color, shouldLabelNodes, *args):
         for node in args:
-            pygame.draw.circle(screen, color, (node.ix, 600 - node.iy), 2)
+            pygame.draw.circle(screen, color, (node.ix, SCREEN_HEIGHT - node.iy), 2)
             if shouldLabelNodes:
                 label = self.font.render("%d,%d" % (node.ix, node.iy), True, (255, 255, 255))
                 rect = label.get_rect()
                 rect.left = node.ix + 5
-                rect.top = 600 - node.iy + 5
+                rect.top = SCREEN_HEIGHT - node.iy + 5
                 screen.blit(label, rect)
 
 
@@ -366,11 +397,11 @@ class Triangulator:
             for connection in connections:
                 if (node, connection) not in dirtyEdges and (connection, node) not in dirtyEdges:
                     pygame.draw.line(screen, (255, 255, 255), 
-                            (node.ix, 600 - node.iy),
-                            (connection.ix, 600 - connection.iy))
+                            (node.ix, SCREEN_HEIGHT - node.iy),
+                            (connection.ix, SCREEN_HEIGHT - connection.iy))
         for node1, node2 in dirtyEdges:
-            pygame.draw.line(screen, (255, 0, 0), (node1.ix, 600 - node1.iy),
-                    (node2.ix, 600 - node2.iy))
+            pygame.draw.line(screen, (255, 0, 0), (node1.ix, SCREEN_HEIGHT - node1.iy),
+                    (node2.ix, SCREEN_HEIGHT - node2.iy))
 
         if SHOULD_SAVE or shouldForceSave:
             self.drawCount += 1
@@ -383,5 +414,6 @@ def run():
     triangulator = Triangulator()
     triangulator.triangulate()
     triangulator.makeDelaunay()
+    triangulator.span()
 
 cProfile.run('run()', 'profiling.txt')
