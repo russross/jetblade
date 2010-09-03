@@ -2,6 +2,7 @@
 cdef class Vector2D:
     cdef public double x
     cdef public double y
+    cdef public double cachedMagnitude
     cpdef public Vector2D add(Vector2D self, Vector2D alt)
     cpdef public Vector2D addScalar(Vector2D self, double addend)
     cpdef public Vector2D addX(Vector2D self, double addend)
@@ -24,8 +25,10 @@ cdef class Vector2D:
     cpdef public Vector2D invert(Vector2D self)
     cpdef public double slope(Vector2D self)
     cpdef public double angle(Vector2D self)
+    cpdef public double angleWithVector(Vector2D self, Vector2D alt)
     cpdef public Vector2D projectOnto(Vector2D self, Vector2D alt)
     cpdef public double getComponentOn(Vector2D self, Vector2D vector)
+    cpdef public double dot(Vector2D self, Vector2D alt)
     cpdef public Vector2D interpolate(Vector2D self, Vector2D alt, double altWeight)
     cpdef public Vector2D clamp(Vector2D self, Vector2D clamp)
     cpdef public Vector2D toGridspace(Vector2D self)

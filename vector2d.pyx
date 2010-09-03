@@ -14,18 +14,20 @@ cdef class Vector2D:
     # argument which is assumed to be a tuple or list with at least two 
     # elements. If you want to make a Vector2D from another Vector2D, 
     # use the copy function.
-    def __new__(self, first, second = None):
+    def __new__(self, first, second = None, magnitude = -1):
         if second is None:
             self.x = first[0]
             self.y = first[1]
         else:
             self.x = first
             self.y = second
+        ## Cached copy of our magnitude.
+        self.cachedMagnitude = magnitude
 
 
     ## Return a copy of us.
     def copy(self):
-        return Vector2D(self.x, self.y)
+        return Vector2D(self.x, self.y, self.cachedMagnitude)
 
 
     ## Allows easy casting to an int
@@ -130,7 +132,9 @@ cdef class Vector2D:
 
     ## Return our magnitude
     cpdef public double magnitude(Vector2D self):
-        return math.sqrt(self.x**2 + self.y**2)
+        if self.cachedMagnitude == -1:
+            self.cachedMagnitude = math.sqrt(self.x**2 + self.y**2)
+        return self.cachedMagnitude
 
 
     ## Return the magnitude squared, to avoid the sqrt call when it's not needed
@@ -160,6 +164,11 @@ cdef class Vector2D:
         return math.atan2(self.y, self.x)
 
 
+    ## Return the angle made with the alternate vector.
+    cpdef public double angleWithVector(Vector2D self, Vector2D alt):
+        return math.acos(alt.normalize().dot(self.normalize()))
+
+
     ## Return the project of ourselves onto the given vector
     cpdef public Vector2D projectOnto(Vector2D self, Vector2D alt):
         if abs(alt.x) < constants.EPSILON:
@@ -179,6 +188,11 @@ cdef class Vector2D:
         if abs(vector.x) > constants.EPSILON:
             return projection.x / vector.x
         return projection.y / vector.y
+
+
+    ## Perform a dot product.
+    cpdef public double dot(Vector2D self, Vector2D alt):
+        return self.x * alt.x + self.y * alt.y
 
 
     ## Interpolate between us and alt with the given bias
@@ -251,13 +265,21 @@ cdef class Vector2D:
 
     ## Comparison test. Does not order vectors; just tests for equality.
     def __richcmp__(self, alt, int op):
-        isEqual = (abs(self.x - alt.x) < constants.EPSILON) and (abs(self.y - alt.y) < constants.EPSILON)
+        if type(self) != type(alt):
+            isEqual = False
+        else:
+            isEqual = (abs(self.x - alt.x) < constants.EPSILON) and (abs(self.y - alt.y) < constants.EPSILON)
         if (isEqual and op == 2) or (not isEqual and op == 3):
             return True
         return False
 
 
-    ## Convert to string
+    ## Convert to string (serialize)
+    def __repr__(self):
+        return "<Vector2D (" + str(self.x) + ", " + str(self.y) + ")>"
+
+
+    ## Convert to string (pretty-print)
     def __str__(self):
         return "<" + str(self.x) + ", " + str(self.y) + ">"
 
