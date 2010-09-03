@@ -1,4 +1,5 @@
 import constants
+from vector2d import Vector2D
 
 import pygame
 import math
@@ -37,10 +38,48 @@ class Line:
                 result.append(point)
         return result
 
-    ## Return the relationship between ourself and another line: 
-    # no intersection, crossing, coincident, or parallel but not coincident.
+    ## Get the point of intersection between us and another line, or one of 
+    # a few possible alternate results:
+    #  - LINE_COINCIDENT: lines lie on top of each other.
+    #  - LINE_PARALLEL: lines are parallel and non-coincident
+    #  - LINE_NO_COLLISION: Lines are not parallel but do not intersect
     # Logic pulled from http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
     def lineLineIntersect(self, alt):
+        (possibleResult, values) = self.getIntersectValues(alt)
+        if possibleResult is not None:
+            return possibleResult
+        (ua, ub) = values
+        if ua > 0 and ua < 1 and ub > 0 and ub < 1:
+            p1 = self.start
+            p2 = self.end
+            p3 = alt.start
+            p4 = alt.end
+            # Line segments intersect.
+            return LINE_INTERSECT
+        return LINE_NO_COLLISION
+
+
+    ## As lineLineIntersect, but treats both us and alt as being infinite, 
+    # and returns either no intersection or a Vector2D of the intersection
+    # point.
+    # \todo We should change this so lineLineIntersect calls this function
+    # and then verifies that the result is on the line segments.
+    def infiniteLineIntersect(self, alt):
+        (possibleResult, values) = self.getIntersectValues(alt)
+        if possibleResult is not None:
+            return possibleResult
+        (ua, ub) = values
+        p1 = self.start
+        p2 = self.end
+        p3 = alt.start
+        p4 = alt.end
+        return Vector2D(p1.x + ua * (p2.x - p1.x),
+                        p1.y + ua * (p2.y - p1.y))
+
+
+    ## Does some calculations common to lineLineIntersect and 
+    # infiniteLineIntersect
+    def getIntersectValues(self, alt):
         p1 = self.start
         p2 = self.end
         p3 = alt.start
@@ -53,15 +92,12 @@ class Line:
             if (abs(uaNumerator) < constants.DELTA and
                 abs(ubNumerator) < constants.DELTA):
                 # Lines are coincident
-                return LINE_COINCIDENT
+                return (LINE_COINCIDENT, None)
             # Parallel lines, so don't worry.
-            return LINE_PARALLEL
+            return (LINE_PARALLEL, None)
         ua = uaNumerator / denominator
         ub = ubNumerator / denominator
-        if ua > 0 and ua < 1 and ub > 0 and ub < 1:
-            # Line segments intersect.
-            return LINE_INTERSECT
-        return LINE_NO_COLLISION
+        return (None, (ua, ub))
 
     ## Return the distance from the point to the line. Logic taken from
     # http://www.codeguru.com/forum/printthread.php?t=194400
