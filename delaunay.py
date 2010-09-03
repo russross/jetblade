@@ -4,18 +4,20 @@ from vector2d import Vector2D
 import line
 from line import Line
 
-NUMNODES = 15
-NODESPACING = 25
-SHOULD_DRAW = True
-SHOULD_SAVE = True
-SCREEN_WIDTH = 400
-SCREEN_HEIGHT = 300
-PAD = 10
-
 import cProfile
 import math
 import random
 import sys
+
+NUMNODES = 15
+NODESPACING = 22
+SHOULD_DRAW = False
+SHOULD_SAVE = False
+ONLY_DRAW_WHEN_SAVE = True
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+PAD = 10
+MIN_ANGLE_DISTANCE = math.pi / 4
 
 if len(sys.argv) > 1:
     random.seed(sys.argv[1])
@@ -352,22 +354,75 @@ class Triangulator:
         return hullNodes
 
 
+    ## Find edges that are more than two standard deviations away from the
+    # average length, and remove them. Given the way nodes are placed, this
+    # should never cause the graph to become disconnected, but we don't
+    # actually have a guarantee of that.
+    def removeLongEdges(self):
+        # First, find the average and standard deviation edge length
+        edgeLengths = []
+        # Maps node-neighbor pairs to their edge lengths
+        nodeNodeDistances = dict()
+        for node, neighbors in self.edges.iteritems():
+            for neighbor in neighbors:
+                if (neighbor, node) in nodeNodeDistances:
+                    continue
+                distance = node.distance(neighbor)
+                nodeNodeDistances[(node, neighbor)] = distance
+                nodeNodeDistances[(neighbor, node)] = distance
+                edgeLengths.append(distance)
+        average = sum(edgeLengths) / len(edgeLengths)
+        deviations = [(distance - average) ** 2 for distance in edgeLengths]
+        standardDeviation = math.sqrt(sum(deviations) / len(deviations))
+        minEdgeLength = average - standardDeviation * 2
+        maxEdgeLength = average + standardDeviation * 2
+
+        newEdges = dict()
+        for node, neighbors in self.edges.iteritems():
+            newEdges[node] = set()
+            for neighbor in neighbors:
+                distance = nodeNodeDistances[(node, neighbor)]
+                if minEdgeLength < distance < maxEdgeLength:
+                    newEdges[node].add(neighbor)
+        self.edges = newEdges
+        self.drawAll(shouldForceSave = True)
+
+
     ## Generate a spanning tree from our graph.
     def span(self):
         # Pick a random starting node.
         seed = random.choice(self.edges.keys())
         newEdges = dict([(node, set()) for node in self.edges.keys()])
         seenNodes = set([seed])
-        queue = [seed]
+        queue = [seed, None]
         while queue:
             node = queue.pop(0)
+            if node is None:
+                if not queue:
+                    # Out of nodes to add to the spanning tree!
+                    break
+                # Finished connecting to all the nodes at this depth.
+                # Shuffle this set of nodes, to break up patterns that would
+                # otherwise emerge in the less random node layouts. 
+                random.shuffle(queue)
+                queue.append(None)
+                continue
             for neighbor in self.edges[node]:
                 if neighbor not in seenNodes:
-                    seenNodes.add(neighbor)
-                    newEdges[node].add(neighbor)
-                    newEdges[neighbor].add(node)
-                    queue.append(neighbor)
-            self.drawAll(edges = newEdges)
+                    # Make certain that adding the neighbor would not create
+                    # too acute an angle with any existing edges.
+                    neighborVector = neighbor.sub(node)
+                    canAddEdge = True
+                    for alt in newEdges[node]:
+                        altVector = alt.sub(node)
+                        angleDistance = altVector.angleWithVector(neighborVector)
+                        if abs(angleDistance) < MIN_ANGLE_DISTANCE:
+                            canAddEdge = False
+                    if canAddEdge:
+                        seenNodes.add(neighbor)
+                        newEdges[node].add(neighbor)
+                        newEdges[neighbor].add(node)
+                        queue.append(neighbor)
         self.drawAll(edges = newEdges, shouldForceSave = True)
 
 
@@ -385,7 +440,7 @@ class Triangulator:
     def drawAll(self, allNodes = None, interiorNodes = [], edges = None, 
                 dirtyEdges = [], shouldForceSave = False, 
                 shouldLabelNodes = False):
-        if not SHOULD_DRAW:
+        if not SHOULD_DRAW and not (ONLY_DRAW_WHEN_SAVE and shouldForceSave):
             return
         if edges is None:
             edges = self.edges
@@ -414,6 +469,7 @@ def run():
     triangulator = Triangulator()
     triangulator.triangulate()
     triangulator.makeDelaunay()
+    triangulator.removeLongEdges()
     triangulator.span()
 
 cProfile.run('run()', 'profiling.txt')
