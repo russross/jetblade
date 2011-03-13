@@ -67,7 +67,6 @@ class ImageManager:
         if name in self.frames:
             return self.frames[name]
         path = os.path.join(constants.spritePath, name + '.png')
-        logger.debug("Loading image file",path)
         surface = pygame.image.load(path)
         if has_alpha:
             surface = surface.convert_alpha()

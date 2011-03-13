@@ -55,7 +55,6 @@ class SceneryManager:
                 if key not in keyToSceneryWeightsMap:
                     keyToSceneryWeightsMap[key] = dict()
                 keyToSceneryWeightsMap[key][sceneryType] = scenerySettings['weight']
-        logger.debug("Keys for terrain",terrain,"are",keyToSceneryWeightsMap.keys())
         self.sceneryConfigCache[terrain]['signatureToWeightsMap'] = keyToSceneryWeightsMap
 
 

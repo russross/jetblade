@@ -121,7 +121,6 @@ class Animation:
 
     ## Reset internal state so the animation can be cleanly re-run.
     def reset(self):
-        logger.debug("Animation",self.name,"resetting")
         self.frame = 0
         self.prevFrame = 0
         self.isComplete = False

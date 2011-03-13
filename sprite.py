@@ -48,7 +48,6 @@ class Sprite:
             else:
                 action += '-r'
         if action != self.currentAnimation:
-            logger.debug("Sprite",self.name,"setting animation",action)
             curAnim.reset()
             self.currentAnimation = action
         return True
