@@ -230,7 +230,7 @@ class MapEdge:
                 # If we hit a space that's not a wall or open space, or
                 # if we hit a space that's owned by a node of the graph
                 # that we aren't connected to, put a wall in.
-                altNode = None
+                altEdge = None
                 if nearPoint in game.map.deadSeeds:
                     altEdge = game.map.deadSeeds[nearPoint].owner
                 if (game.map.blocks[nearPoint.ix][nearPoint.iy] == map.BLOCK_UNALLOCATED or
@@ -399,7 +399,8 @@ class MapEdge:
             if numSteps > maxWallwalkerSteps:
                 # This should never happen, and indicates something went 
                 # wrong in map generation.
-                game.map.drawStatus(marks = (self.start.loc, self.end.loc))
+                game.map.markLoc = self.start.loc.average(self.end.loc).toGridspace()
+                game.map.drawStatus(deadSeeds = game.map.deadSeeds)
                 logger.fatal("Hit maximum steps for node",self.id)
             # Get the space adjacent to our own that continues the walk, 
             # by using the Marching Squares algorithm
@@ -456,15 +457,24 @@ class MapEdge:
         p2 = self.end.loc.multiply(scale)
         pygame.draw.line(screen, self.color, p1.tuple(), p2.tuple(), 4)
 
+        font = pygame.font.Font(
+                os.path.join(constants.fontPath, 'MODENINE.TTF'), 16
+        )
         if self.isJunction():
-            font = pygame.font.Font(
-                    os.path.join(constants.fontPath, 'MODENINE.TTF'), 16
-            )
             text = font.render(str(self.start.loc.toGridspace()), False, (0, 127, 255))
             rect = text.get_rect()
             rect.left = p1.x - 50
             rect.top = p1.y
             screen.blit(text, rect)
+        else:
+            drawLoc = p1.average(p2)
+            for i, line in enumerate([str(self.id), self.tunnelType]):
+                text = font.render(line, False, (0, 127, 255))
+                rect = text.get_rect()
+                rect.left = drawLoc.x - 50
+                rect.top = drawLoc.y + 18 * i
+                screen.blit(text, rect)
+                
 
     
     ## Convert to string.

@@ -48,7 +48,7 @@ regionOverlayResolutionMultiplier = .1
 regionOverlayNumSeedingRetries = 10
 
 ## Amount to scale the map by when calling Map.drawStatus()
-drawStatusScaleFactor = .2
+drawStatusScaleFactor = .4
 ## Amount to scale the map by when calling Map.DrawAll()
 # Note that PyGame can't create surfaces bigger than about 16k pixels to a side
 drawAllScaleFactor = .2
@@ -421,14 +421,14 @@ class Map:
         # And expand those seeds into regions
         (blocks, seeds) = self.expandSeeds(seeds, blocks)
         
-        # There's no guarantee that we reached every space in blocks, so 
+        # There's no guarantee that we reached every space, so 
         # convert the ones that weren't touched into a default for that region,
         # while we turn everything into "open space" for fixSeedOwnership, which
-        # will eliminate islands for us.
+        # will eliminate islands (very small regions) for us.
         for i in xrange(0, cols):
             for j in xrange(0, rows):
-                if blocks[i][j] == BLOCK_UNALLOCATED:
-                    space = Vector2D(i, j)
+                space = Vector2D(i, j)
+                if space not in seeds:
                     zoneName = blockToZoneMap[space]
                     regionName = self.zoneData[zoneName]['biggestRegion']
                     if (zoneName, regionName) not in terrainInfoCache:
@@ -436,7 +436,6 @@ class Map:
                     seeds[space] = seed.Seed(terrainInfoCache[(zoneName, regionName)], 
                                              0, constants.BIGNUM)
                 blocks[i][j] = BLOCK_EMPTY
-
 
         (blocks, seeds) = self.fixSeedOwnership(blocks, seeds, 0)
 
@@ -613,9 +612,13 @@ class Map:
                     # own seed in which case we merge with it.
                     if not self.getIsInBounds(adjLoc, numCols, numRows):
                         continue
-                    if adjLoc in seeds and adjLoc not in newSeeds:
+                    if adjLoc in seeds or adjLoc in newSeeds:
                         # Two adjacent seeds; either merge or make wall.
-                        altSeed = seeds[adjLoc]
+                        altSeed = None
+                        if adjLoc in seeds:
+                            altSeed = seeds[adjLoc]
+                        else:
+                            altSeed = newSeeds[adjLoc]
                         if altSeed.owner == curSeed.owner:
                             # Merge the seeds
                             newSeeds[adjLoc] = seed.Seed(curSeed.owner, 
@@ -856,28 +859,29 @@ class Map:
 #                color = (color[0], color[1], color[2], 255)
 #                pygame.draw.rect(screen, color, overlayRect)
         
-        add = int(constants.blockSize / 2.0 * scale)
+        seedRadius = int(constants.blockSize / 2.0 * scale)
         if (deadSeeds is not None and len(deadSeeds) and 
                 hasattr(deadSeeds[deadSeeds.keys()[0]].owner, 'color')):
             for loc, seed in deadSeeds.iteritems():
-                drawLoc = loc.multiply(size).addScalar(add)
+                drawLoc = loc.multiply(size).addScalar(seedRadius).toInt()
                 pygame.draw.circle(screen, seed.owner.color, 
-                                   (drawLoc.ix, drawLoc.iy), add)
+                                   drawLoc.tuple(), seedRadius)
 
         if seeds is not None:
             for loc, seed in seeds.iteritems():
-                drawLoc = loc.multiply(size).addScalar(add)
+                drawLoc = loc.multiply(size).addScalar(seedRadius).toInt()
                 diff = 255 if seed.life <= 0 else int(255 / seed.life)
-                pygame.draw.circle(screen, (0, diff, 255-diff), drawLoc.tuple(), add)
+                pygame.draw.circle(screen, (0, diff, 255 - diff), 
+                        drawLoc.tuple(), seedRadius)
 
         if marks is not None:
             for loc in marks:
-                drawLoc = loc.multiply(size).addScalar(add)
-                pygame.draw.circle(screen, (255, 0, 0), drawLoc.tuple(), add)
+                drawLoc = loc.multiply(size).addScalar(seedRadius)
+                pygame.draw.circle(screen, (255, 0, 0), drawLoc.tuple(), seedRadius)
 
         if self.markLoc is not None:
-            drawLoc = self.markLoc.multiply(size).addScalar(add)
-            pygame.draw.circle(screen, (0, 255, 255), drawLoc.tuple(), add+4, 4)
+            drawLoc = self.markLoc.multiply(size).addScalar(seedRadius)
+            pygame.draw.circle(screen, (0, 255, 255), drawLoc.tuple(), seedRadius+4, 4)
 
             if shouldZoom:
                 subRect = pygame.Rect((self.markLoc.x * size - 400, 

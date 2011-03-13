@@ -11,6 +11,8 @@ class TerrainInfo:
 
     ## Instantiate an instance of the class.
     def __init__(self, zone, region):
+        self.id = constants.globalId
+        constants.globalId += 1
         self.zone = zone
         self.region = region
 

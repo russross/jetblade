@@ -12,5 +12,5 @@ class Seed:
         self.age = age
 
     def __str__(self):
-        return '[Seed: life ' + str(self.life) + '; age ' + str(self.age) + ']'
+        return '[Seed: owner ID ' + str(self.owner.id) + '; life ' + str(self.life) + '; age ' + str(self.age) + ']'
 
