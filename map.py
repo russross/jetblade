@@ -23,9 +23,9 @@ import random
 import pygame
 
 ## Minimum width of the game world
-minUniverseWidth = constants.blockSize * 200
+minUniverseWidth = constants.blockSize * 250
 ## Minimum height of the game world
-minUniverseHeight = constants.blockSize * 200
+minUniverseHeight = constants.blockSize * 250
 ## Degree to which the game world dimensions are allowed to vary. The range thus
 # defined is e.g. 
 # [minUniverseWidth, minUniverseWidth + universeDimensionVariance] for width.
@@ -36,7 +36,7 @@ wallThickness = 2
 
 ## Minimum size of a tree sector. Sectors smaller than this are absorbed into
 # neighboring sectors.
-minimumSectorSize = 10
+minimumSectorSize = 20
 ## Minimum size of a section of connected walls. smaller islands are 
 # converted to open space.
 minimumIslandSize = 20
@@ -678,8 +678,7 @@ class Map:
     ## Assign all open spaces to the sectors that own them.
     def assignSquares(self):
         for loc, seed in self.deadSeeds.iteritems():
-            if self.blocks[loc.ix][loc.iy] == BLOCK_EMPTY:
-                seed.owner.assignSpace(loc)
+            seed.owner.assignSpace(loc)
 
 
     ## Finds islands of dead seeds and reassigns their ownership.
@@ -694,30 +693,29 @@ class Map:
 
         numCols = len(blocks)
         numRows = len(blocks[0])
-        
-        for i in xrange(0, numCols):
-            for j in xrange(0, numRows):
-                key = Vector2D(i, j)
-                if (blocks[i][j] == BLOCK_EMPTY and 
-                        key not in spaceToChunkMap and 
-                        key in seeds):
-                    type = seeds[key].owner # Local sector type.
-                    newChunk = []
-                    fillStack = [key]
-                    spaceToChunkMap[key] = newChunk
-                    while fillStack:
-                        loc = fillStack.pop(0)
-                        newChunk.append(loc)
-                        for neighbor in loc.NEWSPerimeter():
-                            if (not self.getIsInBounds(neighbor, numCols, numRows) or
-                                    blocks[neighbor.ix][neighbor.iy] != BLOCK_EMPTY):
-                                continue
-                            if (neighbor not in spaceToChunkMap and 
-                                    neighbor in seeds and 
-                                    seeds[neighbor].owner == type):
-                                fillStack.append(neighbor)
-                                spaceToChunkMap[neighbor] = newChunk
-                    chunks.append(newChunk)
+
+        # \todo This level of indentation is faintly ridiculous; we can 
+        # probably clean this up by splitting the island-finding logic
+        # into its own thing.
+        for i, j in self.getIterBlocks():
+            key = Vector2D(i, j)
+            if key not in spaceToChunkMap and key in seeds:
+                type = seeds[key].owner # Local sector type.
+                newChunk = []
+                fillStack = [key]
+                spaceToChunkMap[key] = newChunk
+                while fillStack:
+                    loc = fillStack.pop(0)
+                    newChunk.append(loc)
+                    for neighbor in loc.NEWSPerimeter():
+                        if not self.getIsInBounds(neighbor, numCols, numRows):
+                            continue
+                        if (neighbor not in spaceToChunkMap and 
+                                neighbor in seeds and 
+                                seeds[neighbor].owner == type):
+                            fillStack.append(neighbor)
+                            spaceToChunkMap[neighbor] = newChunk
+                chunks.append(newChunk)
 
         chunkStack = []
         chunkStack.extend(chunks)
@@ -727,8 +725,6 @@ class Map:
                 # Find an adjacent chunk to merge with
                 altChunk = None
                 for loc in chunk:
-                    if altChunk is not None:
-                        break
                     for neighbor in loc.NEWSPerimeter():
                         if not self.getIsInBounds(neighbor, numCols, numRows):
                             continue
@@ -737,6 +733,8 @@ class Map:
                             # Found a different chunk to try merging with.
                             altChunk = spaceToChunkMap[neighbor]
                             break
+                    if altChunk is not None:
+                        break
                 if altChunk is not None:
                     newType = seeds[altChunk[0]].owner
                     for loc in chunk:
@@ -1384,3 +1382,9 @@ class Map:
     def getBounds(self):
         return pygame.rect.Rect((0, 0), (self.width, self.height))
 
+
+    ## Utility function for when we need to iterate over the entire map.
+    def getIterBlocks(self):
+        for i in xrange(self.numCols):
+            for j in xrange(self.numRows):
+                yield (i, j)

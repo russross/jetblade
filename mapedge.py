@@ -35,7 +35,7 @@ verticalTunnelPlatformPatterns = [[-1, 0, 1], [1, 0, -1], [1, 0, -1, 0]]
 verticalTunnelPlatformGap = 4
 
 
-## See http://en.wikipedia.org/wiki/Marching_squares
+## See http://en.wikipedia.org/w/index.php?title=Marching_squares&oldid=354746853
 # Values of each subsquare (for determining index into this list) are:
 # 8 1
 # 4 2
@@ -399,7 +399,7 @@ class MapEdge:
             if numSteps > maxWallwalkerSteps:
                 # This should never happen, and indicates something went 
                 # wrong in map generation.
-                game.map.markLoc = self.start.loc.average(self.end.loc).toGridspace()
+                game.map.markLoc = currentSpace
                 game.map.drawStatus(deadSeeds = game.map.deadSeeds)
                 logger.fatal("Hit maximum steps for node",self.id)
             # Get the space adjacent to our own that continues the walk, 
