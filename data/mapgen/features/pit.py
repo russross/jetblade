@@ -30,7 +30,7 @@ class Pit(straight.StraightTunnel):
         
         (start, end) = self.sector.getStartAndEndLoc()
         if start is None or end is None:
-            logger.error("Unable to make pit for",self.sector.id,"from",self.sector.loc,"to",self.sector.parent.loc)
+            logger.error("Unable to make pit for",self.sector.id,"from",self.sector.start.loc,"to",self.sector.end.loc)
             return
         
         if start.x > end.x:

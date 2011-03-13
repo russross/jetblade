@@ -19,8 +19,8 @@ class BumpyTunnel(straight.StraightTunnel):
     ## Create a series of short tunnel segments connecting the 
     # start and ends of the sector.
     def carveTunnel(self):
-        start = self.sector.parent.loc
-        end = self.sector.loc
+        start = self.sector.start.loc
+        end = self.sector.end.loc
         totalDist = start.distance(end)
         directionVector = end.sub(start).normalize()
         totalDirection = math.atan2(directionVector.y, directionVector.x)

@@ -19,11 +19,11 @@ def getClassName():
 # create a staircase.
 class StairsTunnel(straight.StraightTunnel):
     def createFeature(self):
-        # Only if the angle from us to our parent is shallow enough
+        # Only if the angle from start to end is shallow enough
         slope = self.sector.getSlope()
         if abs(slope) > maxSlope or abs(slope) < minSlope:
             return
-        intercept = (self.sector.loc.y - self.sector.loc.x * slope) / constants.blockSize
+        intercept = (self.sector.start.loc.y - self.sector.start.loc.x * slope) / constants.blockSize
 
 
         touchedColumns = set()

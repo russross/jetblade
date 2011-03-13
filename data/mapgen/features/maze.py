@@ -28,7 +28,7 @@ class Maze(straight.StraightTunnel):
         # Fill our area with a maze, putting an opening at either end.
         (startLoc, endLoc) = self.sector.getStartAndEndLoc()
         if startLoc is None or endLoc is None:
-            logger.debug("Unable to make maze for",self.sector.id,"from",self.sector.loc,"to",self.sector.parent.loc)
+            logger.debug("Unable to make maze for",self.sector.id,"from",self.sector.start.loc,"to",self.sector.end.loc)
             return
 
         (minX, minY, maxX, maxY) = self.sector.getSectorBounds()
@@ -118,7 +118,7 @@ class Maze(straight.StraightTunnel):
                 break
 
         if shouldRevert:
-            logger.debug("Unable to make maze for",self.sector.id,"from",self.sector.loc,"to",self.sector.parent.loc)
+            logger.debug("Unable to make maze for",self.sector.id,"from",self.sector.start.loc,"to",self.sector.end.loc)
             for block in changedBlocks:
                 self.map.blocks[block.ix][block.iy] = map.BLOCK_EMPTY
         else:

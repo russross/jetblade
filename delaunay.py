@@ -1,65 +1,66 @@
-#!/usr/local/bin/python2.5
-import pyximport; pyximport.install()
-from vector2d import Vector2D
+import constants
 import line
-from line import Line
+import quadtree
+from vector2d import Vector2D
 
-import cProfile
 import math
+import os
+import pygame
 import random
 import sys
 
-NUMNODES = 15
-NODESPACING = 22
-SHOULD_DRAW = False
-SHOULD_SAVE = False
-ONLY_DRAW_WHEN_SAVE = True
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-PAD = 10
-MIN_ANGLE_DISTANCE = math.pi / 4
-
-if len(sys.argv) > 1:
-    random.seed(sys.argv[1])
-
-import pygame
-import pygame.locals
-pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH + PAD * 2, SCREEN_HEIGHT + PAD * 2))
-
+## Minimum angular distance between two neighbors in the graph.
+MIN_ANGLE_DISTANCE = math.pi / 3
 
 ## Sort vertices by their distance to the given vertex.
 def sortByDistanceTo(location):
     return lambda a, b: int(a.distanceSquared(location) - b.distanceSquared(location))
 
+
 ## Sort vectors into a consistent, if arbitrary, order.
 def sortVectors(a, b):
-    return (a.ix - b.ix) * 1000000 + (a.iy - b.iy)
+    return cmp(a.ix, b.ix) or cmp(a.iy, b.iy)
+
+
+## Simple wrapper class for Vector2D instances that allows them to be 
+# added to quadtrees.
+class VectorWrap():
+    def __init__(self, vector):
+        self.vector = vector
+    def getBounds(self):
+        return pygame.rect.Rect(self.vector.x, self.vector.y, 
+                self.vector.x + constants.EPSILON, 
+                self.vector.y + constants.EPSILON)
 
 
 ## Class for generating Delaunay triangulations of graphs.
 class Triangulator:
-    def __init__(self):
-        ## List of all nodes in the graph
-        self.nodes = []
-        for x in range(0, SCREEN_WIDTH - NODESPACING, NODESPACING * 2):
-            for y in range(0, SCREEN_HEIGHT - NODESPACING, NODESPACING * 2):
-                if x >= 300 and x <= 500 and y >= 100 and y <= 500:
-                    # Lock the location to the grid
-                    self.nodes.append(
-                            Vector2D(x + NODESPACING / 2 + PAD, 
-                                     y + NODESPACING / 2 + PAD))
-                else:
-                    self.nodes.append(
-                            Vector2D(random.randint(x, x + NODESPACING + PAD), 
-                                     random.randint(y, y + NODESPACING + PAD)))
+    def __init__(self, nodes, minDistanceEdgeToNode):
+        ## List of all nodes in the graph, as Vector2Ds
+        self.nodes = list(nodes)
+    
+        ## Figure out the min/max extent of the nodes
+        minX = minY = maxX = maxY = None
+        for node in nodes:
+            if minX is None:
+                minX = maxX = node.x
+                minY = maxY = node.y
+            minX = min(minX, node.x)
+            maxX = max(maxX, node.x)
+            minY = min(minY, node.y)
+            maxY = max(maxY, node.y)
+        self.min = Vector2D(minX, minY)
+        self.max = Vector2D(maxX, maxY)
 
         ## Maps node to list of nodes it is connected to.
         self.edges = dict()
-        ## For drawing coordinates
-        self.font = pygame.font.Font("data/fonts/MODENINE.TTF", 12)
+        ## Minimum distance between an edge and any node not in that edge.
+        # Violators will be pruned.
+        self.minDistanceEdgeToNode = minDistanceEdgeToNode
         ## Number of times we've drawn, for saving output
         self.drawCount = 0
+        ## A font for output; strictly for debugging purposes.
+        self.font = pygame.font.Font(os.path.join(constants.fontPath, 'MODENINE.TTF'), 14)
 
 
     ## Generate a triangulation of our nodes
@@ -186,9 +187,9 @@ class Triangulator:
                 hull = newHull
 
             interiorNodes.append(node)
-            self.drawAll(self.nodes, interiorNodes)
+#            self.drawAll(self.nodes, interiorNodes)
 
-        self.drawAll(self.nodes, interiorNodes, shouldForceSave = True)
+#        self.drawAll(self.nodes, interiorNodes, shouldForceSave = True)
 
 
     ## Given that we're done making a triangulation, make that triangulation
@@ -238,8 +239,8 @@ class Triangulator:
                     tmp = tuple(tmp)
                     if tmp not in sortedHull and tmp not in edgeQueue:
                         edgeQueue.add(tmp)
-                self.drawAll(edges = self.edges, dirtyEdges = edgeQueue)
-        self.drawAll(edges = self.edges, shouldForceSave = True)
+#                self.drawAll(edges = self.edges, dirtyEdges = edgeQueue)
+#        self.drawAll(edges = self.edges, shouldForceSave = True)
         totalEdges = 0
         for node, targetNodes in self.edges.iteritems():
             totalEdges += len(targetNodes)
@@ -295,10 +296,10 @@ class Triangulator:
    
     ## Return true if an edge from node1 to node2 crosses any of the given edges
     def crossesEdge(self, node1, node2):
-        newLine = Line(node1, node2)
+        newLine = line.Line(node1, node2)
         for source, targets in self.edges.iteritems():
             for target in targets:
-                altLine = Line(source, target)
+                altLine = line.Line(source, target)
                 collision = newLine.lineLineIntersect(altLine)
                 if collision == line.LINE_INTERSECT:
                     return True
@@ -354,38 +355,35 @@ class Triangulator:
         return hullNodes
 
 
-    ## Find edges that are more than two standard deviations away from the
-    # average length, and remove them. Given the way nodes are placed, this
-    # should never cause the graph to become disconnected, but we don't
-    # actually have a guarantee of that.
-    def removeLongEdges(self):
-        # First, find the average and standard deviation edge length
-        edgeLengths = []
-        # Maps node-neighbor pairs to their edge lengths
-        nodeNodeDistances = dict()
-        for node, neighbors in self.edges.iteritems():
-            for neighbor in neighbors:
-                if (neighbor, node) in nodeNodeDistances:
-                    continue
-                distance = node.distance(neighbor)
-                nodeNodeDistances[(node, neighbor)] = distance
-                nodeNodeDistances[(neighbor, node)] = distance
-                edgeLengths.append(distance)
-        average = sum(edgeLengths) / len(edgeLengths)
-        deviations = [(distance - average) ** 2 for distance in edgeLengths]
-        standardDeviation = math.sqrt(sum(deviations) / len(deviations))
-        minEdgeLength = average - standardDeviation * 2
-        maxEdgeLength = average + standardDeviation * 2
-
+    ## Find edges that come too close to nodes, and remove them. Given the
+    # high degree of interconnectedness between nodes, this should never
+    # cause the graph to become disconnected, but really we have no guarantee.
+    def removeBadEdges(self):
+        # Make a tree to hold the nodes so we can quickly look up which
+        # nodes are near a given edge.
+        rect = pygame.rect.Rect(self.min.x, self.min.y, self.max.x, self.max.y)
+        tree = quadtree.QuadTree(rect)
+        tree.addObjects([VectorWrap(v) for v in self.nodes])
         newEdges = dict()
         for node, neighbors in self.edges.iteritems():
             newEdges[node] = set()
             for neighbor in neighbors:
-                distance = nodeNodeDistances[(node, neighbor)]
-                if minEdgeLength < distance < maxEdgeLength:
+                edge = line.Line(node, neighbor)
+                edgeRect = edge.getBounds()
+                edgeRect.left -= self.minDistanceEdgeToNode
+                edgeRect.top -= self.minDistanceEdgeToNode
+                edgeRect.width += 2 * self.minDistanceEdgeToNode
+                edgeRect.height += 2 * self.minDistanceEdgeToNode
+                isSafeEdge = True
+                for vecWrap in tree.getObjectsIntersectingRect(edgeRect):
+                    nearNode = vecWrap.vector
+                    if (nearNode not in [node, neighbor] and 
+                            edge.pointDistance(nearNode) < self.minDistanceEdgeToNode):
+                        isSafeEdge = False
+                if isSafeEdge:
                     newEdges[node].add(neighbor)
         self.edges = newEdges
-        self.drawAll(shouldForceSave = True)
+#        self.drawAll(shouldForceSave = True)
 
 
     ## Generate a spanning tree from our graph.
@@ -423,53 +421,64 @@ class Triangulator:
                         newEdges[node].add(neighbor)
                         newEdges[neighbor].add(node)
                         queue.append(neighbor)
-        self.drawAll(edges = newEdges, shouldForceSave = True)
+#        self.drawAll(edges = newEdges, shouldForceSave = True)
+        return newEdges
 
 
-    def drawNodes(self, color, shouldLabelNodes, *args):
+    ## Run the entire process, starting from raw nodes and ending with a 
+    # minimum spanning tree of a Delaunay triangulation of those nodes.
+    def makeGraph(self):
+        self.triangulate()
+        self.makeDelaunay()
+        self.removeBadEdges()
+        return self.span()
+
+
+    ## Draw the nodes in the graph. Purely for debugging purposes.
+    def drawNodes(self, outputImage, color, shouldLabelNodes, *args):
         for node in args:
-            pygame.draw.circle(screen, color, (node.ix, SCREEN_HEIGHT - node.iy), 2)
+            drawX = node.ix * 800 / self.max.x
+            drawY = node.iy * 800 / self.max.y
+            pygame.draw.circle(outputImage, color, (drawX, drawY), 2)
             if shouldLabelNodes:
                 label = self.font.render("%d,%d" % (node.ix, node.iy), True, (255, 255, 255))
                 rect = label.get_rect()
-                rect.left = node.ix + 5
-                rect.top = SCREEN_HEIGHT - node.iy + 5
-                screen.blit(label, rect)
+                rect.left = drawX + 5
+                rect.top = drawY + 5
+                outputImage.blit(label, rect)
 
 
+    ## Draw the graph and save it to a file. This is strictly for debugging
+    # purposes.
     def drawAll(self, allNodes = None, interiorNodes = [], edges = None, 
                 dirtyEdges = [], shouldForceSave = False, 
                 shouldLabelNodes = False):
-        if not SHOULD_DRAW and not (ONLY_DRAW_WHEN_SAVE and shouldForceSave):
-            return
+        outputImage = pygame.Surface((800, 800))
         if edges is None:
             edges = self.edges
-        screen.fill((0, 0, 0), None)
+        outputImage.fill((0, 0, 0), None)
         if allNodes is not None:
-            self.drawNodes((255, 0, 0), shouldLabelNodes, *allNodes)
-        self.drawNodes((0, 255, 0), shouldLabelNodes, *interiorNodes)
+            self.drawNodes(outputImage, (255, 0, 0), shouldLabelNodes, *allNodes)
+        self.drawNodes(outputImage, (0, 255, 0), shouldLabelNodes, *interiorNodes)
+
         for node, connections in edges.iteritems():
+            aX = node.ix * 800 / self.max.x
+            aY = node.iy * 800 / self.max.y
             for connection in connections:
+                bX = connection.ix * 800 / self.max.x
+                bY = connection.iy * 800 / self.max.y
                 if (node, connection) not in dirtyEdges and (connection, node) not in dirtyEdges:
-                    pygame.draw.line(screen, (255, 255, 255), 
-                            (node.ix, SCREEN_HEIGHT - node.iy),
-                            (connection.ix, SCREEN_HEIGHT - connection.iy))
+                    pygame.draw.line(outputImage, (255, 255, 255), 
+                            (aX, aY), (bX, bY))
         for node1, node2 in dirtyEdges:
-            pygame.draw.line(screen, (255, 0, 0), (node1.ix, SCREEN_HEIGHT - node1.iy),
-                    (node2.ix, SCREEN_HEIGHT - node2.iy))
+            aX = node1.ix * 800 / self.max.x
+            aY = node1.iy * 800 / self.max.y
+            bX = node2.ix * 800 / self.max.x
+            bY = node2.iy * 800 / self.max.y
+            pygame.draw.line(outputImage, (255, 0, 0), (aX, aY), (bX, bY))
 
-        if SHOULD_SAVE or shouldForceSave:
-            self.drawCount += 1
-            pygame.image.save(screen, "graph%04d.png" % self.drawCount)
-            print "Saved status update",self.drawCount
-        pygame.display.update()
+        self.drawCount += 1
+        pygame.image.save(outputImage, "graph%04d.png" % self.drawCount)
+        print "Saved status update",self.drawCount
 
 
-def run():
-    triangulator = Triangulator()
-    triangulator.triangulate()
-    triangulator.makeDelaunay()
-    triangulator.removeLongEdges()
-    triangulator.span()
-
-cProfile.run('run()', 'profiling.txt')

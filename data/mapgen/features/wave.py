@@ -15,12 +15,11 @@ waveTunnelMagnitude = 3 * constants.blockSize
 def getClassName():
     return 'WaveTunnel'
 
-## Carve a sinusoidal wave tunnel from the self.sector's 
-# parent to its endpoint.
+## Carve a sinusoidal wave tunnel.
 class WaveTunnel(straight.StraightTunnel):
     def carveTunnel(self):
-        start = self.sector.parent.loc
-        end = self.sector.loc
+        start = self.sector.start.loc
+        end = self.sector.end.loc
         width = self.sector.getTunnelWidth()
         dist = start.distance(end)
         # Get the multiplier needed to obtain the desired number of cycles.

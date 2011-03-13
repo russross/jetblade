@@ -1,4 +1,3 @@
-
 cdef class Vector2D:
     cdef public double x
     cdef public double y

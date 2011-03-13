@@ -1,6 +1,6 @@
 import constants
-import math
 
+import math
 
 ## This class represents a two-dimensional vector. Many functions are provided
 # that allow modification of Vector2Ds; however, none of them alter the 

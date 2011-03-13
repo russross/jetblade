@@ -1,6 +1,6 @@
 import constants
 import line
-import treenode
+import mapgraph
 import zone
 import block
 import furniture
@@ -29,7 +29,7 @@ minUniverseHeight = constants.blockSize * 200
 ## Degree to which the game world dimensions are allowed to vary. The range thus
 # defined is e.g. 
 # [minUniverseWidth, minUniverseWidth + universeDimensionVariance] for width.
-universeDimensionVariance = constants.blockSize * 100
+universeDimensionVariance = constants.blockSize * 00
 
 ## Amount to thicken walls by in Map.expandWalls
 wallThickness = 2
@@ -52,10 +52,6 @@ drawStatusScaleFactor = .2
 ## Amount to scale the map by when calling Map.DrawAll()
 # Note that PyGame can't create surfaces bigger than about 16k pixels to a side
 drawAllScaleFactor = .2
-
-## Minimum physical distance between branches of the tree that describes the 
-# general shape of the map.
-treePruneDistance = 15 * constants.blockSize
 
 # Platform placement parameters
 ## Distance from the wall/ceiling to build platforms.
@@ -175,8 +171,8 @@ class Map:
         ## Holds background scenery.
         self.backgroundQuadTree = None
 
-        ## Marks high-level structure of the map.
-        self.tree = None
+        ## MapEdge instances that mark the tunnels of the map.
+        self.tunnelEdges = []
 
         ## Holds configuration information for the different zones
         self.zoneData = None
@@ -251,14 +247,6 @@ class Map:
         self.furnitureQuadTree = quadtree.QuadTree(self.getBounds())
         self.backgroundQuadTree = quadtree.QuadTree(self.getBounds())
 
-        ## This quadtree holds lines; we use it to make certain that limbs of
-        # the tree do not come too close to each other (or intersect). 
-        self.treeLines = quadtree.QuadTree(self.getBounds())
-        self.treeLines.addObjects([line.Line(Vector2D(0, 0), Vector2D(self.width, 0)),
-                line.Line(Vector2D(self.width, 0), Vector2D(self.width, self.height)),
-                line.Line(Vector2D(self.width, self.height), Vector2D(0, self.height)),
-                line.Line(Vector2D(0, self.height), Vector2D(0, 0))])
-
         ## A quadtree of Platform instances created during fixAccessibility, 
         # that will be converted into actual blocks near the end of mapgen.
         self.platformsQuadTree = quadtree.QuadTree(self.getBounds())
@@ -286,49 +274,38 @@ class Map:
             for j in xrange(0, self.numRows):
                 self.blocks[i].append(BLOCK_UNALLOCATED)
                 self.envGrid[i].append([])
-        
+
         # Generate the tree that will be used to mark out tunnels.
-        self.tree = treenode.TreeNode(Vector2D(self.width / 2.0, self.height / 2.0))
-        depth = 0
-        while self.tree.createTree():
-            depth += 1
-            logger.inform("Created tree at depth",depth,"at",pygame.time.get_ticks())
-#            self.drawStatus()
-        logger.inform("Done constructing tree at",pygame.time.get_ticks())
+        logger.inform("Generating graph of map at",pygame.time.get_ticks())
+        self.tunnelEdges = mapgraph.makeGraph([])
          
         # Lay the seeds for those tunnels.
         logger.inform("Planting seeds at",pygame.time.get_ticks())
-        self.tree.createTunnels()
+        [edge.carveTunnel() for edge in self.tunnelEdges]
 
         # Expand the seeds and carve out those tunnels. 
         logger.inform("Expanding seeds at",pygame.time.get_ticks())
         (self.blocks, self.deadSeeds) = self.expandSeeds(self.seeds, self.blocks)
-#        self.drawStatus()
 
         # Clean up the points where tunnels meet.
         logger.inform("Creating junctions at",pygame.time.get_ticks())
-        self.createJunctions()
-#        self.drawStatus()
+        [edge.createJunction() for edge in self.tunnelEdges]
 
         # Remove isolated chunks of land.
         logger.inform("Removing islands at",pygame.time.get_ticks())
         self.removeIslands()
-#        self.drawStatus()
 
         # Make the walls a bit thicker.
         logger.inform("Expanding walls at",pygame.time.get_ticks())
         self.expandWalls()
-#        self.drawStatus()
 
         # Tell the tree nodes which spaces belong to them.
         logger.inform("Assigning squares at",pygame.time.get_ticks())
         self.assignSquares()
-#        self.drawStatus()
 
         # Fill in tunnels with interesting terrain.
         logger.inform("Creating tunnel features at",pygame.time.get_ticks())
-        self.tree.createFeatures()
-#        self.drawStatus()
+        [edge.createFeatures() for edge in self.tunnelEdges]
 
         # Reassign any seeds that got isolated in the last step to prevent
         # loops in the next step.
@@ -338,11 +315,11 @@ class Map:
 
         # Walk the walls and put down furniture objects
         logger.inform("Placing furniture at",pygame.time.get_ticks())
-        self.placeFurniture()
+        [edge.placeFurniture() for edge in self.tunnelEdges]
 
         # Place platforms down to make inaccessible areas accessible.
         logger.inform("Fixing accessibility at",pygame.time.get_ticks())
-        self.fixAccessibility()
+        [edge.fixAccessibility() for edge in self.tunnelEdges]
 #        self.drawStatus()
 
         # Mark those platforms on the map.
@@ -355,10 +332,10 @@ class Map:
 
         logger.inform("Drawing status at",pygame.time.get_ticks())
         self.markLoc = None
-        self.drawStatus(self.blocks, None, self.deadSeeds)
+        self.drawStatus(self.blocks, None, None)
 
         # \todo Pick a better starting point for the player.
-        self.startLoc = Vector2D(int(self.numCols / 2), int(self.numRows / 2))
+        self.startLoc = self.tunnelEdges[0].start.loc.toGridspace()
         while self.blocks[self.startLoc.ix][self.startLoc.iy] != BLOCK_EMPTY:
             self.startLoc = self.startLoc.addY(-1)
 
@@ -465,13 +442,9 @@ class Map:
 
         result = dict()
         for loc, resultSeed in seeds.iteritems():
-            result[loc] = resultSeed.node
+            result[loc] = resultSeed.owner
+
         return result
-
-
-    ## Create open junctions wherever two corridors meet.
-    def createJunctions(self):
-        self.tree.createJunctions()
 
 
     ## Widen every wall by adding walls on either side.
@@ -643,9 +616,9 @@ class Map:
                     if adjLoc in seeds and adjLoc not in newSeeds:
                         # Two adjacent seeds; either merge or make wall.
                         altSeed = seeds[adjLoc]
-                        if altSeed.node == curSeed.node:
+                        if altSeed.owner == curSeed.owner:
                             # Merge the seeds
-                            newSeeds[adjLoc] = seed.Seed(curSeed.node, 
+                            newSeeds[adjLoc] = seed.Seed(curSeed.owner, 
                                     max(curSeed.life, altSeed.life) - 1,
                                     max(curSeed.age, altSeed.age) + 1)
                         else:
@@ -658,7 +631,7 @@ class Map:
                             blocks[adjLoc.ix][adjLoc.iy] = BLOCK_WALL
                     elif blocks[loc.ix][loc.iy] == BLOCK_UNALLOCATED:
                         # No seed there; plant one.
-                        newSeeds[adjLoc] = seed.Seed(curSeed.node, curSeed.life - 1, curSeed.age + 1)
+                        newSeeds[adjLoc] = seed.Seed(curSeed.owner, curSeed.life - 1, curSeed.age + 1)
                     elif (blocks[adjLoc.ix][adjLoc.iy] != BLOCK_EMPTY and
                             deadSeeds.has_key(adjLoc)):
                         # Hit a wall containing a dead seed; try to merge
@@ -685,17 +658,17 @@ class Map:
     # \param loc The location that seed is expanding into
     def tryMergeDeadSeed(self, curSeed, loc, seeds, deadSeeds, numCols, numRows):
         altSeed = deadSeeds[loc]
-        if altSeed.node != curSeed.node:
+        if altSeed.owner != curSeed.owner:
             return None
         for neighbor in loc.perimeter():
             if not self.getIsInBounds(neighbor, numCols, numRows):
                 continue
-            if neighbor in seeds and seeds[neighbor].node != curSeed.node:
+            if neighbor in seeds and seeds[neighbor].owner != curSeed.owner:
                 return None
-            if neighbor in deadSeeds and deadSeeds[neighbor].node != curSeed.node:
+            if neighbor in deadSeeds and deadSeeds[neighbor].owner != curSeed.owner:
                 return None
 
-        newSeed = seed.Seed(curSeed.node, curSeed.life - 1, curSeed.age + 1)
+        newSeed = seed.Seed(curSeed.owner, curSeed.life - 1, curSeed.age + 1)
         return newSeed
 
 
@@ -703,7 +676,7 @@ class Map:
     def assignSquares(self):
         for loc, seed in self.deadSeeds.iteritems():
             if self.blocks[loc.ix][loc.iy] == BLOCK_EMPTY:
-                seed.node.assignSpace(loc)
+                seed.owner.assignSpace(loc)
 
 
     ## Finds islands of dead seeds and reassigns their ownership.
@@ -725,7 +698,7 @@ class Map:
                 if (blocks[i][j] == BLOCK_EMPTY and 
                         key not in spaceToChunkMap and 
                         key in seeds):
-                    type = seeds[key].node # Local sector type.
+                    type = seeds[key].owner # Local sector type.
                     newChunk = []
                     fillStack = [key]
                     spaceToChunkMap[key] = newChunk
@@ -738,7 +711,7 @@ class Map:
                                 continue
                             if (neighbor not in spaceToChunkMap and 
                                     neighbor in seeds and 
-                                    seeds[neighbor].node == type):
+                                    seeds[neighbor].owner == type):
                                 fillStack.append(neighbor)
                                 spaceToChunkMap[neighbor] = newChunk
                     chunks.append(newChunk)
@@ -762,13 +735,13 @@ class Map:
                             altChunk = spaceToChunkMap[neighbor]
                             break
                 if altChunk is not None:
-                    newType = seeds[altChunk[0]].node
+                    newType = seeds[altChunk[0]].owner
                     for loc in chunk:
                         seed = seeds[loc]
                         if shouldReassignSpaces:
-                            seed.node.unassignSpace(loc)
+                            seed.owner.unassignSpace(loc)
                             newType.assignSpace(loc)
-                        seeds[loc].node = newType
+                        seeds[loc].owner = newType
                         spaceToChunkMap[loc] = altChunk
                     altChunk.extend(chunk)
                     chunkStack.append(altChunk)
@@ -781,24 +754,12 @@ class Map:
         return (blocks, seeds)
 
 
-    ## Call treenode.placeFurniture to add interesting solid features to the
-    # map.
-    def placeFurniture(self):
-        self.tree.placeFurniture()
-
-
-    ## Call treenode.fixAccessibility() to create platforms to ensure map 
-    # accessibility.
-    def fixAccessibility(self):
-        self.tree.fixAccessibility()
-
-
     ## Find the nearest wall to the given starting block along the 
     # normalized vector direction. Return the realspace distance to that wall.
-    # \param node Node in the tree that we are to contain our search to. If 
+    # \param edge MapEdge in the tree that we are to contain our search to. If 
     # None, then do not constrain the search. Otherwise, treat regions outside
     # that node's area as walls.
-    def getDistanceToWall(self, start, direction, node = None):
+    def getDistanceToWall(self, start, direction, edge = None):
         currentSpace = start.copy()
         intCurrent = currentSpace.toInt()
         distance = 0
@@ -809,8 +770,8 @@ class Map:
         while (self.getIsInBounds(currentSpace) and
                 (self.blocks[intCurrent.ix][intCurrent.iy] == BLOCK_EMPTY or
                      distance < 2) and
-                (node is None or intCurrent in self.deadSeeds and
-                    self.deadSeeds[intCurrent].node == node)):
+                (edge is None or intCurrent in self.deadSeeds and
+                    self.deadSeeds[intCurrent].owner == edge)):
             currentSpace = currentSpace.add(direction)
             intCurrent = currentSpace.toInt()
             distance = currentSpace.distance(start)
@@ -897,10 +858,10 @@ class Map:
         
         add = int(constants.blockSize / 2.0 * scale)
         if (deadSeeds is not None and len(deadSeeds) and 
-                hasattr(deadSeeds[deadSeeds.keys()[0]].node, 'color')):
+                hasattr(deadSeeds[deadSeeds.keys()[0]].owner, 'color')):
             for loc, seed in deadSeeds.iteritems():
                 drawLoc = loc.multiply(size).addScalar(add)
-                pygame.draw.circle(screen, seed.node.color, 
+                pygame.draw.circle(screen, seed.owner.color, 
                                    (drawLoc.ix, drawLoc.iy), add)
 
         if seeds is not None:
@@ -926,19 +887,14 @@ class Map:
                 subSurface.blit(screen, (0, 0), subRect)
                 screen = subSurface
 
-        if self.markLoc is None and self.tree is not None:
-            self.tree.draw(screen, scale)
+        if self.markLoc is None:
+            [edge.draw(screen, scale) for edge in self.tunnelEdges]
 
         pygame.image.save(screen, 'premap-%03d' % self.statusIter + '.png')
         game.imageManager.drawBackground()
         if self.markLoc is None:
             # Non-zoomed view, so scale it so it all fits.
             screen = pygame.transform.rotozoom(screen, 0, constants.sw / float(self.width * scale))
-        game.imageManager.blitSurface(screen, 
-                pygame.rect.Rect(0, 0, constants.sw, constants.sh),
-                Vector2D(constants.sw / 2, constants.sh / 2))
-        pygame.display.flip()
-        logger.debug("Status drawn")
 
 
     ## Draw a complete view of the map for purposes of looking pretty. Saves 
@@ -1000,62 +956,11 @@ class Map:
         game.imageManager.drawList(self.blockDisplayList)
 
 
-    ## Determine if the given line is allowed to be added to our set. Invalid
-    # lines come too close to other lines. This code ensures that we don't have
-    # accidental crossings in the map.
-    # \param safePoints List of points that are already known to connect to 
-    # other lines in the tree. newLine is allowed to touch points in safePoints,
-    # but otherwise is not allowed to come close to other lines.
-    def getIsValidLine(self, newLine, safePoints):
-        rect = newLine.getBounds()
-        center = copy.deepcopy(rect.center)
-        rect.width += 2 * treePruneDistance
-        rect.height += 2 * treePruneDistance
-        rect.center = center
-        for altLine in self.treeLines.getObjectsIntersectingRect(rect):
-            collisionResult = altLine.lineLineIntersect(newLine)
-            # We only allow lines with shared endpoints if only one endpoint
-            # is shared, and the lines are not coincident. Or, they may be 
-            # coincident if
-            # the point that isn't shared is far from the other line
-            # (because this means the new line is a continuation of the old 
-            # one)
-            for p1 in [altLine.start, altLine.end]:
-                for p2 in [newLine.start, newLine.end]:
-                    if p1.distance(p2) < constants.DELTA:
-                        # altLine and newLine share a point. Check if it's
-                        # a safe one.
-                        isSafePoint = False
-                        for p3 in safePoints:
-                            if p1 == p3 or p2 == p3:
-                                isSafePoint = True
-                                break
-                        if not isSafePoint:
-                            return False
-            if collisionResult in [line.LINE_INTERSECT, line.LINE_COINCIDENT]:
-                # No crossing lines
-                return False
-            if (not newLine.end.fuzzyMatchList(safePoints) and
-                    altLine.pointDistance(newLine.end) < treePruneDistance):
-                # Endpoint of new line can't be too close to other lines
-                return False
-            if (not altLine.end.fuzzyMatchList(safePoints) and 
-                    newLine.pointDistance(altLine.end) < treePruneDistance): 
-                # Endpoints of existing lines can't be too close to new line
-                return False
-        return True
-
-
-    ## Add the given line to our set.
-    def addLine(self, line):
-        self.treeLines.addObject(line)
-
-
     ## Assign the given space to the given node, and unassign it from whoever
     # owned it before.
     def assignSpace(self, space, node):
         if space in self.deadSeeds:
-            self.deadSeeds[space].node.unassignSpace(space)
+            self.deadSeeds[space].owner.unassignSpace(space)
         node.assignSpace(space)
         self.deadSeeds[space] = seed.Seed(node, 0, constants.BIGNUM)
 
@@ -1445,8 +1350,6 @@ class Map:
         regionLoc = loc.multiply(regionOverlayResolutionMultiplier).toInt()
         if regionLoc in self.regions:
             return self.regions[regionLoc]
-        logger.warn("At",loc,"(adjusted to",regionLoc,") I don't have any region info")
-        logger.debug("Regions are",[(str(vec), str(self.regions[vec])) for vec in self.regions.keys()])
         return None
 
 
@@ -1461,7 +1364,7 @@ class Map:
     def getSectorAtGridLoc(self, loc):
         if loc not in self.deadSeeds:
             return None
-        return self.deadSeeds[loc].node
+        return self.deadSeeds[loc].owner
 
 
     ## Return the data in the specified field for the given terrain type.

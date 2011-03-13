@@ -141,7 +141,7 @@ class ImageManager:
 
     ## Convert an SDL-style surface into an OpenGL texture and blit it.
     def blitSurface(self, surface, rect, cameraLoc):
-        game.log.debug("Pretending to blit surface", surface, "with rect", rect)
+        logger.debug("Pretending to blit surface", surface, "with rect", rect)
         texture = self.createTextureFromSurface(surface)
         size = Vector2D(rect.width, rect.height)
         topLeft = Vector2D(rect.left, rect.top).add(cameraLoc).sub(size.multiply(.5))

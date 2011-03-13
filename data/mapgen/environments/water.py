@@ -33,10 +33,9 @@ class Water(enveffect.EnvEffect):
     # depth to the pool until either we hit maxWaterDepth or the next layer
     # would intrude into another region.
     def createRegion(self, gameMap, sector):
-        logger.debug("Creating a water region at",sector)
         waterSpaces = dict()
         # Find the midpoint of this tunnel.
-        center = sector.loc.average(sector.parent.loc).toGridspace()
+        center = sector.start.loc.average(sector.end.loc).toGridspace()
         
         # Find the floor of the tunnel
         while gameMap.getBlockAtGridLoc(center) == 0:

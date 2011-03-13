@@ -20,12 +20,12 @@ class StraightTunnel:
     # be X in all directions", and the map will try to accomodate all these 
     # requests to the best of its ability.
     # In this specific case, we simply lay down a set of seeds along the line 
-    # connecting the sector to its parent, with each seed having the same 
+    # connecting the start to the end, with each seed having the same 
     # radius.
     def carveTunnel(self, width = None, start = None, end = None):
         if start is None or end is None:
-            start = self.sector.parent.loc
-            end = self.sector.loc
+            start = self.sector.start.loc
+            end = self.sector.end.loc
         
         delta = end.sub(start)
         slope = delta.slope()
@@ -55,8 +55,8 @@ class StraightTunnel:
 
     ## As carveTunnel, but only for vertical situations. 
     def carveVerticalTunnel(self):
-        start = self.sector.parent.loc
-        end = self.sector.loc
+        start = self.sector.start.loc
+        end = self.sector.end.loc
         width = self.sector.getTunnelWidth()
 
         currentLoc = start.copy()
