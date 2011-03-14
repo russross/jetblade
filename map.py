@@ -48,7 +48,7 @@ regionOverlayResolutionMultiplier = .1
 regionOverlayNumSeedingRetries = 10
 
 ## Amount to scale the map by when calling Map.drawStatus()
-drawStatusScaleFactor = .4
+drawStatusScaleFactor = .1
 ## Amount to scale the map by when calling Map.DrawAll()
 # Note that PyGame can't create surfaces bigger than about 16k pixels to a side
 drawAllScaleFactor = .2
@@ -311,7 +311,6 @@ class Map:
         # loops in the next step.
         logger.inform("Fixing seed ownership at",pygame.time.get_ticks())
         (self.blocks, self.deadSeeds) = self.fixSeedOwnership(self.blocks, self.deadSeeds)
-#        self.drawStatus()
 
         # Walk the walls and put down furniture objects
         logger.inform("Placing furniture at",pygame.time.get_ticks())
@@ -320,7 +319,6 @@ class Map:
         # Place platforms down to make inaccessible areas accessible.
         logger.inform("Fixing accessibility at",pygame.time.get_ticks())
         [edge.fixAccessibility() for edge in self.tunnelEdges]
-#        self.drawStatus()
 
         # Mark those platforms on the map.
         logger.inform("Building platforms at",pygame.time.get_ticks())
@@ -675,10 +673,16 @@ class Map:
         return newSeed
 
 
-    ## Assign all open spaces to the sectors that own them.
+    ## Ensure that all open spaces are owned, and that no walls are owned.
     def assignSquares(self):
-        for loc, seed in self.deadSeeds.iteritems():
-            seed.owner.assignSpace(loc)
+        for (i, j) in self.getIterBlocks():
+            loc = Vector2D(i, j)
+            if loc in self.deadSeeds:
+                if self.blocks[loc.ix][loc.iy] == BLOCK_EMPTY:
+                    self.deadSeeds[loc].owner.assignSpace(loc)
+                else:
+                    self.deadSeeds[loc].owner.unassignSpace(loc)
+                    self.deadSeeds.pop(loc)
 
 
     ## Finds islands of dead seeds and reassigns their ownership.
@@ -708,7 +712,8 @@ class Map:
                     loc = fillStack.pop(0)
                     newChunk.append(loc)
                     for neighbor in loc.NEWSPerimeter():
-                        if not self.getIsInBounds(neighbor, numCols, numRows):
+                        if (not self.getIsInBounds(neighbor, numCols, numRows) or
+                                blocks[neighbor.ix][neighbor.iy] != BLOCK_EMPTY):
                             continue
                         if (neighbor not in spaceToChunkMap and 
                                 neighbor in seeds and 
