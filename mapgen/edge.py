@@ -1,6 +1,6 @@
 import game
 import constants
-import map
+import generator
 import seed
 import util
 import logger
@@ -220,7 +220,7 @@ class MapEdge:
         # Convert each claimed point into open space. Then check its neighbors,
         # and fill them with walls if they aren't related to us.
         for point in claimedPoints:
-            game.map.blocks[point.ix][point.iy] = map.BLOCK_EMPTY
+            game.map.blocks[point.ix][point.iy] = generator.BLOCK_EMPTY
             game.map.assignSpace(point, self)
 
             # Patch walls around the deleted space
@@ -233,11 +233,11 @@ class MapEdge:
                 altEdge = None
                 if nearPoint in game.map.deadSeeds:
                     altEdge = game.map.deadSeeds[nearPoint].owner
-                if (game.map.blocks[nearPoint.ix][nearPoint.iy] == map.BLOCK_UNALLOCATED or
+                if (game.map.blocks[nearPoint.ix][nearPoint.iy] == generator.BLOCK_UNALLOCATED or
                         (altEdge is not None and
                          not self.start.isEdgeRelated(altEdge))
                    ):
-                    game.map.blocks[nearPoint.ix][nearPoint.iy] = map.BLOCK_WALL
+                    game.map.blocks[nearPoint.ix][nearPoint.iy] = generator.BLOCK_WALL
                     game.map.deadSeeds[nearPoint] = seed.Seed(self, 0, constants.BIGNUM)
 
 
@@ -284,7 +284,7 @@ class MapEdge:
         bottomLoc = bottomLoc.addY(-self.getJunctionRadius() / 2.0)
         bottomLoc = bottomLoc.toGridspace()
         topLoc = topLoc.toGridspace()
-        platformWidth = random.choice(map.platformWidths)
+        platformWidth = random.choice(generator.platformWidths)
         game.map.addPlatform(bottomLoc, platformWidth)
 
         # Now place platforms along the tunnel according to the pattern.
@@ -323,11 +323,11 @@ class MapEdge:
                     break
             # Default to checking for platforms above the floor
             lineDelta = Vector2D(0, -1)
-            buildDistance = map.minDistForFloorPlatform
+            buildDistance = generator.minDistForFloorPlatform
             if isWallOrCeiling:
                 # Draw the line perpendicular to the local surface instead.
                 lineDelta = Vector2D(math.cos(angle), math.sin(angle))
-                buildDistance = map.minDistForPlatform
+                buildDistance = generator.minDistForPlatform
             distance = game.map.getDistanceToWall(currentSpace, lineDelta, self)
             if distance > buildDistance:
                 game.map.markPlatform(currentSpace, lineDelta, distance)
@@ -386,7 +386,7 @@ class MapEdge:
                     # Check neighboring spaces for walls
                     shouldReturnSpace = False
                     for space in currentSpace.perimeter():
-                        if game.map.getBlockAtGridLoc(space) != map.BLOCK_EMPTY:
+                        if game.map.getBlockAtGridLoc(space) != generator.BLOCK_EMPTY:
                             shouldReturnSpace = True
                             break
                 if shouldReturnSpace:

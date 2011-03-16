@@ -1,6 +1,6 @@
 import straight
 import game
-import map
+import mapgen.generator
 import constants
 import logger
 from vector2d import Vector2D
@@ -42,8 +42,8 @@ class Pit(straight.StraightTunnel):
 
         # Set up walls to contain the bottom of the pit.
         for y in range(surfaceY, bottomY + 1):
-            self.map.blocks[start.ix][y] = map.BLOCK_WALL
-            self.map.blocks[end.ix][y] = map.BLOCK_WALL
+            self.map.blocks[start.ix][y] = mapgen.generator.BLOCK_WALL
+            self.map.blocks[end.ix][y] = mapgen.generator.BLOCK_WALL
 
         # Now fill the pit with stuff.
         # \todo Make this more variable. For now, just add water.
@@ -55,8 +55,8 @@ class Pit(straight.StraightTunnel):
         # Now add platforms across the pit.
         # \todo Add a variety of platform types. Keep in mind the ceiling may
         # be low.
-        for x in range(start.ix, end.ix + 1, map.minHorizDistToOtherPlatforms):
+        for x in range(start.ix, end.ix + 1, mapgen.generator.minHorizDistToOtherPlatforms):
             top = int(random.uniform(surfaceY - 2, surfaceY + 1))
             for y in range(top, bottomY):
-                self.map.blocks[x][y] = map.BLOCK_WALL
+                self.map.blocks[x][y] = mapgen.generator.BLOCK_WALL
 

@@ -2,7 +2,7 @@
 
 import game
 import font
-import map
+import mapgen.generator
 import camera
 import constants
 import logger
@@ -68,7 +68,7 @@ physicsUpdatesPerSecond = 30
 def startGame():
     game.map = None
     if game.mapFilename:
-        game.map = map.Map(game.mapFilename)
+        game.map = mapgen.generator.Map(game.mapFilename)
         game.map.init()
         if game.shouldSaveImage:
             game.log.warn("Drawing the entire map was broken as part " + 
@@ -89,7 +89,7 @@ def startGame():
                 game.seed = int(time.time())
                 logger.inform("Using seed",game.seed)
                 random.seed(str(game.seed))
-            game.map = map.Map()
+            game.map = mapgen.generator.Map()
             game.map.init()
             if game.shouldSaveImage:
                 game.map.drawAll(str(game.seed) + '.png')

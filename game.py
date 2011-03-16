@@ -10,7 +10,7 @@ import fontmanager
 import furnituremanager
 import gameobjectmanager
 import imagemanager
-import mapeditor
+import mapgen.editor
 import scenerymanager
 import soundmanager
 
@@ -26,7 +26,7 @@ fontManager = fontmanager.FontManager()
 furnitureManager = furnituremanager.FurnitureManager()
 gameObjectManager = gameobjectmanager.GameObjectManager()
 imageManager = imagemanager.ImageManager()
-mapEditor = mapeditor.MapEditor()
+mapEditor = mapgen.editor.MapEditor()
 sceneryManager = scenerymanager.SceneryManager()
 soundManager = soundmanager.SoundManager()
 

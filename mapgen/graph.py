@@ -1,7 +1,7 @@
 import constants
 import delaunay
 import game
-import mapedge
+import edge
 from vector2d import Vector2D
 
 import random
@@ -46,7 +46,7 @@ class GraphNode:
         if neighbor not in self.neighbors:
             self.neighbors.add(neighbor)
             neighbor.neighbors.add(self)
-            newEdge = mapedge.MapEdge(self, neighbor)
+            newEdge = edge.MapEdge(self, neighbor)
             return newEdge
         return None
 

@@ -1,7 +1,7 @@
 import straight
 import constants
 import logger
-import map
+import mapgen.generator
 import vector2d
 from vector2d import Vector2D
 
@@ -47,7 +47,7 @@ class Maze(straight.StraightTunnel):
         changedBlocks = set()
         for loc in self.sector.spaces:
             if loc.x % 2 or loc.y % 2:
-                self.map.blocks[loc.ix][loc.iy] = map.BLOCK_WALL
+                self.map.blocks[loc.ix][loc.iy] = mapgen.generator.BLOCK_WALL
                 changedBlocks.add(loc)
 
         # Run the growing tree algorithm
@@ -68,7 +68,7 @@ class Maze(straight.StraightTunnel):
                 # and end up with blocked-off corridors.
                 # \todo Find a better way to handle this.
                 if (offY >= self.map.numRows or 
-                        self.map.blocks[cell.ix][offY] != map.BLOCK_EMPTY or
+                        self.map.blocks[cell.ix][offY] != mapgen.generator.BLOCK_EMPTY or
                         Vector2D(cell.x, offY) not in self.sector.spaces):
                     break
                 verticalClearance += 1
@@ -76,7 +76,7 @@ class Maze(straight.StraightTunnel):
             for i in range(1, mazeMaximumColumnHeight):
                 offY = cell.iy - i
                 if (offY < 0 or 
-                        self.map.blocks[cell.ix][offY] != map.BLOCK_EMPTY or
+                        self.map.blocks[cell.ix][offY] != mapgen.generator.BLOCK_EMPTY or
                         Vector2D(cell.x, offY) not in self.sector.spaces):
                     break
                 verticalClearance += 1
@@ -102,7 +102,7 @@ class Maze(straight.StraightTunnel):
             cellStack.append(neighbor)
             # Get the offset to reach the wall.
             wallLoc = cell.add(neighbor.sub(cell).divide(2))
-            self.map.blocks[wallLoc.ix][wallLoc.iy] = map.BLOCK_EMPTY
+            self.map.blocks[wallLoc.ix][wallLoc.iy] = mapgen.generator.BLOCK_EMPTY
             seenCells.add(wallLoc)
 
         # Step five: because of our limit on vertical expansion, it's possible 
@@ -111,7 +111,7 @@ class Maze(straight.StraightTunnel):
         # bits of it be blocked off.
         shouldRevert = False
         for loc in self.sector.spaces:
-            if (self.map.getBlockAtGridLoc(loc) == map.BLOCK_EMPTY and 
+            if (self.map.getBlockAtGridLoc(loc) == mapgen.generator.BLOCK_EMPTY and 
                     loc not in seenCells):
                 logger.debug("Cell",loc,"not reachable")
                 shouldRevert = True
@@ -120,7 +120,7 @@ class Maze(straight.StraightTunnel):
         if shouldRevert:
             logger.debug("Unable to make maze for",self.sector.id,"from",self.sector.start.loc,"to",self.sector.end.loc)
             for block in changedBlocks:
-                self.map.blocks[block.ix][block.iy] = map.BLOCK_EMPTY
+                self.map.blocks[block.ix][block.iy] = mapgen.generator.BLOCK_EMPTY
         else:
             # Step six: clear some space at the beginning and end of the maze.
             for loc in [startLoc, endLoc]:
@@ -133,7 +133,7 @@ class Maze(straight.StraightTunnel):
                         if y < 0 or y >= self.map.numRows:
                             continue
                         if Vector2D(x, y) in self.sector.spaces:
-                            self.map.blocks[x][y] = map.BLOCK_EMPTY
+                            self.map.blocks[x][y] = mapgen.generator.BLOCK_EMPTY
                 self.map.addPlatform(loc, mazeEndpointOpenSpace)
             self.madeMaze = True
         

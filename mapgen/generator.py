@@ -1,6 +1,6 @@
 import constants
 import line
-import mapgraph
+import graph
 import zone
 import block
 import furniture
@@ -23,9 +23,9 @@ import random
 import pygame
 
 ## Minimum width of the game world
-minUniverseWidth = constants.blockSize * 250
+minUniverseWidth = constants.blockSize * 500
 ## Minimum height of the game world
-minUniverseHeight = constants.blockSize * 250
+minUniverseHeight = constants.blockSize * 500
 ## Degree to which the game world dimensions are allowed to vary. The range thus
 # defined is e.g. 
 # [minUniverseWidth, minUniverseWidth + universeDimensionVariance] for width.
@@ -277,7 +277,7 @@ class Map:
 
         # Generate the tree that will be used to mark out tunnels.
         logger.inform("Generating graph of map at",pygame.time.get_ticks())
-        self.tunnelEdges = mapgraph.makeGraph([])
+        self.tunnelEdges = graph.makeGraph([])
          
         # Lay the seeds for those tunnels.
         logger.inform("Planting seeds at",pygame.time.get_ticks())
@@ -286,31 +286,38 @@ class Map:
         # Expand the seeds and carve out those tunnels. 
         logger.inform("Expanding seeds at",pygame.time.get_ticks())
         (self.blocks, self.deadSeeds) = self.expandSeeds(self.seeds, self.blocks)
+        self.drawStatus(deadSeeds = self.deadSeeds)
 
         # Clean up the points where tunnels meet.
         logger.inform("Creating junctions at",pygame.time.get_ticks())
         [edge.createJunction() for edge in self.tunnelEdges]
+        self.drawStatus(deadSeeds = self.deadSeeds)
 
         # Remove isolated chunks of land.
         logger.inform("Removing islands at",pygame.time.get_ticks())
         self.removeIslands()
+        self.drawStatus(deadSeeds = self.deadSeeds)
 
         # Make the walls a bit thicker.
         logger.inform("Expanding walls at",pygame.time.get_ticks())
         self.expandWalls()
+        self.drawStatus(deadSeeds = self.deadSeeds)
 
         # Tell the tree nodes which spaces belong to them.
         logger.inform("Assigning squares at",pygame.time.get_ticks())
         self.assignSquares()
+        self.drawStatus(deadSeeds = self.deadSeeds)
 
         # Fill in tunnels with interesting terrain.
         logger.inform("Creating tunnel features at",pygame.time.get_ticks())
         [edge.createFeatures() for edge in self.tunnelEdges]
+        self.drawStatus(deadSeeds = self.deadSeeds)
 
         # Reassign any seeds that got isolated in the last step to prevent
         # loops in the next step.
         logger.inform("Fixing seed ownership at",pygame.time.get_ticks())
         (self.blocks, self.deadSeeds) = self.fixSeedOwnership(self.blocks, self.deadSeeds)
+        self.drawStatus(deadSeeds = self.deadSeeds)
 
         # Walk the walls and put down furniture objects
         logger.inform("Placing furniture at",pygame.time.get_ticks())
@@ -556,13 +563,13 @@ class Map:
 
     ## Run a spacefilling automaton to divide a grid up into different sectors.
     # \param seeds A mapping of locations to Seed instances
-    # \param blocks A grid of blocks
+    # \param blocks A grid of cells to be converted into walls and open spaces
     # Each seed ordinarily replaces all neighbor spaces with copies of itself
     # that have 1 less turn to live. When a seed dies (has 0 life), its location
     # is marked as open in the blocks grid. Dead seeds are retained so we can
     # map spaces to the sectors that own those spaces.
     # When two expanding seeds collide, they merge if they are for the same
-    # sector (as determined by their 'node' property), or form a wall between
+    # sector (as determined by their 'owner' property), or form a wall between
     # them if they are not. 
     def expandSeeds(self, seeds, blocks):
         deadSeeds = dict()
@@ -683,6 +690,20 @@ class Map:
                 else:
                     self.deadSeeds[loc].owner.unassignSpace(loc)
                     self.deadSeeds.pop(loc)
+            elif self.blocks[i][j] == BLOCK_EMPTY:
+                # Unowned open space. Either find a neighbor to assign it to,
+                # or if there are no valid neighbors, turn it into a wall.
+                didAssign = False
+                for neighbor in loc.NEWSPerimeter():
+                    if neighbor in self.deadSeeds:
+                        base = self.deadSeeds[neighbor]
+                        self.deadSeeds[loc] = seed.Seed(base.owner, base.life, 
+                                constants.BIGNUM)
+                        base.owner.assignSpace(loc)
+                        didAssign = True
+                        break
+                if not didAssign:
+                    self.blocks[i][j] = BLOCK_WALL
 
 
     ## Finds islands of dead seeds and reassigns their ownership.
@@ -756,6 +777,8 @@ class Map:
                     # isolated by walls. Turn it into one.
                     for loc in chunk:
                         blocks[loc.ix][loc.iy] = BLOCK_WALL
+                        self.deadSeeds[loc].owner.unassignSpace(loc)
+                        del self.deadSeeds[loc]
                         
         return (blocks, seeds)
 
@@ -834,8 +857,6 @@ class Map:
             blocks = self.blocks
         self.statusIter += 1
         logger.debug("Drawing status number",self.statusIter,"with mark",self.markLoc)
-#        if self.statusIter < 25:
-#            return
         # Draw things a bit smaller...
         scale = drawStatusScaleFactor
         screen = pygame.Surface((self.width * scale, self.height * scale))
@@ -866,13 +887,13 @@ class Map:
         if (deadSeeds is not None and len(deadSeeds) and 
                 hasattr(deadSeeds[deadSeeds.keys()[0]].owner, 'color')):
             for loc, seed in deadSeeds.iteritems():
-                drawLoc = loc.multiply(size).addScalar(seedRadius).toInt()
+                drawLoc = loc.multiply(size).addScalar(seedRadius)
                 pygame.draw.circle(screen, seed.owner.color, 
-                                   drawLoc.tuple(), seedRadius)
+                        (drawLoc.ix, drawLoc.iy), seedRadius)
 
         if seeds is not None:
             for loc, seed in seeds.iteritems():
-                drawLoc = loc.multiply(size).addScalar(seedRadius).toInt()
+                drawLoc = loc.multiply(size).addScalar(seedRadius)
                 diff = 255 if seed.life <= 0 else int(255 / seed.life)
                 pygame.draw.circle(screen, (0, diff, 255 - diff), 
                         drawLoc.tuple(), seedRadius)
@@ -880,7 +901,8 @@ class Map:
         if marks is not None:
             for loc in marks:
                 drawLoc = loc.multiply(size).addScalar(seedRadius)
-                pygame.draw.circle(screen, (255, 0, 0), drawLoc.tuple(), seedRadius)
+                pygame.draw.circle(screen, (255, 0, 0), 
+                        (drawLoc.ix, drawLoc.iy), seedRadius)
 
         if self.markLoc is not None:
             drawLoc = self.markLoc.multiply(size).addScalar(seedRadius)
@@ -894,8 +916,8 @@ class Map:
                 subSurface.blit(screen, (0, 0), subRect)
                 screen = subSurface
 
-        if self.markLoc is None:
-            [edge.draw(screen, scale) for edge in self.tunnelEdges]
+#        if self.markLoc is None:
+#            [edge.draw(screen, scale) for edge in self.tunnelEdges]
 
         pygame.image.save(screen, 'premap-%03d' % self.statusIter + '.png')
         game.imageManager.drawBackground()

@@ -1,4 +1,4 @@
-import map
+import mapgen.generator
 import enveffect
 import logger
 from vector2d import Vector2D
@@ -69,7 +69,7 @@ class Water(enveffect.EnvEffect):
 
                 newWaterSpaces[block] = True
                 for neighbor in block.NEWSPerimeter():
-                    if gameMap.getBlockAtGridLoc(neighbor) == map.BLOCK_EMPTY:
+                    if gameMap.getBlockAtGridLoc(neighbor) == mapgen.generator.BLOCK_EMPTY:
                         if neighbor.y < center.y - waterDepth:
                             # Neighbor is above the current water line, so add 
                             # it to the top layer
@@ -77,7 +77,7 @@ class Water(enveffect.EnvEffect):
                         elif (neighbor in fillBlocks or 
                                 neighbor in newWaterSpaces or 
                                 neighbor in waterSpaces or
-                                gameMap.getBlockAtGridLoc(neighbor) != map.BLOCK_EMPTY):
+                                gameMap.getBlockAtGridLoc(neighbor) != mapgen.generator.BLOCK_EMPTY):
                             # Space is invalid or already enqueued
                             continue
                         else:
