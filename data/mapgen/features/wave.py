@@ -18,8 +18,8 @@ def getClassName():
 ## Carve a sinusoidal wave tunnel.
 class WaveTunnel(straight.StraightTunnel):
     def carveTunnel(self):
-        start = self.sector.start.loc
-        end = self.sector.end.loc
+        start = self.sector.start
+        end = self.sector.end
         width = self.sector.getTunnelWidth()
         dist = start.distance(end)
         # Get the multiplier needed to obtain the desired number of cycles.

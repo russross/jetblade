@@ -35,7 +35,7 @@ class Water(mapgen.enveffect.EnvEffect):
     def createRegion(self, gameMap, sector):
         waterSpaces = dict()
         # Find the midpoint of this tunnel.
-        center = sector.start.loc.average(sector.end.loc).toGridspace()
+        center = sector.start.average(sector.end).toGridspace()
         
         # Find the floor of the tunnel
         while gameMap.getBlockAtGridLoc(center) == 0:

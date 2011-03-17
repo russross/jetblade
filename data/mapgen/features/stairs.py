@@ -23,7 +23,7 @@ class StairsTunnel(straight.StraightTunnel):
         slope = self.sector.getSlope()
         if abs(slope) > maxSlope or abs(slope) < minSlope:
             return
-        intercept = (self.sector.start.loc.y - self.sector.start.loc.x * slope) / constants.blockSize
+        intercept = (self.sector.start.y - self.sector.start.x * slope) / constants.blockSize
 
 
         touchedColumns = set()

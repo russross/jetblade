@@ -16,8 +16,8 @@ class Room(straight.StraightTunnel):
     def carveTunnel(self):
         straight.StraightTunnel.carveTunnel(self)
 
-        start = self.sector.start.loc
-        end = self.sector.end.loc
+        start = self.sector.start
+        end = self.sector.end
         distance = end.distance(start)
         delta = end.sub(start).normalize().multiply(distance/4.0)
         

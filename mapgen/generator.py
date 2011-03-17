@@ -23,9 +23,9 @@ import random
 import pygame
 
 ## Minimum width of the game world
-minUniverseWidth = constants.blockSize * 500
+minUniverseWidth = constants.blockSize * 200
 ## Minimum height of the game world
-minUniverseHeight = constants.blockSize * 500
+minUniverseHeight = constants.blockSize * 200
 ## Degree to which the game world dimensions are allowed to vary. The range thus
 # defined is e.g. 
 # [minUniverseWidth, minUniverseWidth + universeDimensionVariance] for width.
@@ -340,7 +340,7 @@ class Map:
         self.drawStatus(self.blocks, None, None)
 
         # \todo Pick a better starting point for the player.
-        self.startLoc = self.tunnelEdges[0].start.loc.toGridspace()
+        self.startLoc = self.tunnelEdges[0].start.toGridspace()
         while self.blocks[self.startLoc.ix][self.startLoc.iy] != BLOCK_EMPTY:
             self.startLoc = self.startLoc.addY(-1)
 

@@ -24,17 +24,16 @@ minDistanceFromChunkEdge = constants.blockSize * 4
 minDistanceEdgeToNode = constants.blockSize * 8
 
 ## The GraphNode class represents a node in a non-directional planar graph.
-class GraphNode:
+class GraphNode(Vector2D):
     ## Instantiate the object
     def __init__(self, loc):
+        Vector2D.__init__(self, first = loc.x, second = loc.y)
         self.id = constants.globalId
         constants.globalId += 1
-        ## Position of this node.
-        self.loc = loc
         ## Set of adjacent nodes.
         self.neighbors = set()
         ## Local terrain information.
-        self.terrain = game.map.getTerrainInfoAtGridLoc(self.loc.toGridspace())
+        self.terrain = game.map.getTerrainInfoAtGridLoc(self.toGridspace())
         ## Color of the node, for debugging purposes.
         self.color = [random.randint(64, 255) for i in xrange(3)]
 
@@ -61,7 +60,7 @@ class GraphNode:
 
     ## Convert to string.
     def __repr__(self):
-        return "[GraphNode at %s with %d neighbors]" % (self.loc, len(self.neighbors))
+        return "[GraphNode at (%s, %s) with %d neighbors]" % (self.x, self.y, len(self.neighbors))
 
 
 

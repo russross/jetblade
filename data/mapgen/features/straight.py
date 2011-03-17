@@ -24,8 +24,8 @@ class StraightTunnel:
     # radius.
     def carveTunnel(self, width = None, start = None, end = None):
         if start is None or end is None:
-            start = self.sector.start.loc
-            end = self.sector.end.loc
+            start = self.sector.start
+            end = self.sector.end
         
         delta = end.sub(start)
         slope = delta.slope()
@@ -55,8 +55,8 @@ class StraightTunnel:
 
     ## As carveTunnel, but only for vertical situations. 
     def carveVerticalTunnel(self):
-        start = self.sector.start.loc
-        end = self.sector.end.loc
+        start = self.sector.start
+        end = self.sector.end
         width = self.sector.getTunnelWidth()
 
         currentLoc = start.copy()

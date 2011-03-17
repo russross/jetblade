@@ -81,7 +81,7 @@ class MapEdge:
         ## Information about the terrain we are in.
         # Map our location to the region map to get our terrain info.
         self.terrain = game.map.getTerrainInfoAtGridLoc(
-                self.start.loc.toGridspace()
+                self.start.toGridspace()
         )
 
         # Select tunnel type and load the relevant module.
@@ -142,8 +142,8 @@ class MapEdge:
     ## Get the points closest to our start and end that are still in our
     # sector. This is useful for some tunnel features (e.g. the maze feature).
     def getStartAndEndLoc(self):
-        startLoc = self.start.loc.toGridspace()
-        endLoc = self.end.loc.toGridspace()
+        startLoc = self.start.toGridspace()
+        endLoc = self.end.toGridspace()
         delta = endLoc.sub(startLoc).normalize()
         while not self.getIsOurSpace(startLoc):
             startLoc = startLoc.add(delta)
@@ -203,7 +203,7 @@ class MapEdge:
         # claimed convince us that it's okay to take more.
         claimedPoints = set()
 
-        center = self.start.loc.toGridspace()
+        center = self.start.toGridspace()
         radius = int(self.getJunctionRadius() / constants.blockSize)
 
         # Iterate over points in the accepted area, claiming them if they belong
@@ -260,7 +260,7 @@ class MapEdge:
             self.fixAccessibilityWallwalk()
         elif self.featureModule.shouldCheckAccessibility():
             # Determine which accessibility-fixing algorithm to use.
-            if self.start.loc.distance(self.end.loc) > minVerticalTunnelLength:
+            if self.start.distance(self.end) > minVerticalTunnelLength:
                 angle = self.getAngle()
                 if (abs(angle - math.pi / 2.0) < verticalTunnelAngleFuzz or
                         abs(angle - 3*math.pi / 2.0) < verticalTunnelAngleFuzz):
@@ -276,9 +276,9 @@ class MapEdge:
     # patterns.
     def fixAccessibilityVertical(self):
         # Make certain there's a platform at the bottom to get into the tunnel.
-        bottomLoc = self.start.loc.copy()
-        topLoc = self.end.loc.copy()
-        if self.start.loc.y < self.end.loc.y:
+        bottomLoc = self.start.copy()
+        topLoc = self.end.copy()
+        if self.start.y < self.end.y:
             (bottomLoc, topLoc) = (topLoc, bottomLoc)
         # Back out of the junction a bit.
         bottomLoc = bottomLoc.addY(-self.getJunctionRadius() / 2.0)
@@ -350,9 +350,9 @@ class MapEdge:
         # our line in gridspace.
         # This breaks down at junctions, where start and end
         # points are the same), but we know they own their endpoints.
-        originalSpace = self.start.loc.toGridspace()
+        originalSpace = self.start.toGridspace()
         if not self.isJunction():
-            endSpace = self.end.loc.toGridspace()
+            endSpace = self.end.toGridspace()
             delta = endSpace.sub(originalSpace).normalize()
             while (not self.getIsOurSpace(originalSpace) and 
                     originalSpace.distance(endSpace) > 2):
@@ -442,26 +442,26 @@ class MapEdge:
 
     ## Get the angle from start to end, in radians.
     def getAngle(self):
-        return util.clampDirection(self.start.loc.sub(self.end.loc).angle())
+        return util.clampDirection(self.start.sub(self.end).angle())
 
 
     ## Get the slope from our end to our start.
     def getSlope(self):
-        return self.start.loc.sub(self.end.loc).slope()
+        return self.start.sub(self.end).slope()
 
 
     ## Draw the edge. This is strictly for debugging purposes, and thus uses
     # SDL drawing instead of OpenGL drawing.
     def draw(self, screen, scale):
-        p1 = self.start.loc.multiply(scale)
-        p2 = self.end.loc.multiply(scale)
+        p1 = self.start.multiply(scale)
+        p2 = self.end.multiply(scale)
         pygame.draw.line(screen, self.color, p1.tuple(), p2.tuple(), 4)
 
         font = pygame.font.Font(
                 os.path.join(constants.fontPath, 'MODENINE.TTF'), 16
         )
         if self.isJunction():
-            text = font.render(str(self.start.loc.toGridspace()), False, (0, 127, 255))
+            text = font.render(str(self.start.toGridspace()), False, (0, 127, 255))
             rect = text.get_rect()
             rect.left = p1.x - 50
             rect.top = p1.y
@@ -479,8 +479,8 @@ class MapEdge:
     
     ## Convert to string.
     def __str__(self):
-        locationStr = " at " + str(self.start.loc)
+        locationStr = " at " + str(self.start)
         if not self.isJunction():
-            locationStr = " from " + str(self.start.loc) + " to " + str(self.end.loc)
+            locationStr = " from " + str(self.start) + " to " + str(self.end)
         return ("[MapEdge " + str(self.id) + locationStr + " of type " +
                 str(self.tunnelType) + "]")

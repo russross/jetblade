@@ -255,6 +255,13 @@ cdef class Vector2D:
         return result
 
 
+    ## Allow access through array indexing.
+    def __getitem__(self, i):
+        if i == 0:
+            return self.x
+        return self.y
+
+
     ## Hashing. Two Vector2Ds may hash to the same value without being 
     # the same object.
     # Shifting X up by 20 gives us a range of about a million to play in before
