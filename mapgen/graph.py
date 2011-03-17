@@ -10,11 +10,11 @@ import random
 
 ## @package mapgraph
 # This module is used to generate the graph that underlies the rest of map
-# generation. Its makeGraph() function accepts a list of initial edges (in
-# the form of Vector2D pairs) that must be in the final graph. These are 
-# used to allow the game to know exactly how different regions are connected.
-# It returns a list of MapEdge instances, including the seed edges as well
-# as others created by the Delaunay triangulation.
+# generation. Its makeGraph() function lays down nodes across the map area, 
+# and chooses some to be "bridge" edges that connect different terrain types.
+# These are used to allow the game to know exactly how different regions are 
+# connected. It returns a list of MapEdge instances that form the overall
+# graph of the map.
 
 ## Size of the chunks we break the universe up into for placing nodes.
 graphDivisionChunkSize = constants.blockSize * 20
@@ -24,6 +24,8 @@ minDistanceFromChunkEdge = constants.blockSize * 4
 ## Minimum distance from any given edge in the graph to a node not in that 
 # edge. Edges that are too close get pruned.
 minDistanceEdgeToNode = constants.blockSize * 8
+## Minimum distance from any given bridge edge to another
+minDistanceBetweenBridges = constants.blockSize * 60
 
 ## The GraphNode class represents a node in a non-directional planar graph.
 class GraphNode(Vector2D):
@@ -66,12 +68,12 @@ class GraphNode(Vector2D):
 
 
 
-## Generate a set of initial edges that must be in the final map. These
+## Generate a set of "bridge" edges that must be in the final map. These
 # edges connect the different terrain sectors of the map, and each is 
 # axis-aligned.
 # \todo Currently this doesn't care that a given terrain type can show up 
 # in multiple disconnected chunks in the map.
-def getInitialEdges():
+def getBridgeEdges():
     # Helps us track which sectors are already connected.
     terrainMap = dict()
     # Don't use a single node for more than one initial edge, to help space out
@@ -82,6 +84,17 @@ def getInitialEdges():
         start = GraphNode(x + graphDivisionChunkSize / 2,
                           y + graphDivisionChunkSize / 2)
         if start in usedNodes:
+            continue
+        # Ensure the node doesn't come too close to any of the bridges
+        # we've already made.
+        # Note we don't care about the nodes we try to connect start too;
+        # forcing one node to be far enough away is sufficient.
+        isNodeUsable = True
+        for node in usedNodes:
+            if start.distance(node) < minDistanceBetweenBridges:
+                isNodeUsable = False
+                break
+        if not isNodeUsable:
             continue
         if start.terrain not in terrainMap:
             terrainMap[start.terrain] = set()
@@ -103,8 +116,8 @@ def getInitialEdges():
 ## Generate a planar graph that covers the map area.
 def makeGraph():
     allVerts = set()
-    fixedEdges = getInitialEdges()
-    for start, end in fixedEdges:
+    bridgeEdges = getBridgeEdges()
+    for start, end in bridgeEdges:
         allVerts.add(start)
         allVerts.add(end)
     # Generate a mapping that tells us where the fixed edges are, so we 
@@ -149,7 +162,7 @@ def makeGraph():
             )
             allVerts.add(loc)
 
-    triangulator = delaunay.Triangulator(allVerts, fixedEdges, minDistanceEdgeToNode)
+    triangulator = delaunay.Triangulator(allVerts, bridgeEdges, minDistanceEdgeToNode)
     vertToNeighborsMap = triangulator.makeGraph()
 #    triangulator.drawAll(edges = vertToNeighborsMap)
         
