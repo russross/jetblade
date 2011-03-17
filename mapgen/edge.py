@@ -399,8 +399,9 @@ class MapEdge:
             if numSteps > maxWallwalkerSteps:
                 # This should never happen, and indicates something went 
                 # wrong in map generation.
+                marks = [self.start.average(self.end).toGridspace()]
                 game.map.markLoc = currentSpace
-                game.map.drawStatus(deadSeeds = game.map.deadSeeds)
+                game.map.drawStatus(deadSeeds = game.map.deadSeeds, marks = marks)
                 logger.fatal("Hit maximum steps for node",self.id)
             # Get the space adjacent to our own that continues the walk, 
             # by using the Marching Squares algorithm
