@@ -25,9 +25,10 @@ class Pit(straight.StraightTunnel):
 
     
     def createFeature(self):
-        if abs(self.sector.getSlope()) > constants.DELTA:
+        if (self.sector.isJunction() or
+                abs(self.sector.getSlope()) > constants.DELTA):
             return
-        
+
         (start, end) = self.sector.getStartAndEndLoc()
         if start is None or end is None:
             logger.error("Unable to make pit for",self.sector.id,"from",self.sector.start,"to",self.sector.end)
