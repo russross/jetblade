@@ -1,5 +1,5 @@
 import mapgen.generator
-import enveffect
+import mapgen.enveffect
 import logger
 from vector2d import Vector2D
 import constants
@@ -15,7 +15,7 @@ def getClassName():
 # touch sectors that belong to a different region than the region they 
 # start in. 
 # \todo Make water pools affect physics.
-class Water(enveffect.EnvEffect):
+class Water(mapgen.enveffect.EnvEffect):
 
     ## Instantiate the Water class. There is only one instance for the entire
     # map; thus, create some "global" variables now.
@@ -26,7 +26,7 @@ class Water(enveffect.EnvEffect):
         self.maxWaterDepth = 12
         ## Contains all locations that have the water effect.
         self.globalWaterSpaces = dict()
-        enveffect.EnvEffect.__init__(self, name)
+        mapgen.enveffect.EnvEffect.__init__(self, name)
 
 
     ## Try to create a pool of water starting in the given sector. Keep adding
