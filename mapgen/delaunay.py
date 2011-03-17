@@ -1,4 +1,5 @@
 import constants
+import game
 import line
 import quadtree
 from vector2d import Vector2D
@@ -35,9 +36,12 @@ class VectorWrap():
 
 ## Class for generating Delaunay triangulations of graphs.
 class Triangulator:
-    def __init__(self, nodes, minDistanceEdgeToNode):
-        ## List of all nodes in the graph, as Vector2Ds
+    def __init__(self, nodes, fixedEdges, minDistanceEdgeToNode):
+        ## List of all nodes in the graph, as GraphNodes
         self.nodes = list(nodes)
+        ## Set of GraphNode pairs representing edges that must be in the 
+        # final graph.
+        self.fixedEdges = fixedEdges
     
         ## Figure out the min/max extent of the nodes
         minX = minY = maxX = maxY = None
@@ -355,7 +359,9 @@ class Triangulator:
         return hullNodes
 
 
-    ## Find edges that come too close to nodes, and remove them. Given the
+    ## Remove undesirable edges. These are edges that come too close to 
+    # other nodes, and edges that cross terrain boundaries. Any edges in
+    # self.fixedEdges are by definition desirable, so they always stay.
     # high degree of interconnectedness between nodes, this should never
     # cause the graph to become disconnected, but really we have no guarantee.
     def removeBadEdges(self):
@@ -375,15 +381,41 @@ class Triangulator:
                 edgeRect.width += 2 * self.minDistanceEdgeToNode
                 edgeRect.height += 2 * self.minDistanceEdgeToNode
                 isSafeEdge = True
-                for vecWrap in tree.getObjectsIntersectingRect(edgeRect):
-                    nearNode = vecWrap.vector
-                    if (nearNode not in [node, neighbor] and 
-                            edge.pointDistance(nearNode) < self.minDistanceEdgeToNode):
-                        isSafeEdge = False
+                # No edges connecting different regions of the map.
+                if node.terrain != neighbor.terrain:
+                    isSafeEdge = False
+                # No non-axis-aligned edges in axis-aligned parts of the map.
+                elif (game.map.getRegionInfo(node.terrain, 'aligned') and
+                        game.map.getRegionInfo(neighbor.terrain, 'aligned') and
+                        abs(node.x - neighbor.x) > constants.EPSILON and
+                        abs(node.y - neighbor.y) > constants.EPSILON):
+                    isSafeEdge = False
+                else:
+                    for vecWrap in tree.getObjectsIntersectingRect(edgeRect):
+                        nearNode = vecWrap.vector
+                        if (nearNode not in [node, neighbor] and 
+                                edge.pointDistance(nearNode) < self.minDistanceEdgeToNode):
+                            isSafeEdge = False
+                            break
                 if isSafeEdge:
                     newEdges[node].add(neighbor)
-        self.edges = newEdges
+
+        self.edges = self.addFixedEdges(newEdges)
+
 #        self.drawAll(shouldForceSave = True)
+
+
+    ## Modify the given map of nodes to sets of nodes so that it includes
+    # our fixed edges.
+    def addFixedEdges(self, newEdges):
+        for v1, v2 in self.fixedEdges:
+            if v1 not in newEdges:
+                newEdges[v1] = set()
+            if v2 not in newEdges:
+                newEdges[v2] = set()
+            newEdges[v1].add(v2)
+            newEdges[v2].add(v1)
+        return newEdges
 
 
     ## Generate a spanning tree from our graph.
@@ -422,7 +454,7 @@ class Triangulator:
                         newEdges[neighbor].add(node)
                         queue.append(neighbor)
 #        self.drawAll(edges = newEdges, shouldForceSave = True)
-        return newEdges
+        return self.addFixedEdges(newEdges)
 
 
     ## Run the entire process, starting from raw nodes and ending with a 

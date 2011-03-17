@@ -23,9 +23,9 @@ import random
 import pygame
 
 ## Minimum width of the game world
-minUniverseWidth = constants.blockSize * 200
+minUniverseWidth = constants.blockSize * 300
 ## Minimum height of the game world
-minUniverseHeight = constants.blockSize * 200
+minUniverseHeight = constants.blockSize * 300
 ## Degree to which the game world dimensions are allowed to vary. The range thus
 # defined is e.g. 
 # [minUniverseWidth, minUniverseWidth + universeDimensionVariance] for width.
@@ -277,7 +277,7 @@ class Map:
 
         # Generate the tree that will be used to mark out tunnels.
         logger.inform("Generating graph of map at",pygame.time.get_ticks())
-        self.tunnelEdges = graph.makeGraph([])
+        self.tunnelEdges = graph.makeGraph()
          
         # Lay the seeds for those tunnels.
         logger.inform("Planting seeds at",pygame.time.get_ticks())
@@ -286,38 +286,38 @@ class Map:
         # Expand the seeds and carve out those tunnels. 
         logger.inform("Expanding seeds at",pygame.time.get_ticks())
         (self.blocks, self.deadSeeds) = self.expandSeeds(self.seeds, self.blocks)
-        self.drawStatus(deadSeeds = self.deadSeeds)
+#        self.drawStatus(deadSeeds = self.deadSeeds)
 
         # Clean up the points where tunnels meet.
         logger.inform("Creating junctions at",pygame.time.get_ticks())
         [edge.createJunction() for edge in self.tunnelEdges]
-        self.drawStatus(deadSeeds = self.deadSeeds)
+#        self.drawStatus(deadSeeds = self.deadSeeds)
 
         # Remove isolated chunks of land.
         logger.inform("Removing islands at",pygame.time.get_ticks())
         self.removeIslands()
-        self.drawStatus(deadSeeds = self.deadSeeds)
+#        self.drawStatus(deadSeeds = self.deadSeeds)
 
         # Make the walls a bit thicker.
         logger.inform("Expanding walls at",pygame.time.get_ticks())
         self.expandWalls()
-        self.drawStatus(deadSeeds = self.deadSeeds)
+#        self.drawStatus(deadSeeds = self.deadSeeds)
 
         # Tell the tree nodes which spaces belong to them.
         logger.inform("Assigning squares at",pygame.time.get_ticks())
         self.assignSquares()
-        self.drawStatus(deadSeeds = self.deadSeeds)
+#        self.drawStatus(deadSeeds = self.deadSeeds)
 
         # Fill in tunnels with interesting terrain.
         logger.inform("Creating tunnel features at",pygame.time.get_ticks())
         [edge.createFeatures() for edge in self.tunnelEdges]
-        self.drawStatus(deadSeeds = self.deadSeeds)
+#        self.drawStatus(deadSeeds = self.deadSeeds)
 
         # Reassign any seeds that got isolated in the last step to prevent
         # loops in the next step.
         logger.inform("Fixing seed ownership at",pygame.time.get_ticks())
         (self.blocks, self.deadSeeds) = self.fixSeedOwnership(self.blocks, self.deadSeeds)
-        self.drawStatus(deadSeeds = self.deadSeeds)
+#        self.drawStatus(deadSeeds = self.deadSeeds)
 
         # Walk the walls and put down furniture objects
         logger.inform("Placing furniture at",pygame.time.get_ticks())
@@ -337,7 +337,7 @@ class Map:
 
         logger.inform("Drawing status at",pygame.time.get_ticks())
         self.markLoc = None
-        self.drawStatus(self.blocks, None, None)
+        self.drawStatus(self.blocks, None, None, shouldDrawRegions = True)
 
         # \todo Pick a better starting point for the player.
         self.startLoc = self.tunnelEdges[0].start.toGridspace()
@@ -852,7 +852,7 @@ class Map:
     # In addition to the above, if map.markLoc is defined, then the map will
     # be focused on that location.
     def drawStatus(self, blocks = None, seeds = None, deadSeeds = None, 
-                   marks = None, shouldZoom = True):
+                   marks = None, shouldZoom = True, shouldDrawRegions = False):
         if blocks is None:
             blocks = self.blocks
         self.statusIter += 1
@@ -861,6 +861,9 @@ class Map:
         scale = drawStatusScaleFactor
         screen = pygame.Surface((self.width * scale, self.height * scale))
         size = constants.blockSize * scale
+
+        if shouldDrawRegions:
+            self.drawRegions(screen)
 
         if blocks is not None:
             numCols = len(blocks)
@@ -873,16 +876,6 @@ class Map:
                     elif blocks[i][j] != BLOCK_EMPTY:
                         pygame.draw.rect(screen, (255, 255, 255), rect)
 
-#        if self.regions is not None:
-#            regionBlock = size / regionOverlayResolutionMultiplier
-#            for (i, j), (zoneName, regionName) in self.regions.iteritems():
-#                overlayRect = pygame.rect.Rect((i * regionBlock,
-#                                                j * regionBlock),
-#                                               (regionBlock-1, regionBlock-1))
-#                color = self.zoneData[zoneName]['regions'][regionName]['color']
-#                color = (color[0], color[1], color[2], 255)
-#                pygame.draw.rect(screen, color, overlayRect)
-        
         seedRadius = int(constants.blockSize / 2.0 * scale)
         if (deadSeeds is not None and len(deadSeeds) and 
                 hasattr(deadSeeds[deadSeeds.keys()[0]].owner, 'color')):
@@ -924,6 +917,27 @@ class Map:
         if self.markLoc is None:
             # Non-zoomed view, so scale it so it all fits.
             screen = pygame.transform.rotozoom(screen, 0, constants.sw / float(self.width * scale))
+
+
+    ## A more specific drawing function just for the region overlay map.
+    def drawRegions(self, screen = None):
+        shouldSaveIndependently = screen == None
+        scale = drawStatusScaleFactor
+        if screen is None:
+            screen = pygame.Surface((self.width * scale, self.height * scale))
+        size = constants.blockSize * scale
+
+        regionBlock = size / regionOverlayResolutionMultiplier
+        for loc, terrain in self.regions.iteritems():
+            overlayRect = pygame.rect.Rect((loc.x * regionBlock,
+                                            loc.y * regionBlock),
+                                           (regionBlock - 1, regionBlock - 1))
+            color = self.zoneData[terrain.zone]['regions'][terrain.region]['color']
+            color = (color[0], color[1], color[2], 255)
+            pygame.draw.rect(screen, color, overlayRect)
+        if shouldSaveIndependently:
+            self.statusIter += 1
+        pygame.image.save(screen, 'premap-%03d' % self.statusIter + '.png')
 
 
     ## Draw a complete view of the map for purposes of looking pretty. Saves 

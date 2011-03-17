@@ -1,7 +1,9 @@
 import constants
 import delaunay
 import game
+import generator
 import edge
+import vector2d
 from vector2d import Vector2D
 
 import random
@@ -26,8 +28,8 @@ minDistanceEdgeToNode = constants.blockSize * 8
 ## The GraphNode class represents a node in a non-directional planar graph.
 class GraphNode(Vector2D):
     ## Instantiate the object
-    def __init__(self, loc):
-        Vector2D.__init__(self, first = loc.x, second = loc.y)
+    def __init__(self, first, second = None):
+        Vector2D.__init__(self, first, second)
         self.id = constants.globalId
         constants.globalId += 1
         ## Set of adjacent nodes.
@@ -64,54 +66,92 @@ class GraphNode(Vector2D):
 
 
 
-## Generate a planar graph, given a list of Vector2D pairs which are the
-# fixed edges that we must include.
-def makeGraph(seedEdges):
-    # First, generate a random set of verts
-    allVerts = set([t[0] for t in seedEdges])
+## Generate a set of initial edges that must be in the final map. These
+# edges connect the different terrain sectors of the map, and each is 
+# axis-aligned.
+# \todo Currently this doesn't care that a given terrain type can show up 
+# in multiple disconnected chunks in the map.
+def getInitialEdges():
+    # Helps us track which sectors are already connected.
+    terrainMap = dict()
+    # Don't use a single node for more than one initial edge, to help space out
+    # connections.
+    usedNodes = set()
+    result = []
+    for x, y in getMapChunks():
+        start = GraphNode(x + graphDivisionChunkSize / 2,
+                          y + graphDivisionChunkSize / 2)
+        if start in usedNodes:
+            continue
+        if start.terrain not in terrainMap:
+            terrainMap[start.terrain] = set()
+        for offset in vector2d.NEWSPerimeterOrder:
+            neighbor = GraphNode(start.add(offset.multiply(graphDivisionChunkSize)))
+            if neighbor in usedNodes:
+                continue
+            if neighbor.terrain not in terrainMap:
+                terrainMap[neighbor.terrain] = set()
+            if neighbor.terrain not in terrainMap[start.terrain]:
+                terrainMap[start.terrain].add(neighbor.terrain)
+                terrainMap[neighbor.terrain].add(start.terrain)
+                usedNodes.add(start)
+                usedNodes.add(neighbor)
+                result.append((start, neighbor))
+    return result
+
+
+## Generate a planar graph that covers the map area.
+def makeGraph():
+    allVerts = set()
+    fixedEdges = getInitialEdges()
+    for start, end in fixedEdges:
+        allVerts.add(start)
+        allVerts.add(end)
+    # Generate a mapping that tells us where the fixed edges are, so we 
+    # can avoid putting nodes near them.
     locToVertMap = dict()
     for vert in allVerts:
-        locToVertMap[(vert.x / graphDivisionChunkSize, 
-                      vert.y / graphDivisionChunkSize)] = vert
+        locToVertMap[(int(vert.x / graphDivisionChunkSize), 
+                      int(vert.y / graphDivisionChunkSize))] = vert
+
+    # First, generate a random set of verts.
     # Leave a buffer zone of graphDivisionChunkSize around the edges of the 
     # map so we don't have junctions going right up to the edge. This gives
     # our tunnels more room to work.
-    for x in range(graphDivisionChunkSize, 
-            game.map.width - graphDivisionChunkSize * 2,
-            graphDivisionChunkSize):
-        for y in range(graphDivisionChunkSize, 
-                game.map.height - graphDivisionChunkSize * 2,
-                graphDivisionChunkSize):
-            if (x, y) in locToVertMap:
-                continue
-            # If the center of this chunk is in an axis-aligned terrain, then
-            # place the new vert in the center.
-            center = Vector2D(x + graphDivisionChunkSize / 2,
-                              y + graphDivisionChunkSize / 2)
-            terrain = game.map.getTerrainInfoAtGridLoc(center.toGridspace())
-            # The game is not guaranteed to fill the entire map area with
-            # terrain markers; ignore failed areas.
-            if terrain is None:
-                continue
-            if game.map.getRegionInfo(terrain, 'aligned'):
-                allVerts.add(center)
-            else:
-                # Pick a random location a ways away from the edge of the 
-                # chunk. 
-                loc = Vector2D(
-                        random.randint(x + minDistanceFromChunkEdge,
-                            x + graphDivisionChunkSize - minDistanceFromChunkEdge),
-                        random.randint(y + minDistanceFromChunkEdge,
-                            y + graphDivisionChunkSize - minDistanceFromChunkEdge)
-                )
-                allVerts.add(loc)
-    
-    triangulator = delaunay.Triangulator(allVerts, minDistanceEdgeToNode)
+    for x, y in getMapChunks():
+        center = GraphNode(x + graphDivisionChunkSize / 2,
+                           y + graphDivisionChunkSize / 2)
+        # Ensure that we don't place anything even near to the pre-set edges.
+        shouldContinue = True
+        centerGrid = center.divide(graphDivisionChunkSize)
+        for xOffset in xrange(-1, 2):
+            for yOffset in xrange(-1, 2):
+                if (centerGrid.ix + xOffset, centerGrid.iy + yOffset) in locToVertMap:
+                    shouldContinue = False
+                    break
+            if not shouldContinue:
+                break
+        if not shouldContinue:
+            continue
+        terrain = game.map.getTerrainInfoAtGridLoc(center.toGridspace())
+        # If the center of this chunk is in an axis-aligned terrain, then
+        # place the new vert in the center.
+        if game.map.getRegionInfo(terrain, 'aligned'):
+            allVerts.add(center)
+        else:
+            # Pick a random location a ways away from the edge of the 
+            # chunk. 
+            loc = GraphNode(
+                    random.randint(x + minDistanceFromChunkEdge,
+                        x + graphDivisionChunkSize - minDistanceFromChunkEdge),
+                    random.randint(y + minDistanceFromChunkEdge,
+                        y + graphDivisionChunkSize - minDistanceFromChunkEdge)
+            )
+            allVerts.add(loc)
+
+    triangulator = delaunay.Triangulator(allVerts, fixedEdges, minDistanceEdgeToNode)
     vertToNeighborsMap = triangulator.makeGraph()
 #    triangulator.drawAll(edges = vertToNeighborsMap)
-    for v1, v2 in seedEdges:
-        vertToNeighborsMap[v1].add(v2)
-        vertToNeighborsMap[v2].add(v1)
         
     # Convert the mapping of Vector2Ds to sets of Vector2Ds into a list of 
     # MapEdges.
@@ -141,4 +181,13 @@ def makeGraph(seedEdges):
     return mapEdges
 
 
-
+## Yield XY pairs every graphDivisionChunkSize, staying one chunk away from
+# the edges to give some room to breathe.
+def getMapChunks():
+    for x in range(graphDivisionChunkSize, 
+            game.map.width - graphDivisionChunkSize * 2,
+            graphDivisionChunkSize):
+        for y in range(graphDivisionChunkSize, 
+                game.map.height - graphDivisionChunkSize * 2,
+                graphDivisionChunkSize):
+            yield x, y
