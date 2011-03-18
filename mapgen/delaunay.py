@@ -420,11 +420,19 @@ class Triangulator:
 
     ## Generate a spanning tree from our graph.
     def span(self):
-        # Pick a random starting node.
-        seed = random.choice(self.edges.keys())
+        # Pick one starting node for each terrain type.
+        seeds = []
+        claimedTerrains = set()
+        for edge in self.fixedEdges:
+            for node in edge:
+                if node.terrain not in claimedTerrains:
+                    claimedTerrains.add(node.terrain)
+                    seeds.append(node)
+
         newEdges = dict([(node, set()) for node in self.edges.keys()])
-        seenNodes = set([seed])
-        queue = [seed, None]
+        seenNodes = set(seeds)
+        # Use None to mark the end of tree expansion at a given depth.
+        queue = seeds + [None]
         while queue:
             node = queue.pop(0)
             if node is None:
@@ -438,7 +446,7 @@ class Triangulator:
                 queue.append(None)
                 continue
             for neighbor in self.edges[node]:
-                if neighbor not in seenNodes:
+                if neighbor not in seenNodes and node.terrain == neighbor.terrain:
                     # Make certain that adding the neighbor would not create
                     # too acute an angle with any existing edges.
                     neighborVector = neighbor.sub(node)
