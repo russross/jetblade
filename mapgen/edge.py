@@ -220,25 +220,25 @@ class MapEdge:
         # Convert each claimed point into open space. Then check its neighbors,
         # and fill them with walls if they aren't related to us.
         for point in claimedPoints:
-            game.map.blocks[point.ix][point.iy] = generator.BLOCK_EMPTY
             game.map.assignSpace(point, self)
-
-            # Patch walls around the deleted space
-            for nearPoint in point.perimeter():
-                if not game.map.getIsInBounds(nearPoint):
-                    continue
-                # If we hit a space that's not a wall or open space, or
-                # if we hit a space that's owned by a node of the graph
-                # that we aren't connected to, put a wall in.
-                altEdge = None
-                if nearPoint in game.map.deadSeeds:
-                    altEdge = game.map.deadSeeds[nearPoint].owner
-                if (game.map.blocks[nearPoint.ix][nearPoint.iy] == generator.BLOCK_UNALLOCATED or
-                        (altEdge is not None and
-                         not self.start.isEdgeRelated(altEdge))
-                   ):
-                    game.map.blocks[nearPoint.ix][nearPoint.iy] = generator.BLOCK_WALL
-                    game.map.deadSeeds[nearPoint] = seed.Seed(self, 0, constants.BIGNUM)
+            if game.map.blocks[point.ix][point.iy] != generator.BLOCK_EMPTY:
+                game.map.blocks[point.ix][point.iy] = generator.BLOCK_EMPTY
+                # Patch walls around the deleted space
+                for nearPoint in point.perimeter():
+                    if not game.map.getIsInBounds(nearPoint):
+                        continue
+                    # If we hit a space that's not a wall or open space, or
+                    # if we hit a space that's owned by a node of the graph
+                    # that we aren't connected to, put a wall in.
+                    altEdge = None
+                    if nearPoint in game.map.deadSeeds:
+                        altEdge = game.map.deadSeeds[nearPoint].owner
+                    if (game.map.blocks[nearPoint.ix][nearPoint.iy] == generator.BLOCK_UNALLOCATED or
+                            (altEdge is not None and
+                             not self.start.isEdgeRelated(altEdge))
+                       ):
+                        game.map.blocks[nearPoint.ix][nearPoint.iy] = generator.BLOCK_WALL
+                        game.map.deadSeeds[nearPoint] = seed.Seed(self, 0, constants.BIGNUM)
 
 
     ## Walk the walls of our space, trying to add Furniture instances where
