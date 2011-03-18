@@ -22,10 +22,11 @@ import copy
 import random
 import pygame
 
+
 ## Minimum width of the game world
-minUniverseWidth = constants.blockSize * 300
+minUniverseWidth = constants.blockSize * 400
 ## Minimum height of the game world
-minUniverseHeight = constants.blockSize * 300
+minUniverseHeight = constants.blockSize * 400
 ## Degree to which the game world dimensions are allowed to vary. The range thus
 # defined is e.g. 
 # [minUniverseWidth, minUniverseWidth + universeDimensionVariance] for width.
@@ -215,11 +216,10 @@ class Map:
         # tiles if they're in view (which is slow when we zoom out, but would
         # allow for tiles to cycle display frames more readily).
         frameLocs = []
-        for i in xrange(0, self.numCols):
-            for j in xrange(0, self.numRows):
-                if self.blocks[i][j]:
-                    frameLocs.append((self.blocks[i][j].getFrame(), 
-                                      self.blocks[i][j].loc)) 
+        for i, j in self.getIterBlocks():
+            if self.blocks[i][j]:
+                frameLocs.append((self.blocks[i][j].getFrame(), 
+                                  self.blocks[i][j].loc)) 
 
         self.blockDisplayList = game.imageManager.createDisplayList(frameLocs)
 
@@ -349,10 +349,9 @@ class Map:
 
         logger.inform("Done making map at",pygame.time.get_ticks())
         numUsedSpaces = 0
-        for x in xrange(0, self.numCols):
-            for y in xrange(0, self.numRows):
-                if not self.blocks[x][y]:
-                    numUsedSpaces += 1
+        for i, j in self.getIterBlocks():
+            if not self.blocks[i][j]:
+                numUsedSpaces += 1
         totalSpaces = self.numCols * self.numRows
         percent = numUsedSpaces / float(totalSpaces) * 100
         logger.inform(numUsedSpaces,"of",totalSpaces,"spaces are occupied for a %.2f%% occupancy rate" % percent)
@@ -442,7 +441,7 @@ class Map:
                                              0, constants.BIGNUM)
                 blocks[i][j] = BLOCK_EMPTY
 
-        (blocks, seeds) = self.fixSeedOwnership(blocks, seeds, 0)
+        (blocks, seeds) = self.fixSeedOwnership(blocks, seeds, False)
 
         result = dict()
         for loc, resultSeed in seeds.iteritems():
@@ -474,23 +473,22 @@ class Map:
     # - 2: filled space next to empty space
     # - Tuple of block typestring (e.g. 'upleft') and adjacency signature
     def instantiateBlocks(self):
-        for i in xrange(0, self.numCols):
-            for j in xrange(0, self.numRows):
-                gridLoc = Vector2D(i, j)
-                terrain = self.getTerrainInfoAtGridLoc(gridLoc)
-                sector = self.getSectorAtGridLoc(gridLoc)
-                if sector is not None:
-                    terrain = sector.getTerrainInfo()
-                if self.blocks[i][j] == BLOCK_UNALLOCATED:
-                    self.blocks[i][j] = block.Block(gridLoc, terrain, 'center')
-                elif self.blocks[i][j] == BLOCK_WALL:
-                    (type, signature) = self.getBlockType(i, j)
-                    self.blocks[i][j] = block.Block(gridLoc, terrain, type)
-                    # Choose a scenery item to attach to the block.
-                    newItem = game.sceneryManager.selectScenery(gridLoc, terrain, signature)
-                    if newItem is not None:
-                        self.addBackgroundObject(newItem)
-                # else self.blocks[i][j] == BLOCK_EMPTY, do nothing
+        for i, j in self.getIterBlocks():
+            gridLoc = Vector2D(i, j)
+            terrain = self.getTerrainInfoAtGridLoc(gridLoc)
+            sector = self.getSectorAtGridLoc(gridLoc)
+            if sector is not None:
+                terrain = sector.getTerrainInfo()
+            if self.blocks[i][j] == BLOCK_UNALLOCATED:
+                self.blocks[i][j] = block.Block(gridLoc, terrain, 'center')
+            elif self.blocks[i][j] == BLOCK_WALL:
+                (type, signature) = self.getBlockType(i, j)
+                self.blocks[i][j] = block.Block(gridLoc, terrain, type)
+                # Choose a scenery item to attach to the block.
+                newItem = game.sceneryManager.selectScenery(gridLoc, terrain, signature)
+                if newItem is not None:
+                    self.addBackgroundObject(newItem)
+            # else self.blocks[i][j] == BLOCK_EMPTY, do nothing
 
 
     ## Return the type of block that should be drawn at the given grid loc.
@@ -525,27 +523,26 @@ class Map:
         chunks = []
         seenSpaces = set()
         
-        for i in xrange(0, self.numCols):
-            for j in xrange(0, self.numRows):
-                startLoc = Vector2D(i, j)
-                if (self.blocks[i][j] == BLOCK_WALL and 
-                        startLoc not in seenSpaces):
-                    # Start a new chunk of contiguous land. Floodfill out from
-                    # this point, grabbing all adjacent occupied spaces and
-                    # adding them to the chunk.
-                    newChunk = []
-                    fillStack = [startLoc]
-                    seenSpaces.add(startLoc)
-                    while fillStack:
-                        loc = fillStack.pop(0)
-                        newChunk.append(loc)
-                        for neighbor in loc.NEWSPerimeter():
-                            if (self.getIsInBounds(neighbor) and 
-                                    self.blocks[neighbor.ix][neighbor.iy] != BLOCK_EMPTY and
-                                    neighbor not in seenSpaces):
-                                fillStack.append(neighbor)
-                                seenSpaces.add(neighbor)
-                    chunks.append(newChunk)
+        for i, j in self.getIterBlocks():
+            startLoc = Vector2D(i, j)
+            if (self.blocks[i][j] == BLOCK_WALL and 
+                    startLoc not in seenSpaces):
+                # Start a new chunk of contiguous land. Floodfill out from
+                # this point, grabbing all adjacent occupied spaces and
+                # adding them to the chunk.
+                newChunk = []
+                fillStack = [startLoc]
+                seenSpaces.add(startLoc)
+                while fillStack:
+                    loc = fillStack.pop(0)
+                    newChunk.append(loc)
+                    for neighbor in loc.NEWSPerimeter():
+                        if (self.getIsInBounds(neighbor) and 
+                                self.blocks[neighbor.ix][neighbor.iy] != BLOCK_EMPTY and
+                                neighbor not in seenSpaces):
+                            fillStack.append(neighbor)
+                            seenSpaces.add(neighbor)
+                chunks.append(newChunk)
 
         for chunk in chunks:
             if len(chunk) < minimumIslandSize:
@@ -712,7 +709,7 @@ class Map:
     # different sector). This breaks our wallwalking algorithm in 
     # treenode.fixAccessibility(), so find these islands and fix them.
     # "Islands" are regions of seeds that are below a minimum cutoff size.
-    def fixSeedOwnership(self, blocks, seeds, shouldReassignSpaces = 1):
+    def fixSeedOwnership(self, blocks, seeds, shouldReassignSpaces = True):
         chunks = []
         spaceToChunkMap = dict()
 
@@ -868,13 +865,12 @@ class Map:
         if blocks is not None:
             numCols = len(blocks)
             numRows = len(blocks[0])
-            for i in xrange(0, numCols):
-                for j in xrange(0, numRows):
-                    rect = pygame.rect.Rect((i * size, j * size), (size, size))
-                    if blocks[i][j] in (BLOCK_UNALLOCATED, None):
-                        pygame.draw.rect(screen, (64, 64, 64), rect)
-                    elif blocks[i][j] != BLOCK_EMPTY:
-                        pygame.draw.rect(screen, (255, 255, 255), rect)
+            for i, j in self.getIterBlocks():
+                rect = pygame.rect.Rect((i * size, j * size), (size, size))
+                if blocks[i][j] in (BLOCK_UNALLOCATED, None):
+                    pygame.draw.rect(screen, (64, 64, 64), rect)
+                elif blocks[i][j] != BLOCK_EMPTY:
+                    pygame.draw.rect(screen, (255, 255, 255), rect)
 
         seedRadius = int(constants.blockSize / 2.0 * scale)
         if (deadSeeds is not None and len(deadSeeds) and 
@@ -931,7 +927,7 @@ class Map:
         for loc, terrain in self.regions.iteritems():
             overlayRect = pygame.rect.Rect((loc.x * regionBlock,
                                             loc.y * regionBlock),
-                                           (regionBlock - 1, regionBlock - 1))
+                                           (regionBlock, regionBlock))
             color = self.zoneData[terrain.zone]['regions'][terrain.region]['color']
             color = (color[0], color[1], color[2], 255)
             pygame.draw.rect(screen, color, overlayRect)
@@ -953,10 +949,9 @@ class Map:
         self.backgroundQuadTree.draw(screen, center, 0, scale)
         self.furnitureQuadTree.draw(screen, center, 0, scale)
 
-        for x in xrange(0, self.numCols):
-            for y in xrange(0, self.numRows):
-                for effect in self.envGrid[x][y]:
-                    effect.draw(screen, Vector2D(x, y).toRealspace(), center, 0, scale)
+        for i, j in self.getIterBlocks():
+            for effect in self.envGrid[i][j]:
+                effect.draw(screen, Vector2D(i, j).toRealspace(), center, 0, scale)
 
         for y in xrange(self.numRows - 1, 0, -1):
             # Draw from bottom to top because blocks may "hang" down a bit.
@@ -1295,14 +1290,13 @@ class Map:
         # but this way keeps the image manipulation work to one place and 
         # shouldn't have too bad a hit to our performance.
         logger.inform("Instantiating blocks")
-        for i in xrange(self.numCols):
-            for j in xrange(self.numRows):
-                if self.blocks[i][j] == BLOCK_WALL:
-                    blockLoc = Vector2D(i, j)
-                    terrain = colorToTerrainMap[image.get_at((i, j))]
-                    (type, signature) = self.getBlockType(i, j)
-                    self.blocks[i][j] = block.Block(blockLoc, terrain, type)
-                # else self.blocks[i][j] == BLOCK_EMPTY, do nothing
+        for i, j in self.getIterBlocks():
+            if self.blocks[i][j] == BLOCK_WALL:
+                blockLoc = Vector2D(i, j)
+                terrain = colorToTerrainMap[image.get_at((i, j))]
+                (type, signature) = self.getBlockType(i, j)
+                self.blocks[i][j] = block.Block(blockLoc, terrain, type)
+            # else self.blocks[i][j] == BLOCK_EMPTY, do nothing
 
         logger.inform("Map load complete")
 
@@ -1350,13 +1344,12 @@ class Map:
         fh.write("%d,%d\n" % (self.numCols, self.numRows))
         fh.write("%d,%d\n" % (self.startLoc.x, self.startLoc.y))
         fh.write("blocks:\n")
-        for x in xrange(0, self.numCols):
-            for y in xrange(0, self.numRows):
-                if self.blocks[x][y] not in (BLOCK_EMPTY, None):
-                    block = self.blocks[x][y]
-                    fh.write("%d,%d,%s,%s,%s,%d\n" % (x, y, 
-                        block.terrain.zone, block.terrain.region,
-                        block.orientation, block.subType))
+        for i, j in self.getIterBlocks():
+            if self.blocks[i][j] not in (BLOCK_EMPTY, None):
+                block = self.blocks[i][j]
+                fh.write("%d,%d,%s,%s,%s,%d\n" % (i, j, 
+                    block.terrain.zone, block.terrain.region,
+                    block.orientation, block.subType))
         fh.write("furniture:\n")
         for item in self.furnitureQuadTree.getObjects():
             fh.write("%d,%d,%s,%s,%s,%s\n" % (item.loc.x, item.loc.y,
@@ -1364,11 +1357,10 @@ class Map:
                                             item.terrain.region,
                                             item.group, item.subGroup))
         fh.write("enveffects:\n")
-        for x in xrange(0, self.numCols):
-            for y in xrange(0, self.numRows):
-                if self.envGrid[x][y]:
-                    string = ",".join(effect.name for effect in self.envGrid[x][y])
-                    fh.write("%d,%d:%s\n" % (x, y, string))
+        for i, j in self.getIterBlocks():
+            if self.envGrid[i][j]:
+                string = ",".join(effect.name for effect in self.envGrid[i][j])
+                fh.write("%d,%d:%s\n" % (i, j, string))
         
         fh.write("scenery:\n")
         for item in self.backgroundQuadTree.getObjects():
