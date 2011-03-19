@@ -1,6 +1,7 @@
 import constants
 import game
 import line
+import logger
 import quadtree
 from vector2d import Vector2D
 
@@ -12,6 +13,10 @@ import sys
 
 ## Minimum angular distance between two neighbors in the graph.
 MIN_ANGLE_DISTANCE = math.pi / 3
+
+## Number of times to try generating a spanning tree that hits every node 
+# in a subset of the graph
+NUM_SPANNING_ATTEMPTS = 100
 
 ## Sort vertices by their distance to the given vertex.
 def sortByDistanceTo(location):
@@ -418,51 +423,95 @@ class Triangulator:
         return newEdges
 
 
-    ## Generate a spanning tree from our graph.
+    ## Decide which edges in the triangulation will actually be used for 
+    # the final map. We generate a spanning tree for each individual terrain
+    # group; these are then connected using our fixed edges.
     def span(self):
-        # Pick one starting node for each terrain type.
-        seeds = []
-        claimedTerrains = set()
-        for edge in self.fixedEdges:
-            for node in edge:
-                if node.terrain not in claimedTerrains:
-                    claimedTerrains.add(node.terrain)
-                    seeds.append(node)
+        # First determine which nodes are in which connected groups.
+        groups = []
+        seenNodes = set()
+        for node in self.nodes:
+            if node not in seenNodes:
+                # Find all connected nodes
+                queue = [node]
+                newGroup = set()
+                while queue:
+                    curNode = queue.pop()
+                    seenNodes.add(curNode)
+                    newGroup.add(curNode)
+                    for neighbor in self.edges[curNode]:
+                        if neighbor.terrain == curNode.terrain and neighbor not in seenNodes:
+                            queue.append(neighbor)
+                groups.append(newGroup)
 
         newEdges = dict([(node, set()) for node in self.edges.keys()])
-        seenNodes = set(seeds)
-        # Use None to mark the end of tree expansion at a given depth.
-        queue = seeds + [None]
-        while queue:
-            node = queue.pop(0)
-            if node is None:
-                if not queue:
-                    # Out of nodes to add to the spanning tree!
-                    break
-                # Finished connecting to all the nodes at this depth.
-                # Shuffle this set of nodes, to break up patterns that would
-                # otherwise emerge in the less random node layouts. 
-                random.shuffle(queue)
-                queue.append(None)
-                continue
-            for neighbor in self.edges[node]:
-                if neighbor not in seenNodes and node.terrain == neighbor.terrain:
-                    # Make certain that adding the neighbor would not create
-                    # too acute an angle with any existing edges.
-                    neighborVector = neighbor.sub(node)
-                    canAddEdge = True
-                    for alt in newEdges[node]:
-                        altVector = alt.sub(node)
-                        angleDistance = altVector.angleWithVector(neighborVector)
-                        if abs(angleDistance) < MIN_ANGLE_DISTANCE:
-                            canAddEdge = False
-                    if canAddEdge:
-                        seenNodes.add(neighbor)
-                        newEdges[node].add(neighbor)
-                        newEdges[neighbor].add(node)
-                        queue.append(neighbor)
-#        self.drawAll(edges = newEdges, shouldForceSave = True)
+        seenNodes = set()
+        for group in groups:
+            # Generate a spanning tree limited to this group.
+            groupEdges = self.makeSpanningTree(group)
+            newEdges.update(groupEdges)
         return self.addFixedEdges(newEdges)
+
+
+    ## Generate a spanning tree that is limited to nodes in the specified
+    # group. Because of our limitations on minimum angle between edges,
+    # this is not guaranteed to hit every edge in the group, so we retry 
+    # some number of times.
+    def makeSpanningTree(self, nodeGroup):
+        for i in xrange(NUM_SPANNING_ATTEMPTS):
+            # Pick a random starting node in the group.
+            modGroup = set(nodeGroup)
+            newEdges = dict([(node, set()) for node in list(nodeGroup)])
+            temp = list(modGroup)
+            random.shuffle(temp)
+            start = temp[0]
+            seenNodes = set([start])
+
+            # Use None to mark the end of tree expansion at a given depth.
+            queue = [start, None]
+            while queue:
+                node = queue.pop(0)
+                if node is None:
+                    if not queue:
+                        # Out of nodes to add to the spanning tree!
+                        break
+                    # Finished connecting to all the nodes at this depth.
+                    # Shuffle this set of nodes, to break up patterns that would
+                    # otherwise emerge in the less random node layouts, and to
+                    # give us a chance of finding a working arrangement in
+                    # more unusual patterns.
+                    random.shuffle(queue)
+                    queue.append(None)
+                    continue
+                modGroup.remove(node)
+                for neighbor in self.edges[node]:
+                    if neighbor not in seenNodes and neighbor in nodeGroup:
+                        # Make certain that adding the neighbor would not create
+                        # too acute an angle with any existing edges.
+                        neighborVector = neighbor.sub(node)
+                        canAddEdge = True
+                        for alt in newEdges[node]:
+                            altVector = alt.sub(node)
+                            angleDistance = altVector.angleWithVector(neighborVector)
+                            if abs(angleDistance) < MIN_ANGLE_DISTANCE:
+                                canAddEdge = False
+                        if canAddEdge:
+                            seenNodes.add(neighbor)
+                            newEdges[node].add(neighbor)
+                            newEdges[neighbor].add(node)
+                            queue.append(neighbor)
+#                self.drawAll(interiorNodes = list(seenNodes), 
+#                        edges = newEdges, allNodes = list(nodeGroup))
+#        self.drawAll(edges = newEdges, shouldForceSave = True)
+            if not modGroup:
+                # Every node was added to the spanning tree, so we're good
+                # to go!
+                return newEdges
+        self.drawAll(interiorNodes = list(nodeGroup), 
+                edges = dict([(node, self.edges[node]) for node in nodeGroup]), 
+                allNodes = list(nodeGroup), shouldLabelNodes = True)
+        logger.fatal("Unable to make a spanning tree that hit every edge in %s" % nodeGroup)
+        return None
 
 
     ## Run the entire process, starting from raw nodes and ending with a 
@@ -477,8 +526,8 @@ class Triangulator:
     ## Draw the nodes in the graph. Purely for debugging purposes.
     def drawNodes(self, outputImage, color, shouldLabelNodes, *args):
         for node in args:
-            drawX = node.ix * 800 / self.max.x
-            drawY = node.iy * 800 / self.max.y
+            drawX = int(node.ix * 800 / self.max.x)
+            drawY = int(node.iy * 800 / self.max.y)
             pygame.draw.circle(outputImage, color, (drawX, drawY), 2)
             if shouldLabelNodes:
                 label = self.font.render("%d,%d" % (node.ix, node.iy), True, (255, 255, 255))
