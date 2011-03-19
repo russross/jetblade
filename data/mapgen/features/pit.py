@@ -38,8 +38,8 @@ class Pit(straight.StraightTunnel):
             (start, end) = (end, start)
         width = int(self.sector.getTunnelWidth() * tunnelWidthFactor / constants.blockSize)
         
-        surfaceY = int(start.y + width * pitDepthFactor)
-        bottomY = int(start.y + (width / 2) + 1)
+        surfaceY = min(self.map.numRows - 1, int(start.y + width * pitDepthFactor))
+        bottomY = min(self.map.numRows - 1, int(start.y + (width / 2) + 1))
 
         # Set up walls to contain the bottom of the pit.
         for y in range(surfaceY, bottomY + 1):
