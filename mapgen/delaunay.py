@@ -58,8 +58,8 @@ class Triangulator:
             maxX = max(maxX, node.x)
             minY = min(minY, node.y)
             maxY = max(maxY, node.y)
-        self.min = Vector2D(minX, minY)
-        self.max = Vector2D(maxX, maxY)
+        self.min = Vector2D(minX - 1, minY - 1)
+        self.max = Vector2D(maxX + 1, maxY + 1)
 
         ## Maps node to list of nodes it is connected to.
         self.edges = dict()
@@ -370,6 +370,7 @@ class Triangulator:
     # high degree of interconnectedness between nodes, this should never
     # cause the graph to become disconnected, but really we have no guarantee.
     def removeBadEdges(self):
+#        self.drawAll()
         # Make a tree to hold the nodes so we can quickly look up which
         # nodes are near a given edge.
         rect = pygame.rect.Rect(self.min.x, self.min.y, self.max.x, self.max.y)
@@ -406,7 +407,7 @@ class Triangulator:
                     newEdges[node].add(neighbor)
 
         self.edges = self.addFixedEdges(newEdges)
-
+#        self.drawAll()
 #        self.drawAll(shouldForceSave = True)
 
 
@@ -427,6 +428,7 @@ class Triangulator:
     # the final map. We generate a spanning tree for each individual terrain
     # group; these are then connected using our fixed edges.
     def span(self):
+#        self.drawAll()
         # First determine which nodes are in which connected groups.
         groups = []
         seenNodes = set()
@@ -450,6 +452,7 @@ class Triangulator:
             # Generate a spanning tree limited to this group.
             groupEdges = self.makeSpanningTree(group)
             newEdges.update(groupEdges)
+#            self.drawAll(edges = newEdges)
         return self.addFixedEdges(newEdges)
 
 
