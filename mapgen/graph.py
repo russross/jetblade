@@ -24,6 +24,8 @@ minDistanceFromChunkEdge = constants.blockSize * 4
 ## Minimum distance from any given edge in the graph to a node not in that 
 # edge. Edges that are too close get pruned.
 minDistanceEdgeToNode = constants.blockSize * 8
+## Length of bridge edges
+bridgeEdgeLength = constants.blockSize * 20
 ## Minimum distance from any given bridge edge to another
 minDistanceBetweenBridges = constants.blockSize * 60
 
@@ -80,9 +82,9 @@ def getBridgeEdges():
     # connections.
     usedNodes = set()
     result = []
-    for x, y in getMapChunks():
-        start = GraphNode(x + graphDivisionChunkSize / 2,
-                          y + graphDivisionChunkSize / 2)
+    for x, y in getMapChunks(bridgeEdgeLength):
+        start = GraphNode(x + bridgeEdgeLength / 2,
+                          y + bridgeEdgeLength / 2)
         if start in usedNodes:
             continue
         # Ensure the node doesn't come too close to any of the bridges
@@ -99,7 +101,7 @@ def getBridgeEdges():
         if start.terrain not in terrainMap:
             terrainMap[start.terrain] = set()
         for offset in vector2d.NEWSPerimeterOrder:
-            neighbor = GraphNode(start.add(offset.multiply(graphDivisionChunkSize)))
+            neighbor = GraphNode(start.add(offset.multiply(bridgeEdgeLength)))
             if neighbor in usedNodes:
                 continue
             if neighbor.terrain not in terrainMap:
@@ -194,13 +196,9 @@ def makeGraph():
     return mapEdges
 
 
-## Yield XY pairs every graphDivisionChunkSize, staying one chunk away from
-# the edges to give some room to breathe.
-def getMapChunks():
-    for x in range(graphDivisionChunkSize, 
-            game.map.width - graphDivisionChunkSize * 2,
-            graphDivisionChunkSize):
-        for y in range(graphDivisionChunkSize, 
-                game.map.height - graphDivisionChunkSize * 2,
-                graphDivisionChunkSize):
+## Yield XY pairs every chunkSize, staying one chunk away from the edges to give
+# some room to breathe.
+def getMapChunks(chunkSize = graphDivisionChunkSize):
+    for x in range(chunkSize, game.map.width - chunkSize * 2, chunkSize):
+        for y in range(chunkSize, game.map.height - chunkSize * 2, chunkSize):
             yield x, y
