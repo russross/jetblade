@@ -18,10 +18,14 @@ class SplashScreen:
         pygame.display.gl_set_attribute(pygame.locals.GL_SWAP_CONTROL, 0)
         self.screen = pygame.display.set_mode((constants.sw, constants.sh),
                 pygame.locals.OPENGL | pygame.locals.DOUBLEBUF)
+        # Make certain our GL setup is clean to start out.
+        GL.glLoadIdentity()
+        GL.glPushMatrix()
+        GL.glLoadIdentity()
         GL.glViewport(0, 0, constants.sw, constants.sh)
         GL.glMatrixMode(GL.GL_PROJECTION)
         GL.glLoadIdentity()
-        GLU.gluPerspective(45, float(constants.sw) / constants.sh, .1, 10000)
+        GL.glOrtho(0, constants.sw, 0, constants.sh, 1, 0)
         GL.glMatrixMode(GL.GL_MODELVIEW)
         GL.glLoadIdentity()
 
@@ -66,13 +70,15 @@ class SplashScreen:
     # and draw a new status message.
     def updateMessage(self, message):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-        GL.glMatrixMode(GL.GL_PROJECTION)
+        GL.glLoadIdentity()
         GL.glPushMatrix()
         GL.glLoadIdentity()
-        GLU.gluOrtho2D(0, constants.sw, 0, constants.sh)
-        GL.glScalef(1, -1, 1)
-        GL.glTranslatef(.375, -constants.sh - .375, 0)
+        GL.glViewport(0, 0, constants.sw, constants.sh)
+        GL.glMatrixMode(GL.GL_PROJECTION)
+        GL.glLoadIdentity()
+        GL.glOrtho(0, constants.sw, constants.sh, 0, 1, -1)
         GL.glMatrixMode(GL.GL_MODELVIEW)
+        GL.glLoadIdentity()
 
         # Draw the backdrop
         GL.glBindTexture(GL.GL_TEXTURE_2D, self.texture)
@@ -99,18 +105,17 @@ class SplashScreen:
         GL.glBindTexture(GL.GL_TEXTURE_2D, self.messageTextureId)
         GL.glBegin(GL.GL_QUADS)
         GL.glTexCoord2f(0, 0)
-        GL.glVertex3f(topLeft[0], topLeft[1], 1)
+        GL.glVertex3f(topLeft[0], topLeft[1], 0)
         GL.glTexCoord2f(1, 0)
-        GL.glVertex3f(topLeft[0] + messageRect.width, topLeft[1], 1)
+        GL.glVertex3f(topLeft[0] + messageRect.width, topLeft[1], 0)
         GL.glTexCoord2f(1, 1)
         GL.glVertex3f(topLeft[0] + messageRect.width, 
-                      topLeft[1] + messageRect.height, 1)
+                      topLeft[1] + messageRect.height, 0)
         GL.glTexCoord2f(0, 1)
-        GL.glVertex3f(topLeft[0], topLeft[1] + messageRect.height, 1)
+        GL.glVertex3f(topLeft[0], topLeft[1] + messageRect.height, 0)
         GL.glEnd()
-        GL.glMatrixMode(GL.GL_PROJECTION)
+
         GL.glPopMatrix()
-        GL.glMatrixMode(GL.GL_MODELVIEW)
 
         pygame.display.flip()
 

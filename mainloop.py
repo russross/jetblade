@@ -74,7 +74,7 @@ def startGame():
             game.log.warn("Drawing the entire map was broken as part " + 
                           "of the OpenGL transition. Sorry; I'll fix " + 
                           "it when I can.")
-#            game.map.drawAll('%d.png' % game.seed)
+            game.map.drawAll('%d.png' % game.seed)
         if game.shouldExitAfterMapgen:
             sys.exit()
     else:
@@ -204,8 +204,18 @@ def gameLoop():
 def draw():
     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
     GL.glLoadIdentity()
+    GL.glPushMatrix()
+    GL.glLoadIdentity()
+    GL.glViewport(0, 0, constants.sw, constants.sh)
+    GL.glMatrixMode(GL.GL_PROJECTION)
+    GL.glLoadIdentity()
+    GL.glOrtho(0, constants.sw, 0, constants.sh, 1, -1)
+    GL.glMatrixMode(GL.GL_MODELVIEW)
+    GL.glLoadIdentity()
+    GL.glScalef(game.zoom, game.zoom, 1)
+
     cameraLoc = game.camera.getDrawLoc()
-    GL.glTranslatef(-cameraLoc.x, cameraLoc.y, game.zoom)
+    GL.glTranslatef(-cameraLoc.x + constants.sw / 2, cameraLoc.y + constants.sh / 2, 0)
     game.map.drawBackground(game.camera.progress)
     game.gameObjectManager.draw(game.camera.progress)
     game.map.drawMidground(game.camera.progress)
@@ -216,6 +226,7 @@ def draw():
             align = font.TEXT_ALIGN_RIGHT)
     game.mapEditor.draw(game.camera.progress)
     game.console.draw()
+    GL.glPopMatrix()
     pygame.display.flip()
 
     if game.isRecording:
