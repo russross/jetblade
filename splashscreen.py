@@ -37,7 +37,7 @@ class SplashScreen:
         # with transparent) and GL's interpolation just makes things look bad.
         GL.glDisable(GL.GL_LINE_SMOOTH)
         GL.glShadeModel(GL.GL_SMOOTH)
-        GL.glClearColor(0, 0, 0, 0)
+        GL.glClearColor(0, 0, 0, 1)
         GL.glClearDepth(1)
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glDepthFunc(GL.GL_LEQUAL)
