@@ -22,11 +22,13 @@ import copy
 import random
 import pygame
 
+import OpenGL.GL as GL
+import OpenGL.GL.framebufferobjects as FBO
 
 ## Minimum width of the game world
-minUniverseWidth = constants.blockSize * 400
+minUniverseWidth = constants.blockSize * 500
 ## Minimum height of the game world
-minUniverseHeight = constants.blockSize * 400
+minUniverseHeight = constants.blockSize * 500
 ## Degree to which the game world dimensions are allowed to vary. The range thus
 # defined is e.g. 
 # [minUniverseWidth, minUniverseWidth + universeDimensionVariance] for width.
@@ -51,8 +53,10 @@ regionOverlayNumSeedingRetries = 10
 ## Amount to scale the map by when calling Map.drawStatus()
 drawStatusScaleFactor = .1
 ## Amount to scale the map by when calling Map.DrawAll()
-# Note that PyGame can't create surfaces bigger than about 16k pixels to a side
-drawAllScaleFactor = .2
+# Note that PyGame can't create surfaces bigger than about 16k pixels to a side,
+# and that OpenGL can't make textures bigger than 4096 pixels on a side (on
+# my dev computer anyway).
+drawAllScaleFactor = .15
 
 # Platform placement parameters
 ## Distance from the wall/ceiling to build platforms.
@@ -263,6 +267,7 @@ class Map:
         # regions. Make a low-rez overlay for the map that marks out regions.
         logger.inform("Marking regions at",pygame.time.get_ticks())
         self.regions = self.makeRegions()
+#        self.drawRegions()
 
         # Create the array for the actual blocks.
         logger.inform("Laying out grid at",pygame.time.get_ticks())
@@ -337,7 +342,7 @@ class Map:
 
         logger.inform("Drawing status at",pygame.time.get_ticks())
         self.markLoc = None
-        self.drawStatus(self.blocks, None, None, shouldDrawRegions = True)
+#        self.drawStatus(self.blocks, None, None, shouldDrawRegions = True)
 
         # \todo Pick a better starting point for the player.
         self.startLoc = self.tunnelEdges[0].start.toGridspace()
@@ -865,12 +870,13 @@ class Map:
         if blocks is not None:
             numCols = len(blocks)
             numRows = len(blocks[0])
-            for i, j in self.getIterBlocks():
-                rect = pygame.rect.Rect((i * size, j * size), (size, size))
-                if blocks[i][j] in (BLOCK_UNALLOCATED, None):
-                    pygame.draw.rect(screen, (64, 64, 64), rect)
-                elif blocks[i][j] != BLOCK_EMPTY:
-                    pygame.draw.rect(screen, (255, 255, 255), rect)
+            for i in xrange(numCols):
+                for j in xrange(numRows):
+                    rect = pygame.rect.Rect((i * size, j * size), (size, size))
+                    if blocks[i][j] in (BLOCK_UNALLOCATED, None):
+                        pygame.draw.rect(screen, (0, 0, 0), rect)
+                    elif blocks[i][j] != BLOCK_EMPTY:
+                        pygame.draw.rect(screen, (255, 255, 255), rect)
 
         seedRadius = int(constants.blockSize / 2.0 * scale)
         if (deadSeeds is not None and len(deadSeeds) and 
@@ -933,38 +939,94 @@ class Map:
             pygame.draw.rect(screen, color, overlayRect)
         if shouldSaveIndependently:
             self.statusIter += 1
-        pygame.image.save(screen, 'premap-%03d' % self.statusIter + '.png')
+            pygame.image.save(screen, 'premap-%03d' % self.statusIter + '.png')
 
 
     ## Draw a complete view of the map for purposes of looking pretty. Saves 
     # the result to disk under the provided filename.
-    # \todo This was broken by the OpenGL transition -- we no longer use Surface
-    # objects to draw to, instead drawing directly to the screen.
     def drawAll(self, filename):
-        scale = drawAllScaleFactor
-        center = Vector2D(self.width, self.height).multiply(scale / 2.0)
-        size = constants.blockSize * scale
+        width = 2
+        height = 2
+        # Calculate height of the output image, as a power of 2
+        while width < self.width * drawAllScaleFactor:
+            width *= 2
+        while height < self.height * drawAllScaleFactor:
+            height *= 2
+
+        texture = GL.glGenTextures(1)
+        GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
+        GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, 
+                GL.GL_LINEAR_MIPMAP_LINEAR)
+        GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, 
+                GL.GL_NEAREST)
+        GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, width, 
+                height, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, None)
+
+        framebuffer = FBO.glGenFramebuffers(1)
+        FBO.glBindFramebuffer(FBO.GL_FRAMEBUFFER, framebuffer)
+        FBO.glFramebufferTexture2D(FBO.GL_FRAMEBUFFER,
+                FBO.GL_COLOR_ATTACHMENT0, GL.GL_TEXTURE_2D, texture, 0)
+        GL.glBindTexture(GL.GL_TEXTURE_2D, 0)
+
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+        GL.glLoadIdentity()
+        GL.glPushMatrix()
+        GL.glLoadIdentity()
+        GL.glViewport(0, 0, width, height)
+        GL.glMatrixMode(GL.GL_PROJECTION)
+        GL.glLoadIdentity()
+        GL.glOrtho(0, width, 0, height, 1, -1)
+        GL.glMatrixMode(GL.GL_MODELVIEW)
+        GL.glLoadIdentity()
+        GL.glTranslatef(0, height, 0)
+        GL.glScalef(width / float(self.width), height / float(self.height), 1)
         
-        screen = pygame.Surface((int(self.width * scale), int(self.height * scale)))
-        self.backgroundQuadTree.draw(screen, center, 0, scale)
-        self.furnitureQuadTree.draw(screen, center, 0, scale)
+        GL.glEnable(GL.GL_TEXTURE_2D)
+        
+        self.backgroundQuadTree.draw(0, shouldPrune = False)
+        self.furnitureQuadTree.draw(0, shouldPrune = False)
 
         for i, j in self.getIterBlocks():
             for effect in self.envGrid[i][j]:
-                effect.draw(screen, Vector2D(i, j).toRealspace(), center, 0, scale)
+                effect.draw(Vector2D(i, j).toRealspace(), 0)
 
-        for y in xrange(self.numRows - 1, 0, -1):
-            # Draw from bottom to top because blocks may "hang" down a bit.
-            for x in xrange(0, self.numCols):
-                block = self.blocks[x][y]
-                if block:
-                    block.draw(screen, center, 0, scale)
-                elif block is None:
-                    rect = pygame.rect.Rect((x * size, y * size), 
-                                            (size, size))
-                    pygame.draw.rect(screen, (64, 64, 64), rect)
+        game.imageManager.drawList(self.blockDisplayList)
+
+        FBO.glBindFramebuffer(FBO.GL_DRAW_FRAMEBUFFER, 0)
+
+        # Now draw our texture of the map to the screen.
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+        GL.glLoadIdentity()
+        GL.glPushMatrix()
+        GL.glLoadIdentity()
+        GL.glViewport(0, 0, constants.sw, constants.sh)
+        GL.glMatrixMode(GL.GL_PROJECTION)
+        GL.glLoadIdentity()
+        GL.glOrtho(0, constants.sw, 0, constants.sh, 1, -1)
+        GL.glMatrixMode(GL.GL_MODELVIEW)
+        GL.glLoadIdentity()
+
+        loc = Vector2D(0, 0)
+        bottomRight = Vector2D(constants.sw, constants.sh)
+        GL.glEnable(GL.GL_TEXTURE_2D)
+        GL.glBindTexture(GL.GL_TEXTURE_2D, texture)
+        GL.glBegin(GL.GL_QUADS)
+        GL.glTexCoord2f(0, 0)
+        GL.glVertex3f(0, 0, 0)
+        GL.glTexCoord2f(1, 0)
+        GL.glVertex3f(constants.sw, 0, 0)
+        GL.glTexCoord2f(1, 1)
+        GL.glVertex3f(constants.sw, constants.sh, 0)
+        GL.glTexCoord2f(0, 1)
+        GL.glVertex3f(0, constants.sh, 0)
+        GL.glEnd()
+   
+        GL.glPopMatrix()
         
-        pygame.image.save(screen, filename)
+        image = GL.glGetTexImage(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE)
+        surface = pygame.image.fromstring(image, (width, height), 
+                "RGBA", True)
+        pygame.image.save(surface, filename)
 
 
     ## Draw the background scenery and any environmental effects at the given

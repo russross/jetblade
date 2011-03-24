@@ -242,19 +242,23 @@ class QuadTree:
     ## Draw the objects in this node and all children, that intersect with the 
     # current view.
     # \todo The culling of what to draw doesn't take into account zoom factors.
-    def draw(self, progress):
-        screenRect = pygame.rect.Rect(0, 0, constants.sw, constants.sh)
-        screenRect.center = game.camera.getDrawLoc().tuple()
-        size = Vector2D(screenRect.bottomright).sub(Vector2D(screenRect.topleft))
-        screenRect.width = size.x
-        screenRect.height = size.y
+    # \param shouldPrune True if we should cull objects that we don't think are
+    #        visible. We turn this off for drawing the entire map.
+    def draw(self, progress, shouldPrune = True):
+        screenRect = None
+        if shouldPrune:
+            # Generate a rect to prune out objects not in the view.
+            screenRect = pygame.rect.Rect(0, 0, constants.sw, constants.sh)
+            screenRect.center = game.camera.getDrawLoc().tuple()
+            size = Vector2D(screenRect.bottomright).sub(Vector2D(screenRect.topleft))
+            screenRect.width = size.x
+            screenRect.height = size.y
         for object in self.objects:
-            objectRect = object.getBounds()
-            if objectRect.colliderect(screenRect):
+            if not shouldPrune or object.getBounds().colliderect(screenRect):
                 object.draw(progress)
         for child in self.children:
-            if child.rect.colliderect(screenRect):
-                child.draw(progress)
+            if not shouldPrune or child.rect.colliderect(screenRect):
+                child.draw(progress, shouldPrune)
             
 
     ## Remove the specified object from the tree. Return True if we deleted it;
