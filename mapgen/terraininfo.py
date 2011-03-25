@@ -25,7 +25,7 @@ class TerrainInfo:
 
     ## Equality check
     def __eq__(self, alt):
-        return self.zone == alt.zone and self.region == alt.region
+        return type(alt) == type(self) and self.zone == alt.zone and self.region == alt.region
 
 
     ## Inequality check
