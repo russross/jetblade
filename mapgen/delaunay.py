@@ -11,12 +11,22 @@ import pygame
 import random
 import sys
 
+## @package mapgen.delaunay
+# This module contains the code that generates the edges in the graph that
+# forms the basis for map generation. The Triangulator class is here, along
+# with several constants.
+
 ## Minimum angular distance between two neighbors in the graph.
 MIN_ANGLE_DISTANCE = math.pi / 3
 
 ## Number of times to try generating a spanning tree that hits every node 
 # in a subset of the graph
-NUM_SPANNING_ATTEMPTS = 100
+NUM_SPANNING_ATTEMPTS = 1000
+
+## Minimum distance between two nodes (in terms of number of edge hops) before
+# we consider trying to place a shortcut between them.
+MIN_SHORTCUT_HOPS = 6
+
 
 ## Sort vertices by their distance to the given vertex.
 def sortByDistanceTo(location):
@@ -44,11 +54,12 @@ class Triangulator:
     def __init__(self, nodes, fixedEdges, minDistanceEdgeToNode):
         ## List of all nodes in the graph, as GraphNodes
         self.nodes = list(nodes)
+
         ## Set of GraphNode pairs representing edges that must be in the 
         # final graph.
         self.fixedEdges = fixedEdges
     
-        ## Figure out the min/max extent of the nodes
+        # Figure out the min/max extent of the nodes
         minX = minY = maxX = maxY = None
         for node in nodes:
             if minX is None:
@@ -60,6 +71,12 @@ class Triangulator:
             maxY = max(maxY, node.y)
         self.min = Vector2D(minX - 1, minY - 1)
         self.max = Vector2D(maxX + 1, maxY + 1)
+
+        # Make a tree to hold the nodes so we can quickly look up which
+        # nodes are near a given edge.
+        rect = pygame.rect.Rect(self.min.x, self.min.y, self.max.x, self.max.y)
+        self.nodeTree = quadtree.QuadTree(rect)
+        self.nodeTree.addObjects([VectorWrap(v) for v in self.nodes])
 
         ## Maps node to list of nodes it is connected to.
         self.edges = dict()
@@ -371,11 +388,6 @@ class Triangulator:
     # cause the graph to become disconnected, but really we have no guarantee.
     def removeBadEdges(self):
 #        self.drawAll()
-        # Make a tree to hold the nodes so we can quickly look up which
-        # nodes are near a given edge.
-        rect = pygame.rect.Rect(self.min.x, self.min.y, self.max.x, self.max.y)
-        tree = quadtree.QuadTree(rect)
-        tree.addObjects([VectorWrap(v) for v in self.nodes])
         newEdges = dict()
         for node, neighbors in self.edges.iteritems():
             newEdges[node] = set()
@@ -397,7 +409,7 @@ class Triangulator:
                         abs(node.y - neighbor.y) > constants.EPSILON):
                     isSafeEdge = False
                 else:
-                    for vecWrap in tree.getObjectsIntersectingRect(edgeRect):
+                    for vecWrap in self.nodeTree.getObjectsIntersectingRect(edgeRect):
                         nearNode = vecWrap.vector
                         if (nearNode not in [node, neighbor] and 
                                 edge.pointDistance(nearNode) < self.minDistanceEdgeToNode):
@@ -451,6 +463,8 @@ class Triangulator:
         for group in groups:
             # Generate a spanning tree limited to this group.
             groupEdges = self.makeSpanningTree(group)
+            # Now try to add some loops within it.
+            groupEdges = self.addLoopbacks(groupEdges)
             newEdges.update(groupEdges)
 #            self.drawAll(edges = newEdges)
         return self.addFixedEdges(newEdges)
@@ -517,13 +531,112 @@ class Triangulator:
         return None
 
 
+    ## Given a selection of edges, look for good places to insert loops. A 
+    # good place is one that creates a shortcut between two nodes that 
+    # previously were far apart. 
+    def addLoopbacks(self, edges):
+        if len(edges) == 1:
+            return edges
+        result = dict(edges)
+        while True:
+            # Maps each node pair to the distance between the two nodes.
+            nodePairToDistanceMap = self.dijkstra(result)
+            
+            # Find the node pair that we could connect with a single edge
+            # that are furthest away from each other in the current graph.
+            maxDistance = -1
+            worstNodes = None
+            for node in edges.keys():
+                for neighbor in self.edges[node]:
+                    pair = (node, neighbor)
+                    if (pair in nodePairToDistanceMap and 
+                            nodePairToDistanceMap[pair] > maxDistance and
+                            self.isEdgeLegal(pair, result)):
+                        maxDistance = nodePairToDistanceMap[pair]
+                        worstNodes = pair
+                        
+            if maxDistance < MIN_SHORTCUT_HOPS or worstNodes is None:
+                # Either not worth adding an edge, or we found no valid
+                # edge to add.
+                break
+
+            result[worstNodes[0]].add(worstNodes[1])
+            result[worstNodes[1]].add(worstNodes[0])
+#            self.drawAll(edges = result)
+
+        return result
+
+
+    ## Calculate the distance from each node to each other node, using
+    # Dijkstra's algorithm. Return a mapping of tuples to the distances 
+    # between them. 
+    # \todo Is this really the most efficient way to get these values? And
+    # all we really care about is the two nodes with the longest path length
+    # between them, but unfortunately that's an NP-complete problem and is
+    # of course entirely unsolvable for cyclic graphs.
+    def dijkstra(self, edges):
+        nodePairToDistanceMap = {}
+        nodes = set(edges.keys())
+        for node in nodes:
+            # Maps each node to the shortest distance to that node.
+            distanceMap = dict([(n, constants.BIGNUM) for n in nodes])
+            distanceMap[node] = 0
+            firstNode = list(edges[node])[0]
+            distanceMap[firstNode] = 1
+            isFirst = True
+            queue = list(nodes.difference(set([firstNode])))
+            while queue:
+                if isFirst:
+                    closestNode = firstNode
+                    isFirst = False
+                else:
+                    closestNode = queue.pop(0)
+                for neighbor in edges[closestNode]:
+                    pathDistance = distanceMap[closestNode] + 1
+                    if pathDistance < distanceMap[neighbor]:
+                        distanceMap[neighbor] = pathDistance
+                queue.sort(lambda a, b: cmp(distanceMap[a], distanceMap[b]))
+            for altNode, distance in distanceMap.iteritems():
+                nodePairToDistanceMap[(node, altNode)] = distance
+        return nodePairToDistanceMap
+
+
+    ## Return true if the edge does not form too sharp an angle with the 
+    # existing edges and does not come too close to any other nodes.
+    def isEdgeLegal(self, nodePair, edges):
+        orders = [(nodePair[0], nodePair[1]), (nodePair[1], nodePair[0])]
+        for n1, n2 in orders:
+            vector = n1.sub(n2)
+            for alt in edges[n1]:
+                if alt not in nodePair:
+                    altVector = n1.sub(alt)
+                    angleDistance = altVector.angleWithVector(vector)
+                    if abs(angleDistance) < MIN_ANGLE_DISTANCE:
+                        return False
+
+        edgeLine = line.Line(nodePair[0], nodePair[1])
+        edgeRect = edgeLine.getBounds()
+        for vecWrap in self.nodeTree.getObjectsIntersectingRect(edgeRect):
+            nearNode = vecWrap.vector
+            if (nearNode not in nodePair and 
+                    edgeLine.pointDistance(nearNode) < self.minDistanceEdgeToNode):
+                return False
+        return True
+
+
     ## Run the entire process, starting from raw nodes and ending with a 
     # minimum spanning tree of a Delaunay triangulation of those nodes.
     def makeGraph(self):
+        self.drawAll(dirtyEdges = self.fixedEdges, allNodes = self.nodes)
         self.triangulate()
+#        self.drawAll(edges = self.edges)
         self.makeDelaunay()
+#        self.drawAll(edges = self.edges)
         self.removeBadEdges()
-        return self.span()
+#        self.drawAll(edges = self.edges)
+        result = self.span()
+        self.drawAll(edges = result, dirtyEdges = self.fixedEdges)
+        return result
 
 
     ## Draw the nodes in the graph. Purely for debugging purposes.
@@ -542,6 +655,8 @@ class Triangulator:
 
     ## Draw the graph and save it to a file. This is strictly for debugging
     # purposes.
+    # Note that while the edges parameter is a dict mapping nodes to sets
+    # of nodes, the dirtyEdges parameter is a list of node-node pairs.
     def drawAll(self, allNodes = None, interiorNodes = [], edges = None, 
                 dirtyEdges = [], shouldForceSave = False, 
                 shouldLabelNodes = False):
