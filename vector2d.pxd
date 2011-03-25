@@ -32,6 +32,7 @@ cdef class Vector2D:
     cpdef public Vector2D clamp(Vector2D self, Vector2D clamp)
     cpdef public Vector2D toGridspace(Vector2D self)
     cpdef public Vector2D toRealspace(Vector2D self)
+    cpdef public Vector2D truncate(Vector2D self, int size)
     cpdef public tuple tuple(Vector2D self)
     cpdef public bint fuzzyMatchList(Vector2D self, list alts)
     cpdef public list perimeter(Vector2D self)

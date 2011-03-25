@@ -226,6 +226,14 @@ cdef class Vector2D:
                         self.y * constants.blockSize)
 
 
+    ## Truncate the X and Y coordinates down to the closest multiple of the 
+    # specified value.
+    cpdef public Vector2D truncate(Vector2D self, int size):
+        x = int(self.x / size) * size
+        y = int(self.y / size) * size
+        return Vector2D(x, y)
+
+
     ## Convert to a tuple
     cpdef public tuple tuple(Vector2D self):
         return (self.x, self.y)
