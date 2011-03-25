@@ -6,6 +6,7 @@ import edge
 import vector2d
 from vector2d import Vector2D
 
+import numpy
 import random
 
 ## @package mapgraph
@@ -26,8 +27,6 @@ minDistanceFromChunkEdge = constants.blockSize * 4
 minDistanceEdgeToNode = constants.blockSize * 8
 ## Length of bridge edges
 bridgeEdgeLength = constants.blockSize * 20
-## Minimum distance from any given bridge edge to another
-minDistanceBetweenBridges = constants.blockSize * 60
 
 ## The GraphNode class represents a node in a non-directional planar graph.
 class GraphNode(Vector2D):
@@ -66,52 +65,84 @@ class GraphNode(Vector2D):
 
     ## Convert to string.
     def __repr__(self):
-        return "[GraphNode at (%s, %s) with %d neighbors]" % (self.x, self.y, len(self.neighbors))
+        return "<GraphNode (%s, %s)>" % (self.x, self.y)
 
 
 
 ## Generate a set of "bridge" edges that must be in the final map. These
 # edges connect the different terrain sectors of the map, and each is 
 # axis-aligned.
-# \todo Currently this doesn't care that a given terrain type can show up 
-# in multiple disconnected chunks in the map.
 def getBridgeEdges():
-    # Helps us track which sectors are already connected.
-    terrainMap = dict()
+    # First, figure out how the different terrain regions are placed, so we
+    # can figure out where we need to place bridges. And the first step to
+    # *that* is to construct an array at the appropriate resolution of 
+    # the terrain map.
+    width = game.map.width / bridgeEdgeLength
+    height = game.map.height / bridgeEdgeLength
+    terrainGrid = [[None for i in xrange(height)] for j in xrange(width)]
+
+    for x, y in getMapChunks(bridgeEdgeLength, padding = 0, shouldOffset = True):
+        xIndex = x / bridgeEdgeLength
+        yIndex = y / bridgeEdgeLength
+        key = Vector2D(x, y)
+        terrainGrid[xIndex][yIndex] = game.map.getTerrainInfoAtGridLoc(key.toGridspace())
+
+    groupNum = 0
+    groupGrid = numpy.zeros((width, height))
+    groupToPosMap = dict()
+    for x, column in enumerate(terrainGrid):
+        for y, terrain in enumerate(column):
+            node = Vector2D(x, y)
+            if groupGrid[x][y]:
+                continue
+            # Floodfill out and find other adjacent cells with the same terrain.
+            groupNum += 1
+            groupToPosMap[groupNum] = set()
+            queue = [node]
+            while queue:
+                curNode = queue.pop()
+                groupGrid[curNode.ix][curNode.iy] = groupNum
+                groupToPosMap[groupNum].add(curNode)
+                for offset in vector2d.NEWSPerimeterOrder:
+                    neighbor = curNode.add(offset)
+                    if (neighbor.x < 0 or neighbor.x >= width or 
+                            neighbor.y < 0 or neighbor.y >= height or
+                            groupGrid[neighbor.ix][neighbor.iy]):
+                        continue
+                    neighborTerrain = terrainGrid[neighbor.ix][neighbor.iy]
+                    # This will be None if we go out of bounds.
+                    if neighborTerrain == terrain:
+                        queue.append(neighbor)
+
+    # Set of group-group pairs so we know what connections exist.
+    groupBridges = set()
     # Don't use a single node for more than one initial edge, to help space out
     # connections.
     usedNodes = set()
     result = []
-    for x, y in getMapChunks(bridgeEdgeLength):
-        start = GraphNode(x + bridgeEdgeLength / 2,
-                          y + bridgeEdgeLength / 2)
-        if start in usedNodes:
-            continue
-        # Ensure the node doesn't come too close to any of the bridges
-        # we've already made.
-        # Note we don't care about the nodes we try to connect start too;
-        # forcing one node to be far enough away is sufficient.
-        isNodeUsable = True
-        for node in usedNodes:
-            if start.distance(node) < minDistanceBetweenBridges:
-                isNodeUsable = False
-                break
-        if not isNodeUsable:
-            continue
-        if start.terrain not in terrainMap:
-            terrainMap[start.terrain] = set()
-        for offset in vector2d.NEWSPerimeterOrder:
-            neighbor = GraphNode(start.add(offset.multiply(bridgeEdgeLength)))
-            if neighbor in usedNodes:
+    for x, column in enumerate(groupGrid):
+        for y, startGroup in enumerate(column):
+            start = Vector2D(x, y)
+            if start in usedNodes:
                 continue
-            if neighbor.terrain not in terrainMap:
-                terrainMap[neighbor.terrain] = set()
-            if neighbor.terrain not in terrainMap[start.terrain]:
-                terrainMap[start.terrain].add(neighbor.terrain)
-                terrainMap[neighbor.terrain].add(start.terrain)
-                usedNodes.add(start)
-                usedNodes.add(neighbor)
-                result.append((start, neighbor))
+
+            for offset in vector2d.NEWSPerimeterOrder:
+                neighbor = start.add(offset)
+                if (neighbor in usedNodes or neighbor.x < 0 or 
+                        neighbor.x >= width or neighbor.y < 0 or
+                        neighbor.y >= height):
+                    continue
+                neighborGroup = groupGrid[neighbor.ix][neighbor.iy]
+                if (startGroup != neighborGroup and
+                        (startGroup, neighborGroup) not in groupBridges and 
+                        (neighborGroup, startGroup) not in groupBridges):
+                    # Place the bridge in the center of the chunk
+                    n1 = GraphNode(start.addScalar(.5).multiply(bridgeEdgeLength))
+                    n2 = GraphNode(neighbor.addScalar(.5).multiply(bridgeEdgeLength))
+                    result.append((n1, n2))
+                    groupBridges.add((startGroup, neighborGroup))
+                    usedNodes.add(start)
+                    usedNodes.add(neighbor)
     return result
 
 
@@ -196,9 +227,14 @@ def makeGraph():
     return mapEdges
 
 
-## Yield XY pairs every chunkSize, staying one chunk away from the edges to give
+## Yield XY pairs every chunkSize, staying away from the edges to give
 # some room to breathe.
-def getMapChunks(chunkSize = graphDivisionChunkSize):
-    for x in range(chunkSize, game.map.width - chunkSize * 2, chunkSize):
-        for y in range(chunkSize, game.map.height - chunkSize * 2, chunkSize):
-            yield x, y
+def getMapChunks(chunkSize = graphDivisionChunkSize, padding = None, shouldOffset = False):
+    if padding is None:
+        padding = chunkSize
+    for x in range(padding, game.map.width - padding * 2, chunkSize):
+        for y in range(padding, game.map.height - padding * 2, chunkSize):
+            if shouldOffset:
+                yield x + chunkSize / 2, y + chunkSize / 2
+            else:
+                yield x, y
